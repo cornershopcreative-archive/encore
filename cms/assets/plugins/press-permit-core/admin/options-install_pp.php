@@ -164,9 +164,15 @@ class PP_Options_Install {
 					<img id="pp_support_waiting" class="waiting" style="display:none;position:relative" src="<?php echo esc_url( admin_url( 'images/wpspin_light.gif' ) )?>" alt="" />
 				</span>
 
-				<br />
+				<?php if ( $activated || $expired ) :?>
+				<span class="pp-key-active">
+				&nbsp;&nbsp;<a href="admin.php?page=pp-settings&amp;pp_refresh_updates=1"><?php _e('refresh status', 'pp');?></a>
+				</span>
+				<?php endif; ?>
 				
-				<span style="margin-left:217px">
+				<br /><br />
+				
+				<span style="margin-left:217px;">
 					<?php if ( $activated ) : ?>
 					<span class="pp-key-active pp-key-warning"> <?php _e('note: If you deactive, re-entry of the support key will be required for re-activation.', 'pp'); ?></span>
 					<?php elseif ( ! $expired ) : ?>

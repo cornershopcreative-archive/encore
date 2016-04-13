@@ -204,7 +204,7 @@ function _pp_act_set_current_user() {
 // this fires once $current_user is set and other init action handlers up to at least priority 50 are done
 function pp_init_with_user() {
 	global $current_user, $pp_current_user, $pp;
-
+	
 	if ( empty( $pp_current_user) || ! defined( 'INIT_ACTION_DONE_PP' ) )
 		return;
 

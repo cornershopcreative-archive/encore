@@ -109,7 +109,7 @@ class PP_TermCountInterceptor {
 		// Post counts will be incremented to include child terms only if $pad_counts is true
 		if ( ! defined('XMLRPC_REQUEST') && ( 1 == count($taxonomies) ) ) {
 			global $pagenow;
-			if ( ! is_admin() || ! in_array( $pagenow, array( 'post.php', 'post-new.php' ) ) ) {
+			if ( ( ! is_admin() || ! in_array( $pagenow, array( 'post.php', 'post-new.php' ) ) ) && ( ! defined('PP_UNFILTERED_TERM_COUNTS') || is_admin() ) ) {
 				if ( $hide_empty || ! empty( $args['actual_args']['hide_empty'] ) ) {
 					// need to tally for all terms in case some were hidden by core function due to lack of public posts
 					$all_terms = get_terms( reset($taxonomies), array( 'fields' => 'all', 'pp_no_filter' => true, 'hide_empty' => false ) );

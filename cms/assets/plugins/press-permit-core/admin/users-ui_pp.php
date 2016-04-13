@@ -3,6 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 add_filter('manage_users_columns', array('PP_AdminUsers', 'flt_users_columns'));
 add_action('manage_users_custom_column', array('PP_AdminUsers', 'flt_users_custom_column'), 99, 3); // filter late in case other plugin filters do not retain passed value
+add_filter( 'manage_users_sortable_columns', array( 'PP_AdminUsers', 'flt_users_columns_sortable' ) );
 
 add_filter('pre_user_query', array('PP_AdminUsers', 'flt_user_query_exceptions' ) );
 
@@ -96,6 +97,11 @@ class PP_AdminUsers {
 		return $defaults;
 	}
 
+	public static function flt_users_columns_sortable( $columns ) {
+		$columns['pp_groups'] = 'pp_group';
+		return $columns;
+	}
+	
 	public static function flt_users_custom_column($content = '', $column_name, $id) {
 		switch( $column_name ) {
 			case 'pp_groups' :
@@ -214,6 +220,15 @@ class PP_AdminUsers {
 	}
 	
 	public static function flt_user_query_exceptions( $query_obj ) {
+		if ( isset( $_REQUEST['orderby'] ) && 'pp_group' == $_REQUEST['orderby'] ) {
+			global $wpdb;
+			$query_obj->query_where = " INNER JOIN $wpdb->pp_group_members AS gm ON gm.user_id = $wpdb->users.ID 
+										INNER JOIN $wpdb->pp_groups as g ON gm.group_id = g.ID AND g.metagroup_id='' " . $query_obj->query_where;
+			
+			$order = ( isset($_REQUEST['order']) && ( 'desc' == $_REQUEST['order'] ) ) ? 'DESC' : 'ASC';
+			$query_obj->query_orderby = "ORDER BY g.group_name $order";
+		}
+	 
 		if ( ! empty( $_REQUEST['pp_user_exceptions'] ) ) {
 			global $wpdb;
 			$query_obj->query_where .= " AND ID IN ( SELECT agent_id FROM $wpdb->ppc_exceptions AS e INNER JOIN $wpdb->ppc_exception_items AS i ON e.exception_id = i.exception_id WHERE e.agent_type = 'user' )";

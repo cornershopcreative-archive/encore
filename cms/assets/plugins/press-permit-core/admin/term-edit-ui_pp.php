@@ -11,7 +11,7 @@ class PP_TermEditUI {
 		
 		//$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '.dev' : '';
 		//wp_enqueue_script( 'pp_agent_search', PP_URLPATH . "/admin/js/listbox{$suffix}.js", array('jquery', 'jquery-form'), PPC_VERSION );  // this caused redundant loading
-	
+		
 		require_once( dirname(__FILE__).'/item-edit-ui_pp.php' );
 		add_action( 'admin_print_scripts', 'pp_item_edit_js' );
 		
@@ -173,7 +173,11 @@ class PP_TermEditUI {
 		if ( ! $referer = wp_get_original_referer() )
 			$referer = wp_get_referer();
 
-		$url = esc_url_raw( add_query_arg( '_wp_original_http_referer', urlencode($referer), "edit-tags.php?action=edit&amp;taxonomy=$taxonomy&amp;tag_ID={$tag->term_id}&amp;pp_universal=1" ) );
+		
+		if ( pp_wp_ver( '4.5-beta' ) )
+			$url = esc_url_raw( add_query_arg( '_wp_original_http_referer', urlencode($referer), "term.php?taxonomy=$taxonomy&amp;tag_ID={$tag->term_id}&amp;pp_universal=1" ) );
+		else
+			$url = esc_url_raw( add_query_arg( '_wp_original_http_referer', urlencode($referer), "edit-tags.php?action=edit&amp;taxonomy=$taxonomy&amp;tag_ID={$tag->term_id}&amp;pp_universal=1" ) );
 		printf( __( 'Displayed exceptions are those assigned for the "%1$s" type. You can also %2$sdefine universal %3$s exceptions which apply to all related post types%4$s.', 'pp' ), $type_obj->labels->singular_name, "<a href='$url'>", $tx_obj->labels->singular_name, '</a>' );?>
 		</p></div>
 		<?php

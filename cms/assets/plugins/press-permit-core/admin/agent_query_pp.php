@@ -81,7 +81,10 @@ if ( 'user' == $agent_type ) {
 	global $wpdb;
 
 	global $current_blog;
-	$blog_prefix = $wpdb->get_blog_prefix($current_blog->blog_id);
+	if ( isset( $current_blog ) && is_object( $current_blog ) && isset( $current_blog->blog_id ) )
+		$blog_prefix = $wpdb->get_blog_prefix( $current_blog->blog_id );
+	else
+		$blog_prefix = $wpdb->get_blog_prefix();
 	
 	if ( PP_MULTISITE && apply_filters( 'pp_user_search_site_only', true, compact( 'agent_type', 'agent_id', 'topic', 'context', 'omit_admins' ) ) ) {
 		$join = "INNER JOIN $wpdb->usermeta AS um ON um.user_id = $wpdb->users.ID AND um.meta_key = '{$blog_prefix}capabilities'";

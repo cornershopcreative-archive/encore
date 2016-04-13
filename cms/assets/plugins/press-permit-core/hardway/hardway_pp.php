@@ -81,7 +81,7 @@ class PP_Hardway
 			return $results;
 
 		if ( pp_is_front() ) {
-			if ( ( 'page' == $post_type ) && defined( 'PP_GET_PAGES_LEAN' ) ) // custom types are likely to have custom fields
+			if ( ( 'page' == $post_type ) && ( defined( 'PP_LEAN_PAGE_LISTING' ) || defined( 'PP_GET_PAGES_LEAN' ) ) ) // custom types are likely to have custom fields
 				$defaults['fields'] = "$wpdb->posts.ID, $wpdb->posts.post_title, $wpdb->posts.post_parent, $wpdb->posts.post_date, $wpdb->posts.post_date_gmt, $wpdb->posts.post_status, $wpdb->posts.post_name, $wpdb->posts.post_modified, $wpdb->posts.post_modified_gmt, $wpdb->posts.guid, $wpdb->posts.menu_order, $wpdb->posts.comment_count";
 			else
 				$defaults['fields'] = "$wpdb->posts.*";

@@ -4,8 +4,8 @@ Donate Link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=JWZVF
 Tags: restrict, access, permissions, cms, user, private, category, pages, privacy, capabilities, role, scoper
 License: GPLv3
 Requires at least: 3.4
-Tested up to: 4.4.1
-Stable tag: 2.3.8
+Tested up to: 4.5
+Stable tag: 2.3.9
 
 Advanced yet accessible content permissions. Give users or groups type-specific roles. Enable or block access for specific posts or terms.
 
@@ -48,6 +48,17 @@ Pro [extensions](http://presspermit.com/extensions) are [available](http://press
 Initial production release
 
 == Changelog ==
+
+= 2.3.9 - 12 Apr 2016 =
+* Compat : WP 4.5 - Exception metaboxes on Edit Term screen were missing
+* Compat : WP 4.5 - Term / Post selection boxes on Edit Permissions screens were missing bottom padding
+* Compat : PHP 7 - Eliminated notices for constructors, static function calls and array to string conversion
+* Feature : Groups column on Users screen is now sortable
+* Fixed : With constant PP_ALL_ANON_FULL_EXCEPTIONS defined, Reading Exceptions granted to Anonymous metagroup for private posts were ineffective
+* Fixed : When a subpage was edited by a user blocked who cannot modify page parent due to an "Only these - none" association exception, the page was set to top level if Permissions > Settings > Editing > Page Structure set to "no parent filter" or "Page Authors, Editors and Administrators".  This can now be prevented by assigning "Not these - none" association exception.
+* Fixed : Pro - Authors could not edit their own draft posts via REST API v2
+* Change : Support constant PP_UNFILTERED_TERM_COUNTS
+* Change : Pro - Refresh link in support key entry / status UI
 
 = 2.3.8 - 18 Jan 2016 =
 * Fixed : "Only these" exceptions set for a post type based on term/category causes the Edit Post form to default-assign the corresponding exception directly to posts of the same ID.  If the exception is based on term "(none)", the exception is default-assigned to all new posts.  NOTE: Affected posts will need to be manually edited.

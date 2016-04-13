@@ -11,7 +11,7 @@ class PP_TermsQueryLib {
 
 		$defaults = array ( 'pad_counts' => true, 'post_type' => '', 'required_operation' => '' );
 		$args = array_merge( $defaults, (array) $args );
-		extract($args);
+		extract( $args, EXTR_SKIP );
 
 		$term_items = array();
 

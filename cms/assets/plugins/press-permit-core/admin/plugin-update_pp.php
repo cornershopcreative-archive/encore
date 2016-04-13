@@ -234,9 +234,9 @@ class PP_Upgrader extends Plugin_Upgrader {
 		// Get the URL to the zip file
 		$r = $current->response[ $plugin ];
 
-		add_filter('upgrader_pre_install', array($this, 'deactivate_plugin_before_upgrade'), 10, 2);
+		//add_filter('upgrader_pre_install', array($this, 'deactivate_plugin_before_upgrade'), 10, 2);
 		add_filter('upgrader_clear_destination', array(&$this, 'delete_old_plugin'), 10, 4);
-
+		
 		$this->run( array(
 			'package' => $r->package,
 			'destination' => WP_PLUGIN_DIR,
@@ -250,7 +250,7 @@ class PP_Upgrader extends Plugin_Upgrader {
 		) );
 
 		// Cleanup our hooks, incase something else does a upgrade on this connection.
-		remove_filter('upgrader_pre_install', array($this, 'deactivate_plugin_before_upgrade'));
+		//remove_filter('upgrader_pre_install', array($this, 'deactivate_plugin_before_upgrade'));
 		remove_filter('upgrader_clear_destination', array(&$this, 'delete_old_plugin'));
 
 		if ( ! $this->result || is_wp_error($this->result) ) {

@@ -14,7 +14,8 @@ require_once( dirname(__FILE__).'/exceptions_pp.php' );
 class PP_QueryInterceptor
 {
 	var $skip_teaser; 	// for use by templates making a direct call to query_posts for non-teased results
-
+	var $anon_results = array();
+	
 	function __construct( $args = array() ) {
 		add_filter( 'posts_clauses_request', array(&$this, 'flt_posts_clauses'), 50, 2 );
 		
@@ -26,8 +27,31 @@ class PP_QueryInterceptor
 		add_filter( 'pp_posts_where', array(&$this, 'flt_posts_where'), 2, 2 );
 		add_filter( 'pp_posts_request', array(&$this, 'flt_do_posts_request'), 2, 2 );
 		
+		if ( defined( 'PP_ALL_ANON_FULL_EXCEPTIONS' ) ) {
+			global $current_user;
+			if ( empty($current_user->ID) ) {
+				add_filter( 'posts_results', array( &$this, 'log_anon_results' ) );
+				add_filter( 'the_posts', array( &$this, 'reinstate_anon_results' ) );
+			}
+		}
+		
 		//add_filter( 'posts_request', array( &$this, 'flt_debug_query'), 999 );
 		do_action( 'pp_query_interceptor' );
+	}
+	
+	function log_anon_results( $results ) {
+		$this->anon_results = $results;
+		return $results;
+	}
+	
+	// enable PP to grant read permissions to Anonymous users for private posts, but only if constant PP_ALL_ANON_FULL_EXCEPTIONS is defined
+	function reinstate_anon_results($posts) {
+		global $wp_query;
+		if ( $wp_query->is_single || $wp_query->is_page ) {
+			$posts = $this->anon_results;
+		}
+		
+		return $posts;
 	}
 	
 	//function flt_debug_query( $query ) {
@@ -63,6 +87,9 @@ class PP_QueryInterceptor
 
 		if ( is_admin() && ( ! defined( 'PPCE_VERSION' ) || defined( 'PP_ADMIN_READONLY_LISTABLE' ) ) && ! pp_get_option( 'admin_hide_uneditable_posts' ) )
 			return $clauses;
+		
+		if ( ! empty( $_wp_query ) && ! empty( $_wp_query->query_vars ) )
+			$args['query_vars'] = $_wp_query->query_vars;
 		
 		if ( defined('DOING_AJAX') && DOING_AJAX ) { // todo: separate function to eliminate redundancy with PP_Find::find_post_type()
 			if ( in_array( $action, (array) apply_filters( 'pp_unfiltered_ajax', array() ) ) )
@@ -341,6 +368,11 @@ class PP_QueryInterceptor
 			foreach( $use_statuses as $key => $obj ) {
 				if ( ! empty($obj->exclude_from_search) )	// example usage is bbPress hidden status
 					unset($use_statuses[$key]);
+			}
+			
+			if ( $limit_statuses ) {
+				// don't block author from reading their own draft post on REST permission check
+				$use_statuses = array_merge( $use_statuses, $limit_statuses );
 			}
 		} else {
 			$use_statuses = pp_get_post_stati( array( 'internal' => false, 'post_type' => $post_types ), 'object' );

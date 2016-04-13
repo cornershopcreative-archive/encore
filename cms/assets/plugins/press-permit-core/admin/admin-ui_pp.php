@@ -29,7 +29,7 @@ class PP_AdminUI
 			$pp_post_edit_ui = new PP_PostEditUI();
 			$is_post_admin = true;
 
-		} elseif ( ( 'edit-tags.php' == $pagenow ) && ! empty($_REQUEST['action']) && ( 'edit' ==  $_REQUEST['action'] ) ) {
+		} elseif ( ( 'term.php' == $pagenow ) || ( ( 'edit-tags.php' == $pagenow ) && ! empty($_REQUEST['action']) && ( 'edit' ==  $_REQUEST['action'] ) ) ) {
 			if ( current_user_can('pp_assign_roles') ) {
 				global $pp_term_edit_ui;
 				require_once( dirname(__FILE__).'/term-edit-ui_pp.php' );
@@ -118,7 +118,7 @@ class PP_AdminUI
 			add_action( 'network_admin_menu', array( &$this, 'reinstate_solo_submenus' ) );
 		}
 		
-		if ( in_array( $pagenow, array( 'edit.php', 'post.php', 'post-new.php', 'edit-tags.php', 'index.php' ) ) || ! empty($pp_plugin_page) ) {
+		if ( in_array( $pagenow, array( 'edit.php', 'post.php', 'post-new.php', 'edit-tags.php', 'term.php', 'index.php' ) ) || ! empty($pp_plugin_page) ) {
 			add_action( 'admin_notices', array( &$this, 'admin_notice' ) );
 		}
 		
@@ -165,7 +165,7 @@ class PP_AdminUI
 			$wp_scripts->in_footer []= 'pp_misc'; // otherwise it will not be printed in footer, as of WP 3.2.1
 		}
 
-		if ( in_array( $pagenow, array( 'post.php', 'post-new.php', 'edit.php', 'users.php', 'upload.php', 'edit-tags.php' ) ) || ! empty($pp_plugin_page) ) {
+		if ( in_array( $pagenow, array( 'post.php', 'post-new.php', 'edit.php', 'users.php', 'upload.php', 'edit-tags.php', 'term.php' ) ) || ! empty($pp_plugin_page) ) {
 			require_once( dirname(__FILE__).'/admin-help_pp.php' );
 			PP_AdminHelp::register_contextual_help();
 		}

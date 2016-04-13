@@ -295,11 +295,11 @@ class PP_Plugin_Status {
 		}
 	}
 	
-	function renewal_msg() {
+	public static function renewal_msg() {
 		return sprintf(__('Your support key has expired.  For support resources and updates to Press Permit Pro extensions, you may <a href="%1$s">renew at a discounted rate</a>.','pp'), admin_url( 'admin.php?page=pp-settings&pp_tab=install' ), 'http://presspermit.com/' . "purchase/" );
 	}
 	
-	function buy_msg() {
+	public static function buy_msg() {
 		return sprintf(__('Activate your <a href="%1$s">support key</a> for Press Permit Pro extensions and support resources.','pp'), admin_url( 'admin.php?page=pp-settings&pp_tab=install' ), 'http://presspermit.com/' . "purchase/" );
 	}
 	

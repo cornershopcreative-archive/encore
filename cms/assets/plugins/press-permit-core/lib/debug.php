@@ -66,8 +66,10 @@ if ( ! function_exists('agp_bt_die') ) {
 function agp_bt_die( $die = true ) {
 	if ( ! constant('PP_DEBUG') )
 		return;
-
-	dump(debug_backtrace(),false,false);
+	
+	$bt = debug_backtrace();
+	
+	dump( $bt, false, false );
 	
 	if ( $die )
 		die;

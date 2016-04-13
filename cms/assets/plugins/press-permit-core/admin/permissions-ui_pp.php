@@ -511,8 +511,8 @@ class PP_GroupsUI {
 		} // end foreach perm_type (roles, exceptions)
 		
 		$args['agent_type'] = $agent_type;		
-
-		$roles = ppc_get_roles( $agent_type, $agent_id, compact( $post_types, $taxonomies ) );
+		$roles = ppc_get_roles( $agent_type, $agent_id, array('post_types' => $post_types, 'taxonomies' => $taxonomies ) );
+		
 		$args['class'] = ( 'user' == $agent_type ) ? 'pp-user-roles' : 'pp-group-roles';
 		$args['agent_type'] = $agent_type;
 		self::_current_roles_ui( $roles, $args );
@@ -953,7 +953,10 @@ class PP_GroupsUI {
 										$lbl_class = ( $classes ) ? "class='" . implode( ' ', $classes ) . "'" : '';
 										
 										if ( 'term' == $via_src )
-											$edit_url = admin_url( "edit-tags.php?taxonomy={$via_type}&action=edit&tag_ID=" . pp_ttid_to_termid( $item_id, $via_type ) . "&post_type=$for_type" );
+											if ( pp_wp_ver( '4.5-beta' ) )
+												$edit_url = admin_url( "term.php?taxonomy={$via_type}&tag_ID=" . pp_ttid_to_termid( $item_id, $via_type ) . "&post_type=$for_type" );
+											else
+												$edit_url = admin_url( "edit-tags.php?taxonomy={$via_type}&action=edit&tag_ID=" . pp_ttid_to_termid( $item_id, $via_type ) . "&post_type=$for_type" );
 										else
 											$edit_url = admin_url( "post.php?post=$item_id&action=edit" );
 										echo "<div><label for='$cb_id' $lbl_class><input id='$cb_id' type='checkbox' name='pp_edit_exception[]' value='$ass_id' $class> " . $item_path . '</label><a href="' . $edit_url . '">' . __('edit') . '</a></div>';

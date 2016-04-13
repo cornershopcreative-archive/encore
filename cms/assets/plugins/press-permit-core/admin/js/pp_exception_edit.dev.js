@@ -322,8 +322,8 @@ jQuery(document).ready( function($) {
 			}
 		} else
 			$('.pp-select-x-status').hide();
-			
-		if ( 'include' == mod_type ) {
+		
+		if ( 'include' == mod_type || ( ( 'exclude' == mod_type ) && ( 'associate' == op ) ) ) {
 			$('td.pp-select-items input.menu-item-checkbox[value="0"]').closest('li').show();
 		} else {
 			$('td.pp-select-items input.menu-item-checkbox[value="0"]').closest('li').hide();
