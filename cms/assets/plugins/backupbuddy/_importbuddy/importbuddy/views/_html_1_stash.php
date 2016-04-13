@@ -1,3 +1,4 @@
+<!-- _html_1_stash.php -->
 <?php
 global $wp_version;
 $wp_version = 1;
@@ -96,7 +97,7 @@ function stashAPI( $settings, $action, $additionalParams = array() ) {
 <?php
 $ITXAPI_KEY = 'ixho7dk0p244n0ob';
 $ITXAPI_URL = 'http://api.ithemes.com';
-					
+
 
 
 $credentials_form = new pb_backupbuddy_settings( 'pre_settings', false, 'upload=stash#pluginbuddy-tabs-stash' ); // name, savepoint|false, additional querystring

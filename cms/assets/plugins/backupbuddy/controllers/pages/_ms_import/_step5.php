@@ -78,8 +78,11 @@ if ( isset( $this->advanced_options['skip_database_import'] ) && ( $this->advanc
 	
 	pb_backupbuddy::$options['max_execution_time'] = $options['max_execution_time']; // Used by mysqlbuddy.
 	
+	pb_backupbuddy::status( 'details', 'About to flush.' );
 	pb_backupbuddy::flush();
+	pb_backupbuddy::status( 'details', 'Flushed.' );
 	
+	pb_backupbuddy::status( 'details', 'Loading mysqlbuddy.' );
 	global $wpdb;
 	require_once( pb_backupbuddy::plugin_path() . '/lib/mysqlbuddy/mysqlbuddy.php' );
 	pb_backupbuddy::$classes['mysqlbuddy'] = new pb_backupbuddy_mysqlbuddy( DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, $options['db_prefix'] );
@@ -89,7 +92,9 @@ if ( isset( $this->advanced_options['skip_database_import'] ) && ( $this->advanc
 	if ( ! is_array( $db_files ) ) {
 		$db_files = array();
 	}
+	pb_backupbuddy::status( 'details', 'Looping through `' . count( $db_files ) . '` database files to import.' );
 	foreach( $db_files as $db_file ) {
+		pb_backupbuddy::status( 'details', 'Importing file `' . $db_file . '`.' );
 		$import_result = pb_backupbuddy::$classes['mysqlbuddy']->import( $db_file, $options['old_prefix'], $db_continue, true );
 		pb_backupbuddy::flush();
 		if ( true === $import_result ) {

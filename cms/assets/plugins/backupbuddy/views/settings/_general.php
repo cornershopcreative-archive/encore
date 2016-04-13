@@ -76,7 +76,7 @@ $settings_form->add_setting( array(
 	'name'		=>		'role_access',
 	'title'		=>		__('BackupBuddy access permission', 'it-l10n-backupbuddy' ),
 	'options'	=>		array(
-								'administrator'			=> __( 'Administrator (default)', 'it-l10n-backupbuddy' ),
+								'activate_plugins'			=> __( 'Administrator (default)', 'it-l10n-backupbuddy' ),
 								'moderate_comments'		=> __( 'Editor (moderate_comments)', 'it-l10n-backupbuddy' ),
 								'edit_published_posts'	=> __( 'Author (edit_published_posts)', 'it-l10n-backupbuddy' ),
 								'edit_posts'			=> __( 'Contributor (edit_posts)', 'it-l10n-backupbuddy' ),
@@ -191,7 +191,10 @@ require_once( pb_backupbuddy::plugin_path() . '/views/settings/_files.php' );
 
 $process_result = $settings_form->process();// Handles processing the submitted form (if applicable).
 if ( isset( $process_result['data'] ) ) { // This form was saved.
-	set_transient( 'backupbuddy_live_jump', array( 'daily_init', array() ), 60*60*48 ); // Tells Live process to restart from the beginning (if mid-process) so new settigns apply.
+	require_once( pb_backupbuddy::plugin_path() . '/destinations/live/live.php' );
+	if ( false !== backupbuddy_live::getLiveID() ) { // Only jump if Live is enabled.
+		set_transient( 'backupbuddy_live_jump', array( 'daily_init', array() ), 60*60*48 ); // Tells Live process to restart from the beginning (if mid-process) so new settigns apply.
+	}
 }
 if ( count( (array)$process_result['errors'] ) == 0 ) {
 	

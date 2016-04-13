@@ -214,9 +214,9 @@ class backupbuddy_live {
 		$functions = array(
 			'daily_init' => array(
 				__( 'Up to date. Watching for changes...', 'it-l10n-backupbuddy' ),
-				__( 'Up to date. Eavesdropping on that awesome new blog post...', 'it-l10n-backupbuddy' ),
+				__( 'Up to date. Keeping an eye on that awesome new blog post...', 'it-l10n-backupbuddy' ),
 				__( 'Up to date. We are all ears, waiting for your next move...', 'it-l10n-backupbuddy' ),
-				__( 'Up to date. Eating popcorn and watching movies from your Media Gallery...', 'it-l10n-backupbuddy' ),
+				__( 'Up to date. Eating popcorn and keeping movies safe from your Media Gallery...', 'it-l10n-backupbuddy' ),
 				sprintf( __( 'Up to date. Your move, %s...', 'it-l10n-backupbuddy' ), $user_label )
 			),
 			'database_snapshot' => __( 'Capturing entire database', 'it-l10n-backupbuddy' ),
@@ -282,7 +282,70 @@ class backupbuddy_live {
 	}
 	
 	
+	// TODO: $delete param only temporarily needed for server-side transition to new api server based archive trimming.
+	public static function get_archive_limit_settings_array( $delete = true ) {
+		$destination_id = backupbuddy_live::getLiveID();
+		$destination_settings = backupbuddy_live_periodic::get_destination_settings();
+		
+		$archive_types = array(
+			'db',
+			'full',
+			'plugins',
+			'themes',
+		);
+		
+		$archive_periods = array(
+			'daily',
+			'weekly',
+			'monthly',
+			'yearly',
+		);
+		
+		$limits = array();
+		foreach( $archive_types as $archive_type ) {
+			$limits[ $archive_type ] = array();
+			foreach( $archive_periods as $archive_period ) {
+				if ( '' == $destination_settings[ 'limit_' . $archive_type . '_' . $archive_period ] ) { // For blank values, omit key since it is NOT being limited (unlimited of the type/period combo).
+					continue;
+				}
+				$limits[ $archive_type ][ $archive_period ] = $destination_settings[ 'limit_' . $archive_type . '_' . $archive_period ];
+			}
+		}
+		
+		$return = array(
+			'limits' => $limits,
+		);
+		
+		if ( true === $delete ) {
+			$return['delete'] = true; // Whether to actually delete or just dry-run.
+		}
+		
+		return $return;
+	}
 	
+	
+	public static function send_trim_settings() {
+		require_once( pb_backupbuddy::plugin_path() . '/destinations/live/live_periodic.php' );
+		
+		$additionalParams = self::get_archive_limit_settings_array();
+		$destination_settings = backupbuddy_live_periodic::get_destination_settings();
+		
+		require_once( pb_backupbuddy::plugin_path() . '/destinations/live/init.php' );
+		$response = pb_backupbuddy_destination_live::stashAPI( $destination_settings, 'tmtrim-settings', $additionalParams );
+		if ( ! is_array( $response ) ) {
+			$error = 'Error #96431277: Error sending settings for trimming archives. Details: `' . $response . '`.';
+			pb_backupbuddy::status( 'error', $error );
+			return false;
+		} else {
+			pb_backupbuddy::status( 'details', 'Send trimmed remotely stored backup archive settings sent. Results: `' . print_r( $response, true ) . '`.' );
+			return true;
+		}
+		
+	} // End trim_remote_archives().
+	
+	
+	
+	// Deprecated as of 7.0.5.5 pending verified of new system.
 	public static function trim_remote_archives( $echo = false ) {
 		require_once( pb_backupbuddy::plugin_path() . '/destinations/live/live_periodic.php' );
 		

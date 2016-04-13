@@ -60,6 +60,7 @@ cleanup( $restore->_state );
 echo $footer; // We must preload the footer file contents since we are about to delete it.
 
 
+
 // Parse submitted options/settings.
 function parse_options( $restoreData ) {
 	
@@ -181,3 +182,4 @@ function remove_file( $file, $description, $error_on_missing = false ) {
 
 
 die(); // Don't want to accidently go back to any files which may be gone.
+

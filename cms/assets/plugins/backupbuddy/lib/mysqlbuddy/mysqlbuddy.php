@@ -1088,12 +1088,22 @@ class pb_backupbuddy_mysqlbuddy {
 		// Handle results of running query.
 		if ( false === $results ) {
 			if ( $ignore_existing !== true ) {
-				$mysql_error = @mysql_error( $wpdb->dbh );
+
+				if ( empty( $wpdb->use_mysqli ) ) {
+					$mysql_error = @mysql_error( $wpdb->dbh );
+				} else {
+					$mysql_error = @mysqli_error();
+				}
+
 				if ( '' == $mysql_error ) {
 					$mysql_error = $wpdb->last_error;
 				}
 				
-				$mysql_errno = @mysql_errno( $wpdb->dbh );
+				if ( empty( $wpdb->use_mysqli ) ) {
+					$mysql_errno = @mysql_errno( $wpdb->dbh );
+				} else {
+					$mysql_errno = @mysqli_errno( $wpdb->dbh );
+				}
 				
 				$mysql_9010_log = ABSPATH . 'importbuddy/mysql_9010_log-' . pb_backupbuddy::$options['log_serial'] . '.txt';
 				if ( 0 == $this->_9010s_encountered ) { // Place a header at the top of this log with some debugging info.

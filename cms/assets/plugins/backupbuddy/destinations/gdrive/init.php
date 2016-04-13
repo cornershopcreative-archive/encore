@@ -29,7 +29,8 @@ class pb_backupbuddy_destination_gdrive {
 		
 		'max_time'				=> '',	// Default max time in seconds to allow a send to run for. Set to 0 for no time limit. Aka no chunking.
 		'max_burst'				=> '25',	// Max size in mb of each burst within the same page load.
-		'disabled'					=>		'0',		// When 1, disable this destination.
+		'disable_gzip'          => 0, // Setting to 1 will disable gzip compression
+		'disabled'				=> '0',		// When 1, disable this destination.
 		
 		'_chunks_sent'			=> 0,			// Internal chunk counting.
 		'_chunks_total'			=> 0,			// Internal chunk counting.
@@ -110,12 +111,14 @@ class pb_backupbuddy_destination_gdrive {
 		$client_id = $settings['client_id'];
 		$client_secret = $settings['client_secret'];
 		$redirect_uri = 'urn:ietf:wg:oauth:2.0:oob';
+		$disable_gzip = $settings['disable_gzip'];
 		
 		pb_backupbuddy::status( 'details', 'Connecting to Google Drive.' );
 		self::$_client = new Google_Client();
 		self::$_client->setClientId($client_id);
 		self::$_client->setClientSecret($client_secret);
 		self::$_client->setRedirectUri($redirect_uri);
+		self::$_client->setClassConfig('Google_Http_Request', 'disable_gzip', $disable_gzip);
 		self::$_client->setAccessType('offline'); // Required so that Google will use the refresh token.
 		self::$_client->addScope("https://www.googleapis.com/auth/drive");
 		self::$_drive = new Google_Service_Drive( self::$_client );
@@ -268,6 +271,7 @@ class pb_backupbuddy_destination_gdrive {
 				$insertRequest = self::$_drive->files->insert( $driveFile );
 			} catch (Exception $e) {
 				pb_backupbuddy::alert( 'Error #3232783268336: initiating upload. Details: ' . $e->getMessage() );
+				backupbuddy::status( 'error', 'Error #3232783268336: initiating upload to Google Drive (v1). Details: ' . $e->getMessage() );
 				return false;
 			}
 			
@@ -894,6 +898,7 @@ class pb_backupbuddy_destination_gdrive {
 		<script>
 			var backupbuddy_gdrive_folderSelect_path = [];
 			var backupbuddy_gdrive_folderSelect_pathNames = []; //{ 'root': '/' };
+			var backupbuddy_gdrive_disable_gzip = '<?php echo pb_backupbuddy::$options['remote_destinations'][$destinationID]['disable_gzip']; ?>';
 			
 			
 			
@@ -929,7 +934,7 @@ class pb_backupbuddy_destination_gdrive {
 				clientSecret = destinationWrap.find( '#pb_backupbuddy_client_secret' ).val();
 				tokens = destinationWrap.find( '#pb_backupbuddy_tokens' ).val();
 				
-				jQuery.post( '<?php echo pb_backupbuddy::ajax_url( 'gdrive_folder_select' ); ?>', { clientID: clientID, clientSecret: clientSecret, tokens: tokens, parentID: loadParentID },  backupbuddy_gdrive_folderSelect_ajaxResponse( destinationID, loadParentID, loadParentTitle, command ) );
+				jQuery.post( '<?php echo pb_backupbuddy::ajax_url( 'gdrive_folder_select' ); ?>', { clientID: clientID, clientSecret: clientSecret, disable_gzip: backupbuddy_gdrive_disable_gzip, tokens: tokens, parentID: loadParentID },  backupbuddy_gdrive_folderSelect_ajaxResponse( destinationID, loadParentID, loadParentTitle, command ) );
 			}
 			
 			

@@ -140,7 +140,7 @@ class pb_backupbuddy_filesystem {
 	 *	@param		array 		$items		Array of items to use for resuming. Returned by this function when chunking.
 	 *	@param		int			$start_time	Timestamp to calculate elapsed runtime from.
 	 *	@param		int			$max_time	Max seconds to run for before returning for chunking if approaching. Zero (0) to disabling chunking. IMPORTANT: Does _NOT_ apply a wiggle room. Subtract wiggle from $max_time before passing.
-	 *	@return		array					Returns array of all matches found OR array( $finished = false, array( $startAt, $items ) ) if chunking due to running out of time.
+	 *	@return		array|string			String error message OR Returns array of all matches found OR array( $finished = false, array( $startAt, $items ) ) if chunking due to running out of time.
 	 */
 	function deepscandir( $dir, $excludes = array(), $startAt = 0, $items = array(), $start_time = 0, $max_time = 0 ) {
 		
@@ -219,12 +219,12 @@ class pb_backupbuddy_filesystem {
 			// Check if enough time remains to continue, else chunk.
 			if ( 0 != $max_time ) { // Chunking enabled.
 				if ( ( time() - $start_time ) > $max_time ) { // Not enough time left.
-					$startAt = $i;
-					if ( 0 == $startAt ) {
-						$error = 'Error #34848934: No progress was made during file scan. Halting to prevent looping repeatedly at beginning of deep scan.';
+					if ( $i == $startAt ) { // Did not increase position.
+						$error = 'Error #34848934: No progress was made during file scan. Halting to prevent looping repeatedly at beginning of deep scan. Elapsed: `' . ( time() - $start_time ) . '`. Max time: `' . $max_time . '`. startAt: `' . $startAt . '`. Items count: `' . count( $items ) . '`.';
 						pb_backupbuddy::status( 'error', $error );
 						return $error;
 					}
+					$startAt = $i;
 					pb_backupbuddy::status( 'details', 'Running out of time calculating deep file scan. Chunking at position `' . $startAt . '`. Items so far: `' . count( $items ) . '`. Elapsed: `' . ( time() - $start_time ) . '` secs. Max time: `' . $max_time . '` secs.' );
 					return array( false, array( ( $i + 1 ), $items ) );
 				}

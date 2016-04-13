@@ -4,7 +4,7 @@ use Aws\S3\S3Client; // Alias namespace.
 
 class pb_backupbuddy_destination_s32 { // Change class name end to match destination name.
 	
-	const TIME_WIGGLE_ROOM = 5;								// Number of seconds to fudge up the time elapsed to give a little wiggle room so we don't accidently hit the edge and time out.
+	const TIME_WIGGLE_ROOM = 6;								// Number of seconds to fudge up the time elapsed to give a little wiggle room so we don't accidently hit the edge and time out.
 	const MINIMUM_CHUNK_SIZE = 5; // Minimum size, in MB to allow chunks to be. Anything less will not be chunked even if requested.
 	const BACKUP_FILENAME_PATTERN = '/^backup-.*\.zip/i'; //  Used for matching during backup limits, etc to prevent processing non-BackupBuddy files.
 	const MAX_AGE_MULTIPART_UPLOADS = 259200; // Seconds of max age to allow a stalled multipart upload. (72 hours).
@@ -121,6 +121,7 @@ class pb_backupbuddy_destination_s32 { // Change class name end to match destina
 			if ( 's3' == $s3Config['region'] ) {
 				$s3Config['region'] = 'us-east-1';
 			}
+			$s3Config['version'] = '2006-03-01'; // Some regions now requiring this.
 			
 			// Cannot use this since we STILL need to know the correct region so that v4 signature signing can occur. Catch-22.
 			//$s3Config['endpoint'] = 'https://' . $settings['bucket'] . '.s3.amazonaws.com';
@@ -256,7 +257,7 @@ class pb_backupbuddy_destination_s32 { // Change class name end to match destina
 			
 			//pb_backupbuddy::status( 'details', 'Multipart settings to pass:' . print_r( $multipart_destination_settings, true ) );
 			//$multipart_destination_settings['_multipart_status'] = 'Starting send of ' . count( $multipart_destination_settings['_multipart_counts'] ) . ' parts.';
-			pb_backupbuddy::status( 'details', 'Multipart initiated; passing over to send first chunk this run.' );
+			pb_backupbuddy::status( 'details', 'Multipart initiated; passing over to send first chunk this run. Burst size: `' . $settings['max_burst'] . ' MB`.' );
 			$settings = $multipart_destination_settings; // Copy over settings.
 			unset( $multipart_destination_settings );
 		} // end initiating multipart.
@@ -873,9 +874,9 @@ class pb_backupbuddy_destination_s32 { // Change class name end to match destina
 		pb_backupbuddy::status( 'details', 'Downloading remote file `' . $remoteFile . '` from S3 to local file `' . $localDestinationFile . '`.' );
 		
 		try {
-			$response = self::$_client->get_object( array(
+			$response = self::$_client->getObject( array(
 				'Bucket' => $settings['bucket'],
-				'Key' => $remotePath . $remoteFile,
+				'Key' => $settings['directory'] . $remoteFile,
 				'SaveAs' => $localDestinationFile
 			) );
 		} Catch( Exception $e ) {

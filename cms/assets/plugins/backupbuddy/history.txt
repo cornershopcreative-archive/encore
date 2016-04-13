@@ -774,10 +774,160 @@
 	Added additional details for Stash Live advanced troubleshooting option to view Snapshot status.
 	Now resetting failed file send attempts on daily init for Stash Live files that exceeded maximum fail counter.
 7.0.3.9 - 2016-02-17 - Dustin Bolton
-	Updated Google Drive remote destination instructions. - Glenn Ansley
+	ENHANCEMENT:
+		Updated Google Drive remote destination instructions. - Glenn Ansley
 	Updated PHP maximum runtime tester to help avoid triggering PHP bug resulting in hanging process. - Chris Jean
 	Update Stash destination wording when no backups are found.
 	Updated MO file for German translations. - Glenn Ansley
 	Now excluding 3rd party backup plugins' backup files and Sucuri temporary files for Stash Live by default.
 	Misc improvements to Stash Live logging.
+7.0.3.10 - 2016-02-22 - Dustin Bolton
+	Fixed to local table listing for Stash Live.
+	Now clearing backed up timestamp for database files just prior to sending new updated copy for better tracking of unsent files.
+	Added logging of first 5 files and tables pending send when running wait_on_transfers step.
+	Increased wait_on_transfers step delay to 10 seconds of sleep, from 5.
+	Added additional logging to wait_on_transfers step to troubleshoot send problems.
+7.0.3.11 - 2016-02-22 - Dustin Bolton
+	Stash Live status now attempts to strip any PHP errors or warnings preceeding returned JSON data. _statsPoll.php.
+	Stash: Fixed backup files not being sent into backup type directory due to backup type detection failing, thinking file did not begin with "backup-".
+	Fixed backup type detection always failing to detect type.
+7.0.3.12 - 2016-02-22 - Dustin Bolton
+	Added additional error notifications to catch certificate issues sending to Live.
+	No longer a fatal error if during remote file deletion a send fileoptions file is stuck locked.
+7.0.3.13 - 2016-02-24 - Dustin Bolton
+	Fixed backup listing in Windows displaying an extra backup.
+	Added new Stash Live 'View Troubleshooting Data' button to display an overview of all troubleshooting data.
+7.0.4.0 - 2016-02-26 - Dustin Bolton
+	Various Stash Live improvements, including many updates from Quick Release versions.
+	Now only outputting status when adding many files at once every 20 items instead of each to reduce log I/O overhead.
+	Fixed missing mysql_error check in mysqlbuddy.php - Glenn Ansley
+	Better UI handling if Stash Quota not currently available - Ty Carlson
+	Check PHP version is new enough before giving Stash Live notice. - Glenn Ansley
+	Fix undefined variable in Multisite. - Glenn Ansley
+	Change option for default plugin access value from 'administrator' to 'activate_plugins' to match default options. - glenn Ansley
+	Stash Live: Improved Troubleshooting via new "View Troubleshooting Data" button.
+	Added new Stash Live 'View Troubleshooting Data' button to display an overview of all troubleshooting data.
+		Now displays possible detected memory timeouts.
+		Now displays PHP and BackupBuddy logged errors and warnings.
+	Now displaying both local and master memory limit values for reported PHP memory limit.
+	Added new "Download Troubleshooting Data" button at bottom of Stash Live page.
+	Misc fixes.
+7.0.4.1 - 2016-02-29 - Dustin Bolton
+	Added additional logging to file signature updating step to detect cause of backup count decrementing a large amount in Stash Live.
+	Added additional error catching to catalog load failure during reload after closing catalog during file send in Stash Live.
+7.0.4.2 - 2016-02-29 - Dustin Bolton
+	Stash Live advanced troubleshooting: Fixed displaying notices as 0 available when none available.
+	Now only showing v7 banner if in standalone or multisite main network site (no longer shown for subsites).
+7.0.4.3 - 2016-03-01 - Dustin Bolton
+	Deployment failure connecting to API now also logs HTTP code and message to help detect cause of failure.
+	Fixed Stash Live continuous backup of term database updates causing SQL error, resulting in failure, when updating terms.
+7.0.4.4 - 2016-03-01 - Dustin Bolton
+	Inability to clean SQL timestamped files due to timeout no longer fails as this may just be a delay on our end.
+7.0.4.5 - 2016-03-01 - Dustin Bolton
+	Added additional logging to DAT file creation function to troubleshoot write problems.
+	DAT file creation function now creates containing directory via mkdir recursively.
+7.0.4.6 - 2016-03-01 - Dustin Bolton
+	If Stash Live log file exceeds 10mb it is deleted rather than truncated to avoid memory issues blocking truncation.
+7.0.4.7 - 2016-03-01 - Dustin Bolton
+	Server Tools page updated to recommend v5.6 for PHP and mysql. Warns if PHP < 5.3.
+	Now hiding unlock() blocking status with lock ID for fileoptions.
+	Increased log size sent for Stash Live troubleshooting data.
+	Added additional 8 second wiggle room to file scan to allow for saving discovered files into catalog.
+	Fixed false error about unable to create directory for dat file.
+7.0.4.8 - 2016-03-04 - Dustin Bolton
+	Added more logging to file audit deletion.
+	Traditional backups: Reduced chance of race conditions with fileoptions loading by closing and unlocking fileoptions prior to spawning cron for next step. New log entry: "Closing & unlocking fileoptions."
+	Added additional logging to Stash Live fileoptions loading, including backtrace of calling class & function for troubleshooting.
+	Added burst size logging to S32 multipart log.
+7.0.4.9 - 2016-03-04 - Dustin Bolton
+	Fixed incorrect 'Attention! Remote storage lists fewer files' notification alert when audit step chunked. False positive.
+	Stash Live: Likely fixed bug where process could reset back, thinking it needed to resend most files, if the audit step chunked due to the audit start timestamp getting reset each chunked process. This resulted in the signatures step thinking files had not had their 'v' key updated to a timestamp within the audit begin and audit finish range. The 'v' timestamp would be BEFORE the audit begin timestamp since it was reset to a later timestamp during each chunk.
+7.0.5.0 - 2016-03-04 - Dustin Bolton
+	Fixed problem with Stash Live restarting its progress back to an earlier state when almost done.
+7.0.5.1 - 2016-03-08 - Dustin Bolton
+	Fix PHP notice due to addNotification message parameter being required. Now optional.
+	Now escaping in password form when using pb form class. - Glenn Ansley
+	Fixed Stash Live PHP version too old bar from not showing. - Glenn Ansley
+	S3 (v2) destination explicitly passes API version of 2006-03-01.
+	addNotification() message now optional.
+7.0.5.2 - 2016-03-09 - Dustin Bolton
+	Removed extraneous print_r statement from importbuddy.
+7.0.5.3 - 2016-03-15 - Dustin Bolton
+	esc_attr only used in form class if function exists to handle importbuddy. - Glenn Ansley
+7.0.5.4 - 2016-03-15 - Dustin Bolton
+	ImportBuddy: Fixed destination URL defaulting to http:// even when connected via https://.
+	ImportBuddy: Fixed homeurl being set to siteurl even when option to customize URL was not checked.
+	Stash Live: If made it to the Snapshot step but there are zero files and/or tables in the catalog then halt backup to protect integrity against making a Snapshot missing files.
+	Fixed issue where if deepscandir() halted due to making no progress then the string error was not caught. Now properly halting periodic process.
+	A detected maximum PHP runtime less than 29 seconds now is marked as a fail under Server Tools as all servers should provide at least 30 seconds of time.
+7.0.5.5 - 2016-03-21 - Dustin Bolton
+	Added various additional logging for troubleshooting Stash Live.
+	Added display of how long ago the log file was modified when viewing Stash Live log.
+	Google Drive: Added new option to disable gzip compression. - Glenn Ansley
+	Beta: Now testing handling archive trimming timing on the Stash API side for more consistency on handling removal of stale backups. Also fixes issues when only one set of backups can sit in storage.
+	Improved error logging when fileoptions is locked to give better instructions on trying to figure out cause.
+	Removed logging of email notification body to status log since it is HTML now and long.
+	Additional logging added to Rollback failure to copy undo script into site root.
+	Now hiding Live and Site destination types from listing when adding a new destination post-backup.
+7.0.5.6 - 2016-03-24 - Dustin Bolton
+	Fixed no new Stash Live Snapshot error email notification referencing traditional backup notification limit rather than Stash Live limit in email message. Also changed default notification period from 45 days without backup to 10.
+	Fixed Stash Live archive trim param passed in snapshot action sending delete = true.
+	Fixed Google Drive send error message not being logged.
+7.0.5.7 - 2016-03-29 - Dustin Bolton
+	ImportBuddy: Added additional logging to database migration step of import.
+	ImportBuddy: Fixed broken subchunking of bruteforce substep of database migration step. Major fix.
+	ImportBuddy: Fixed .htaccess migration happening each step during migration step.
+	FEATURE:
+		Added new PHP memory test.
+	Added new Advanced Setting for PHP runtime test.
+	Server Tools -> Server Information: PHP memory limit now reports a failure if less than 128MB of memory. Warning if above 128MB but below 256MB.
+	Added new Advanced Setting for PHP memory test.
+7.0.5.8 - 2016-04-04 - Dustin Bolton
+	Deployment no longer overwrites iThemes Sync authentication and other settings on push/pull of database.
+	Deployment destination settings now display site url of the currently set API key.
+	Server Tools: While Tested PHP memory information is pending the status is marked as OK instead of FAIL.
+	Server Tools: PHP memory test now gives some wiggle room if tested memory is slightly below a threshold so it does not needlessly report a FAIL if it is only a few MB off.
+	Added "Set to 0 (zero) to disable this test." text to PHP runtime and memory test tooltips.
+7.0.5.9 - 2016-04-06 - Dustin Bolton
+	Multisite: Housekeeping function now only runs for main site, not individual subsites which results in it running too often.
+7.0.5.10 - 2016-04-06 - Dustin Bolton
+	Amazon S3 (v2) remote destination: Fixed 'Copy to local' feature not working and silently failing. Functionality broke at unknown time ago.
+	Amazon S3 (v2) remote destination: Updated codex instructions for creating user and settings permissions for bucket access to add simpler method.
+7.0.5.11 - 2016-04-06 - Dustin Bolton
+	Google Drive destination: Now hiding remote folder viewer when Remote File Management is disabled.
+	Don't import Stash destinations or Server Tools values with Settings import. - Glenn Ansley
+7.0.5.12 - 2016-04-08 - Dustin Bolton
+	backupbuddy_core::calculate_tables() now makes sure returned table listing has no duplicates (eg if user enters duplicates in additional includes ).
+	Added additional check in housekeeping function to prevent it running for Multisite subsites.
+7.0.5.13 - 2016-04-08 - Dustin Bolton
+	Deployment / Sync compatibility: On Deployment do not copy hide backend / custom login URL settings between sites.
+7.0.5.14 - 2016-04-11 - Dustin Bolton
+	Added deprecation warnings to logs for Amazon S3 (v1) and Stash (v1) destinations suggesting upgrading to the newer v2 versions.
+	Multisite import: Added additional logging to step 5 import into Mulisite for troubleshooting.
+	Added additional checks to prevent PHP runtime and memory tests from running too often.
+	ENHANCEMENT:
+		Stash Live now processes local file deletions to remote storage in bursts instead of one at a time, significantly reducing API calls needed, significantly improving performance on files being removed from remote storage.
+	Stash Live: Fixed fatal PHP errors not showing in Advanced Troubleshooting Log due to only first line being noted.
+	Stash Live: Advanced Troubleshooting Log now also includes file sizes and modified times of several log files.
+	Stash Live: Now checking for pending files to send at end of audit step prior to running Snapshot step so 'Creating Snapshot' status is not shown if that step is going to be stepped anyway. Reduces confusion that snapshot has begun when it has not.
+	General Settings page saving no longer updates backupbuddy_live_jump transient if Stash Live is not set up.
+7.0.5.15 - 2016-04-11 - Dustin Bolton
+	FEATURE:
+		Added warning to Server Tools -> Cron tab if a cron has passed its runtime without running to detect cron problems.
+7.0.5.16 - 2016-04-12 - Dustin Bolton
+	Beta importbuddy version stats.
+7.1.0.0 - 2016-04-12 - Dustin Bolton
+	Full release of Quick Release versions.
+	Any users that experienced Stash Live problems early at v7.0 launch should give v7.1 a try.
+	Since the last major release:
+		Performance and reliability improvements to Stash Live. Major performance boosts.
+		Added easy to retrieve Stash Live troubleshooting data for quick troubleshooting.
+		Multisite support improvements for Stash Live backups and imports.
+		PHP runtime tester added.
+		PHP memory tester added.
+		Various improvements to Server Tools tests.
+		Various improvements to ImportBuddy process.
+		Various improvements to Deployment process.
+7.1.0.2 - 2016-04-12 - Dustin Bolton
+	Improved detection if importbuddy process is a restore vs migration.
 	

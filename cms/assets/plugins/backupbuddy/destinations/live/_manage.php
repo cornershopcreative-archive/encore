@@ -69,7 +69,7 @@ if ( 0 == $state['stats']['first_completion'] ) { // Output but hidden if not fi
 	$completion_css = '';
 }
 if ( isset( $completion_css ) ) {
-	pb_backupbuddy::disalert( 'live_first_completion_done', '<h3>' . __( 'Your first Live Backup is complete!', 'it-l10n-backupbuddy' ) . '</h3><p class="description" style="max-width: 700px; display: inline-block;">' . __( 'Your first BackupBuddy Stash Live backup process has completed and has been placed in your Stash storage. We\'ll automatically backup any changes you make to your site from here on out. Your site is well on its way to a secure future in the safe hands of BackupBuddy Stash Live.', 'it-l10n-backupbuddy' ) . '</p>', $error = false, $completion_css );
+	pb_backupbuddy::disalert( 'live_first_completion_done', '<h3>' . __( 'Your first Live Backup is complete!', 'it-l10n-backupbuddy' ) . '</h3><p class="description" style="max-width: 700px; display: inline-block;">' . __( 'Your first BackupBuddy Stash Live backup process has completed and your first Snapshot will arrive in your Stash storage shortly. We\'ll automatically backup any changes you make to your site from here on out and regularly create Snapshots in time of your data. Your site is well on its way to a secure future in the safe hands of BackupBuddy Stash Live.', 'it-l10n-backupbuddy' ) . '</p>', $error = false, $completion_css );
 }
 
 
@@ -114,15 +114,6 @@ if ( '' != pb_backupbuddy::_GET( 'live_action' ) ) {
 		require_once( pb_backupbuddy::plugin_path() . '/destinations/live/init.php' );
 		delete_transient( pb_backupbuddy_destination_live::LIVE_ACTION_TRANSIENT_NAME );
 		pb_backupbuddy::alert( 'Deleted cached Live credentials.' );
-		
-	} elseif ( 'trim_archives' == $action ) {
-		
-		require_once( pb_backupbuddy::plugin_path() . '/destinations/live/live.php' );
-		if ( true === backupbuddy_live::trim_remote_archives( $echo = true ) ) {
-			pb_backupbuddy::alert( 'Successfully trimmed remotely stored archived based on limits defined in Settings.' );
-		} else {
-			pb_backupbuddy::alert( 'Error trimming remotely stored archives. See error log for details.' );
-		}
 		
 	} elseif ( 'restart_periodic' == $action ) {
 		
@@ -186,6 +177,25 @@ if ( '' != pb_backupbuddy::_GET( 'live_action' ) ) {
 		$catalog = backupbuddy_live_periodic::get_catalog();
 		echo '<textarea readonly="readonly" style="width: 100%;" wrap="off" cols="65" rows="20">' . print_r( $catalog, true ) . '</textarea>';
 		echo '<br><br><br>';
+	
+	} elseif ( 'troubleshooting' == $action ) {
+		
+		echo '<h3>Stash Live Troubleshooting:</h3>';
+		
+		require( '_troubleshooting.php' );
+		
+		backupbuddy_live_troubleshooting::run();
+		$results = backupbuddy_live_troubleshooting::get_raw_results();
+		
+		$download_button = '<div style="text-align: center; margin: 15px;">
+			<button class="button button-primary" onClick="backupbuddy_save_textarea_as_file(\'#backupbuddy_live_troubleshooting_results\', \'stash_live_troubleshooting\' );" style="margin-left: auto; margin-right: auto; display: inherit; font-size: 0.9em;">Download Troubleshooting Log (.txt)</button>
+		</div>';
+		echo $download_button;
+		echo '<textarea readonly="readonly" style="width: 100%;" wrap="off" cols="65" rows="30" id="backupbuddy_live_troubleshooting_results">' . print_r( $results, true ) . '</textarea>';
+		echo $download_button;
+		
+		echo '<br><br><br>';
+	
 	
 	} elseif ( 'last_snapshot_details' == $action ) {
 		if ( '' == $state['stats']['last_remote_snapshot_id'] ) {
@@ -320,7 +330,11 @@ if ( '' != pb_backupbuddy::_GET( 'live_action' ) ) {
 	} elseif ( 'view_log' == $action ) {
 		
 		$sumLogFile = backupbuddy_core::getLogDirectory() . 'status-live_periodic_' . pb_backupbuddy::$options['log_serial'] . '.txt';
-		?>
+		echo '<div style="padding: 4px;">';
+			echo '<b>Status Log</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; File size: ' . pb_backupbuddy::$format->file_size( @filesize( $sumLogFile ) ) . ' ';
+			?>
+			<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=clear_log' ); ?>" class="button button-secondary button-tertiary" style="margin-left: 11px; vertical-align: 1px;">Clear Status Log</a>
+		</div>
 		<script>
 			jQuery(document).ready( function(){
 				jQuery('#backupbuddy_live_log' ).scrollTop( jQuery('#backupbuddy_live_log')[0].scrollHeight );
@@ -331,6 +345,8 @@ if ( '' != pb_backupbuddy::_GET( 'live_action' ) ) {
 		if ( ! file_exists( $sumLogFile ) ) {
 			echo __( 'Nothing has been logged.', 'it-l10n-backupbuddy' );
 		} else {
+			$mtime = @filemtime( $sumLogFile );
+			$time_ago = pb_backupbuddy::$format->time_ago( $mtime );
 			$lines = file_get_contents( $sumLogFile );
 			if ( false === $lines ) {
 				echo 'Error #49834839: Unable to read log file `' . $sumLogFile . '`.';
@@ -356,8 +372,7 @@ if ( '' != pb_backupbuddy::_GET( 'live_action' ) ) {
 			}
 		}
 		?></textarea>
-		<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=clear_log' ); ?>" class="button button-secondary button-tertiary">Clear Status Log</a>
-		<div style="display: inline-block; margin-left: 8px; margin-top: 5px;"><span class="description">Current Time: <?php echo pb_backupbuddy::$format->date( pb_backupbuddy::$format->localize_time( microtime( true ) ), 'G:i:s' ); ?></span></div>
+		<div style="display: inline-block; margin-left: 8px; margin-top: 5px;"><span class="description">Current Time: <?php echo pb_backupbuddy::$format->date( pb_backupbuddy::$format->localize_time( microtime( true ) ), 'G:i:s' ); ?>. &nbsp; &nbsp; &nbsp; Modified: <?php echo $time_ago; ?> ago.</span></div>
 		<br><br>
 		<?php
 	} elseif ( 'delete_catalog' == $action ) {
@@ -621,6 +636,8 @@ if ( 0 != $state['stats']['files_pending_delete'] ) {
 		}
 		loadingIndicator.show();
 		
+		console.log( 'live_snapshot_status_check' );
+		
 		jQuery.ajax({
 			
 			url:	snapshotStatusURL,
@@ -872,18 +889,30 @@ if ( 0 != $state['stats']['files_pending_delete'] ) {
 						<?php _e( 'Storage', 'it-l10n-backupbuddy' ); ?>
 					</div>
 					<div class="backupbuddy-live-stats-big-number">
-						{{ stats.stash.quota_used_nice }}
+						<# if ( stats.stash ) { #>
+							{{ stats.stash.quota_used_nice }}
+						<# } else { #>
+							<?php _e( 'Pending', 'it-l10n-backupbuddy' ); ?>
+						<# } #>
 					</div>
 					<div class="backupbuddy-live-stats-sub-numbers">
-						<?php _e( 'of', 'it-l10n-backupbuddy' ); ?> {{ stats.stash.quota_total_nice }}<br>
-						<?php _e( 'Used', 'it-l10n-backupbuddy' ); ?>
+						<# if ( stats.stash ) { #>
+							<?php _e( 'of', 'it-l10n-backupbuddy' ); ?> {{ stats.stash.quota_total_nice }}<br>
+							<?php _e( 'Used', 'it-l10n-backupbuddy' ); ?>
+						<# } else { #>
+							<?php echo sprintf( __( 'Storage Amount %s Currently Unavailable', 'it-l10n-backupbuddy' ), '<br>' ); ?>
+						<# } #>
 					</div>
 					<div class="backupbuddy-live-stats-progress-bar-container">
+						<# if ( stats.stash ) { #>
 						<div class="backupbuddy-live-stats-progress-bar">
 							<div class="backupbuddy-live-stats-progress-bar-highlight" title="{{ stats.stash.quota_used_percent }}%" style="width:{{ stats.stash.quota_used_percent }}%"></div>
 						</div>
+						<# } #>
 						<div class="backupbuddy-live-stats-progress-bar-percentage">
-							{{{ Math.floor(stats.stash.quota_used_percent) }}}%
+							<# if ( stats.stash ) { #>
+								{{{ Math.floor(stats.stash.quota_used_percent) }}}%
+							<# } #>
 						</div>
 					</div>
 					<div class="backupbuddy-live-stats-total"></div>
@@ -952,6 +981,7 @@ if ( 0 != $state['stats']['files_pending_delete'] ) {
 
 <br style="clear: both;"><br><br><br><br><br>
 <a href="javascript:void(0);" class="button button-secondary button-tertiary" onClick="jQuery('.backupbuddy-live-advanced-troubleshooting-wrap').slideToggle();">Advanced Troubleshooting Options</a>
+<a href="<?php echo pb_backupbuddy::ajax_url( 'live_troubleshooting_download' ); ?>" class="button button-secondary button-tertiary">Download Troubleshooting Data (.txt)</a>
 <div class="backupbuddy-live-advanced-troubleshooting-wrap" style="display: none; background: #E5E5E5; padding: 15px; margin-top: 15px; border-radius: 10px;">
 	<h1>Advanced Troubleshooting Options</h1>
 	Support may advise you to use these options to help work around a problem or troubleshoot issues. Caution is advised if using these options without guidance.
@@ -983,7 +1013,6 @@ if ( 0 != $state['stats']['files_pending_delete'] ) {
 	<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=reset_last_remote_snapshot' ); ?>" class="button button-secondary button-tertiary">Reset Last Remote Snapshot Time</a>
 	
 	<h4>Misc:</h4>
-	<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=trim_archives' ); ?>" class="button button-secondary button-tertiary">Run Archive Limiting Now</a>
 	<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=last_snapshot_details' ); ?>" class="button button-secondary button-tertiary" style="<?php if ( '' == $state['stats']['last_remote_snapshot_id'] ) { echo 'opacity: 0.4;'; } ?>">Last Snapshot Details</a>
 	<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=delete_catalog' ); ?>" class="button button-secondary button-tertiary" onclick="if ( !confirm('WARNING: This will erase your local catalog of files. All files may need to be re-uploaded. Are you sure you want to do this?') ) { return false; }">Delete Catalog & State</a>
 	
@@ -1027,7 +1056,7 @@ if ( 0 != $state['stats']['files_pending_delete'] ) {
 	<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=view_tables' ); ?>" class="button button-secondary button-tertiary">View Formatted Catalog Tables</a>
 	<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=view_files' ); ?>" class="button button-secondary button-tertiary">View Remotely Stored Files</a>
 	<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=view_files_tables' ); ?>" class="button button-secondary button-tertiary">View Remotely Stored Tables</a>
-	
+	<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=troubleshooting' ); ?>" class="button button-secondary button-tertiary">View Troubleshooting Data</a>
 	
 	<h4>Logging:</h4>
 	<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=view_log' ); ?>" class="button button-secondary button-tertiary">View Status Log</a>

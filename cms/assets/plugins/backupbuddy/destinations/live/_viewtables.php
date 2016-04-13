@@ -18,11 +18,15 @@ foreach( $tables as $table_name => $table ) {
 	if ( true === $table['d'] ) {
 		$pendingDelete = __( 'Yes', 'it-l10n-backupbuddy' );
 	}
+	$sent = __( 'Unsent', 'it-l10n-backupbuddy' );
+	if ( $table['b'] > 0 ) {
+		$sent = pb_backupbuddy::$format->date( pb_backupbuddy::$format->localize_time( $table['b'] ) ) . '<br><span class="description">(' . pb_backupbuddy::$format->time_ago( $table['b'] ) . ' ago)</span>';
+	}
 	$tables_list[] = array(
 		$table_name,
 		pb_backupbuddy::$format->date( pb_backupbuddy::$format->localize_time( $table['a'] ) ) . '<br><span class="description">(' . pb_backupbuddy::$format->time_ago( $table['a'] ) . ' ago)</span>',
 		pb_backupbuddy::$format->date( pb_backupbuddy::$format->localize_time( $table['m'] ) ) . '<br><span class="description">(' . pb_backupbuddy::$format->time_ago( $table['m'] ) . ' ago)</span>',
-		pb_backupbuddy::$format->date( pb_backupbuddy::$format->localize_time( $table['b'] ) ) . '<br><span class="description">(' . pb_backupbuddy::$format->time_ago( $table['b'] ) . ' ago)</span>',
+		$sent,
 		pb_backupbuddy::$format->file_size( $table['s'] ),
 		(string)$table['t'],
 		$pendingDelete

@@ -11,6 +11,32 @@ if ( pb_backupbuddy::_GET( 'display_mode' ) == 'embed' ) {
 
 global $importbuddy_file;
 $import_serial = backupbuddy_core::get_serial_from_file( $importbuddy_file );
+
+
+// Create STATE file from INI file (if exists).
+/*
+if ( file_exists( ABSPATH . 'importbuddy-' . $import_serial . '.ini' ) ) {
+	//pb_backupbuddy::status( 'details', 'Possible importbuddy .ini file for auto-loading settings found at `' . ABSPATH . 'importbuddy-' . $import_serial . '.ini' . '`.' );
+	$ini = parse_ini_file( ABSPATH . 'importbuddy-' . $import_serial . '.ini', true );
+	
+	echo '<br><br><br><br><pre>';
+	print_r( $ini );
+	echo '</pre>';
+	if ( isset( $ini['type'] ) ) { // If type is set then assume it may be a valid ini file for importbuddy and use it.
+		//pb_backupbuddy::status( 'details', 'Confirmed importbuddy .ini file for auto-loading settings found.' );
+		
+		$override_state_file = ABSPATH . 'importbuddy-' . $import_serial . '-state.php';
+		if ( file_exists( $override_state_file ) ) {
+			@unlink( $override_state_file );
+		}
+		if ( false === file_put_contents( $override_state_file, "<?php die('Access Denied.'); // <!-- ?>\n" . base64_encode( serialize( $ini ) ) ) ) {
+			//pb_backupbuddy::status( 'error', 'Error #48934834: Unable to write state file `' . $override_state_file . '` from ini data. Check permissions.' );
+		}
+	}
+}
+*/
+
+
 if ( '' != $import_serial ) { // importbuddy has a serial. Look for a default state file that matches.
 	pb_backupbuddy::$options['log_serial'] = $import_serial;
 	pb_backupbuddy::save();
@@ -30,11 +56,20 @@ if ( '' != $import_serial ) { // importbuddy has a serial. Look for a default st
 				$statedata = unserialize( base64_decode( $statedata ) );
 			}
 			if ( is_array( $statedata ) ) { // Valid content.
-				pb_backupbuddy::status( 'details', 'Loaded default state overwrite file data and gave it priority over current state. File: `' . $override_state_file . '`.' );
+				// Normalize URLs:
+				if ( isset( $statedata['siteurl'] ) ) {
+					$statedata['siteurl'] = rtrim( $statedata['siteurl'], '/' );
+				}
+				if ( isset( $statedata['homeurl'] ) ) {
+					$statedata['homeurl'] = rtrim( $statedata['homeurl'], '/' );
+				}
+				
+				//pb_backupbuddy::status( 'details', 'Loaded default state overwrite file data and gave it priority over current state. File: `' . $override_state_file . '`.' );
 				pb_backupbuddy::$options['default_state_overrides'] = $statedata;
+				//print_r( pb_backupbuddy::$options['default_state_overrides'] );
 				pb_backupbuddy::save();
 			} else {
-				pb_backupbuddy::status( 'warning', 'Default state overwrite file found but unable to access it.' );
+				//pb_backupbuddy::status( 'warning', 'Default state overwrite file found but unable to access it.' );
 			}
 		}
 		

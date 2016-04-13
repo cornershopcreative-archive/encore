@@ -368,7 +368,24 @@ $settings_form->add_setting( array(
 	'after'		=>		' secs. <span class="description"> ' . __( 'Leave blank for default of no forcing.', 'it-l10n-backupbuddy' ) . '</span>',
 	'rules'		=>		'',
 ) );
-
+$settings_form->add_setting( array(
+	'type'		=>		'text',
+	'name'		=>		'php_runtime_test_minimum_interval',
+	'title'		=>		__('PHP runtime test interval', 'it-l10n-backupbuddy' ),
+	'tip'		=>		__('[Default: 604800 (weekly)] - By default BackupBuddy will regularly perform an actual test of your PHP maximum execution time limit. Many hosts misreport this value so it is tested via a real test to confirm. The lesser of reported or tested values is used for most BackupBuddy operations. Set to 0 (zero) to disable this test.', 'it-l10n-backupbuddy' ),
+	'css'		=>		'width: 50px;',
+	'after'		=>		' secs. <span class="description"> ' . __( 'Set to zero (0) to disable.', 'it-l10n-backupbuddy' ) . '</span>',
+	'rules'		=>		'',
+) );
+$settings_form->add_setting( array(
+	'type'		=>		'text',
+	'name'		=>		'php_memory_test_minimum_interval',
+	'title'		=>		__('PHP memory test interval', 'it-l10n-backupbuddy' ),
+	'tip'		=>		__('[Default: 604800 (weekly)] - By default BackupBuddy will regularly perform an actual test of your PHP maximum memory limit. Many hosts misreport this value or have other global limits in place so it is tested via a real test to confirm. Set to 0 (zero) to disable this test.', 'it-l10n-backupbuddy' ),
+	'css'		=>		'width: 50px;',
+	'after'		=>		' secs. <span class="description"> ' . __( 'Set to zero (0) to disable.', 'it-l10n-backupbuddy' ) . '</span>',
+	'rules'		=>		'',
+) );
 
 
 

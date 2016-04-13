@@ -21,7 +21,3 @@ function backupbuddy_saveLogAsFile() {
 
     downloadLink.click();
 }
-
-function backupbuddy_destroyClickedElement(event) {
-    document.body.removeChild(event.target);
-}

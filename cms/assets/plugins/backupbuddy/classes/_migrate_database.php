@@ -124,11 +124,16 @@ class backupbuddy_migrateDB {
 	
 	
 	function migrate() {
+		pb_backupbuddy::status( 'details', 'Starting migrate() of database.' );
+		$this->migrateCommon(); // Must run before any other steps, each chunk, to calculate URLs etc.
+		
 		if ( is_array( $this->restoreData['databaseSettings']['migrateResumeSteps'] ) ) { // Resuming so use existing steps list.
 			$steps = &$this->restoreData['databaseSettings']['migrateResumeSteps'];
+			pb_backupbuddy::status( 'details', 'Resuming migrate() so using stored resume steps.' );
 		} else { // Not resuming so build steps list.
+			pb_backupbuddy::status( 'details', 'Not resuming so building migrate step list.' );
 			// Migrate anything common to all types.
-			$steps = array( 'migrateCommon' );
+			//$steps = array( 'migrateCommon' );
 			// Migrate Network -> Network.
 			if ( ( $this->sourceType == 'multisite_network' ) && ( $this->destinationType == 'multisite_network' ) ) {
 				$steps[] = 'migrateNetworkToNetwork';
@@ -153,27 +158,30 @@ class backupbuddy_migrateDB {
 		pb_backupbuddy::status( 'details', 'Steps to run: `' . implode( ',', $steps ) . '`.' );
 		
 		
-		foreach( $steps as $step ) {
+		foreach( (array)$steps as $step ) {
+			$resumePoint = $this->restoreData['databaseSettings']['migrateResumePoint'];
 			$this->restoreData['databaseSettings']['migrateResumePoint'] = ''; // Clear out needing to resume for now.
 			
 			// Run the function.
 			pb_backupbuddy::status( 'details', 'Starting step `' . $step . '`.' );
-			$results = call_user_func( array( $this, $step ), $this->restoreData['databaseSettings']['migrateResumePoint'] );
+			$results = call_user_func( array( $this, $step ), $resumePoint );
 			pb_backupbuddy::status( 'details', 'Finished step `' . $step . '`.' );
 			
 			if ( TRUE === $results ) { // Success so move to next loop.
 				array_shift( $steps ); // Shifts step off the front of the array.
+				if ( ! is_array( $steps ) ) {
+					$steps = array();
+				}
 				
 				pb_backupbuddy::status( 'details', 'Database migration step `' . $step . '` finished successfully.' );
 
 				if ( $this->nearTimeLimit() ) {
-					return array( $steps, '', '' ); // array of remaining steps, no resume point since not within a function.
+					return array( $steps, '' ); // array of remaining steps, no resume point since not within a function.
 				}
 
 				// Do nothing... will just continue to next step.
 			} elseif( is_array( $results ) ) { // NEEDS CHUNKING.
-				$steps = array_unshift( $steps, $step ); // This step did not finish so put it back at the beginning for resuming.
-				pb_backupbuddy::status( 'details', 'Migrating the database did not complete in the first passs. Chunking into multiple parts. Resuming step `' . $step . '` shortly at point `' . $results[0] . '`.' );
+				pb_backupbuddy::status( 'details', 'Migrating the database did not complete in the first passs. Chunking into multiple parts. Resuming step `' . $step . '` shortly at point `' . print_r( array( $steps, $results[0] ), true ) . '`.' );
 				return array( $steps, $results[0] ); // Array of steps to run, resume point.
 			} else { // FALSE or something weird...
 				pb_backupbuddy::status( 'error', 'Database migration step `' . $step . '` failed. See log for details. Result: `' . $results . '`.' );
@@ -561,7 +569,7 @@ class backupbuddy_migrateDB {
 	
 	
 	
-	function bruteforceTables() {
+	function bruteforceTables( $resumePoint = '' ) {
 		
 		global $wpdb;
 		// Loop through the tables matching this prefix. Does NOT change data in other tables.
@@ -571,7 +579,7 @@ class backupbuddy_migrateDB {
 		foreach( $rows as $row ) {
 			$tables[] = $row['table_name'];
 		}
-		pb_backupbuddy::status( 'message', 'Found ' . count( $rows ) . ' WordPress tables. ' );
+		pb_backupbuddy::status( 'message', 'Found ' . count( $rows ) . ' WordPress tables for brute force.' );
 		unset( $rows );
 		$bruteforce_tables = pb_backupbuddy::array_remove( $tables, $this->bruteforceExcludedTables ); // Removes all tables listed in $excluded_tables from $tables.
 		unset( $tables );
@@ -587,10 +595,12 @@ class backupbuddy_migrateDB {
 		$dbreplace = new pluginbuddy_dbreplace( $this->startTime, self::TIME_WIGGLE_ROOM, $this->restoreData['maxExecutionTime'] );
 
 
-		if ( is_array( $this->restoreData['databaseSettings']['migrateResumePoint'] ) ) {
-			$steps = $this->restoreData['databaseSettings']['migrateResumePoint'][0];
-			$stepResumePoint = $this->restoreData['databaseSettings']['migrateResumePoint'][1];
+		if ( is_array( $resumePoint ) ) {
+			pb_backupbuddy::status( 'details', 'Resuming bruteforce substeps. Steps remaining: `' . count( $resumePoint[0] ) . '`.' );
+			$steps = $resumePoint[0];
+			$stepResumePoint = $resumePoint[1];
 		} else {
+			pb_backupbuddy::status( 'details', 'First run of bruteforce. Building substep list.' );
 			$stepResumePoint = '';
 			
 			$steps = array(
@@ -678,7 +688,8 @@ class backupbuddy_migrateDB {
 		}
 		
 		
-		foreach( $steps as $step ) {
+		foreach( (array)$steps as $step ) {
+			pb_backupbuddy::status( 'details', 'Running bruteforce substep to migrate: `' . $step[0] . '`. Substeps remaining: `' . count( $steps ) . '`.' );
 			$this->restoreData['databaseSettings']['migrateResumePoint'][1] = ''; // Clear out needing to resume this substep for now.
 
 			// Run the function.
@@ -688,20 +699,23 @@ class backupbuddy_migrateDB {
 			} else {
 				$results = call_user_func( array( $dbreplace, $step[1] ), $step[2], $step[3], $step[4], $step[5], $stepResumePoint );
 			}
-			pb_backupbuddy::status( 'details', 'Finished substep `' . $step[0] . '`.' );
 
 			if ( TRUE === $results ) { // Success so move to next loop.
 				array_shift( $steps ); // Shifts step off the front of the array.
+				if ( ! is_array( $steps ) ) {
+					$steps = array();
+				}
+				
 				// Do nothing... will just continue to next step.
 				pb_backupbuddy::status( 'details', 'Database migration substep `' . $step[0] . '` finished successfully.' );
 
 				if ( $this->nearTimeLimit() ) {
-					return array( $steps, '' ); // array of remaining steps, no resume point since not within a function.
+					pb_backupbuddy::status( 'details', 'Running out of time running bruteforce substeps. Chunking substep.' );
+					return array( array( $steps, '' ) ); // array of remaining steps, no resume point since not within a function.
 				}
 			} elseif( is_array( $results ) ) { // NEEDS CHUNKING.
-				$steps = array_unshift( $steps, $step ); // This step did not finish so put it back at the beginning for resuming.
-				pb_backupbuddy::status( 'details', 'Substep migrating the database did not complete in the first pass. Chunking into multiple parts. Resuming substep `' . $step . '` shortly at point `' . $results[0] . '`.' );
-				return array( $steps, $results[0] ); // Array of steps to run, resume point.
+				pb_backupbuddy::status( 'details', 'Substep migrating the database did not complete in the first pass. Chunking into multiple parts. Resuming substep `' . print_r( $step, true ) . '` shortly at point `' . print_r( $results[0], true ) . '`.' );
+				return array( array( $steps, $results[0] ) ); // Array of steps to run, resume point.
 			} else { // FALSE or something weird...
 				pb_backupbuddy::status( 'error', 'Database migration substep `' . $step[0] . '` failed. See log for details. This may only be a non-fatal warning.' );
 				return FALSE;
@@ -714,6 +728,7 @@ class backupbuddy_migrateDB {
 		$finalPrefix = backupbuddy_core::dbEscape( $this->finalPrefix );
 		pb_backupbuddy::status( 'details', 'Old DB prefix: `' . $old_prefix . '`; Override prefix: `' . $this->overridePrefix . '`. New final DB prefix (override does not apply): `' . $finalPrefix . '`. Network prefix: `' . $this->networkPrefix . '`' );
 		if ($old_prefix != $finalPrefix ) {
+			pb_backupbuddy::status( 'details', 'Updating prefix META data in usermeta, etc.' );
 			$wpdb->query( "UPDATE `". $this->overridePrefix ."usermeta` SET meta_key = REPLACE(meta_key, '" . $old_prefix . "', '" . $finalPrefix ."' );" ); // usermeta table temporarily is in the new subsite's prefix until next step.
 			pb_backupbuddy::status( 'details', 'Modified ' . $wpdb->rows_affected . ' row(s) while updating meta_key\'s for DB prefix in site\'s [subsite; temporary if multisite] usermeta table from `' . $old_prefix . '` to `' . $finalPrefix . '`.' );
 			if ( ! empty( $wpdb->last_error ) ) { pb_backupbuddy::status( 'error', 'mysql error: ' . $wpdb->last_error ); }

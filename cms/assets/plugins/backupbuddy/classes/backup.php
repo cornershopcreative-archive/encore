@@ -205,10 +205,10 @@ class pb_backupbuddy_backup {
 			
 			// If using alternate cron on a manually triggered backup then skip running the cron on this pageload to avoid header already sent warnings.
 			if ( ( $trigger != 'manual' ) || ( defined('ALTERNATE_WP_CRON') && ALTERNATE_WP_CRON ) ) {
-				$this->cron_next_step( false );
+				$this->cron_next_step( $this->_backup['serial'], false );
 			} else {
 				//$this->cron_next_step( true );
-				$this->cron_next_step( false ); // as of Aug 9, 2013 no longer spawn the cron. Caused very odd issue of double code runs.
+				$this->cron_next_step( $this->_backup['serial'], false ); // as of Aug 9, 2013 no longer spawn the cron. Caused very odd issue of double code runs.
 			}
 			
 		} else { // Classic mode; everything runs in this single PHP page load.
@@ -787,7 +787,7 @@ class pb_backupbuddy_backup {
 				$wait_time = $attempt_delay_base * $lock_attempts;
 				pb_backupbuddy::status( 'message', 'A scheduled step attempted to run before the previous step completed. The previous step may have failed or two steps may be attempting to run simultaneously.', $serial );
 				pb_backupbuddy::status( 'message', 'Waiting `' . $wait_time . '` seconds before continuing. Attempt #' . $lock_attempts . ' of ' . $max_attempts . ' max allowed before giving up.', $serial );
-				$this->cron_next_step( false, $wait_time );
+				$this->cron_next_step( $this->_backup['serial'], false, $wait_time );
 				return false;
 				
 			} else { // Accessed fileoptions. Clear/reset any attempt count.
@@ -852,7 +852,7 @@ class pb_backupbuddy_backup {
 				if ( ( $step['attempts'] < 6 ) ) {
 					$wait_time = 60 * $step['attempts']; // Each attempt adds a minute of wait time.
 					pb_backupbuddy::status( 'warning', 'A scheduled step attempted to run before the previous step completed. Waiting `' . $wait_time . '` seconds before continuing for it to catch up. Attempt number `' . $step['attempts'] . '`.' );
-					$this->cron_next_step( false, $wait_time );
+					$this->cron_next_step( $this->_backup['serial'], false, $wait_time );
 					return false;
 				} else { // Too many attempts to run this step.
 					pb_backupbuddy::status( 'error', 'A scheduled step attempted to run before the previous step completed. After several attempts (`' . $step['attempts'] . '`) of failure BackupBuddy has given up. Halting backup.' );
@@ -978,12 +978,28 @@ class pb_backupbuddy_backup {
 			pb_backupbuddy::status( 'finishFunction', json_encode( array( 'function' => $this->_backup['steps'][$step_index]['function'] ) ) );
 			pb_backupbuddy::status( 'details', '-----' );
 			
+			// If full logging, output fileoptions state data to brwoser for display in console.
+			if ( pb_backupbuddy::$options['log_level'] == '3' ) { // Full logging enabled.
+				$thisBackup = $this->_backup;
+				if ( '' != $this->_backup['deployment_direction'] ) { // Remove steps for deployment because it gets too large.
+					$thisBackup['steps'] = '** Removed since deployment type **';
+				}
+				pb_backupbuddy::status( 'backupState', json_encode( $thisBackup ) ); //base64_encode( json_encode( $this->_backup ) ) );
+			}
+			
+			// Check for more steps and insert into cron (possibly trigger).
 			$found_another_step = false;
 			foreach( $this->_backup['steps'] as $next_step ) { // Loop through each step and see if any have not started yet.
 				if ( $next_step['start_time'] == 0 ) { // Another unstarted step exists. Schedule it.
 					$found_another_step = true;
 					if ( $this->_backup['profile']['backup_mode'] == '2' ) { // Modern mode with crons.
-						$this->cron_next_step( null, null, $next_step['function'] );
+						
+						// Close down fileoptions so it unlocks now.
+						pb_backupbuddy::status( 'details', 'Closing & unlocking fileoptions.' );
+						$this->_backup_options = '';
+						
+						$this->cron_next_step( $this->_backup['serial'], null, null, $next_step['function'] );
+						
 					} elseif ( $this->_backup['profile']['backup_mode'] == '1' ) { // classic mode
 						pb_backupbuddy::status( 'details', 'Classic mode; skipping cron & triggering next step.' );
 						$this->process_backup( $this->_backup['serial'], $trigger );
@@ -996,6 +1012,7 @@ class pb_backupbuddy_backup {
 				}
 			} // End foreach().
 			
+			// No more steps (note: fileoptions still open; only closed prior to cron triggering).
 			if ( $found_another_step == false ) {
 				pb_backupbuddy::status( 'details', __( 'No more backup steps remain. Finishing...', 'it-l10n-backupbuddy' ) );
 				$this->_backup['finish_time'] = microtime(true);
@@ -1014,21 +1031,15 @@ class pb_backupbuddy_backup {
 						$data['schedule_title'] = $this->_backup['schedule_title'];
 					}
 					
-					backupbuddy_core::addNotification( 'backup_success', 'Backup completed successfully', 'A ' . $this->_backup['trigger'] . ' backup has completed successfully on your site.', $data );
+					// Close down fileoptions so it unlocks now.
+					pb_backupbuddy::status( 'details', 'Closing & unlocking fileoptions.' );
+					$this->_backup_options = '';
+					
+					backupbuddy_core::addNotification( 'backup_success', 'Backup completed successfully.', $data ); // $data saved for Sync usage.
 				}
-			} else {
-				pb_backupbuddy::status( 'details', 'Completed step function `' . $step['function'] . '`.' );
-				//pb_backupbuddy::status( 'details', 'The next should run in a moment. If it does not please check for plugin conflicts and that the next step is scheduled in the cron on the Server Information page.' );
 			}
 			
-			// If full logging, output fileoptions state data to brwoser for display in console.
-			if ( pb_backupbuddy::$options['log_level'] == '3' ) { // Full logging enabled.
-				$thisBackup = $this->_backup;
-				if ( '' != $this->_backup['deployment_direction'] ) { // Remove steps for deployment because it gets too large.
-					$thisBackup['steps'] = '** Removed since deployment type **';
-				}
-				pb_backupbuddy::status( 'backupState', json_encode( $thisBackup ) ); //base64_encode( json_encode( $this->_backup ) ) );
-			}
+			pb_backupbuddy::status( 'details', 'Completed step function `' . $step['function'] . '`.' );
 			
 			return true;
 		}
@@ -1039,6 +1050,8 @@ class pb_backupbuddy_backup {
 	
 	
 	/*	cron_next_step()
+	 *
+	 * NOTE: fileoptions ($this->_backup) should be closed prior to running this. Not doing so could result in race condition issues.
 	 *	
 	 *	Schedule the next step into the cron. Defaults to scheduling to happen _NOW_. Automatically opens a loopback to trigger cron in another process by default.
 	 *	
@@ -1047,7 +1060,11 @@ class pb_backupbuddy_backup {
 	 *	@param		string		$next_step_title	Optional text title/function name/whatever of the next step to run. Useful for troubleshooting. Status logged.
 	 *	@return		null
 	 */
-	function cron_next_step( $spawn_cron = true, $future_offset = -155, $next_step_title = '' ) {
+	function cron_next_step( $serial, $spawn_cron = true, $future_offset = -155, $next_step_title = '' ) {
+		
+		if ( '' != $this->_backup ) {
+			pb_backupbuddy::status( 'warnings', 'Warning #438943984983. This warning may be okay and ignored. $this->_backup still appears to be set. Still a fileoptions object? May result in race condition issues if fileoptions still open and/or locked. Set = empty string to verify it shuts down properly prior to calling this function.' );
+		}
 		
 		// Internal cron (optional; disabled by default).
 		if ( '1' == pb_backupbuddy::$options['use_internal_cron'] ) {
@@ -1060,7 +1077,7 @@ class pb_backupbuddy_backup {
 			$cron_url = site_url();
 			$args = array(
 						'backupbuddy_cron_action' => 'process_backup',
-						'backupbuddy_serial' => $this->_backup['serial'],
+						'backupbuddy_serial' => $serial,
 						'backupbuddy_time' => time(),
 						'backupbuddy_key' => pb_backupbuddy::$options['log_serial']
 					);
@@ -1088,7 +1105,7 @@ class pb_backupbuddy_backup {
 			$spawn_cron = false;
 		}
 		
-		pb_backupbuddy::status( 'details', 'Scheduling Cron for `' . $this->_backup['serial'] . '`.' );
+		pb_backupbuddy::status( 'details', 'Scheduling Cron for `' . $serial . '`.' );
 		
 		// Need to make sure the database connection is active. Sometimes it goes away during long bouts doing other things -- sigh.
 		// This is not essential so use include and not require (suppress any warning)
@@ -1107,7 +1124,7 @@ class pb_backupbuddy_backup {
 		
 		// Schedule event.
 		$cron_time = ( time() + $future_offset );
-		$cron_args = array( $this->_backup['serial'] );
+		$cron_args = array( $serial );
 		pb_backupbuddy::status( 'details', 'Scheduling next step to run at `' . $cron_time . '` (localized time: ' . pb_backupbuddy::$format->date( pb_backupbuddy::$format->localize_time( $cron_time ) ) . '), pushed to the top, with cron tag `backupbuddy_cron` to run method `process_backup` and serial arguments `' . implode( ',', $cron_args ) . '`.' );
 		$schedule_result = backupbuddy_core::schedule_single_event( $cron_time, 'process_backup', $cron_args, $reschedule = 0 );
 		if ( $schedule_result === false ) {
@@ -1169,6 +1186,10 @@ class pb_backupbuddy_backup {
 		
 		$dat_file = $this->_backup['temp_directory'] . 'backupbuddy_dat.php';
 		$dat_content = backupbuddy_core::render_dat_contents( $settings, $dat_file );
+		if ( ! is_array( $dat_content ) ) {
+			pb_backupbuddy::status( 'error', 'Error #34894834: Unable to render DAT file. Check permissions. Details: `' . $dat_content . '`. Fatal error.' );
+			return false;
+		}
 		
 		// Handle wp-config.php file in a parent directory, copying to temp location.
 		if ( true === $dat_content['wp-config_in_parent'] ) {

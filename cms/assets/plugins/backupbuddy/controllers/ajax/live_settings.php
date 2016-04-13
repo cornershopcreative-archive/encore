@@ -24,6 +24,9 @@ if ( '' != pb_backupbuddy::_POST( 'pb_backupbuddy_' ) ) {
 		pb_backupbuddy::save();
 		pb_backupbuddy::alert( __( 'Settings saved. Restarting Live process so they take immediate effect.', 'it-l10n-backupbuddy' ) );
 		set_transient( 'backupbuddy_live_jump', array( 'daily_init', array() ), 60*60*48 ); // Tells Live process to restart from the beginning (if mid-process) so new settigns apply.
+		
+		// Send new settings for archive limiting to Stash API.
+		backupbuddy_live::send_trim_settings();
 	} else {
 		pb_backupbuddy::alert( 'Error saving settings. ' . implode( "\n", $save_result['errors'] ) );
 	}

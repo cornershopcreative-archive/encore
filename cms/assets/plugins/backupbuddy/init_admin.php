@@ -89,7 +89,7 @@ add_action( 'wp_ajax_nopriv_backupbuddy_api', array( pb_backupbuddy::$_ajax, 'ap
 
 
 // Display stats in Dashboard.
-if ( ( !is_multisite() ) || ( is_multisite() && is_network_admin() ) ) { // Only show if standalon OR in main network admin.
+if ( ( !is_multisite() ) || ( is_multisite() && is_network_admin() ) ) { // Only show if standalone OR in main network admin.
 	pb_backupbuddy::add_dashboard_widget( 'stats', 'BackupBuddy v' . pb_backupbuddy::settings( 'version' ), 'godmode' );
 }
 
@@ -277,17 +277,21 @@ function backupbuddy_admin_notices() {
 		return;
 	}
 	
-	if ( is_network_admin() ) {
-		$stashlive_url = network_admin_url( 'admin.php' );
-	} else {
-		$stashlive_url = admin_url( 'admin.php' );
+	if ( version_compare( phpversion(), '5.3', '>=' ) ) {
+		if ( is_network_admin() ) {
+			$stashlive_url = network_admin_url( 'admin.php' );
+		} else {
+			$stashlive_url = admin_url( 'admin.php' );
+		}
+		$stashlive_url .= '?page=pb_backupbuddy_live';
+
+		pb_backupbuddy::disalert( 'backupbuddy_version_seven', '<p><span class="backupbuddy-icon-drive"></span>Real-time backups are here. <a class="backupbuddy-nag-button pb_backupbuddy_disalert" href="' . $stashlive_url . '" alt="' . pb_backupbuddy::ajax_url( 'disalert' ) . '">Get Started</a><a class="backupbuddy-nag-button" href="https://ithemes.com/backupbuddy-stash-live-is-here" target="_blank">See What\'s New</a></p>' );
+		wp_enqueue_style( 'backupbuddy_version_seven_style', pb_backupbuddy::plugin_url() . '/css/version_seven.css' );
 	}
-	$stashlive_url .= '?page=pb_backupbuddy_live';
-	
-	pb_backupbuddy::disalert( 'backupbuddy_version_seven', '<p><span class="backupbuddy-icon-drive"></span>Real-time backups are here. <a class="backupbuddy-nag-button pb_backupbuddy_disalert" href="' . $stashlive_url . '" alt="' . pb_backupbuddy::ajax_url( 'disalert' ) . '">Get Started</a><a class="backupbuddy-nag-button" href="https://ithemes.com/backupbuddy-stash-live-is-here" target="_blank">See What\'s New</a></p>' );
-	wp_enqueue_style( 'backupbuddy_version_seven_style', pb_backupbuddy::plugin_url() . '/css/version_seven.css' );
 }
-add_action( 'admin_notices', 'backupbuddy_admin_notices' );
+if ( ( !is_multisite() ) || ( is_multisite() && is_network_admin() ) ) { // Only show if standalone OR in main network admin.
+	add_action( 'admin_notices', 'backupbuddy_admin_notices' );
+}
 
 
 // Global admin javascript files.

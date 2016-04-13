@@ -17,3 +17,4 @@ if ( '' == $importFileSerial ) {
 pb_backupbuddy::status( 'details', '*** End ImportBuddy Log section' );
 $status_lines = pb_backupbuddy::get_status( '', true, false, true ); // Clear file, dont unlink file, supress status retrieval msg.
 echo implode( '', $status_lines );
+

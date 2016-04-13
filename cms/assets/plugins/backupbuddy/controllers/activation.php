@@ -481,6 +481,7 @@ backupbuddy_core::verifyLiveCron();
 
 // Attempt to actually test PHP max execution time. Forces on activation in case new server.
 backupbuddy_housekeeping::schedule_php_runtime_tests( $force_run = true );
+backupbuddy_housekeeping::schedule_php_memory_tests( $force_run = true );
 
 
 // Verify existance of default S3 config (currently blank to fix shell_exec() warning issue. Added 3.1.8.3 Jan 29, 2013 - Dustin.

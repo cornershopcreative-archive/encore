@@ -1,4 +1,6 @@
 <?php
+require_once( pb_backupbuddy::plugin_path() . '/classes/remote_api.php' );
+$apiSettings = backupbuddy_remote_api::key_to_array( $destination_settings['api_key'] );
 
 $default_name = NULL;
 if ( 'add' == $mode ) {
@@ -13,6 +15,11 @@ $settings_form->add_setting( array(
 	'default'	=>		$default_name,
 ) );
 
+if ( 'add' == $mode ) {
+	$after = '';
+} else {
+	$after = '<br>' . __( 'Saved API key site URL', 'it-l10n-backupbuddy' ) . ': <span class="description">' . $apiSettings['siteurl'] . '</span>';
+}
 $settings_form->add_setting( array(
 	'type'		=>		'textarea',
 	'name'		=>		'api_key',
@@ -20,6 +27,7 @@ $settings_form->add_setting( array(
 	'tip'		=>		__( 'Copy & paste the destination site\'s BackupBuddy API Key. Find this under the other remote site\'s BackupBuddy Remote Destinations page by clicking the \'Show Deployment Key\' button near the top.', 'it-l10n-backupbuddy' ),
 	'rules'		=>		'required|string[0-1000]',
 	'css'		=>		'width: 680px; height: 110px; padding: 8;',
+	'after'		=>		$after,
 ) );
 
 $settings_form->add_setting( array(

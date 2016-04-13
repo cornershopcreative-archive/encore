@@ -484,7 +484,7 @@ class backupbuddy_core {
 			$email_return = get_option('admin_email');
 		}
 		
-		pb_backupbuddy::status( 'details', 'Sending email schedule notification. Subject: `' . $subject . '`; body: `' . $body . '`; recipient(s): `' . $email . '`.' );
+		pb_backupbuddy::status( 'details', 'Sending email schedule notification. Subject: `' . $subject . '`; recipient(s): `' . $email . '`.' );
 		if ( !empty( $email ) ) {
 			if ( function_exists( 'wp_mail' ) ) {
 				wp_mail( $email, $subject, $body, 'From: BackupBuddy <' . $email_return . ">\r\n".'Reply-To: '.get_option('admin_email')."\r\n".'Content-type: text/html;' . "\r\n");
@@ -883,7 +883,19 @@ class backupbuddy_core {
 		
 		$backups = array();
 		$backup_sort_dates = array();
-		$files = glob( '{' . backupbuddy_core::getBackupDirectory() . 'backup*.zip,' . backupbuddy_core::getBackupDirectory() . 'snapshot*.zip}', GLOB_BRACE );
+		
+		$files = glob( backupbuddy_core::getBackupDirectory() . 'backup*.zip' );
+		if ( ! is_array( $files ) ) {
+			$files = array();
+		}
+		
+		$files2 = glob( backupbuddy_core::getBackupDirectory() . 'snapshot*.zip' );
+		if ( ! is_array( $files2 ) ) {
+			$files2 = array();
+		}
+		
+		$files = array_merge( $files, $files2 );
+		
 		if ( is_array( $files ) && !empty( $files ) ) { // For robustness. Without open_basedir the glob() function returns an empty array for no match. With open_basedir in effect the glob() function returns a boolean false for no match.
 			
 			$backup_prefix = self::backup_prefix(); // Backup prefix for this site. Used for MS checking that this user can see this backup.
@@ -1542,13 +1554,21 @@ class backupbuddy_core {
 		/***** END LOOKING FOR UNFINISHED RECENT BACKUPS *****/
 
 		/***** BEGIN LOOKING FOR BACKUP FILES IN SITE ROOT *****/
-		$files = glob( '{' . ABSPATH . 'backup-*.zip,' . ABSPATH . 'snapshot-*.zip}', GLOB_BRACE );
+		$files = glob( ABSPATH . 'backup-*.zip' );
 		if ( !is_array( $files ) || empty( $files ) ) {
 			$files = array();
 		}
+		
+		$files2 = glob( ABSPATH . 'snapshot-*.zip' );
+		if ( !is_array( $files2 ) || empty( $files2 ) ) {
+			$files2 = array();
+		}
+		
+		$files = array_merge( $files, $files2 );
 		foreach( $files as &$file ) {
 			$file = basename( $file );
 		}
+		
 		if ( count( $files ) > 0 ) {
 			$files_string = implode( ', ', $files );
 			$tests[] = array(
@@ -2527,7 +2547,7 @@ class backupbuddy_core {
 		}
 		
 		// If not a backup file then return blank.
-		if ( ! backupbuddy_core::startsWith( $file, 'backup-' ) ) {
+		if ( ! backupbuddy_core::startsWith( basename( $file ), 'backup-' ) ) {
 			return '';
 		}
 		
@@ -2701,7 +2721,7 @@ class backupbuddy_core {
 	 * 
 	 *
 	 */
-	public static function addNotification( $slug, $title, $message, $data = array(), $urgent = false, $time = '' ) {
+	public static function addNotification( $slug, $title, $message = '', $data = array(), $urgent = false, $time = '' ) {
 		
 		if ( '' == $time ) {
 			$time = time();
@@ -2784,6 +2804,12 @@ class backupbuddy_core {
 	
 	
 	public static function verifyHousekeeping() {
+		if ( is_multisite() ) { // For Multisite only run on main Network site.
+			if ( ! is_main_site() ) {
+				return;
+			}
+		}
+		
 		if ( false === wp_next_scheduled( 'backupbuddy_cron', array( 'housekeeping', array() ) ) ) { // if schedule does not exist...
 			backupbuddy_core::schedule_event( time() + ( 60*60 * 2 ), 'daily', 'housekeeping', array() ); // Add schedule.
 		}
@@ -2873,12 +2899,15 @@ class backupbuddy_core {
 		$tables = array_diff( $tables, $additional_excludes );
 		pb_backupbuddy::status( 'details', 'Database tables after exclusion (' . count( $tables ) . ' tables): `' . implode( ',', $tables ) . '`' );
 		
+		// Remove any duplicate tables.
+		$tables = array_unique( $tables );
+		
 		return array_values( $tables ); // Clean up indexing & return.
 		
 	} // End calculate_tables().
 	
 	
-	
+	// array of dat contents on success, else string error message.
 	public static function render_dat_contents( $settings, $dat_file ) {
 		
 		$settings = array_merge( array(
@@ -2902,7 +2931,7 @@ class backupbuddy_core {
 		
 		$is_multisite = $is_multisite_export = false; //$from_multisite is from a site within a network
 		$upload_url_rewrite = $upload_url = '';
-		if ( ( is_multisite() && ( $trigger == 'scheduled' ) ) || (is_multisite() && is_network_admin() ) ) { // MS Network Export IF ( in a network and triggered by a schedule ) OR ( in a network and logged in as network admin)
+		if ( ( is_multisite() && ( $settings['trigger'] == 'scheduled' ) ) || (is_multisite() && is_network_admin() ) ) { // MS Network Export IF ( in a network and triggered by a schedule ) OR ( in a network and logged in as network admin)
 			$is_multisite = true;
 		} elseif ( is_multisite() ) { // MS Export (individual site)
 			$is_multisite_export = true;
@@ -3023,17 +3052,26 @@ class backupbuddy_core {
 		// Serialize .dat file array.
 		$encoded_dat_content = "<?php die('Access Denied.'); // <!-- ?>\n" . base64_encode( serialize( $dat_content ) );
 		
+		// TODO: remove exists note if no more problems with this after adding the above directory making.
+		$existed = 'no';
+		if ( file_exists( $dat_file ) ) {
+			$existed = 'yes';
+		}
+		
 		// Write data to the dat file.
 		if ( false === ( $file_handle = fopen( $dat_file, 'w' ) ) ) {
-			pb_backupbuddy::status( 'details', sprintf( __('Error #9017: Temp data file is not creatable/writable. Check your permissions. (%s)', 'it-l10n-backupbuddy' ), $dat_file  ) );
-			pb_backupbuddy::status( 'error', 'Temp data file is not creatable/writable. Check your permissions. (' . $dat_file . ')', '9017' );
-			return false;
+			$error = 'Error #9017: Unable to fopen DAT file `' . $dat_file . '`. Check file/directory permissions. Already existed?: `' . $existed . '`.';
+			pb_backupbuddy::status( 'error', $error );
+			@fclose( $file_handle );
+			return $error;
 		}
 		if ( false === fwrite( $file_handle, $encoded_dat_content ) ) {
-			pb_backupbuddy::status( 'error', 'Error #348934843: Unable to write to DAT file `' . $dat_file . '`. Check file permissions.' );
-			return false;
+			$error = 'Error #348934843: Unable to fwrite to DAT file `' . $dat_file . '`. Check file/directory permissions. Already existed?: `' . $existed . '`.';
+			pb_backupbuddy::status( 'error', $error );
+			@fclose( $file_handle );
+			return $error;
 		}
-		fclose( $file_handle );
+		@fclose( $file_handle );
 		
 		return $dat_content; // Array of dat content which was written to DAT file.
 		
@@ -3081,6 +3119,37 @@ class backupbuddy_core {
 	
 	
 	
+	// Attribution: http://stackoverflow.com/questions/2961618/how-to-read-only-5-last-line-of-the-text-file-in-php
+	public static function read_backward_line($filename, $lines, $revers = false) {
+		$offset = -1;
+		$c = '';
+		$read = '';
+		$i = 0;
+		$fp = @fopen($filename, "r");
+		while( $lines && fseek($fp, $offset, SEEK_END) >= 0 ) {
+		    $c = fgetc($fp);
+		    if($c == "\n" || $c == "\r"){
+		        $lines--;
+		        if( $revers ){
+		            $read[$i] = strrev($read[$i]);
+		            $i++;
+		        }
+		    }
+		    if( $revers ) $read[$i] .= $c;
+		    else $read .= $c;
+		    $offset--;
+		}
+		fclose ($fp);
+		if( $revers ){
+		    if($read[$i] == "\n" || $read[$i] == "\r")
+		        array_pop($read);
+		    else $read[$i] = strrev($read[$i]);
+		    return implode('',$read);
+		}
+		return strrev(rtrim($read,"\n\r"));
+	}
+	
+	
 	// OLD function. More precise but SLOW...
 	/* truncate_file_beginning()
 	 *
@@ -3115,9 +3184,18 @@ class backupbuddy_core {
 	 * Attempts to calculate the actual maximum PHP execution time by writing to a text file once per second the time elapsed since pb_backupbuddy class loaded.
 	 *
 	 */
-	public static function php_runtime_test( $schedule_results = false ) {
+	public static function php_runtime_test( $schedule_results = false, $force_run = false ) {
 		pb_backupbuddy::status( 'details', 'Beginning PHP runtime test function.' );
 		$test_file = backupbuddy_core::getLogDirectory() . 'php_runtime_test.txt'; 
+		
+		// Make sure not running too often, even if scheduled.
+		if ( false === $force_run ) {
+			$elapsed = time() - pb_backupbuddy::$options['last_tested_php_runtime'];
+			if ( $elapsed < pb_backupbuddy::$options['php_runtime_test_minimum_interval'] ) { // Not enough time elapsed since last run.
+				pb_backupbuddy::status( 'details', 'Not enough time elapsed since last PHP runtime test interval. Elapsed: `' . $elapsed . '`. Interval limit: `' . pb_backupbuddy::$options['php_runtime_test_minimum_interval'] . '`.' );
+				return false;
+			}
+		}
 		
 		// If test file already exists, make sure it doesn't look like a test is already running.
 		if ( file_exists( $test_file ) ) {
@@ -3189,6 +3267,87 @@ class backupbuddy_core {
 	
 	
 	
+	/* php_memory_test()
+	 *
+	 * Attempts to calculate the actual maximum PHP memory limit by writing to a text file while increasing memory usage.
+	 *
+	 */
+	public static function php_memory_test( $schedule_results = false, $force_run = false ) {
+		$incrementMB = 1; // How many MB to increment per chunk.
+		
+		pb_backupbuddy::status( 'details', 'Beginning PHP memory test function.' );
+		$test_file = backupbuddy_core::getLogDirectory() . 'php_memory_test.txt'; 
+		
+		// Make sure not running too often, even if scheduled.
+		if ( false === $force_run ) {
+			$elapsed = time() - pb_backupbuddy::$options['last_tested_php_memory'];
+			if ( $elapsed < pb_backupbuddy::$options['php_memory_test_minimum_interval'] ) { // Not enough time elapsed since last run.
+				pb_backupbuddy::status( 'details', 'Not enough time elapsed since last PHP memory test interval. Elapsed: `' . $elapsed . '`. Interval limit: `' . pb_backupbuddy::$options['php_memory_test_minimum_interval'] . '`.' );
+				return false;
+			}
+		}
+		
+		// If test file already exists, make sure it doesn't look like a test is already running.
+		if ( file_exists( $test_file ) ) {
+			if ( false !== ( $last_update_time = filemtime( $test_file ) ) ) { // if we can get filemtime...
+				if ( ( time() - $last_update_time ) < backupbuddy_constants::PHP_MEMORY_RETEST_DELAY ) { // Not enough time has passed since last scan last updated file so it MAY still be going.
+					pb_backupbuddy::status( 'details', 'PHP memory test: Not enough time has passed since the last test updated the file.' );
+					return false;
+				}
+			}
+		}
+		
+		// Open test file for writing.
+		if ( false === ( $fso = @fopen( $test_file, 'w' ) ) ) {
+			return false;
+		}
+		
+		// Schedule results calculation to happen afterwards if enabled.
+		if ( true === $schedule_results ) {
+			// Schedule test results calculation to run.
+			$cronArgs = array();
+			$schedule_result = backupbuddy_core::schedule_single_event( time() + backupbuddy_constants::PHP_MEMORY_RETEST_DELAY + 5, 'php_memory_test_results', $cronArgs );
+			if ( true === $schedule_result ) {
+				pb_backupbuddy::status( 'details', 'PHP memory test results cron event scheduled.' );
+			} else {
+				pb_backupbuddy::status( 'error', 'PHP memory test results cron event FAILED to be scheduled.' );
+			}
+		}
+		
+		// Once per second write to the file the number of seconds elapsed since the test began.
+		pb_backupbuddy::status( 'details', 'Start PHP memory test loops.' );
+		$loopCount = 0;
+		$buffer = '';
+		$loop = true;
+		while( true === $loop ) {
+			$loopCount++;
+			if ( $loopCount > 1000 ) {
+				$loop = false;
+				break;
+			}
+			
+			$buffer .= str_repeat( '-', 1048576 * $incrementMB );
+			
+			$usage = round( memory_get_usage() / 1048576, 2 );
+			
+			//error_log( 'usage:' + usage );
+			
+			@ftruncate( $fso, 0 ); // Erase existing file contents.
+			if ( false === @fwrite( $fso, $usage ) ) { // Update time elapsed into file.
+				$loop = false;
+				break; // Stop since writing failed.
+			}
+		}
+		
+		pb_backupbuddy::status( 'details', 'End PHP memory test loops.' );
+		
+		$buffer = '';
+		@fclose( $fso );
+		
+	} // End php_memory_test().
+	
+	
+	
 	/* php_runtime_test_results()
 	 *
 	 * Stores tested runtime in pb_backupbuddy::$options['tested_php_runtime'], rounded up to next whole number. Note: pb_backupbuddy::$options['tested_php_runtime'] is 0 until test is successful.
@@ -3238,6 +3397,84 @@ class backupbuddy_core {
 		return pb_backupbuddy::$options['tested_php_runtime'];
 		
 	} // End php_runtime_test_results().
+	
+	
+	
+	/* php_memory_test_results()
+	 *
+	 * Stores tested memory in pb_backupbuddy::$options['tested_php_memory'], rounded up to next whole number. Note: pb_backupbuddy::$options['tested_php_memory'] is 0 until test is successful.
+	 *
+	 */
+	public static function php_memory_test_results() {
+		$test_file = backupbuddy_core::getLogDirectory() . 'php_memory_test.txt'; 
+		
+		// If test file already exists, make sure it doesn't look like a test is already running.
+		if ( file_exists( $test_file ) ) {
+			$last_update_time = filemtime( $test_file );
+			if ( ( time() - $last_update_time ) < backupbuddy_constants::PHP_MEMORY_RETEST_DELAY ) {
+				pb_backupbuddy::status( 'details', 'PHP memory test results: Not enough time has passed since the last test updated the file.' );
+				return false;
+			}
+		} else { // File does not exist.
+			return false;
+		}
+		
+		// Read file contents.
+		if ( false === ( $tested_memory = @file_get_contents( $test_file ) ) ) {
+			pb_backupbuddy::status( 'error', 'Error #66364: Unable to read php memory test results file.' );
+			return false;
+		}
+		
+		// Sanitize.
+		$tested_memory = trim( $tested_memory );
+		
+		// Verify not blank.
+		if ( '' == $tested_memory ) {
+			pb_backupbuddy::status( 'details', 'NOTE: PHP memory test blank. It may be in progress.' );
+			return false;
+		}
+		
+		// Verify numeric.
+		if ( ! is_numeric( $tested_memory ) ) {
+			pb_backupbuddy::status( 'error', 'Error #7684354990: PHP memory test results non-numeric. Trimmed result: `' . $tested_memory . '`.' );
+			return false;
+		}
+		
+		pb_backupbuddy::$options['tested_php_memory'] = ceil( $tested_memory ); // Round up.
+		pb_backupbuddy::$options['last_tested_php_memory'] = time(); // Timestamp test results were last saved.
+		pb_backupbuddy::save();
+		
+		@unlink( $test_file ); // Delete test file as it is no longer needed.
+		
+		return pb_backupbuddy::$options['tested_php_memory'];
+		
+	} // End php_memory_test_results().
+	
+	
+	
+	// Attrib: http://stackoverflow.com/questions/190421/caller-function-in-php-5/
+	public static function getCallingFunctionName($completeTrace=false) {
+        $trace=debug_backtrace();
+        if($completeTrace)
+        {
+            $str = '';
+            foreach($trace as $caller)
+            {
+                $str .= "{$caller['function']}()";
+                if (isset($caller['class']))
+                    $str = "{$caller['class']}{$caller['type']}" . $str;
+            }
+        }
+        else
+        {
+            $caller=$trace[2];
+            $str = "{$caller['function']}()";
+            if (isset($caller['class']))
+                $str = "{$caller['class']}{$caller['type']}" . $str;
+        }
+        return $str;
+    }
+
 	
 	
 } // End class backupbuddy_core.

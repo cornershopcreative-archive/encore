@@ -31,6 +31,7 @@ class pb_backupbuddy_destination_live {
 		'remote_snapshot_period'	=> 'daily',					// How often to trigger a remote snapshot. NOTE: This does not happen until all periodic process steps are complete.
 		
 		'enabled'				=>	'1',							// Enabled (1) or not (0).
+		'disable_logging'		=>	'0',							// 1 to skip log redirection.
 		'max_send_details_limit'=>	'5',							// Maximum number of remote send filesoptions and logs to keep. Keeps most recent.
 		'postmeta_key_excludes'	=>	'',					// STRING. _getOption( 'xx', TRUE ) converts to array. Postmeta keys to exclude from triggering an update to live db.
 		'options_excludes'		=>	'',								// STRING. _getOption( 'xx', TRUE ) converts to array. Options table names to exclude from triggering an update to live db.
@@ -47,6 +48,7 @@ class pb_backupbuddy_destination_live {
 		'no_new_snapshots_error_days' =>	'10',		// Sends error emails if no Snapshots 
 		'max_wait_on_transfers_time' =>		'5',		// Maximum minutes to wait for pending transfers to complete before falling back to Snapshotting.
 		'email'						=>		'',			// Email to send snapshot notifications to. If blank it will use iThemes Member Account email.
+		'max_delete_burst'			=>		'100',		// Max number of files per delete per burst. Eg number of files to pass into deleteFiles() function.
 		
 		/***** BEGIN ARCHIVE LIMITS *****/
 		'limit_db_daily'			=>		'5',
@@ -94,7 +96,7 @@ class pb_backupbuddy_destination_live {
 	 */
 	public static function send( $settings = array(), $file, $send_id = '', $delete_after = false ) {
 		$settings = self::_init( $settings );
-		
+		//return true;
 		global $pb_backupbuddy_destination_errors;
 		if ( '1' == $settings['disabled'] ) {
 			$pb_backupbuddy_destination_errors[] = __( 'Error #48933: This destination is currently disabled. Enable it under this destination\'s Advanced Settings.', 'it-l10n-backupbuddy' );
@@ -337,6 +339,7 @@ class pb_backupbuddy_destination_live {
 			if ( ! is_array( $response ) ) {
 				$error = 'Error #344080: Unable to initiate Live send retrieval of manage data. Details: `' . $response . '`.';
 				pb_backupbuddy::status( 'error', $error );
+				backupbuddy_core::addNotification( 'live_error', 'BackupBuddy Stash Live Error', $error );
 				return false;
 			}
 			if ( pb_backupbuddy::$options['log_level'] == '3' ) { // Full logging enabled.

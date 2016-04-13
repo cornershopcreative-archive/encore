@@ -497,7 +497,13 @@ class pb_backupbuddy_form {
 			} elseif ( $input['type'] == 'password' ) {
 				
 				
-				$return .= '<input type="password" name="' . $prefix . $name . '" value="' . $input['value'] . '" class="' . $classes . '" id="' . $prefix . str_replace( '#', '__', $name ) . '"' . $css . '>';
+				// Quick fix - esc_attr is not callable during IMPORTBUDDY
+				if ( function_exists( 'esc_attr' ) ) {
+					$input_value = esc_attr( $input['value'] );
+				} else {
+					$input_value = $input['value'];
+				}
+				$return .= '<input type="password" name="' . $prefix . $name . '" value="' . $input_value . '" class="' . $classes . '" id="' . $prefix . str_replace( '#', '__', $name ) . '"' . $css . '>';
 				
 				
 			/********** SELECT **********/

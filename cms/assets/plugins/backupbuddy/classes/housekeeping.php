@@ -23,6 +23,12 @@ class backupbuddy_housekeeping {
 	 *
 	 */
 	public static function run_periodic( $backup_age_limit = 172800, $die_on_fail = true ) {
+		if ( is_multisite() ) { // For Multisite only run on main Network site.
+			if ( ! is_main_site() ) {
+				return;
+			}
+		}
+		
 		pb_backupbuddy::status( 'message', 'Starting periodic housekeeeping procedure for BackupBuddy v' . pb_backupbuddy::settings( 'version' ) . '.' );
 		require_once( pb_backupbuddy::plugin_path() . '/classes/core.php' );
 		require_once( pb_backupbuddy::plugin_path() . '/classes/fileoptions.php' );
@@ -59,8 +65,9 @@ class backupbuddy_housekeeping {
 		self::purge_large_logs();
 		self::clear_cron_send();
 		
-		// PHP runtime tests.
+		// PHP tests.
 		self::schedule_php_runtime_tests();
+		self::schedule_php_memory_tests();
 		
 		@clearstatcache(); // Clears file info stat cache.
 		pb_backupbuddy::status( 'message', 'Finished periodic housekeeping cleanup procedure.' );
@@ -81,7 +88,7 @@ class backupbuddy_housekeeping {
 					$days_since_last = round( $time_since_last / 60 / 60 / 24 );
 					
 					if ( $days_since_last > (int)$destination['no_new_snapshots_error_days'] ) {
-						$message = 'Warning! BackupBuddy is configured to notify you if no new BackupBuddy Stash Live Snapshots have been made in `' . pb_backupbuddy::$options['no_new_backups_error_days'] . '` days. It has been `' . $days_since_last . '` days since your last Snapshot. There may be a problem with your site\'s Stash Live setup requiring your attention.';
+						$message = 'Warning! BackupBuddy is configured to notify you if no new BackupBuddy Stash Live Snapshots have been made in `' . (int)$destination['no_new_snapshots_error_days'] . '` days. It has been `' . $days_since_last . '` days since your last Snapshot. There may be a problem with your site\'s Stash Live setup requiring your attention.';
 						pb_backupbuddy::status( 'warning', $message );
 						backupbuddy_core::mail_error( $message );
 					}
@@ -89,7 +96,7 @@ class backupbuddy_housekeeping {
 					$time_since_last = time() - $state['stats']['first_activity'];
 					$days_since_last = round( $time_since_last / 60 / 60 / 24 );
 					if ( $days_since_last > ( (int)$destination['no_new_snapshots_error_days'] * 2 ) ) {
-						$message = 'Warning! BackupBuddy is configured to notify you if no new BackupBuddy Stash Live Snapshots have been made in `' . pb_backupbuddy::$options['no_new_backups_error_days'] . '` days. It has been at least twice this (`' . $days_since_last . '` days) since you set up BackupBuddy Stash Live but the first Snapshot has not been made yet. There may be a problem with your site\'s Stash Live setup requiring your attention.';
+						$message = 'Warning! BackupBuddy is configured to notify you if no new BackupBuddy Stash Live Snapshots have been made in `' . (int)$destination['no_new_snapshots_error_days'] . '` days. It has been at least twice this (`' . $days_since_last . '` days) since you set up BackupBuddy Stash Live but the first Snapshot has not been made yet. There may be a problem with your site\'s Stash Live setup requiring your attention.';
 						pb_backupbuddy::status( 'warning', $message );
 						backupbuddy_core::mail_error( $message );
 					}
@@ -202,6 +209,7 @@ class backupbuddy_housekeeping {
 	 */
 	public static function purge_large_logs() {
 		$max_site_log_size = pb_backupbuddy::$options['max_site_log_size'] * 1024 * 1024; // in bytes.
+		$max_log_size_skip_truncate = 10; // If log file exceeds this site then simply unlink since it may be too large to trunace. In MB.
 		
 		// Purge site-wide log if over certain size.
 		$files = glob( backupbuddy_core::getLogDirectory() . '*.txt' );
@@ -210,13 +218,14 @@ class backupbuddy_housekeeping {
 		}
 		
 		foreach( $files as $file ) {
-			//$file_stats = stat( $file );
-			//if ( $file_stats['size'] > ( $max_site_log_size ) ) {
-				//backupbuddy_core::mail_error( 'NOTICE ONLY (not an error): A BackupBuddy log file has exceeded the size threshold of ' . pb_backupbuddy::$format->file_size( $max_site_log_size ) . ' and has been deleted to maintain performance. This is only a notice. Deleted log file: ' . $file . '.' );
-				//pb_backupbuddy::status( 'details', 'Truncating LARGE log file `' . $file . '` of size `' . pb_backupbuddy::$format->file_size( $max_site_log_size ) . '` exceeding threshold, only keeping newest half.' );
-				//@unlink( $file );
-			backupbuddy_core::truncate_file_beginning( $file, $max_site_log_size );
-			//}
+			if ( ( $size = filesize( $file ) ) > $max_log_size_skip_truncate * 1024 * 1024 ) {
+				pb_backupbuddy::status( 'warning', 'Warning #389349843: Log file `' . $file . '` was too large `' . $size . ' bytes` to truncate (max: `' . $max_log_size_skip_truncate . '`MB) so it was unlinked.' );
+				if ( false === @unlink( $file ) ) {
+					pb_backupbuddy::status( 'error', 'Error #438934843: Log file `' . $file . '` was too large `' . $size . ' bytes` to truncate (max: `' . $max_log_size_skip_truncate . '`MB) BUT it could not be unlinked/deleted! Manually delete this file.' );
+				}
+			} else {
+				backupbuddy_core::truncate_file_beginning( $file, $max_site_log_size );
+			}
 		}
 	} // End purge_large_logs().
 	
@@ -262,7 +271,7 @@ class backupbuddy_housekeeping {
 			
 			if ( ( time() - $time ) > $max_age ) {
 				if ( false === @unlink( $send_fileoption ) ) {
-					pb_backupbuddy::status( 'error', 'Unable to delete old remote send fileoptions file `' . $send_fileoption . '`. You may manually delete it. Check directory permissions for future cleanup.' );
+					pb_backupbuddy::status( 'warning', 'Unable to delete old remote send fileoptions file `' . $send_fileoption . '`. You may manually delete it. Check directory permissions for future cleanup.' );
 				} else { // Deleted.
 					@unlink( str_replace( '.txt', '.lock', $send_fileoption ) ); // Remove lock file if exists.
 				}
@@ -271,6 +280,11 @@ class backupbuddy_housekeeping {
 			}
 			
 			if ( $i > $limit ) { // Outside limit. Delete only if finished OR failed.
+				// Make sure file still exists before processing it.
+				if ( ! file_exists( $send_fileoption ) ) {
+					continue;
+				}
+				
 				// Don't delete if unfinished and not failed.
 				$send_fileoption_obj = new pb_backupbuddy_fileoptions( $send_fileoption, $read_only = true );
 				if ( true !== ( $result = $send_fileoption_obj->is_ok() ) ) { // Could not open. Skip since we can't verify status.
@@ -289,7 +303,7 @@ class backupbuddy_housekeeping {
 				
 				// Made it here so must be finished or failed.
 				if ( false === @unlink( $send_fileoption ) ) {
-					pb_backupbuddy::status( 'error', 'Unable to delete old remote send fileoptions file `' . $send_fileoption . '`. You may manually delete it. Check directory permissions for future cleanup.' );
+					pb_backupbuddy::status( 'warning', 'Unable to delete old remote send fileoptions file `' . $send_fileoption . '`. You may manually delete it. Check directory permissions for future cleanup.' );
 				} else { // Deleted.
 					@unlink( str_replace( '.txt', '.lock', $send_fileoption ) ); // Remove lock file if exists.
 				}
@@ -441,7 +455,7 @@ class backupbuddy_housekeeping {
 			$fileoptions_file = backupbuddy_core::getLogDirectory() . 'fileoptions/send-' . $send_id . '.txt';
 			$fileoptions_obj = new pb_backupbuddy_fileoptions( $fileoptions_file, $read_only = false, $ignore_lock = false, $create_file = false );
 			if ( true !== ( $result = $fileoptions_obj->is_ok() ) ) {
-				pb_backupbuddy::status( 'error', __('Fatal Error #9034.32393. Unable to access fileoptions data.', 'it-l10n-backupbuddy' ) . ' Error: ' . $result );
+				pb_backupbuddy::status( 'error', __('Fatal Error #9034.3224442393. Unable to access fileoptions data.', 'it-l10n-backupbuddy' ) . ' Error: ' . $result );
 				return false;
 			}
 			
@@ -890,11 +904,16 @@ class backupbuddy_housekeeping {
 	public static function schedule_php_runtime_tests( $force_run = false ) {
 		pb_backupbuddy::status( 'details', 'About to schedule PHP runtime tests.' );
 		
+		if ( pb_backupbuddy::$options['php_runtime_test_minimum_interval'] <= 0 ) {
+			pb_backupbuddy::status( 'warnings', 'PHP runtime test disabled based on advanced settings.' );
+			return false;
+		}
+		
 		// Don't run runtime test too often.
 		if ( pb_backupbuddy::$options['last_tested_php_runtime'] > 0 ) { // if it's run at least once...
 			$elapsed = time() - pb_backupbuddy::$options['last_tested_php_runtime'];
-			if ( $elapsed < backupbuddy_constants::PHP_RUNTIME_TEST_MINIMUM_INTERVAL ) { // Not enough time elapsed since last run.
-				pb_backupbuddy::status( 'details', 'Not enough time elapsed since last PHP runtime test interval. Waiting until next housekeeping (or longer). Elapsed: `' . $elapsed . '`. Interval limit: `' . backupbuddy_constants::PHP_RUNTIME_TEST_MINIMUM_INTERVAL . '`.' );
+			if ( $elapsed < pb_backupbuddy::$options['php_runtime_test_minimum_interval'] ) { // Not enough time elapsed since last run.
+				pb_backupbuddy::status( 'details', 'Not enough time elapsed since last PHP runtime test interval. Waiting until next housekeeping (or longer). Elapsed: `' . $elapsed . '`. Interval limit: `' . pb_backupbuddy::$options['php_runtime_test_minimum_interval'] . '`.' );
 				return;
 			}
 		}
@@ -915,6 +934,42 @@ class backupbuddy_housekeeping {
 			spawn_cron( time() + 150 ); // Adds > 60 seconds to get around once per minute cron running limit.
 		}
 	} // End schedule_php_runtime_tests().
+	
+	
+	
+	public static function schedule_php_memory_tests( $force_run = false ) {
+		pb_backupbuddy::status( 'details', 'About to schedule PHP memory tests.' );
+		
+		if ( pb_backupbuddy::$options['php_memory_test_minimum_interval'] <= 0 ) {
+			pb_backupbuddy::status( 'warnings', 'PHP memory test disabled based on advanced settings.' );
+			return false;
+		}
+		
+		// Don't run memory test too often.
+		if ( pb_backupbuddy::$options['last_tested_php_memory'] > 0 ) { // if it's run at least once...
+			$elapsed = time() - pb_backupbuddy::$options['last_tested_php_memory'];
+			if ( $elapsed < pb_backupbuddy::$options['php_memory_test_minimum_interval'] ) { // Not enough time elapsed since last run.
+				pb_backupbuddy::status( 'details', 'Not enough time elapsed since last PHP memory test interval. Waiting until next housekeeping (or longer). Elapsed: `' . $elapsed . '`. Interval limit: `' . pb_backupbuddy::$options['php_memory_test_minimum_interval'] . '`.' );
+				return;
+			}
+		}
+		
+		// Schedule to run test.
+		$cronArgs = array( $schedule_results = true );
+		$schedule_result = backupbuddy_core::schedule_single_event( time(), 'php_memory_test', $cronArgs );
+		if ( true === $schedule_result ) {
+			pb_backupbuddy::status( 'details', 'PHP memory test cron event scheduled.' );
+		} else {
+			pb_backupbuddy::status( 'error', 'PHP memory test cron event FAILED to be scheduled.' );
+		}
+		
+		// Spawn now if enabled.
+		if ( '1' != pb_backupbuddy::$options['skip_spawn_cron_call'] ) {
+			pb_backupbuddy::status( 'details', 'Spawning cron now.' );
+			update_option( '_transient_doing_cron', 0 ); // Prevent cron-blocking for next item.
+			spawn_cron( time() + 150 ); // Adds > 60 seconds to get around once per minute cron running limit.
+		}
+	} // End schedule_php_memory_tests().
 	
 	
 	

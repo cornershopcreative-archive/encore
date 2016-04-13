@@ -157,6 +157,7 @@ class pb_backupbuddy_destination_stash2 { // Change class name end to match dest
 			'wp'        => $wp_version,
 			'bb'		=> pb_backupbuddy::settings( 'version' ),
 			'site'      => str_replace( 'www.', '', site_url() ),
+			'home'      => str_replace( 'www.', '', home_url() ),
 			'timestamp' => time()
 		);
 		
@@ -196,12 +197,17 @@ class pb_backupbuddy_destination_stash2 { // Change class name end to match dest
 		if ( is_wp_error( $response ) ) {
 			$error = 'Error #3892774: `' . $response->get_error_message() . '`.';
 			self::_error( 'error', $error );
+			
+			if ( 'live' == $settings['type'] ) {
+				//backupbuddy_core::addNotification( 'live_error', 'BackupBuddy Stash Live Error', $error );
+			}
+			
 			return $error;
 		} else { // Not error.
 			if ( null !== ( $response_decoded = json_decode( $response['body'], true  ) ) ) {
 				if ( ( false === $passthru_errors ) && ( isset( $response_decoded['error'] ) ) ) {
 					if ( isset( $response_decoded['error']['message'] ) ) {
-						$error = 'Error #39752893. Server reported an error performing action `' . $action . '` with additional params: `' . print_r( $additionalParams, true ) . '`. Details: `' . print_r( $response_decoded['error'], true ) . '`.';
+						$error = 'Error #39752893. Server reported an error performing action `' . $action . '` with additional params: `' . print_r( $additionalParams, true ) . '`. Body Details: `' . print_r( $response_decoded['error'], true ) . '`. Response Details: `' . print_r( $response['response'], true ) . '`.';
 						self::_error( $error );
 						return $response_decoded['error']['message'];
 					} else {
@@ -213,7 +219,7 @@ class pb_backupbuddy_destination_stash2 { // Change class name end to match dest
 					return $response_decoded;
 				}
 			} else {
-				$error = 'Error #8393833: Unexpected server response: `' . htmlentities( $response['body'] ) . '` calling action `' . $action . '`.';
+				$error = 'Error #8393833: Unexpected server response: `' . htmlentities( $response['body'] ) . '` calling action `' . $action . '`. Full response: `' . print_r( $response, true ) . '`.';
 				self::_error( $error );
 				return $error;
 			}

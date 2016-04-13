@@ -15,6 +15,13 @@ pb_backupbuddy::flush();
 // Final functions to run after DB migration is done. In function since this is called both in standard and at end of deployment.
 function finalActions( $restore ) {
 	
+	// Migrate htaccess.
+	if ( TRUE !== $restore->_state['migrateHtaccess'] ) {
+		pb_backupbuddy::status( 'details', 'Skipping migration of .htaccess file based on settings.' );
+	} else {
+		$restore->migrateHtaccess();
+	}
+
 	// Rename .htaccess.bb_temp back to .htaccess.
 	$restore->renameHtaccessTempBack();
 	
@@ -71,16 +78,17 @@ if ( 'true' != pb_backupbuddy::_GET( 'deploy' ) ) { // deployment mode pre-loads
 }
 
 
-
-
-
-
 // Instantiate restore class.
 require_once( pb_backupbuddy::plugin_path() . '/classes/restore.php' );
 $restore = new backupbuddy_restore( 'restore', $restoreData );
 unset( $restoreData ); // Access via $restore->_state to make sure it is always up to date.
 if ( 'true' != pb_backupbuddy::_GET( 'deploy' ) ) { // We dont accept submitted form options during deploy.
-	$restore->_state = parse_options( $restore->_state );
+	if ( ! is_array( $restore->_state['databaseSettings']['migrateResumeSteps'] ) ) { // Skip parse options if not chunking.
+		$restore->_state = parse_options( $restore->_state );
+		pb_backupbuddy::status( 'details', 'Not resuming; parsing options.' );
+	} else {
+		pb_backupbuddy::status( 'details', 'Resuming; skipping options parse.' );
+	}
 }
 
 /*
@@ -96,20 +104,12 @@ function parse_options( $restoreData ) {
 
 	$restoreData['siteurl'] = preg_replace( '|/*$|', '', pb_backupbuddy::_POST( 'siteurl' ) ); // Strip trailing slashes.
 	$restoreData['homeurl'] = preg_replace( '|/*$|', '', pb_backupbuddy::_POST( 'homeurl' ) ); // Strip trailing slashes.
-	if ( '' == $restoreData['homeurl'] ) {
+	if ( ( 'on' != pb_backupbuddy::_POST( 'customHomeEnabled' ) ) || ( '' == $restoreData['homeurl'] ) ) { // Home url was blank OR they did not check to customize the home url so just set it to siteurl.
 		$restoreData['homeurl'] = $restoreData['siteurl'];
 	}
 	$restoreData['maxExecutionTime'] = pb_backupbuddy::_POST( 'max_execution_time' );
 	
 	return $restoreData;
-}
-
-
-// Migrate htaccess.
-if ( TRUE !== $restore->_state['migrateHtaccess'] ) {
-	pb_backupbuddy::status( 'details', 'Skipping migration of .htaccess file based on settings.' );
-} else {
-	$restore->migrateHtaccess();
 }
 
 
@@ -154,7 +154,7 @@ if ( TRUE !== $restore->_state['databaseSettings']['migrateDatabase'] ) {
 		if ( is_array( $migrateResults ) ) { // Return to same step for continuing chunking.
 			$nextStepNum = 5;
 		} else {
-			error_log( 'STATE: ' . print_r( $restore->_state, true ) );
+			//error_log( 'STATE: ' . print_r( $restore->_state, true ) );
 			// Don't attempt to swap out backupbuddy settings from options table if options table wasn't pulled.
 			if ( isset( $restore->_state['dat']['tables_sizes'] ) && ( ! isset( $restore->_state['dat']['tables_sizes'][ $restore->_state['dat']['db_prefix'] . 'options' ] ) ) ) {
 				pb_backupbuddy::status( 'details', 'Options table was not backed up. Skipping swap out of BackupBuddy settings.' );
@@ -187,7 +187,7 @@ if ( TRUE !== $restore->_state['databaseSettings']['migrateDatabase'] ) {
 			pb_backupbuddy::status( 'details', 'Database migration completed.' );
 			echo "<script>bb_action( 'databaseMigrationSuccess' );</script>";
 		} elseif ( is_array( $migrateResults ) ) { // Chunking.
-			$restore->_state['databaseSettings']['migrateResumeSteps'] = $migrateResults[0];
+			$restore->_state['databaseSettings']['migrateResumeSteps'] = (array)$migrateResults[0];
 			$restore->_state['databaseSettings']['migrateResumePoint'] = $migrateResults[1];
 			pb_backupbuddy::status( 'details', 'Database migration did not fully complete in first pass. Chunking in progress. Resuming where left off.' );
 			?>
@@ -260,6 +260,5 @@ if ( 'true' == pb_backupbuddy::_GET( 'deploy' ) ) {
 }
 
 
-
-
 pb_backupbuddy::load_view( '_iframe_footer');
+

@@ -130,7 +130,7 @@ class pb_backupbuddy_fileoptions {
 		if ( ! file_exists( $this->_file ) ) {
 			@unlink( $this->_file . '.lock' ); // fileoptions file did not exist so delete lock file for it if it exists.
 			if ( true !== $create_file ) {
-				pb_backupbuddy::status( 'warning', 'Error #3489347944: Fileoptions file `' . $this->_file . '` not found and NOT in create mode. Verify file exists & check permissions.' );
+				pb_backupbuddy::status( 'warning', 'Warning #3489347944: Fileoptions file `' . $this->_file . '` not found and NOT in create mode. Verify file exists & check permissions.' );
 				$this->_is_ok = 'ERROR_FILE_MISSING_NON_CREATE_MODE';
 				return false;
 			}
@@ -165,7 +165,8 @@ class pb_backupbuddy_fileoptions {
 					return false;
 				}
 				if ( ( time() - $modified ) < $ignore_lock ) {
-					pb_backupbuddy::status( 'warning', 'Warning #54556. Unable to read fileoptions file `' . $this->_file . '` as it is currently locked AND not enough time has passed (time passed: `' . ( time() - $modified ) . '`, limit: `' . $ignore_lock . '`). This is often caused by the previous step TIMING OUT. Override max execution time with a lower number if this is the case. Lock file ID: ' . $this->_last_seen_lock_id . '. My lock ID: `' . $this->_my_lock_id . '`.' );
+					pb_backupbuddy::status( 'warning', 'Warning #54556. Unable to read fileoptions file `' . $this->_file . '` as it is currently locked AND not enough time has passed (time passed: `' . ( time() - $modified ) . '`, limit: `' . $ignore_lock . '`). This is often caused by an earlier step dying, whether due to TIMING OUT, RUNNING OUT OF MEMORY, or BEING KILLED BY THE SERVER, or OTHER PHP ERROR. Find the last line(s) to run before warnings began to see what was the last thing to run before failure. Increase memory if nearing memory limit, decrease max operation time Stash Live Advanced Settings if server is overreporting available runtime. Check PHP error logs. Lock file ID: ' . $this->_last_seen_lock_id . '. My lock ID: `' . $this->_my_lock_id . '`.' );
+					pb_backupbuddy::status( 'action', 'possible_timeout' );
 					$this->_is_ok = 'ERROR_LOCKED';
 					return false;
 				}
@@ -323,7 +324,7 @@ class pb_backupbuddy_fileoptions {
 		// If file is locked and we ae only saving when it's our own lock ID then make sure IDs match.
 		if ( ( true === $this->is_locked() ) && ( false !== $only_save_my_lock_id ) ) {
 			if ( ( $this->_last_seen_lock_id != $this->_my_lock_id ) || ( '' == $this->_my_lock_id ) ) {
-				pb_backupbuddy::status( 'error', 'Error #43894384: Unable to write to fileoptions as file is currently locked by another fileoptions instance/process. Last seen lock ID: `' . $this->_last_seen_lock_id . '`. My lock ID: `' . $this->_my_lock_id . '`.' );
+				pb_backupbuddy::status( 'error', 'Error #43894384: Unable to write to fileoptions as file `' . $this->_file . '` is currently locked by another fileoptions instance/process. Last seen lock ID: `' . $this->_last_seen_lock_id . '`. My lock ID: `' . $this->_my_lock_id . '`.' );
 				return false;
 			}
 		}
@@ -467,7 +468,7 @@ class pb_backupbuddy_fileoptions {
 			
 			if ( false !== $only_unlock_my_id ) {
 				if ( ( $this->_last_seen_lock_id != $this->_my_lock_id ) || ( '' == $this->_my_lock_id ) ) {
-					pb_backupbuddy::status( 'details', 'Lock status: Last seen lock ID: `' . $this->_last_seen_lock_id . '`. My lock ID: `' . $this->_my_lock_id . '`.' );
+					//pb_backupbuddy::status( 'details', 'Lock status: Last seen lock ID: `' . $this->_last_seen_lock_id . '`. My lock ID: `' . $this->_my_lock_id . '`.' );
 					return false;
 				}
 			}

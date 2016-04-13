@@ -5,9 +5,9 @@ class backupbuddy_constants {
 	const NOTIFICATIONS_OPTION_SLUG =  'pb_backupbuddy_notifications'; // option name to store notifications into site options system.
 	const NOTIFICATIONS_MAX_COUNT = 25; // Only keep the most recent notifications, up to this limit. Prevent too many building up.
 	const SCHEDULE_RETRY_WAIT = 1; // Seconds to wait to retry scheduling with WordPress if WordPress reports failure.
+	const PHP_MEMORY_RETEST_DELAY = 15; // Minimum amount of seconds which must have elapsed since the file modified time was updated to begin a retest. Prevents accidental overwrite of in-progress test.
 	const PHP_RUNTIME_RETEST_DELAY = 15; // Minimum amount of seconds which must have elapsed since the file modified time was updated to begin a retest. Prevents accidental overwrite of in-progress test.
 	const PHP_RUNTIME_TEST_MAX_TIME = 300; // Maximum number of seconds (loops with 1sec sleeps) to run PHP runtime test for. For huge runtimes prevents from running for full duration.
-	const PHP_RUNTIME_TEST_MINIMUM_INTERVAL = 604800; // How often to perform the automated test via the housekeeping function. This must elapse before automated test will run.
 	const MINIMUM_CRON_KICK_INTERVAL = 600; // [10min] Minimum number of seconds between cron-kick calls to Stash API.
 	const MIMIMUM_TIME_BETWEEN_ERROR_EMAILS = 60; // [1min] Minimum number of seconds between any error emails being sent, to prevent floods.
 	
@@ -35,10 +35,13 @@ class backupbuddy_constants {
 	const BACKUP_STATUS_BOX_LIMIT_OPTION_LINES = 100; // If limiting the status box is enabled, number of lines to limit to.
 	const BACKUP_STATUS_FILEOPTIONS_WAIT_COUNT_LIMIT = 10; // Max number of times to wait for a fileoptions file to become viable. Eg a valid array inside when checking the backup status.
 	public static $HARDCODED_DIR_EXCLUSIONS = array( // Directories to exclude from all backups (traditional & Live).
-		'/.sucuriquarantine/',
-		'/wp-content/uploads/sucuri/',
+		'/.sucuriquarantine/', // Infected files.
+		'/wp-content/uploads/sucuri/', // Temp files such as IP bans.
 		'/wp-content/envato-backups/', // Don't backup backups of other plugins.
 		'/wp-content/uploads/backwpup', // No trailing slash so anything after is removed. Don't backup backups of other plugins.
+		'/wp-content/backup-db/', // Don't backup backups of other plugins.
+		'/wp-snapshots/', // Don't backup backups of other plugins.
+		'/wp-content/ai1wm-backups/', // All in One WordPress Migration backups. Don't backup backups of other plugins.
 	);
 	
 	// Remote Sends

@@ -8,7 +8,7 @@ require_once( pb_backupbuddy::plugin_path() . '/destinations/live/live_periodic.
 $state = backupbuddy_live_periodic::get_stats();
 
 
-require_once(  pb_backupbuddy::plugin_path() . '/destinations/live/_stats.php' );
+include(  pb_backupbuddy::plugin_path() . '/destinations/live/_stats.php' );
 
 
 return $stats; // Set in _stats.php.

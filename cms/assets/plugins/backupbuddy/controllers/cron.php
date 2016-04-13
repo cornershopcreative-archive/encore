@@ -142,15 +142,32 @@ class pb_backupbuddy_cron extends pb_backupbuddy_croncore {
 	 * Test PHP max execution time. More reliable than reported.
 	 *
 	 */
-	public function _php_runtime_test() {
+	public function _php_runtime_test( $schedule_results = false, $force_run = false ) {
 		require_once( pb_backupbuddy::plugin_path() . '/classes/core.php' );
 		
 		// Unschedule the runtime test since it will never complete in time.
 		$next_scheduled_time = wp_next_scheduled( 'backupbuddy_cron', array( 'php_runtime_test', array(), 0 ) );
 		backupbuddy_core::unschedule_event( $next_scheduled_time, 'backupbuddy_cron', array( 'php_runtime_test', array(), 0 ) );
 		
-		backupbuddy_core::php_runtime_test();
+		backupbuddy_core::php_runtime_test( $schedule_results, $force_run );
 	} // End _php_runtime_test().
+	
+	
+	
+	/* _php_memory_test()
+	 *
+	 * Test PHP memory. More reliable than reported.
+	 *
+	 */
+	public function _php_memory_test( $schedule_results = false, $force_run = false ) {
+		require_once( pb_backupbuddy::plugin_path() . '/classes/core.php' );
+		
+		// Unschedule the memory test since it will never complete in time.
+		$next_scheduled_time = wp_next_scheduled( 'backupbuddy_cron', array( 'php_memory_test', array(), 0 ) );
+		backupbuddy_core::unschedule_event( $next_scheduled_time, 'backupbuddy_cron', array( 'php_memory_test', array(), 0 ) );
+		
+		backupbuddy_core::php_memory_test( $schedule_results, $force_run );
+	} // End _php_memory_test().
 	
 	
 	
@@ -163,6 +180,18 @@ class pb_backupbuddy_cron extends pb_backupbuddy_croncore {
 		require_once( pb_backupbuddy::plugin_path() . '/classes/core.php' );
 		backupbuddy_core::php_runtime_test_results();
 	} // End _php_runtime_test_results().
+	
+	
+	
+	/* _php_memory_test_results()
+	 *
+	 * Calculate the results of the PHP memory test, if available.
+	 *
+	 */
+	public function _php_memory_test_results() {
+		require_once( pb_backupbuddy::plugin_path() . '/classes/core.php' );
+		backupbuddy_core::php_memory_test_results();
+	} // End _php_memory_test_results().
 	
 	
 	
@@ -384,6 +413,17 @@ class pb_backupbuddy_cron extends pb_backupbuddy_croncore {
 				return true;
 			} else { // fail
 				pb_backupbuddy::status( 'details', 'Error #85448774. S3 copy to local FAILURE.' );
+				return false;
+			}
+			
+		} elseif ( $destination_type == 's32' ) {
+			
+			require_once( pb_backupbuddy::plugin_path() . '/destinations/s32/init.php' );
+			if ( true === pb_backupbuddy_destination_s32::download_file( $settings, $file, $destination_file ) ) { // success
+				pb_backupbuddy::status( 'details', 'S3 (v2) copy to local success.' );
+				return true;
+			} else { // fail
+				pb_backupbuddy::status( 'details', 'Error #3434345. S3 (v2) copy to local FAILURE.' );
 				return false;
 			}
 			

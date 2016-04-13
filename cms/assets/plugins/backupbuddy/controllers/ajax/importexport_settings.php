@@ -28,10 +28,32 @@ if ( pb_backupbuddy::_POST( 'import_settings' ) != '' ) {
 						}
 					}
 				}
+
+				// Delete all Stash destinations as they are URL dependant
+				if ( ! empty( $import['remote_destinations'] ) ) {
+					$skipped_destinations = array();
+					foreach( $import['remote_destinations'] as $remote_key => $remote_data ) {
+						if ( ! in_array( $remote_data['type'], array( 'stash', 'stash2', 'live' ) ) ) {
+							continue;
+						}
+						$skipped_destinations[] = '&#8227; ' . $remote_data['title'];
+						unset( $import['remote_destinations'][$remote_key] );
+					}
+				}
+
+				// Delete Server Tools data stored in settings
+				$import['tested_php_runtime'] = $import['tested_php_memory'] = $import['last_tested_php_runtime'] = $import['last_tested_php_memory'] = 0;
+
+				// Run Import
 				pb_backupbuddy::$options = $import;
 				require_once( pb_backupbuddy::plugin_path() . '/controllers/activation.php' ); // Run data migration to upgrade if needed.
 				pb_backupbuddy::save();
 				pb_backupbuddy::alert( 'Provided settings successfully imported. Prior settings overwritten.' );
+
+				// Alert skipped destinations if present
+				if ( ! empty( $skipped_destinations ) ) {
+					pb_backupbuddy::alert( 'The following Stash destinations were not imported because they are site specific: <p>' . implode( $skipped_destinations, '<br />' ) . '</p> <a href="' . esc_attr( get_admin_url() ) . 'admin.php?page=pb_backupbuddy_destinations" target="_parent">View Destinations</a>' );
+				}
 			}
 		}
 	}

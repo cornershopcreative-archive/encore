@@ -10,6 +10,7 @@ pb_backupbuddy::status( 'details', 'Loading step 2.' );
 echo "<script>bb_showStep( 'unzippingFiles' );</script>";
 pb_backupbuddy::flush();
 
+
 if ( 'true' != pb_backupbuddy::_GET( 'deploy' ) ) { // deployment mode pre-loads state data in a file instead of passing via post.
 	// Determine selected archive file.
 	$archiveFile = ABSPATH . str_replace( array( '\\', '/' ), '', pb_backupbuddy::_POST( 'file' ) );
@@ -33,6 +34,16 @@ if ( '1' == pb_backupbuddy::_POST( 'skipUnzip' ) ) {
 } else {
 	$skipUnzip = false;
 }
+
+
+$simpleVersion = pb_backupbuddy::$options['bb_version'];
+if ( strpos( pb_backupbuddy::$options['bb_version'], ' ' ) > 0 ) {
+	$simpleVersion = substr( pb_backupbuddy::$options['bb_version'], 0, strpos( pb_backupbuddy::$options['bb_version'], ' ' ) );
+}
+?>
+<!-- ImportBuddy version usage stats -->
+<!-- <img style="visibility: hidden;" src="https://t2k6r2ywpj.execute-api.us-east-1.amazonaws.com/v1/bb?u=<?php echo md5( site_url() ); ?>&v=<?php echo $simpleVersion; ?>&t=<?php echo microtime(true) ?>"> -->
+<?php
 
 // Instantiate restore class.
 require_once( pb_backupbuddy::plugin_path() . '/classes/restore.php' );
@@ -134,6 +145,9 @@ if ( ( false === $restore->_state['restoreFiles'] ) || ( true === $results ) ) {
 }
 
 
+echo '<script>NProgress.done();</script>';
+
+
 // Load footer.
 pb_backupbuddy::load_view( '_iframe_footer');
 
@@ -169,3 +183,7 @@ if ( 'true' == pb_backupbuddy::_GET( 'deploy' ) ) {
 	<script>jQuery( '#deploy-autoProceed' ).submit();</script>
 	<?php
 }
+
+pb_backupbuddy::flush();
+$in_page = true;
+include( '_stats.php' );

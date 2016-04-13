@@ -266,8 +266,10 @@ class backupbuddy_restore {
 			pb_backupbuddy::status( 'details', 'Generating undo script.' );
 			$this->_state['undoFile'] = 'backupbuddy_rollback_undo-' . $this->_state['serial'] . '.php';
 			$undoURL = rtrim( site_url(), '/\\' ) . '/' . $this->_state['undoFile'];
-			if ( false === copy( dirname( __FILE__ ) . '/_rollback_undo.php', ABSPATH . $this->_state['undoFile'] ) ) {
-				$this->_error( __( 'Warning: Unable to create undo script in site root. You will not be able to automated undoing the rollback if something fails so BackupBuddy will not continue.', 'it-l10n-backupbuddy' ) );
+			$undo_source = dirname( __FILE__ ) . '/_rollback_undo.php';
+			$undo_dest = ABSPATH . $this->_state['undoFile'];
+			if ( false === copy( $undo_source, $undo_dest ) ) {
+				$this->_error( 'Warning: Unable to create undo script in site root. You will not be able to automated undoing the rollback if something fails so BackupBuddy will not continue. Tried to copy file `' . $undo_source . '` to `' . $undo_dest . '`.' );
 				return false;
 			}
 			$this->_state['undoURL'] = $undoURL;
@@ -530,6 +532,7 @@ class backupbuddy_restore {
 	/**
 	 * Copies BUB settings from old options table over to new options table
 	 * This function is not currently called if the options table was not included in the backup
+	 * NOTE: Also handles swapping iThemes Licensing & Sync authentication.
 	 */
 	public function swapDatabaseBBSettings() {
 		$this->_before( __FUNCTION__ );
@@ -541,32 +544,33 @@ class backupbuddy_restore {
 		// Calculate temporary table prefixes.
 		$newPrefix = 'bbnew-' . substr( $this->_state['serial'], 0, 4 ) . '_' . $this->_state['databaseSettings']['prefix']; // Incoming site.
 		$oldPrefix = $this->_state['databaseSettings']['prefix']; // Current live site prefix.
-		
 		global $wpdb;
 		
-		// Get current BackupBuddy settings for current site.
-		pb_backupbuddy::status( 'details', 'Copying BackupBuddy settings from options table prefixed with `' . $oldPrefix . '` to `' . $newPrefix . '`.' );
-		$sql = "SELECT option_value FROM `{$oldPrefix}options` WHERE option_name='pb_backupbuddy';";
-		$results = $wpdb->get_results( $sql, ARRAY_A );
-		if ( 0 == count( $results ) ) {
-			return $this->_error( 'Error #8447347: Error getting current BackupBuddy settings. SQL Query: ' . htmlentities( $sql ) );
-		}
+		$options_to_keep = array(
+			'pb_backupbuddy',
+			'ithemes-updater-keys',
+			'ithemes-sync-cache',
+			'ithemes-sync-admin_menu',
+			'ithemes-sync-authenticated',
+			'itsec_hide_backend', // Prevents custom login URL from transferring.
+		);
 		
-		// Overwrite incoming site BackupBuddy settings in its temp table.
-		if ( false === $wpdb->query( "UPDATE `{$newPrefix}options` SET option_value='" . backupbuddy_core::dbEscape( $results[0]['option_value'] ) . "' WHERE option_name='pb_backupbuddy';" ) ) {
-			return $this->_error( 'Error #372837683: Unable to copy over BackupBuddy settings from live site to incoming database in temp table. Details: `' . $wpdb->last_error . '`.' );
-		}
-		
-		// Get current iThemes Licensing for current site (if any).
-		pb_backupbuddy::status( 'details', 'Copying iThemes Licensing data from options table prefixed with `' . $oldPrefix . '` to `' . $newPrefix . '`.' );
-		$sql = "SELECT option_value FROM `{$oldPrefix}options` WHERE option_name='ithemes-updater-keys';";
-		$results = $wpdb->get_results( $sql, ARRAY_A );
-		if ( count( $results ) > 0 ) {
-			// Overwrite incoming site BackupBuddy settings in its temp table.
-			if ( false === $wpdb->query( "UPDATE `{$newPrefix}options` SET option_value='" . backupbuddy_core::dbEscape( $results[0]['option_value'] ) . "' WHERE option_name='ithemes-updater-keys';" ) ) {
-				pb_backupbuddy::status( 'error', 'Error #2379332: Unable to copy over iThemes Licenses from live site to incoming database in temp table. Details: `' . $wpdb->last_error . '`.' );
+		foreach( $options_to_keep as $option ) {
+			// Get current iThemes Licensing for current site (if any).
+			pb_backupbuddy::status( 'details', 'Copying data from options table for option `' . $option . '`, from table prefixed with `' . $oldPrefix . '` to `' . $newPrefix . '` to retain and not get overwritten by incoming site data.' );
+			$sql = "SELECT option_value FROM `{$oldPrefix}options` WHERE option_name='{$option}' LIMIT 1;";
+			$results = $wpdb->get_results( $sql, ARRAY_A );
+			if ( count( $results ) > 0 ) {
+				// Delete any existing settings.
+				$wpdb->query( "DELETE FROM `{$newPrefix}options` WHERE option_name='{$option}' LIMIT 1;" );
+				// Overwrite incoming site BackupBuddy settings in its temp table.
+				if ( false === $wpdb->query( "INSERT INTO `{$newPrefix}options` ( option_name, option_value ) VALUES( '" . $option . "', '" . backupbuddy_core::dbEscape( $results[0]['option_value'] ) . "' )" ) ) {
+					pb_backupbuddy::status( 'error', 'Error #2379332: Unable to copy over data from live site to incoming database in temp table. Details: `' . $wpdb->last_error . '`. Option name: `' . $option . '`.' );
+				} else {
+					pb_backupbuddy::status( 'details', 'Maintained data by copying it over incoming database. Options name: `' . $option . '`.' );
+				}
 			} else {
-				pb_backupbuddy::status( 'details', 'Maintained licensing data by copying it over incoming database.' );
+				pb_backupbuddy::status( 'details', 'Option with name `' . $option . '` not found. Skipping.' );
 			}
 		}
 		
@@ -1346,7 +1350,14 @@ class backupbuddy_restore {
 		$url = str_replace( $_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI'] );
 		$url = str_replace( basename( $url ) , '', $url );
 		$url = preg_replace( '|/*$|', '', $url );  // strips trailing slash(es).
-		$url = 'http://' . $_SERVER['HTTP_HOST'] . $url;
+		
+		if ( ( isset( $_SERVER['HTTPS'] ) && ( $_SERVER['HTTPS'] !== 'off') ) ||  ( isset( $_SERVER['SERVER_PORT'] ) && ( $_SERVER['SERVER_PORT'] == 443 ) ) ) { // SSL.
+			$url_prefix = 'https://';
+		} else {
+			$url_prefix = 'http://';
+		}
+		
+		$url = $url_prefix . $_SERVER['HTTP_HOST'] . $url;
 		
 		return $url;
 	} // End getDefaultUrl().

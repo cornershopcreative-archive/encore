@@ -60,6 +60,9 @@ class pb_backupbuddy_destination_stash { // Change class name end to match desti
 			$pb_backupbuddy_destination_errors[] = __( 'Error #48933: This destination is currently disabled. Enable it under this destination\'s Advanced Settings.', 'it-l10n-backupbuddy' );
 			return false;
 		}
+		
+		pb_backupbuddy::status( 'warnings', 'DEPRECATION NOTICE: Please upgrade to using the newer BackupBuddy Stash (v2) Remote Destination. This version (v1) is old and the newer version fixes issues and significantly improves performance.' );
+		
 		if ( is_array( $file ) ) {
 			$file = $file[0];
 		}

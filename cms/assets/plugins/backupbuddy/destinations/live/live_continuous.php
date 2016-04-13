@@ -339,7 +339,7 @@ class backupbuddy_live_continuous {
 	
 	// Handle term changes.
 	public static function handle_term( $term_id, $tt_id = null ) {
-		self::dbqueue( 'db', 'term_id', $term_id );
+		self::dbqueue( 'terms', 'term_id', $term_id );
 		if ( $tt_id ) {
 			self::handle_term_taxonomy( $tt_id );
 		}

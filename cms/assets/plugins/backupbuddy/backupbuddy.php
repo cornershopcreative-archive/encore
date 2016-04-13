@@ -3,8 +3,8 @@
  *
  *	Plugin Name: BackupBuddy
  *	Plugin URI: http://ithemes.com/purchase/backupbuddy/
- *	Description: The most complete WordPress solution for Backup, Restoration, Migration, and Deployment. Backs up a customizable selection of files, settings, and content for a complete snapshot of your site. Restore, migrate, or deploy your site to a new host or new domain with complete ease-of-mind.
- *	Version: 7.0.3.9
+ *	Description: The most complete WordPress solution for Backup, Restoration, Migration, and Deployment. Backs up a customizable selection of files, settings, and content for a complete snapshot of your site. Restore, migrate, or deploy your site to a new host or new domain with complete ease-of-mind. Stash Live feature allows for real-time live backups into the cloud.
+ *	Version: 7.1.0.2
  *	Author: iThemes
  *	Author URI: http://ithemes.com/
  *	iThemes Package: backupbuddy
@@ -25,13 +25,12 @@
  *
  *	CONTRIBUTORS (since BackupBuddy v1.0; launched March 4, 2010):
  *		
- *		Dustin Bolton (creation, overall), Chris Jean (zip), Josh Benham (misc code, support, testing),
+ *		Dustin Bolton (creation, everything), Chris Jean (early zip), Josh Benham (misc code, support, testing),
  *		Skyler Moore (ftp, misc code, support, testing), Jeremy Trask (xzip, misc code, support),
- *		Ronald Huereca (multisite), Dustin Akers (support, testing), Bradford Ulrich (graphics),
- *		Glenn Ansley (misc code, support).
+ *		Ronald Huereca (early multisite), Dustin Akers (support, testing), Bradford Ulrich (UI, graphics),
+ *		Glenn Ansley (misc code, support), Thomas Oliver (support), Ty Carlson (Stash UI, graphics).
  *
  */
-
 
 
 // Plugin defaults. Settings stored in wp_options under "pb_backupbuddy". Auditing notifications stored in "pb_backupbuddy_notificiations" as of 6.1.0.0.
@@ -130,7 +129,7 @@ $pluginbuddy_settings = array(
 												'include_importbuddy'				=>		'1',				// Whether or not to include importbuddy.php script inside backup ZIP file.
 												'max_site_log_size'					=>		'3',				// Size in MB to clear the log file if it is exceeded.
 												'compression'						=>		'1',				// Zip compression.
-												'no_new_backups_error_days'			=>		'45',				// Send an error email notification if no new backups have been created in X number of days.
+												'no_new_backups_error_days'			=>		'10',				// Send an error email notification if no new backups have been created in X number of days.
 												'skip_quicksetup'					=>		'0',				// When 1 the quick setup will not pop up on Getting Started page.
 												'prevent_flush'						=>		'0',				// When 1 pb_backupbuddy::flush() will return instead of flushing to workaround some odd server issues on some servers.
 												'rollback_cleanups'					=>		array(),			// Array of rollback serial => time() pairs to run cleanups on, such as dropping temporary undo tables. Run X hours after the timestamp.
@@ -147,8 +146,12 @@ $pluginbuddy_settings = array(
 												'save_backup_sum_log'				=>		'1',				// 1 or 0.  When 1 the full backup status log will be saved in a log file with _sum_ in it. This allows viewing the full status log regardless of Log Level setting.
 												'limit_single_cron_per_pass'		=>		'1',				// Prevents multiple BackupBuddy crons from running per PHP page load by re-scheduling and delaying them to the next load.
 												'tested_php_runtime'				=>		0,					// Actual tested max PHP runtime based on backupbuddy_core::php_runtime_test() results.
+												'tested_php_memory'					=>		0,					// Actual tested max PHP memory based on backupbuddy_core::php_memory_test() results.
 												'last_tested_php_runtime'			=>		0,					// Timestamp PHP runtime was last tested.
+												'last_tested_php_memory'			=>		0,					// Timestamp PHP memory was last tested.
 												'use_internal_cron'					=>		'0',				// When 1, we will try to use our own cron system to work around cron caching issues.
+												'php_runtime_test_minimum_interval'	=>		'604800',			// How often to perform the automated test via the housekeeping function. This must elapse before automated test will run. Zero (0) to disable.
+												'php_memory_test_minimum_interval'	=>		'604800',			// How often to perform the automated test via the housekeeping function. This must elapse before automated test will run. Zero (0) to disable.
 												'profiles'							=>		array(
 																								0 => array(
 																													'type'							=>		'defaults',
@@ -252,7 +255,7 @@ require( dirname( __FILE__ ) . '/pluginbuddy/_pluginbuddy.php' );
 
 // Updater & Licensing System - Aug 23, 2013.
 function ithemes_backupbuddy_updater_register( $updater ) { 
-    $updater->register( 'backupbuddy', __FILE__ );
+	$updater->register( 'backupbuddy', __FILE__ );
 }
 add_action( 'ithemes_updater_register', 'ithemes_backupbuddy_updater_register' );
 $updater = dirname( __FILE__ ) . '/lib/updater/load.php';

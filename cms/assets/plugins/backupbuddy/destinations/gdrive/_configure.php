@@ -231,7 +231,8 @@ $settings_form->add_setting( array(
 ) );
 
 
-if ( 'save' != $mode ) {
+// Hide when saving or if disabling file management enabled.
+if ( ( 'save' != $mode ) && ( '1' != $destination_settings['disable_file_management'] ) ) {
 	pb_backupbuddy_destination_gdrive::printFolderSelector( $destination_id );
 }
 
@@ -299,6 +300,17 @@ $settings_form->add_setting( array(
 	'css'		=>		'width: 50px;',
 	'after'		=>		' secs. <span class="description">' . __( 'Blank for detected default:', 'it-l10n-backupbuddy' )  . ' ' . backupbuddy_core::detectMaxExecutionTime() . ' sec</span>',
 	'row_class'	=>		'advanced-toggle',
+) );
+
+$settings_form->add_setting( array(
+    'type'      =>      'checkbox',
+    'name'      =>      'disable_gzip',
+    'options'       =>              array( 'unchecked' => '0', 'checked' => '1' ),
+    'title'     =>      __( 'Disable Compression', 'it-l10n-backupbuddy' ),
+    'tip'       =>      __( '[Default: unchecked] - If you are getting Invalid jSON errors from Google, you can try checking this option.', 'it-l10n-backupbuddy' ),
+    'css'       =>      '',
+    'after'     =>      '<span class="description"> ' . __('Check to disable gzip compression.', 'it-l10n-backupbuddy' ) . '</span>',
+    'row_class' =>      'advanced-toggle',
 ) );
 
 if ( $mode !== 'edit' ) {

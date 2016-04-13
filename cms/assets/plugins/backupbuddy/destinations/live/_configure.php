@@ -53,7 +53,7 @@ if ( 'settings' == pb_backupbuddy::_POST( 'pb_backupbuddy_' ) ) {
 
 
 $archive_limits_html = '<tr class="">
-	<th scope="row" class="" style="">' . __( 'Backup Archive Limits', 'it-l10n-backupbuddy' ) . pb_backupbuddy::tip( 'Leave empty for unlimited backups of a type or 0 (zero) to limit to none. WARNING: Use caution when entering 0 (zero) for a type of backup as it could result in the loss of many backups.', '', $echo_tip = false ) . '</th>
+	<th scope="row" class="" style="">' . __( 'Snapshot Archive Limits', 'it-l10n-backupbuddy' ) . pb_backupbuddy::tip( 'Leave empty for unlimited backups of a type or 0 (zero) to limit to none. WARNING: Use caution when entering 0 (zero) for a type of backup as it could result in the loss of many backups.', '', $echo_tip = false ) . '</th>
 	<td class="" style="padding: 0;">
 
 		<table>
@@ -228,7 +228,14 @@ $settings_form->add_setting( array(
 
 
 
-
+$settings_form->add_setting( array(
+	'type'		=>		'checkbox',
+	'name'		=>		'disable_logging',
+	'options'	=>		array( 'unchecked' => '0', 'checked' => '1' ),
+	'title'		=>		__( 'Disable Live Log', 'it-l10n-backupbuddy' ),
+	'tip'		=>		__( 'When enabled no logging details will be written to the Stash Live log during Stash Live periodic operations. Logs will still be written to the Extraneous Global Log file based on your traditional BackupBuddy Advanced Logging Settings. This reduces overhead and server resource usage.' ),
+	'row_class'	=>		'advanced-toggle',
+) );
 $settings_form->add_setting( array(
 	'type'		=>		'textarea',
 	'name'		=>		'postmeta_key_excludes',
@@ -253,6 +260,16 @@ $settings_form->add_setting( array(
 	'rules'		=>		'required|int[5-9999999]',
 	'css'		=>		'width: 50px;',
 	'after'		=>		' MB',
+	'row_class'	=>		'advanced-toggle',
+) );
+$settings_form->add_setting( array(
+	'type'		=>		'text',
+	'name'		=>		'max_delete_burst',
+	'title'		=>		__( 'Delete per burst', 'it-l10n-backupbuddy' ),
+	'tip'		=>		__( '[Example: 100] - This is the maximum number of files which can be deleted per API call at a time. This helps reduce outgoing connections and improve performance.', 'it-l10n-backupbuddy' ),
+	'rules'		=>		'required|int[5-9999999]',
+	'css'		=>		'width: 50px;',
+	'after'		=>		' files',
 	'row_class'	=>		'advanced-toggle',
 ) );
 $settings_form->add_setting( array(
@@ -288,11 +305,11 @@ $settings_form->add_setting( array(
 $settings_form->add_setting( array(
 	'type'		=>		'text',
 	'name'		=>		'max_time',
-	'title'		=>		__( 'Max time per send chunk', 'it-l10n-backupbuddy' ),
-	'tip'		=>		__( '[Example: 30] - Enter 0 for no limit (aka no chunking; bursts may still occur based on burst size setting). This is the maximum number of seconds per page load that bursts will occur. If this time is exceeded when a burst finishes then the next burst will be chunked and ran on a new page load. Multiple bursts may be sent within each chunk. NOTE: This ONLY applies to file sends. Chunking of file and signature calculations uses global BackupBuddy setting.', 'it-l10n-backupbuddy' ),
+	'title'		=>		__( 'Max time per operation', 'it-l10n-backupbuddy' ),
+	'tip'		=>		__( '[Example: 30] - Enter 0 for no limit (aka no chunking; bursts may still occur based on burst size setting). This is the maximum number of seconds per page load that operations will run for. If this time is exceeded when a burst finishes then the next burst will be chunked and ran on a new page load. Multiple bursts may be sent within each chunk. NOTE: This ONLY applies to file sends and some Stash Live procedures. Chunking of file and signature calculations may use global BackupBuddy setting.', 'it-l10n-backupbuddy' ),
 	'rules'		=>		'',
 	'css'		=>		'width: 50px;',
-	'after'		=>		' secs. <span class="description">' . __( 'Blank for detected default:', 'it-l10n-backupbuddy' )  . ' ' . backupbuddy_core::detectMaxExecutionTime() . ' sec</span>',
+	'after'		=>		' secs. <span class="description">' . __( 'Blank for detected default:', 'it-l10n-backupbuddy' )  . ' ' . backupbuddy_core::detectMaxExecutionTime() . ' sec. Change only if directed.</span>',
 	'row_class'	=>		'advanced-toggle',
 ) );
 $settings_form->add_setting( array(

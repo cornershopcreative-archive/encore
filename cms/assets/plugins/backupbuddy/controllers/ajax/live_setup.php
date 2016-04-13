@@ -87,6 +87,13 @@ if ( ( '' == pb_backupbuddy::_POST( 'live_username' ) ) || ( '' == pb_backupbudd
 		pb_backupbuddy::save();
 		$destination_id = $nextDestKey;
 		
+		
+		
+		// Send new settings for archive limiting to Stash API.
+		backupbuddy_live::send_trim_settings();
+		
+		
+		
 		// Set first run of BackupBuddy Stash Live so it begins immediately.
 		$cronArgs = array();
 		$schedule_result = backupbuddy_core::schedule_single_event( time(), 'live_periodic', $cronArgs );

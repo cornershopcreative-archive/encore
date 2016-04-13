@@ -16,8 +16,6 @@ Auth::require_authentication(); // Die if not logged in.
 			</div>
 			<div class="modal_content">
 				
-				
-				
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
 						jQuery( '#createadmin_form' ).submit(function(){

@@ -546,7 +546,6 @@ if ( 'deploy' == pb_backupbuddy::_GET( 'backupbuddy_backup' ) ) {
 				data = data.split( "\n" );
 				for( var i = 0; i < data.length; i++ ) {
 					
-					
 					isJSON = false;
 					try {
 						var json = jQuery.parseJSON( data[i] );
@@ -993,6 +992,11 @@ if ( 'deploy' == pb_backupbuddy::_GET( 'backupbuddy_backup' ) ) {
 							$disableClass = 'bb_destination-item-disabled';
 						}
 						if ( ! isset( $destination['name'] ) ) { // Messed up destination.
+							continue;
+						}
+						
+						// Hide these destinations from list to add here.
+						if ( ( 'live' == $destination_name ) || ( 'site' == $destination_name ) ) {
 							continue;
 						}
 						

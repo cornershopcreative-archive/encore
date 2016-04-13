@@ -25,6 +25,7 @@ $tokens = pb_backupbuddy::_POST( 'tokens' );
 $settings['client_id'] = $clientID;
 $settings['client_secret'] = $clientSecret;
 $settings['tokens'] = $tokens;
+$settings['disable_gzip'] = pb_backupbuddy::_POST( 'disable_gzip' );
 
 
 

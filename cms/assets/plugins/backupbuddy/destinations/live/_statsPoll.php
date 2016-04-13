@@ -20,6 +20,15 @@
 						jQuery( '#wp-admin-bar-backupbuddy_stash_live_admin_bar' ).hide(); // Hide admin bar.
 						return false;
 					}
+					
+					// If first char is not { then something may have dumped junk (eg PHP error notice) before the json-encoded data. Try to find start of JSON data and remove anything before it.
+					if ( '{' != stats.charAt( 0 ) ) {
+						firstBracket = stats.indexOf( '{' );
+						if ( -1 != firstBracket ) { // Only update if bracket was not missing.
+							stats = stats.substring( firstBracket );
+						}
+					}
+					
 					try {
 						stats = jQuery.parseJSON( stats );
 						
