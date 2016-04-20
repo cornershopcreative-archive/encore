@@ -8,8 +8,12 @@ cms/assets/cache/supercache/*
 cms/assets/w3tc/*
 sitemap.xml
 sitemap.xml.gz
+
+# Log files
 *.log
 error_log
+cms/assets/wflogs/
+
 design/
 wires/
 cms/assets/themes/crate/.sass-cache/
