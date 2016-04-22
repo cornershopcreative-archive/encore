@@ -1,4 +1,7 @@
-cms/wp-config.php
+# WordPress files
+advanced-cache.php
+object-cache.php
+cms/assets/db.php
 cms/assets/uploads/
 cms/assets/uploads
 cms/assets/upgrade/*
@@ -12,28 +15,34 @@ sitemap.xml.gz
 # Log files
 *.log
 error_log
-cms/assets/wflogs/
 
+# Plugin directories
+cms/assets/plugins/wordfence/tmp/
+cms/assets/wfcache/
+cms/assets/wflogs/
+backups/
+cms/wp-content/uploads/backupbuddy_temp/
+
+# Cornershop files
 design/
 wires/
-cms/assets/themes/crate/.sass-cache/
 .sass-cache/
-backups/
-cms/assets/plugins/wordfence/tmp/
 node_modules
-advanced-cache.php
-object-cache.php
-cms/assets/db.php
 
 # GoWP files
 /sucuri-*
 
 # Exported top level SQL files
 /*.sql
-cms/*.sql
+/*.sql.gz
+/cms/*.sql
+/cms/*.sql.gz
 
-# Project Files
+# Project files
 *.sublime-*
 .idea/
 .ideas/
 sftp-config.json
+
+# Site specific ignores
+
