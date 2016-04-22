@@ -10,10 +10,9 @@ if (!defined('ABSPATH')) {die('Direct access not allowed');}
 add_action('wp_enqueue_scripts', 'minerva_enqueue_assets');
 function minerva_enqueue_assets() {
 
-	//use Google's hosted jQuery in the hopes the client already has it.
-	//note that going past 1.8.x in jquery can sometimes lead to problems
+	// Use Google's hosted jQuery 1.x in the hopes the client already has it.
 	wp_deregister_script('jquery');
-	wp_register_script('jquery', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js", '1.11.2', true);
+	wp_register_script('jquery', '//ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js', '1.12.2', true);
 
 	// Fix Jupiter's incorrect Vimeo CDN domain, which doesn't support SSL
 	wp_deregister_script('api-vimeo');
