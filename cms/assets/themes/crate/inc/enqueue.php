@@ -10,10 +10,9 @@ if (!defined('ABSPATH')) {die('Direct access not allowed');}
 add_action('wp_enqueue_scripts', 'crate_enqueue_assets');
 function crate_enqueue_assets() {
 
-	//use CDN jQuery in the hopes the client already has it, or at least it gets there fast
-	//note that going past 1.8.x in jquery can sometimes lead to problems
+	// Use CDN jQuery in the hopes the client already has it or at least it gets to them fast
 	wp_deregister_script('jquery');
-	wp_register_script('jquery', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://http://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js", '2.2.3', true);
+	wp_register_script('jquery', "//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js", '2.2.3', true);
 
 	//our scripts and styles
 	wp_register_script('plugins', get_template_directory_uri() . '/js/plugins.min.js', array('jquery'), false, true);
