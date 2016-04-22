@@ -15,6 +15,10 @@ function minerva_enqueue_assets() {
 	wp_deregister_script('jquery');
 	wp_register_script('jquery', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js", '1.11.2', true);
 
+	// Fix Jupiter's incorrect Vimeo CDN domain, which doesn't support SSL
+	wp_deregister_script('api-vimeo');
+	wp_register_script('api-vimeo', '//f.vimeocdn.com/js/froogaloop2.min.js', array(), false, false);
+
 	//our scripts and styles
 	wp_register_script('minerva-plugins', get_stylesheet_directory_uri() . '/js/plugins.min.js', array('jquery'), false, true);
 	wp_register_script('minerva-main', get_stylesheet_directory_uri() . '/js/main.min.js', array('jquery', 'minerva-plugins'), false, true);
