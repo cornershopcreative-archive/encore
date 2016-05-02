@@ -27,6 +27,9 @@ cms/wp-content/uploads/backupbuddy_temp/
 design/
 wires/
 .sass-cache/
+backups/
+cms/assets/plugins/wordfence/tmp/
+wordfence-waf.php
 node_modules
 
 # GoWP files
