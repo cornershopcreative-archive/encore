@@ -19,10 +19,11 @@ define('WP_DEBUG_LOG',     true);
 define('WP_DEBUG_DISPLAY', false);
 define('WP_CACHE',         false);
 define('SAVEQUERIES',      true);
-define('SCRIPT_DEBUG',     false);
+define('SCRIPT_DEBUG',     true);
 
 /**
  * Fancy tricks for Crate
+ * ENVIRONMENT is now deprecated in favor of SCRIPT_DEBUG for loading minification
  */
 define('ENVIRONMENT',      'dev');
 // This should match what's on line ~10 of crate/Gruntfile.js

@@ -1,13 +1,15 @@
 <?php
 /**
  * The base configuration of WordPress for the production website
+ * Make sure to UPDATE LINE 17 OF wp-config.php WITH THE LIVE URL
+ * OTHERWISE THIS FILE WILL NOT GET READ
  */
 
 /** CHANGE THESE: Database connection information */
-define('DB_NAME',     'cshop_grunt');
-define('DB_USER',     'cshopgrunt');
-define('DB_PASSWORD', 'oink-oink');
-define('DB_HOST',     'mysql.cornershopcreative.com');
+define('DB_NAME',     'ENTER_LIVE_DB_NAME_HERE');
+define('DB_USER',     'ENTER_LIVE_DB_USER_HERE');
+define('DB_PASSWORD', 'ENTER_LIVE_DB_PASSWORD_HERE');
+define('DB_HOST',     'ENTER_LIVE_DB_HOST_HERE_COULD_BE_LOCALHOST');
 
 /**
 * For developers: WordPress debugging mode.

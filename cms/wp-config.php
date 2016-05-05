@@ -1,5 +1,6 @@
 <?php
 
+// Setting the HTTP_HOST value in the CLI environment
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	$_SERVER['HTTP_HOST'] = gethostname();
 	if ( 'dev.cshp.co' === $_SERVER['HTTP_HOST'] ) {
@@ -10,14 +11,18 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	}
 }
 
+// Logic to control which config file gets loaded when
 $configs = array(
 	'cshp.co'                => 'demo',
-	'cornershopcreative.com' => 'prod',
+	'CLIENT-LIVE-URL'        => 'prod',
 	'default'                => 'demo'
 );
-if ( isset( $dev_site) && !isset( $configs[ $dev_site ] ) ) {
+if ( isset( $dev_site ) && !isset( $configs[ $dev_site ] ) ) {
 	$configs[ $dev_site ] = 'demo';
 }
+
+
+
 
 // ** YOU SHOULDN'T NEED TO CHANGE ANYTHING BELOW THIS LINE, EVER ** //
 
