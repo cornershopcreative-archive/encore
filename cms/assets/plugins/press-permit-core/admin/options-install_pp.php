@@ -163,12 +163,11 @@ class PP_Options_Install {
 					
 					<img id="pp_support_waiting" class="waiting" style="display:none;position:relative" src="<?php echo esc_url( admin_url( 'images/wpspin_light.gif' ) )?>" alt="" />
 				</span>
-
-				<?php if ( $activated || $expired ) :?>
-				<span class="pp-key-active">
+				
+				<span>
 				&nbsp;&nbsp;<a href="admin.php?page=pp-settings&amp;pp_refresh_updates=1"><?php _e('refresh status', 'pp');?></a>
+				&nbsp;&bull;&nbsp;&nbsp;<a href="http://presspermit.com/purchase/account" target="_blank"><?php _e('review your key(s)', 'pp');?></a>
 				</span>
-				<?php endif; ?>
 				
 				<br /><br />
 				

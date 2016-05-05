@@ -2,7 +2,7 @@
 function pp_query_descendant_ids( $src_name, $parent_id, $args = array() ) {
 	global $wpdb;
 
-	$defaults = array( 'include_revisions' => false, 'include_attachments' => true, 'post_status' => false, 'append_clause' => '' );
+	$defaults = array( 'include_revisions' => false, 'include_attachments' => true, 'post_status' => false, 'append_clause' => '', 'post_types' => array() );
 	extract( array_merge( $defaults, $args ), EXTR_SKIP );
 	
 	$descendant_ids = array();
@@ -10,6 +10,10 @@ function pp_query_descendant_ids( $src_name, $parent_id, $args = array() ) {
 	
 	switch( $src_name ) {
 		case 'post':
+			if ( $post_types ) {
+				$clauses .= " AND post_type IN ('" . implode("','", (array) $post_types) . "')";
+			}
+			
 			$skip_types = array();
 	
 			if ( ! $include_revisions )
@@ -18,9 +22,9 @@ function pp_query_descendant_ids( $src_name, $parent_id, $args = array() ) {
 			if ( ! $include_attachments )
 				$skip_types[]= 'attachment';
 
-			$clauses .= ( $skip_types ) ? "AND post_type NOT IN ('" . implode("','", $skip_types) . "')" : '';
-
-			$clauses .= ( is_array($post_status) ) ? "AND post_status IN ('" . implode("','", $post_status) . "')" : '';
+			$clauses .= ( $skip_types ) ? " AND post_type NOT IN ('" . implode("','", $skip_types) . "')" : '';
+		
+			$clauses .= ( is_array($post_status) ) ? " AND post_status IN ('" . implode("','", $post_status) . "')" : '';
 
 			$table = $wpdb->posts;
 			$col_id = 'ID';

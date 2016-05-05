@@ -203,6 +203,8 @@ class PP_QueryInterceptor
 		$src_table = ( $source_alias ) ? $source_alias : $wpdb->posts;
 		$args['src_table'] = $src_table;
 		
+		$limit_post_types = ( $post_types ) ? (array) $post_types : false;
+		
 		// need to allow ambiguous object type for special cap requirements like comment filtering
 		$post_types = ( $post_types ) ? (array) $post_types : pp_get_enabled_post_types();  // include all defined otypes in the query if none were specified
 		
@@ -283,6 +285,7 @@ class PP_QueryInterceptor
 		}
 		
 		$args['post_types'] = $post_types;
+		$args['limit_post_types'] = $limit_post_types;
 		
 		if ( is_array($alternate_required_ops) ) {
 			if ( ! $required_operation )
@@ -335,7 +338,7 @@ class PP_QueryInterceptor
 	//
 	function get_posts_where( $args ) {
 		$defaults = array( 	'post_types' => array(),		'source_alias' => false,		'src_table' => '',			'apply_term_restrictions' => true, 		'include_trash' => 0,
-							'required_operation' => '',		'limit_statuses' => false,		'skip_teaser' => false,		'query_contexts' => array(), 			'force_types' => false,  /*'omit_owner_clause' => false */ );
+							'required_operation' => '',		'limit_statuses' => false,		'skip_teaser' => false,		'query_contexts' => array(), 			'force_types' => false,		'limit_post_types' => false );
 		$args = array_merge( $defaults, (array) $args );
 		extract($args, EXTR_SKIP);
 
@@ -402,6 +405,21 @@ class PP_QueryInterceptor
 		
 		$flag_meta_caps = ! empty($pp_meta_caps);
 		
+		if ( 'read' == $required_operation && ! defined( 'PP_DISABLE_UNFILTERED_TYPES_CLAUSE' ) ) {
+			$all_post_types = get_post_types( array( 'public' => true ), 'names' );
+			
+			$unfiltered_post_types = array_diff( $all_post_types, $post_types );
+			
+			if ( $limit_post_types ) {
+				$unfiltered_post_types = array_intersect( $unfiltered_post_types, (array) $limit_post_types );
+			}
+			
+			// This proved necessary for WMPL compat.  It ensures a default of normal visibility for public and user-authored posts when PP Filtering is not enabled for the post type.
+			foreach( $unfiltered_post_types as $_post_type ) {
+				$where_arr[$_post_type] = "$src_table.post_type = '$_post_type' AND ( $src_table.post_status = 'publish' OR  $src_table.post_author = '$pp_current_user->ID' )";
+			}
+		}
+		
 		foreach ( $post_types as $post_type ) {
 			if ( in_array($post_type, $tease_otypes) && empty($skip_teaser) )
 				$where_arr[$post_type] = "$src_table.post_type = '$post_type' AND 1=1";
@@ -426,7 +444,7 @@ class PP_QueryInterceptor
 						if ( $missing_caps = apply_filters( 'pp_query_missing_caps', array_diff( $reqd_caps, array_keys( $pp_current_user->allcaps ) ), $reqd_caps, $post_type, $meta_cap ) ) {
 							$owner_reqd_caps = $this->get_base_caps( $reqd_caps, $post_type );  // remove "others" and "private" cap requirements for post author
 
-							if ( ( $owner_reqd_caps != $reqd_caps ) && $pp_current_user->ID ) {// && ! $omit_owner_clause 
+							if ( ( $owner_reqd_caps != $reqd_caps ) && $pp_current_user->ID ) {
 								if ( ! array_diff( $owner_reqd_caps, array_keys( $pp_current_user->allcaps ) ) )
 									$have_site_caps['owner'] []= $status;
 							}

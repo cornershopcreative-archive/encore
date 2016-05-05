@@ -4,8 +4,8 @@ Donate Link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=JWZVF
 Tags: restrict, access, permissions, cms, user, private, category, pages, privacy, capabilities, role, scoper
 License: GPLv3
 Requires at least: 3.4
-Tested up to: 4.5
-Stable tag: 2.3.9
+Tested up to: 4.5.1
+Stable tag: 2.3.10
 
 Advanced yet accessible content permissions. Give users or groups type-specific roles. Enable or block access for specific posts or terms.
 
@@ -43,11 +43,16 @@ Pro [extensions](http://presspermit.com/extensions) are [available](http://press
   * Import groups, roles and restrictions from Role Scoper
 	
 == Upgrade Notice ==
-	
+
 = 2.1.14 =
 Initial production release
 
 == Changelog ==
+
+= 2.3.10 - 28 Apr 2016 =
+* Fixed : On sites that have third party code assigning page parents with a different post type, saving exceptions for "page and sub-pages" causes the storage of unused exception records.  This has no functional effect, but presented a performance issue or even script timeout on sites that have thousands of page children.  
+* Compat : WPML (and possibly other plugins) - if PP filtering of a post type is disabled, posts of that type are not readable to anonymous users
+* Pro : Permissions > Settings > Install now displays link to presspermit.com account page for display of support key(s) and activated site(s)
 
 = 2.3.9 - 12 Apr 2016 =
 * Compat : WP 4.5 - Exception metaboxes on Edit Term screen were missing
