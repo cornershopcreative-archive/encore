@@ -28,9 +28,13 @@ design/
 wires/
 .sass-cache/
 backups/
+node_modules
+
+# Wordfence things
 cms/assets/plugins/wordfence/tmp/
 wordfence-waf.php
-node_modules
+wflogs/
+.user.ini
 
 # GoWP files
 /sucuri-*
