@@ -107,6 +107,7 @@ class PP_Role_Defs {
 	}
 } // end class PP_Roles
 
+// bbPress permisisons require additional code in PP Pro extensions
 function _pp_no_bbpress( $unfiltered_types ) {
 	return array_merge( $unfiltered_types, array( 'forum', 'topic', 'reply' ) );
 }

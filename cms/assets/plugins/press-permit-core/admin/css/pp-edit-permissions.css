@@ -37,6 +37,10 @@ background-color: #eee;
 border-bottom: none;
 }
 
+#pp_add_permission_tabs {
+margin-bottom:-3px;
+}
+
 #pp_add_permission_tabs .agp-unselected_agent, #pp_add_permission_tabs .agp-unselected_agent a {
 background-color: #f1f1f1 !important;
 border-bottom: none;
@@ -226,7 +230,6 @@ margin-bottom: 0.2em;
 }
 
 /* ?? */
-/*#pp_current_roles { font-size:13px }*/
 .pp-current-site-roles label, .pp_item_role_caption { color: #21759B; font-weight: bold }
 label span.pp_nolink, .pp_item_role_caption span.pp_nolink { color: black }
 .pp-taxonomy-caption { font-weight: bold; margin-bottom: 0.4em }
@@ -283,6 +286,9 @@ margin-left: 1.5em;
 font-weight: bold;
 color: #120FAF;
 }
+span.role_both {
+padding-right:20px;
+}
 label.role_both:after {
 content:' ...';
 }
@@ -331,6 +337,8 @@ div.pp-user-meta-search select {
 margin-top:4px;
 margin-bottom:4px;
 }
-div.pp-user-meta-search {
 
+#pp-all-anon-warning {
+margin-top:10px;
+margin-bottom:10px;
 }

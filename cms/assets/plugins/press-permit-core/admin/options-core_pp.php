@@ -173,7 +173,7 @@ class PP_Options_Core {
 						</div>
 						
 						<?php if ( in_array( 'forum', $types ) && ! defined( 'PPP_VERSION' ) && pp_get_option( 'display_extension_hints' ) ) :?>
-							<div class="pp-subtext" style="margin-top:10px">
+							<div class="pp-subtext pp-settings-caption">
 							<?php
 							if ( pp_key_active() )
 								_e( 'To customize bbPress forum permissions, activate PP Compatibility Pack.', 'pp' );

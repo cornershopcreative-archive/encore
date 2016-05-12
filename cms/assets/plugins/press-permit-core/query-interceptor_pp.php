@@ -8,7 +8,7 @@ require_once( dirname(__FILE__).'/exceptions_pp.php' );
  * 
  * @package PP
  * @author Kevin Behrens <kevin@agapetry.net>
- * @copyright Copyright (c) 2011-2015, Agapetry Creations LLC
+ * @copyright Copyright (c) 2011-2016, Agapetry Creations LLC
  * 
  */
 class PP_QueryInterceptor
@@ -405,7 +405,7 @@ class PP_QueryInterceptor
 		
 		$flag_meta_caps = ! empty($pp_meta_caps);
 		
-		if ( 'read' == $required_operation && ! defined( 'PP_DISABLE_UNFILTERED_TYPES_CLAUSE' ) ) {
+		if ( 'read' == $required_operation && ! defined( 'PP_DISABLE_UNFILTERED_TYPES_CLAUSE' ) && ! $pp_current_user->ID ) {
 			$all_post_types = get_post_types( array( 'public' => true ), 'names' );
 			
 			$unfiltered_post_types = array_diff( $all_post_types, $post_types );
@@ -414,9 +414,9 @@ class PP_QueryInterceptor
 				$unfiltered_post_types = array_intersect( $unfiltered_post_types, (array) $limit_post_types );
 			}
 			
-			// This proved necessary for WMPL compat.  It ensures a default of normal visibility for public and user-authored posts when PP Filtering is not enabled for the post type.
+			// This proved necessary for WPML compat.  It ensures a default of normal visibility for public and user-authored posts when PP Filtering is not enabled for the post type
 			foreach( $unfiltered_post_types as $_post_type ) {
-				$where_arr[$_post_type] = "$src_table.post_type = '$_post_type' AND ( $src_table.post_status = 'publish' OR  $src_table.post_author = '$pp_current_user->ID' )";
+				$where_arr[$_post_type] = "$src_table.post_type = '$_post_type' AND $src_table.post_status = 'publish'";
 			}
 		}
 		

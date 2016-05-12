@@ -9,7 +9,7 @@ class PP_GroupsUI {
 		
 		$captions['member'] = apply_filters( 'pp_group_members_caption', __('Group Members', 'pp') );
 
-		echo '<div class="pp-group-box pp-group_members" style="display:none;float:left;margin-right:20px;">';
+		echo '<div class="pp-group-box pp-group_members" style="display:none;float:left;">';
 		
 		if ( ! $suppress_caption ) {
 			echo '<h3>';
@@ -241,7 +241,7 @@ class PP_GroupsUI {
 		</table>
 		
 		<?php if ( $is_all_anon ):?>
-		<div id="pp-all-anon-warning" class="pp-red" style="display:none;margin-top:10px;margin-bottom:10px">
+		<div id="pp-all-anon-warning" class="pp-red" style="display:none;">
 		<?php _e( 'Warning: Content hidden by exceptions will be displayed if PP is deactivated. Consider setting a private Visibility on Edit Post screen instead.', 'pp' ); ?>
 		</div>
 
@@ -455,7 +455,7 @@ class PP_GroupsUI {
 		}
 
 		// --- add permission tabs ---
-		echo "<ul id='pp_add_permission_tabs' class='pp-list_horiz' style='margin-bottom:-3px'>";
+		echo "<ul id='pp_add_permission_tabs' class='pp-list_horiz'>";
 		foreach( $perms as $perm_type => $_caption ) {
 			$class = ( "pp-add-$perm_type" == $current_tab ) ? 'agp-selected_agent' : 'agp-unselected_agent';
 
@@ -1014,7 +1014,7 @@ class PP_GroupsUI {
 
 						<?php 
 						if ( ! empty( $any_both ) )
-							echo '<span class="role_both" style="padding-right:20px">' . sprintf( __('... = assigned for %1$s and sub-%1$s', 'pp'), $_caption ) . '</span>';
+							echo '<span class="role_both">' . sprintf( __('... = assigned for %1$s and sub-%1$s', 'pp'), $_caption ) . '</span>';
 					
 						if ( ! empty( $any_child_only ) )
 							echo '<span>' . sprintf( __('* = assigned for sub-%s only', 'pp'), $_caption ) . '</span>';

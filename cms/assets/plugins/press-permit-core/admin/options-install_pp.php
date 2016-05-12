@@ -147,42 +147,49 @@ class PP_Options_Install {
 				}	
 				?>
 				
-				<span style="margin-left:145px;">
 					<?php if ( $expired && ( ! empty($key) ) ) : ?>
+						<br />
+						<span class="pp-key-wrap">
 						<span class="pp-key-expired"><?php _e("Key Expired", 'pp') ?></span>
 						<input name="<?php echo($id);?>" type="text" id="<?php echo($id);?>" style="display:none" />
 						<button type="button" id="activation-button" name="activation-button" class="button-secondary"><?php _e('Deactivate Key','pp'); ?></button>
-						<span class="pp-key-expired pp-key-warning"> <?php _e('note: Renewal does not require deactivation. If you do deactivate, re-entry of the support key will be required.', 'pp'); ?></span>
 					<?php else : ?>
+						<span class="pp-key-normal">
 						<?php if ( $activated ) : ?>
 						<span class="pp-key-active"><?php _e("Key Activated", 'pp') ?></span>
 						<?php endif ?>
-						<input name="<?php echo($id);?>" type="text" id="<?php echo($id);?>" <?php echo ($activated)?' style="display:none"':''; ?> />
+						<input name="<?php echo($id);?>" type="text" id="<?php echo($id);?>" maxlength="40" <?php echo ($activated)?' style="display:none"':''; ?> />
 						<button type="button" id="activation-button" name="activation-button" class="button-secondary"><?php echo ( ! $activated)?__('Activate Key','pp'):__('Deactivate Key','pp'); ?></button>
 					<?php endif; ?>
 					
 					<img id="pp_support_waiting" class="waiting" style="display:none;position:relative" src="<?php echo esc_url( admin_url( 'images/wpspin_light.gif' ) )?>" alt="" />
+
+					<span class="pp-key-refresh">
+					&nbsp;&nbsp;<a href="admin.php?page=pp-settings&amp;pp_refresh_updates=1"><?php _e('refresh status', 'pp');?></a>
+					&nbsp;&bull;&nbsp;&nbsp;<a href="http://presspermit.com/purchase/account" target="_blank"><?php _e('review your key(s)', 'pp');?></a>
+					</span>
+					
 				</span>
 				
-				<span>
-				&nbsp;&nbsp;<a href="admin.php?page=pp-settings&amp;pp_refresh_updates=1"><?php _e('refresh status', 'pp');?></a>
-				&nbsp;&bull;&nbsp;&nbsp;<a href="http://presspermit.com/purchase/account" target="_blank"><?php _e('review your key(s)', 'pp');?></a>
-				</span>
-				
-				<br /><br />
-				
-				<span style="margin-left:217px;">
 					<?php if ( $activated ) : ?>
-					<span class="pp-key-active pp-key-warning"> <?php _e('note: If you deactive, re-entry of the support key will be required for re-activation.', 'pp'); ?></span>
+						<?php if( pp_get_option( 'display_hints' )  ) :?>
+					<div class="pp-key-hint">
+					<span class="pp-subtext"> <?php _e('note: If you deactive, re-entry of the support key will be required for re-activation.', 'pp'); ?></span>
+						<?php endif;?>
 					<?php elseif ( ! $expired ) : ?>
+					<div class="pp-key-hint">
 					<span class="pp-subtext"> <?php _e('note: Your site URL and version info will be sent to presspermit.com', 'pp'); ?></span>
+					<?php else : ?>
+					<div class="pp-key-hint-expired">
+					<span class="pp-key-expired pp-key-warning"> <?php _e('note: Renewal does not require deactivation. If you do deactivate, re-entry of the support key will be required.', 'pp'); ?></span>
 					<?php endif ?>
-				</span>
+					
+					</div>
 				
-				<br /><div id="activation-status" class="<?php echo $class?>"><?php echo $msg;?></div><div id="activation-reload" style="display:none;margin-top:10px"><a href="<?php echo admin_url('admin.php?page=pp-settings');?>"><?php _e('reload extension info', 'pp');?></a></div>
+				<div id="activation-status" class="<?php echo $class?>"><?php echo $msg;?></div><div class="pp-settings-caption" style="display:none;"><a href="<?php echo admin_url('admin.php?page=pp-settings');?>"><?php _e('reload extension info', 'pp');?></a></div>
 				
 				<?php if ( ! empty($is_err) ) : ?>
-				<div id="activation-error" class="error" style="margin-top:35px"><?php echo $msg;?></div>
+				<div id="activation-error" class="error"><?php echo $msg;?></div>
 				<?php endif; ?>
 				
 				<?php 
@@ -240,7 +247,7 @@ class PP_Options_Install {
 			<br />
 			<?php
 			if ( empty($activated) && empty($expired) && ! defined( 'PP_FORCE_PPCOM_INFO' ) ) :?>
-				<div style="margin-top:10px">
+				<div class="pp-settings-caption">
 				<?php
 				$hint = __( 'Periodically query presspermit.com for available extensions. Your version info will be sent.', 'pp' );
 				$ui->option_checkbox( 'ppcom_update_info', $tab, $section, $hint );
@@ -284,7 +291,7 @@ class PP_Options_Install {
 			if ( $pp_extensions ) :
 				$change_log_caption = __( '<strong>Change Log</strong> (since your current version)', 'pp' );
 			?>
-				<h4 style="margin-bottom:2px;margin-top:0"><?php _e('Active Extensions:', 'pp');?></h4>
+				<h4 style="margin-top:0"><?php _e('Active Extensions:', 'pp');?></h4>
 				<table class="pp-extensions">
 				<?php foreach( $pp_extensions as $slug => $plugin_info ) :
 					$info_link = '';
@@ -327,7 +334,7 @@ class PP_Options_Install {
 			
 			ksort($inactive);
 			if ( $inactive ) :?>
-			<h4 style="margin-bottom:2px"><?php $url = ( PP_MULTISITE ) ? 'network/plugins.php/' : 'plugins.php'; printf( __('%1$sInactive Extensions%2$s:', 'pp'), "<a href='$url'>", '</a>');?></h4>
+			<h4><?php $url = ( PP_MULTISITE ) ? 'network/plugins.php/' : 'plugins.php'; printf( __('%1$sInactive Extensions%2$s:', 'pp'), "<a href='$url'>", '</a>');?></h4>
 			<table class="pp-extensions">
 			<?php foreach( array_keys($inactive) as $slug ) :?>
 			<tr>
@@ -346,7 +353,7 @@ class PP_Options_Install {
 			
 			ksort($missing);
 			if ( $missing ) :?>
-			<h4 style="margin-bottom:2px"><?php _e('Available Pro Extensions:', 'pp');?></h4>
+			<h4><?php _e('Available Pro Extensions:', 'pp');?></h4>
 			<table class="pp-extensions">
 			<?php foreach( array_keys($missing) as $slug ) :
 				if ( $need_supplemental_key = isset($update_info[$slug]['key_type']) && ( 'pp' != $update_info[$slug]['key_type'] ) )
@@ -392,7 +399,7 @@ class PP_Options_Install {
 			</p>
 			
 			<?php elseif ( ! pp_update_info_enabled() ) :?>
-				<p style="margin-top:20px"><strong><?php _e('Press Permit Pro extensions supply:', 'pp' );?></strong></p>
+				<p class="pp-feature-list-caption"><strong><?php _e('Press Permit Pro extensions supply:', 'pp' );?></strong></p>
 				<ul class="pp-bullet-list">
 				<li><?php printf( __( '%1$sContent-specific editing permissions, with Edit Flow, Revisionary and Post Forking support%2$s', 'pp' ), '<a href="http://presspermit.com/extensions/pp-collaborative-editing">', '</a>' );?></li>
 				<li><?php printf( __( '%1$sCustom Post Statuses (for visibility or moderation)%2$s', 'pp' ), '<a href="http://presspermit.com/extensions/pp-custom-post-statuses">', '</a>' );?></li>
@@ -437,11 +444,11 @@ class PP_Options_Install {
 				</li>
 				</ul>
 				
-				<div style="text-indent: -10px;padding-left: 10px;margin-top:15px;margin-left:10px"><strong>
+				<div id="pp_config_upload_caption"><strong>
 				<?php printf( __( '%s Site configuration data selected below will be uploaded to presspermit.com:', 'pp' ), '<strong>* </strong>' );?>
 				</strong></div>
 				
-				<div style="padding-left:22px">
+				<div id="pp_config_upload_wrap">
 				<?php
 				$ok = (array) pp_get_option( 'support_data' );
 				$ok['ver'] = 1;
@@ -484,7 +491,7 @@ class PP_Options_Install {
 				<label for="pp_support_data_all"><input type="checkbox" id="pp_support_data_all" value="1" /> <?php _e('(all)', 'pp');?></label>
 				</div>
 				
-				<div style="margin-top:10px">
+				<div id="pp_config_upload_subtext">
 				<?php _e( '<strong>note:</strong> user data, absolute paths, database prefix, post title, post content and post excerpt are <strong>never</strong> uploaded', 'pp' );?>
 				</div>
 				

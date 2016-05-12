@@ -11,7 +11,7 @@ function _pp_file_filtering_promo() {
 	<script type="text/javascript">
 	/* <![CDATA[ */
 	jQuery(document).ready( function($) {
-	$('#posts-filter').after('<a href="#" class="pp-file-filtering-promo" style="margin-left:5px"><?php _e('Block URL access', 'pp');?></a><span class="pp-ext-promo" style="display:none;"><?php echo $msg;?></span>');
+	$('#posts-filter').after('<a href="#" class="pp-file-filtering-promo"><?php _e('Block URL access', 'pp');?></a><span class="pp-ext-promo" style="display:none;"><?php echo $msg;?></span>');
 	
 	$('a.pp-file-filtering-promo').click(function() {
 		$(this).hide().next('span').show();

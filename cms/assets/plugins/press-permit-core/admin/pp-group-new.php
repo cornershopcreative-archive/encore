@@ -83,7 +83,7 @@ if ( pp_has_group_cap( 'pp_manage_members', 0, $agent_type ) ) {
 	PP_GroupsUI::_draw_member_checklists( 0, $agent_type );
 }
 
-echo '<div style="clear:both;margin-top:10px;"><br />';
+echo '<div class="pp-settings-caption" style="clear:both;"><br />';
 _e( 'Note: Supplemental Roles and other group settings can be configured here after the new group is created.', 'pp' );
 echo '</div>';
 

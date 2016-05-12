@@ -1,4 +1,4 @@
-/* Press Permit. Copyright (c) 2012-2013, Agapetry Creations LLC.
+/* Press Permit. Copyright (c) 2012-2016, Agapetry Creations LLC.
  * This file is licensed under the GNU GPL.
  */
  
@@ -22,7 +22,9 @@ background-color: #ededed;
 color: #777;
 font-style: italic;
 }
- 
+.pp-settings-caption {
+margin-top:10px;
+}
 
 /* --- Misc Admin --- */
 .pp-hint {
@@ -36,6 +38,15 @@ list-style-type: circle;
 .pp-notes li {
 margin-bottom: 1em;
 margin-left: 1.5em;
+}
+.pp-admin-notice {
+padding:5px;
+line-height:18px;
+position:relative;
+}
+.pp-admin-notice-plugin {
+margin-top:30px;
+margin-right:120px;
 }
 .pp-ext-promo {
 padding-top:0.5em;
@@ -69,6 +80,15 @@ margin-bottom: 10px;
 .agp-vtight_input {
 margin-top: 2px;
 margin-bottom: 4px;
+}
+
+/* Contextual Help */
+#tab-panel-pp div {
+margin-left:20px;
+}
+
+div.pp-custom-privacy-promo, div.pp-file-filtering-promo {
+margin-left:5px;
 }
 
 /* --- User / Group display and selection (on several pages) --- */
@@ -117,6 +137,9 @@ div.pp-groups .pp-group-site-roles {
 font-weight: bold;
 }
 
+div.pp-bulk-user-perm, p.pp-bulk-user-perm {
+margin-top:50px;
+}
 
 /* --- User Profile --- */
 #userprofile_groupsdiv_pp fieldset {
@@ -147,6 +170,7 @@ margin-bottom: 0;
 }
 .pp-group_members {
 background-color: #eee;
+margin-right:20px;
 }
 .pp-group-roles {
 background-color: #F3F9C4;

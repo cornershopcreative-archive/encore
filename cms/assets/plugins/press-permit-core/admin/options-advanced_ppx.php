@@ -187,7 +187,7 @@ class PP_Options_Advanced {
 			$section = 'capabilities';								// --- PP CAPABILITIES SECTION ---
 			?>
 				<tr><td scope="row" colspan="2"><span style="font-weight:bold"><?php echo $ui->section_captions[$tab][$section];?></span>
-				<span style="margin-left:125px">
+				<span class="pp-capabilities-caption">
 				<?php
 				
 				if ( pp_get_option( 'display_hints' ) ) :?>
@@ -293,11 +293,11 @@ class PP_Options_Advanced {
 			?>
 			<tr><th scope="row"><?php echo $ui->section_captions[$tab][$section];?></th><td>
 
-			<div id="pp_modify_default_settings" style="max-width:700px">
+			<div id="pp_modify_default_settings" class="pp-settings-code">
 			<?php
 			_e( 'To modify one or more default settings network-wide, <strong>copy</strong> the following code into your theme&apos;s <strong>functions.php</strong> file (or some other file which is always executed and not auto-updated) and modify as desired:', 'pp' );
 			?>
-			<textarea rows='10' cols='150' readonly='readonly' style="margin-top:5px">
+			<textarea rows='10' cols='150' readonly='readonly'>
 // Use this filter if you want to change the default, but still allow manual setting
 add_filter( 'pp_default_options', 'my_pp_default_options', 99 );
 
@@ -312,11 +312,11 @@ function my_pp_default_options( $def_options ) {
 			</div>
 			<br />
 			
-			<div id="pp_force_settings" style="max-width:700px">
+			<div id="pp_force_settings" class="pp-settings-code">
 			<?php
 			_e( 'To force the value of one or more settings network-wide, <strong>copy</strong> the following code into your theme&apos;s <strong>functions.php</strong> file (or some other file which is always executed and not auto-updated) and modify as desired:', 'pp' );
 			?>
-			<textarea rows='13' cols='150' readonly='readonly' style="margin-top:5px">
+			<textarea rows='13' cols='150' readonly='readonly'>
 // Use this filter if you want to force an option, blocking/disregarding manual setting
 add_filter( 'pp_options', 'my_pp_options', 99 );
 

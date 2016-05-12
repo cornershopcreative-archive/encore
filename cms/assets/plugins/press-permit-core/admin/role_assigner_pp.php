@@ -315,8 +315,7 @@ public static function insert_exceptions( $mod_type, $operation, $via_item_sourc
 				}
 			}
 		} else {
-			$default_propagate_types = ( in_array( $for_item_type, array( 'forum', 'topic', 'reply' ) ) ) ? array( 'forum', 'topic', 'reply' ) : array( $for_item_type );
-			$propagate_post_types = apply_filters( 'pp_propagate_exception_types', $default_propagate_types, compact( 'mod_type', 'operation', 'for_item_source', 'for_item_type', 'via_item_source', 'via_item_type', 'item_id' ) );
+			$propagate_post_types = apply_filters( 'pp_propagate_exception_types', array( $for_item_type ), compact( 'mod_type', 'operation', 'for_item_source', 'for_item_type', 'via_item_source', 'via_item_type', 'item_id' ) );
 			
 			$descendant_ids = pp_get_descendant_ids( $via_item_source, $item_id, array( 'include_attachments' => false, 'post_types' => $propagate_post_types ) );  // normally propagate only to matching post_types
 		}

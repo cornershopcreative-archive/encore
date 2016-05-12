@@ -93,6 +93,6 @@ if ( $show_pro_info ) :?>
 
 <a href="http://presspermit.com"><div class="pp-logo">&nbsp;</div></a>
 <div class="madein">&nbsp;</div>
-<div style="height: 150px;">&nbsp;</div>
-	
+<div id="pp_about_footer">&nbsp;</div>
+
 </div> <!-- wrap -->

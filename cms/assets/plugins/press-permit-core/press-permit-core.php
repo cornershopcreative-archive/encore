@@ -5,7 +5,7 @@
  * Description: Advanced yet accessible content permissions. Give users or groups type-specific roles. Enable or block access for specific posts or terms.
  * Author:      Agapetry Creations LLC
  * Author URI:  http://agapetry.com/
- * Version:     2.3.10
+ * Version:     2.3.11
  * Text Domain: pp
  * Domain Path: /languages/
  * Min WP Version: 3.4

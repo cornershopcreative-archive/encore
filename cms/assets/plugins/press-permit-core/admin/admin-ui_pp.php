@@ -322,9 +322,13 @@ class PP_AdminUI
 		global $pp_plugin_page;
 		
 		// thanks to GravityForms for the nifty dismissal script
+		global $pp_plugin_page;
+		$class = 'pp-admin-notice';
+		if ( ! empty( $pp_plugin_page ) )
+			$class .= ' pp-admin-notice-plugin';
 		?>
-		<div class='updated' style='<?php if ( $pp_plugin_page ) echo 'margin-top:30px;';?>padding:5px;line-height:18px;<?php global $pp_plugin_page; if ( ! empty ($pp_plugin_page) ) echo 'margin-right:120px;';?>position:relative;' id='pp_dashboard_message'><?php echo $message ?>&nbsp; &nbsp;
-			<a href="javascript:void(0);" onclick="PPDismissNotice();" style='fl-oat:right;'><?php _e("Dismiss", "pp") ?></a>
+		<div class='updated' class='<?php echo $class;?>' id='pp_dashboard_message'><?php echo $message ?>&nbsp; &nbsp;
+			<a href="javascript:void(0);" onclick="PPDismissNotice();"><?php _e("Dismiss", "pp") ?></a>
 		</div>
 		<script type="text/javascript">
 			function PPDismissNotice(){

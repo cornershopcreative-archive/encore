@@ -81,7 +81,7 @@ class PP_AdminHelp {
 			
 			$help .= '</ul>';
 			
-			$help .= '<div style="margin-left:20px">';
+			$help .= '<div>';
 			$help .= __( '* to control which configuration data is uploaded, see Permissions > Settings > Install > Help', 'pp' );
 			$help .= '</div>';
 		}

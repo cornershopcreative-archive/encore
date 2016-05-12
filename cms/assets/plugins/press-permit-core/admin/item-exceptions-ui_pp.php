@@ -144,7 +144,7 @@ class PP_ItemExceptionsUI {
 			$any_stored = empty( $current_exceptions[$op][$agent_type] ) ? 0 : count($current_exceptions[$op][$agent_type]); 
 			?>
 			<td class="pp-current-item-exceptions" style="width:100%">
-				<div style="overflow:auto;max-height:325px">
+				<div class="pp-exc-wrap" style="overflow:auto;">
 				<table <?php if ( ! $any_stored ) echo 'style="display:none"'; ?>>
 				<?php if ( $hierarchical ) : ?>
 					<thead>

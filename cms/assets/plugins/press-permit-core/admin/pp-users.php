@@ -10,7 +10,7 @@ _e( 'User Permissions', 'pp' );
 ?>
 </h2>
 
-<p style="margin-top:50px;">
+<p class="pp-bulk-user-perm">
 <h4><a href="admin.php?page=pp-edit-permissions&amp;action=edit&amp;agent_type=user">
 <?php
 _e( 'Bulk-Add User Permissions', 'pp' );
@@ -24,7 +24,7 @@ _e( 'Bulk-Add User Permissions', 'pp' );
 <?php endif; ?>
 </p>
 
-<div style="margin-top:50px;">
+<div class="pp-bulk-user-perm">
 <h4>
 <?php
 _e( 'View / Edit User Permissions', 'pp' );

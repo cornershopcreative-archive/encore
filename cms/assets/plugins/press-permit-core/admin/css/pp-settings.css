@@ -66,6 +66,7 @@ border-bottom: none;
 font-weight: bold;
 }
 
+
 /* --- Install Tab --- */
 #pp-install #support_key { width:325px }
 #pp-install .activating { border-width:1px;border-style:solid;padding:0 0.6em;margin:0.5em 0.5em 0 0;-moz-border-radius:3px;-khtml-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;background-color:#ffffe0;border-color:#e6db55; }
@@ -92,9 +93,19 @@ color: #777;
 font-style: italic;
 }
 
+#pp_config_upload_caption { text-indent: -10px; padding-left: 10px; margin-top:15px; margin-left:10px; }
+
+#pp_config_upload_wrap {
+padding-left:22px;
+}
+
 #pp-install .support_data div {
 margin-bottom: 6px;
 vertical-align:bottom;
+}
+
+#pp-install .pp-feature-list-caption {
+margin-top:20px;
 }
 
 #pp-install .pp-bullet-list {
@@ -102,7 +113,44 @@ list-style: disc;
 padding-left: 15px;
 }
 
+span.pp-key-wrap {
+margin-left:5px;
+margin-top:10px;
+}
+
+span.pp-key-normal {
+margin-left:60px;
+}
+
+span.pp-key-refresh, span.pp-key-refresh a {
+vertical-align:bottom;
+white-space:nowrap;
+}
+
+div.pp-key-hint {
+margin-left:145px;
+margin-top:5px;
+}
+
+div.pp-key-hint-expired {
+margin-left:5px;
+margin-top:5px;
+}
+
+#pp-install_table h4 {
+margin-bottom:2px;
+}
+
+#pp_settings_form  #activation-status {
+margin-top:20px;
+}
+
+#pp_settings_form  #activation-error {
+margin-top:20px;
+}
+
 /* --- Advanced tab --- */
+.pp-capabilities-caption { margin-left: 125px; }
 #pp_cap_descripts { margin-left: 10px;margin-right: 10px }
 #pp_cap_descripts tr{ border-bottom: none }
 #pp_cap_descripts tr th{ border-bottom: none; line-height: 8px }
@@ -110,6 +158,8 @@ padding-left: 15px;
 #pp_cap_descripts th.cap-name{ text-align: center; }
 #pp_cap_descripts td.cap-name{ width: 22%; text-align: center; font-family: courier new, courier, monospace }
 
+div.pp-settings-code { max-width:700px; }
+div.pp-settings-code textarea { margin-top:5px; }
 
 /* --- PPFF Attachments Utility --- */
 .pp-instructions ol {

@@ -16,7 +16,9 @@ margin-left: 10px;
 .pp-current-item-exceptions td.pp-exc-agent {
 max-width: 200px;
 }
-
+.pp-current-item-exceptions div.pp-exc-wrap {
+max-height:325px
+}
 
 .pp-exceptions .pp-def {
 color: #000;
