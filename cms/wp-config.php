@@ -3,7 +3,7 @@
 // Setting the HTTP_HOST value in the CLI environment
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	$_SERVER['HTTP_HOST'] = gethostname();
-	if ( 'dev.cshp.co' === $_SERVER['HTTP_HOST'] ) {
+	if ( stripos( $_SERVER['HTTP_HOST'], '.cshp.co' ) !== false ) {
 		// Making this smarter on our dev server
 		$dirs = explode( '/', getcwd() );
 		$dev_site = $dirs[3] . '.' . $dirs[1] . '.cshp.co';
