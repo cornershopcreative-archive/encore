@@ -6,7 +6,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	if ( stripos( $_SERVER['HTTP_HOST'], '.cshp.co' ) !== false ) {
 		// Making this smarter on our dev server
 		$dirs = explode( '/', getcwd() );
-		$dev_site = $dirs[3] . '.' . $dirs[1] . '.cshp.co';
+		$dev_site = $dirs[4] . '.' . $dirs[2] . '.cshp.co';
 		$_SERVER['HTTP_HOST'] = $dev_site;
 	}
 }
