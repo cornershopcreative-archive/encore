@@ -23,7 +23,7 @@ module.exports = function(grunt) {
 				files: ['images/spr/*.png', 'images/*.{png,jpg,gif}'],
 				tasks: ['sprite','imagemin']
 			},
-			files: "*.php"
+			files: "**/*.php"
 		},
 
 		// spriting from https://github.com/Ensighten/grunt-spritesmith
