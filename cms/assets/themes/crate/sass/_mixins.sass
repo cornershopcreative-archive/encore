@@ -14,19 +14,19 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 
 =phone-only
 	+phone("down")
-    	@content
+		@content
 
 =tablet-only
 	+tablet("only")
-    	@content
+		@content
 
 =wide-only
 	+wide("up")
-    	@content
+		@content
 
 =desktop-plus
 	+desktop("up")
-    	@content
+		@content
 
 =below-desktop
 	+desktop("down")
@@ -34,7 +34,7 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 
 =below-tablet
 	+tablet("down")
-    	@content
+		@content
 
 =phone($breakpoint: "")
 	@if $breakpoint == "up" or $breakpoint == ""
@@ -45,8 +45,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media($phone-width)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (min-width: $phone-width)
-				@warn $media-query-mixin-warning
 				@content
 	@else if $breakpoint == "down" or $breakpoint == "only"
 		@if mixin-exists(breakpoint)
@@ -56,8 +56,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media(max-width $phone-width)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (max-width: $tablet-width)
-				@warn $media-query-mixin-warning
 				@content
 	@else
 		@if mixin-exists(breakpoint)
@@ -67,8 +67,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media($breakpoint)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (min-width: $phone-width)
-				@warn $media-query-mixin-warning
 				@content
 
 =tablet($breakpoint: "")
@@ -80,8 +80,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media($tablet-width)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (min-width: $tablet-width)
-				@warn $media-query-mixin-warning
 				@content
 	@else if $breakpoint == "down"
 		@if mixin-exists(breakpoint)
@@ -91,8 +91,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media(max-width $tablet-width)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (max-width: $tablet-width)
-				@warn $media-query-mixin-warning
 				@content
 	@else if $breakpoint == "only"
 		@if mixin-exists(breakpoint)
@@ -102,8 +102,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media($phone-width $tablet-width)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (min-width: $phone-width) and (max-width: $tablet-width)
-				@warn $media-query-mixin-warning
 				@content
 	@else
 		@if mixin-exists(breakpoint)
@@ -113,8 +113,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media($breakpoint)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (min-width: $tablet-width)
-				@warn $media-query-mixin-warning
 				@content
 
 =desktop($breakpoint: "")
@@ -126,8 +126,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media($normal-width)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (min-width: $normal-width)
-				@warn $media-query-mixin-warning
 				@content
 	@else if $breakpoint == "down"
 		@if mixin-exists(breakpoint)
@@ -137,8 +137,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media(max-width $normal-width)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (max-width: $normal-width)
-				@warn $media-query-mixin-warning
 				@content
 	@else if $breakpoint == "only"
 		@if mixin-exists(breakpoint)
@@ -148,8 +148,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media($tablet-width $normal-width)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (min-width: $tablet-width) and (max-width: $normal-width)
-				@warn $media-query-mixin-warning
 				@content
 	@else
 		@if mixin-exists(breakpoint)
@@ -159,8 +159,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media($breakpoint)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (min-width: $normal-width)
-				@warn $media-query-mixin-warning
 				@content
 
 =wide($breakpoint: "")
@@ -172,8 +172,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media($wide-width)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (min-width: $wide-width)
-				@warn $media-query-mixin-warning
 				@content
 	@else if $breakpoint == "down"
 		@if mixin-exists(breakpoint)
@@ -183,8 +183,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media(max-width $wide-width)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (max-width: $wide-width)
-				@warn $media-query-mixin-warning
 				@content
 	@else
 		@if mixin-exists(breakpoint)
@@ -194,8 +194,8 @@ $media-query-mixin-warning: "You should be using the Breakpoint SASS mixin libra
 			+susy-media($breakpoint)
 				@content
 		@else
+			@warn $media-query-mixin-warning
 			@media only screen and (min-width: $wide-width)
-				@warn $media-query-mixin-warning
 				@content
 
 
