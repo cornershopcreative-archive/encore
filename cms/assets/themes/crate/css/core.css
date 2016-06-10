@@ -4,7 +4,6 @@
 *    change, without disabling
 *    user zoom.
 */
-/* line 108, node_modules/normalize-libsass/_normalize.scss */
 html {
   font-family: sans-serif;
   /* 1 */
@@ -17,7 +16,6 @@ html {
 /**
 * Remove default margin.
 */
-/* line 118, node_modules/normalize-libsass/_normalize.scss */
 body {
   margin: 0;
 }
@@ -30,7 +28,6 @@ body {
 * and Firefox.
 * Correct `block` display not defined for `main` in IE 11.
 */
-/* line 132, node_modules/normalize-libsass/_normalize.scss */
 article,
 aside,
 details,
@@ -51,7 +48,6 @@ summary {
 * 1. Correct `inline-block` display not defined in IE 8/9.
 * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
 */
-/* line 153, node_modules/normalize-libsass/_normalize.scss */
 audio,
 canvas,
 progress,
@@ -66,7 +62,6 @@ video {
 * Prevent modern browsers from displaying `audio` without controls.
 * Remove excess height in iOS 5 devices.
 */
-/* line 168, node_modules/normalize-libsass/_normalize.scss */
 audio:not([controls]) {
   display: none;
   height: 0;
@@ -75,7 +70,6 @@ audio:not([controls]) {
 /**
    * Address `[hidden]` styling not present in IE 8/9/10.
    */
-/* line 178, node_modules/normalize-libsass/_normalize.scss */
 [hidden] {
   display: none;
 }
@@ -83,7 +77,6 @@ audio:not([controls]) {
 /**
 * Hide the `template` element in IE 8/9/10/11, Safari, and Firefox < 22.
 */
-/* line 187, node_modules/normalize-libsass/_normalize.scss */
 template {
   display: none;
 }
@@ -93,7 +86,6 @@ template {
 /**
    * Remove the gray background color from active links in IE 10.
    */
-/* line 199, node_modules/normalize-libsass/_normalize.scss */
 a {
   background-color: transparent;
 }
@@ -102,7 +94,6 @@ a {
 * Improve readability of focused elements when they are also in an
 * active/hover state.
 */
-/* line 209, node_modules/normalize-libsass/_normalize.scss */
 a:active,
 a:hover {
   outline: 0;
@@ -113,7 +104,6 @@ a:hover {
 /**
 * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
 */
-/* line 221, node_modules/normalize-libsass/_normalize.scss */
 abbr[title] {
   border-bottom: 1px dotted;
 }
@@ -121,7 +111,6 @@ abbr[title] {
 /**
 * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
 */
-/* line 229, node_modules/normalize-libsass/_normalize.scss */
 b,
 strong {
   font-weight: bold;
@@ -130,7 +119,6 @@ strong {
 /**
 * Address styling not present in Safari and Chrome.
 */
-/* line 238, node_modules/normalize-libsass/_normalize.scss */
 dfn {
   font-style: italic;
 }
@@ -139,7 +127,6 @@ dfn {
 * Address variable `h1` font-size and margin within `section` and `article`
 * contexts in Firefox 4+, Safari, and Chrome.
 */
-/* line 247, node_modules/normalize-libsass/_normalize.scss */
 h1 {
   font-size: 2em;
   margin: 0.6666666667em 0;
@@ -148,7 +135,6 @@ h1 {
 /**
    * Address styling not present in IE 8/9.
    */
-/* line 257, node_modules/normalize-libsass/_normalize.scss */
 mark {
   background: #ff0;
   color: #000;
@@ -157,7 +143,6 @@ mark {
 /**
 * Address inconsistent and variable font size in all browsers.
 */
-/* line 267, node_modules/normalize-libsass/_normalize.scss */
 small {
   font-size: 80%;
 }
@@ -165,7 +150,6 @@ small {
 /**
 * Prevent `sub` and `sup` affecting `line-height` in all browsers.
 */
-/* line 275, node_modules/normalize-libsass/_normalize.scss */
 sub,
 sup {
   font-size: 75%;
@@ -174,12 +158,10 @@ sup {
   vertical-align: baseline;
 }
 
-/* line 283, node_modules/normalize-libsass/_normalize.scss */
 sup {
   top: -0.5em;
 }
 
-/* line 287, node_modules/normalize-libsass/_normalize.scss */
 sub {
   bottom: -0.25em;
 }
@@ -189,7 +171,6 @@ sub {
 /**
    * Remove border when inside `a` element in IE 8/9/10.
    */
-/* line 299, node_modules/normalize-libsass/_normalize.scss */
 img {
   border: 0;
 }
@@ -197,7 +178,6 @@ img {
 /**
    * Correct overflow not hidden in IE 9/10/11.
    */
-/* line 309, node_modules/normalize-libsass/_normalize.scss */
 svg:not(:root) {
   overflow: hidden;
 }
@@ -207,7 +187,6 @@ svg:not(:root) {
 /**
    * Address margin not present in IE 8/9 and Safari.
    */
-/* line 322, node_modules/normalize-libsass/_normalize.scss */
 figure {
   margin: 1em 40px;
 }
@@ -215,7 +194,6 @@ figure {
 /**
 * Address differences between Firefox and other browsers.
 */
-/* line 331, node_modules/normalize-libsass/_normalize.scss */
 hr {
   box-sizing: content-box;
   height: 0;
@@ -224,7 +202,6 @@ hr {
 /**
 * Contain overflow in all browsers.
 */
-/* line 340, node_modules/normalize-libsass/_normalize.scss */
 pre {
   overflow: auto;
 }
@@ -232,7 +209,6 @@ pre {
 /**
 * Address odd `em`-unit font size rendering in all browsers.
 */
-/* line 348, node_modules/normalize-libsass/_normalize.scss */
 code,
 kbd,
 pre,
@@ -253,7 +229,6 @@ samp {
 * 2. Correct font properties not being inherited.
 * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
 */
-/* line 371, node_modules/normalize-libsass/_normalize.scss */
 button,
 input,
 optgroup,
@@ -270,7 +245,6 @@ textarea {
 /**
    * Address `overflow` set to `hidden` in IE 8/9/10/11.
    */
-/* line 386, node_modules/normalize-libsass/_normalize.scss */
 button {
   overflow: visible;
 }
@@ -281,7 +255,6 @@ button {
 * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
 * Correct `select` style inheritance in Firefox.
 */
-/* line 398, node_modules/normalize-libsass/_normalize.scss */
 button,
 select {
   text-transform: none;
@@ -294,7 +267,6 @@ select {
 * 3. Improve usability and consistency of cursor style between image-type
 *    `input` and others.
 */
-/* line 411, node_modules/normalize-libsass/_normalize.scss */
 button,
 html input[type='button'],
 input[type='reset'],
@@ -308,7 +280,6 @@ input[type='submit'] {
 /**
 * Re-set default cursor for disabled elements.
 */
-/* line 423, node_modules/normalize-libsass/_normalize.scss */
 button[disabled],
 html input[disabled] {
   cursor: default;
@@ -317,7 +288,6 @@ html input[disabled] {
 /**
 * Remove inner padding and border in Firefox 4+.
 */
-/* line 432, node_modules/normalize-libsass/_normalize.scss */
 button::-moz-focus-inner,
 input::-moz-focus-inner {
   border: 0;
@@ -328,7 +298,6 @@ input::-moz-focus-inner {
 * Address Firefox 4+ setting `line-height` on `input` using `!important` in
 * the UA stylesheet.
 */
-/* line 443, node_modules/normalize-libsass/_normalize.scss */
 input {
   line-height: normal;
 }
@@ -340,7 +309,6 @@ input {
    * 1. Address box sizing set to `content-box` in IE 8/9/10.
    * 2. Remove excess padding in IE 8/9/10.
    */
-/* line 456, node_modules/normalize-libsass/_normalize.scss */
 input[type='checkbox'],
 input[type='radio'] {
   box-sizing: border-box;
@@ -354,7 +322,6 @@ input[type='radio'] {
 * `font-size` values of the `input`, it causes the cursor style of the
 * decrement button to change from `default` to `text`.
 */
-/* line 469, node_modules/normalize-libsass/_normalize.scss */
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   height: auto;
@@ -364,7 +331,6 @@ input[type='number']::-webkit-outer-spin-button {
 * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
 * 2. Address `box-sizing` set to `border-box` in Safari and Chrome.
 */
-/* line 479, node_modules/normalize-libsass/_normalize.scss */
 input[type='search'] {
   box-sizing: content-box;
 }
@@ -374,7 +340,6 @@ input[type='search'] {
 * Safari (but not Chrome) clips the cancel button when the search input has
 * padding (and `textfield` appearance).
 */
-/* line 489, node_modules/normalize-libsass/_normalize.scss */
 input[type='search']::-webkit-search-cancel-button,
 input[type='search']::-webkit-search-decoration {
   -webkit-appearance: none;
@@ -383,7 +348,6 @@ input[type='search']::-webkit-search-decoration {
 /**
 * Define consistent border, margin, and padding.
 */
-/* line 498, node_modules/normalize-libsass/_normalize.scss */
 fieldset {
   border: 1px solid #c0c0c0;
   margin: 0 2px;
@@ -394,7 +358,6 @@ fieldset {
 * 1. Correct `color` not being inherited in IE 8/9/10/11.
 * 2. Remove padding so people aren't caught out if they zero out fieldsets.
 */
-/* line 509, node_modules/normalize-libsass/_normalize.scss */
 legend {
   border: 0;
   /* 1 */
@@ -405,7 +368,6 @@ legend {
 /**
    * Remove default vertical scrollbar in IE 8/9/10/11.
    */
-/* line 521, node_modules/normalize-libsass/_normalize.scss */
 textarea {
   overflow: auto;
 }
@@ -414,7 +376,6 @@ textarea {
 * Don't inherit the `font-weight` (applied by a rule above).
 * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
 */
-/* line 531, node_modules/normalize-libsass/_normalize.scss */
 optgroup {
   font-weight: bold;
 }
@@ -424,13 +385,11 @@ optgroup {
 /**
 * Remove most spacing between table cells.
 */
-/* line 542, node_modules/normalize-libsass/_normalize.scss */
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-/* line 547, node_modules/normalize-libsass/_normalize.scss */
 td,
 th {
   padding: 0;
@@ -439,10 +398,9 @@ th {
 /*
 * Scut, a collection of Sass utilities
 * to ease and improve our implementations of common style-code patterns.
-* v1.3.0
+* v1.4.0
 * Docs at http://davidtheclark.github.io/scut
 */
-/* line 19, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_variables.sass */
 .hidden {
   display: none !important;
   visibility: hidden;
@@ -452,7 +410,6 @@ th {
  * Hide only visually, but have it available for screen readers:
  * http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
  */
-/* line 27, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_variables.sass */
 .visuallyhidden, .assistive-text {
   border: 0;
   clip: rect(0 0 0 0);
@@ -469,7 +426,6 @@ th {
 	 */
 }
 
-/* line 42, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_variables.sass */
 .visuallyhidden.focusable:active, .focusable.assistive-text:active, .visuallyhidden.focusable:focus, .focusable.assistive-text:focus {
   clip: auto;
   height: auto;
@@ -488,7 +444,6 @@ th {
 /**
  * Mixins lost from Compass => Bourbon transition
  */
-/* line 1, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_sprites.sass */
 .spr-cornershop, .credit a i {
   display: inline-block;
   background-image: url(../images/spr-generated.png);
@@ -501,75 +456,64 @@ th {
 /**
  * Helper classes, pulled from bootstrap. Not sure the logic is right....
  */
-/* line 6, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_responsive.sass */
 .visible-phone,
 .visible-tablet,
 .hidden-desktop {
   display: none !important;
 }
 
-/* line 10, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_responsive.sass */
 .visible-desktop {
   display: inherit !important;
 }
 
-@media only screen and (min-width: 500px) and (max-width: 960px) {
-  /* line 15, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_responsive.sass */
+@media (min-width: 500px) and (max-width: 800px) {
   .hidden-desktop,
   .visible-tablet {
     display: inherit !important;
   }
-  /* line 18, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_responsive.sass */
   .visible-desktop,
   .hidden-tablet {
     display: none !important;
   }
 }
 
-@media only screen and (max-width: 500px) {
-  /* line 24, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_responsive.sass */
+@media (max-width: 500px) {
   .hidden-desktop,
   .visible-phone {
     display: inherit !important;
   }
-  /* line 27, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_responsive.sass */
   .visible-desktop,
   .hidden-phone {
     display: none !important;
   }
 }
 
-/* line 3, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
 body {
   font-family: "Museo Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   min-height: 100%;
 }
 
-/* line 8, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
 #wrapper {
   max-width: 960px;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* line 12, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/node_modules/susy/sass/susy/output/support/_clearfix.scss */
 #wrapper:after {
   content: " ";
   display: block;
   clear: both;
 }
 
-@media only screen and (max-width: 960px) {
-  /* line 8, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
+@media (max-width: 960px) {
   #wrapper {
     max-width: 96%;
   }
 }
 
-/* line 44, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_mixins.sass */
 #content:after {
-  content: "\0020";
+  content: " ";
   display: block;
   height: 0;
   clear: both;
@@ -577,15 +521,13 @@ body {
   visibility: hidden;
 }
 
-/* line 16, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
 #main {
   width: 65.9574468085%;
   float: left;
   margin-right: 2.1276595745%;
 }
 
-@media only screen and (max-width: 800px) {
-  /* line 16, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
+@media (max-width: 800px) {
   #main {
     width: 100%;
     float: left;
@@ -594,7 +536,6 @@ body {
   }
 }
 
-/* line 20, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
 #main.full {
   width: 100%;
   float: left;
@@ -602,15 +543,13 @@ body {
   margin-right: 0;
 }
 
-/* line 23, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
 .rail {
   width: 31.914893617%;
   float: right;
   margin-right: 0;
 }
 
-@media only screen and (max-width: 800px) {
-  /* line 23, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
+@media (max-width: 800px) {
   .rail {
     clear: both;
     width: 100%;
@@ -620,7 +559,6 @@ body {
   }
 }
 
-/* line 28, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
 .full {
   width: 100%;
   float: left;
@@ -628,7 +566,6 @@ body {
   margin-right: 0;
 }
 
-/* line 31, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
 .visible-print {
   display: none !important;
 }
@@ -639,7 +576,6 @@ body {
 /**
  * improve links
  */
-/* line 11, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 a {
   text-decoration: none;
   -webkit-transition: all 0.3s ease;
@@ -647,7 +583,6 @@ a {
   transition: all 0.3s ease;
 }
 
-/* line 14, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 a:hover {
   text-shadow: 0 0 5px blue;
 }
@@ -655,13 +590,11 @@ a:hover {
 /**
  * Eliminate bullets on widgets
  */
-/* line 20, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 .xoxo {
   margin: 0 0 0 0;
   padding: 0 0 0 0;
 }
 
-/* line 23, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 .xoxo li {
   display: block;
 }
@@ -669,15 +602,13 @@ a:hover {
 /**
  * Make nav lists better
  */
-/* line 29, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 nav ul {
   margin: 0 0 0 0;
   padding: 0 0 0 0;
 }
 
-/* line 44, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_mixins.sass */
 nav ul:after {
-  content: "\0020";
+  content: " ";
   display: block;
   height: 0;
   clear: both;
@@ -685,13 +616,11 @@ nav ul:after {
   visibility: hidden;
 }
 
-/* line 35, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 nav ul li {
   display: block;
   float: left;
 }
 
-/* line 38, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 nav ul li a {
   display: block;
   text-align: center;
@@ -700,32 +629,27 @@ nav ul li a {
   margin-right: 1px;
 }
 
-/* line 44, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 nav ul li a:hover, nav ul li a.hover {
   background-color: #999;
   color: #fff;
   text-shadow: none;
 }
 
-/* line 49, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 nav ul li a:hover ul, nav ul li a.hover ul {
   display: block;
 }
 
-/* line 53, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 nav ul li ul {
   display: none;
   position: absolute;
   left: 0;
 }
 
-/* line 58, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 nav ul li ul li {
   margin: 0 0 0 0;
   padding: 0 0 0 0;
 }
 
-/* line 61, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 nav ul li ul a {
   display: block;
 }
@@ -733,26 +657,22 @@ nav ul li ul a {
 /**
  * Footer
  */
-/* line 67, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 #wrapper > footer {
   background: #eee;
   padding: 1em;
 }
 
-/* line 71, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 #wrapper > footer .menu ul {
   margin: 0 0 0 0;
   padding: 0 0 0 0;
 }
 
-/* line 74, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
 #wrapper > footer .menu li {
   display: inline-block;
   border-right: 1px solid #000;
   padding: 0 1em;
 }
 
-/* line 1, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_footer.sass */
 .credit {
   clear: both;
   float: right;
@@ -760,13 +680,11 @@ nav ul li ul a {
   margin-bottom: 7px;
 }
 
-/* line 6, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_footer.sass */
 .credit a {
   display: block;
   font-size: 11px;
 }
 
-/* line 9, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_footer.sass */
 .credit a i {
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
@@ -781,7 +699,6 @@ nav ul li ul a {
   display: inline-block;
 }
 
-/* line 16, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_footer.sass */
 .credit a span {
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
@@ -793,12 +710,10 @@ nav ul li ul a {
   padding-top: 5px;
 }
 
-/* line 24, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_footer.sass */
 .credit a:hover span {
   width: 180px;
 }
 
-/* line 26, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_footer.sass */
 .credit a:hover i {
   -webkit-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
@@ -807,11 +722,10 @@ nav ul li ul a {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* line 6, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_forms.sass */
 textarea {
   border: 1px solid #c1c3c3;
-  -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
   border-radius: 2px;
   -webkit-box-shadow: inset 1px 1px 2px #cfd1d1;
   -moz-box-shadow: inset 1px 1px 2px #cfd1d1;
@@ -822,7 +736,6 @@ textarea {
   padding: 2px;
 }
 
-/* line 47, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/core.sass */
 .prose {
   /**
  * Stuff in here automatically gets dumped underneath .prose on the frontend and into editor-styles for the back
@@ -833,7 +746,6 @@ textarea {
  */
 }
 
-/* line 5, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
 .prose h1 {
   font-size: 171.428571429%;
   font-family: "Lobster", cursive;
@@ -841,7 +753,6 @@ textarea {
   text-transform: uppercase;
 }
 
-/* line 12, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
 .prose h2 {
   text-transform: uppercase;
   font-size: 135.714285714%;
@@ -849,7 +760,6 @@ textarea {
   margin-bottom: 0;
 }
 
-/* line 19, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
 .prose h3, .prose h4 {
   font-size: 121.428571429%;
   font-weight: normal;
@@ -857,13 +767,11 @@ textarea {
   text-transform: uppercase;
 }
 
-/* line 26, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
 .prose h5, .prose h6 {
   font-weight: bold;
   font-size: 100%;
 }
 
-/* line 30, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
 .prose blockquote {
   margin: 1.3em 1.5em;
   padding: 0.2em 1em;
@@ -871,32 +779,28 @@ textarea {
   font-size: 112%;
 }
 
-/* line 36, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
 .prose .alignleft,
 .prose .alignright {
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: 92%;
   text-align: center;
-  -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
   border-radius: 5px;
 }
 
-/* line 44, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
 .prose .alignleft p,
 .prose .alignright p {
   margin: 0.2em 0;
   font-style: italic;
 }
 
-/* line 48, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
 .prose .alignright {
   float: right;
   margin: 0 0 0.5em 1em;
 }
 
-/* line 52, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
 .prose .alignleft {
   float: left;
   margin: 0 1em 0.5em 0;

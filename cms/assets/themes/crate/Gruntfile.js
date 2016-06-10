@@ -66,8 +66,9 @@ module.exports = function(grunt) {
 						'node_modules/breakpoint-sass/stylesheets',
 						'node_modules/susy/sass',
 						'node_modules/scut/dist',
-					],					sourceMap: true,
-					sourceComments: true,
+					],
+					sourceMap: true,
+					sourceComments: false,
 					outputStyle: 'expanded'
 				},
 				files: {
