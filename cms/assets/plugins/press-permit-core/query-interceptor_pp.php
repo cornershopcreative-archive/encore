@@ -15,6 +15,7 @@ class PP_QueryInterceptor
 {
 	var $skip_teaser; 	// for use by templates making a direct call to query_posts for non-teased results
 	var $anon_results = array();
+	var $inserting_post = false;
 	
 	function __construct( $args = array() ) {
 		add_filter( 'posts_clauses_request', array(&$this, 'flt_posts_clauses'), 50, 2 );
@@ -34,6 +35,8 @@ class PP_QueryInterceptor
 				add_filter( 'the_posts', array( &$this, 'reinstate_anon_results' ) );
 			}
 		}
+		
+		add_filter( 'wp_insert_post_empty_content', array( &$this, 'flt_log_insert_post' ), 10, 2 );
 		
 		//add_filter( 'posts_request', array( &$this, 'flt_debug_query'), 999 );
 		do_action( 'pp_query_interceptor' );
@@ -74,6 +77,12 @@ class PP_QueryInterceptor
 		return apply_filters( 'pp_teased_post_types', array(), $post_types, $args );
 	}
 	
+	// for wp_add_trashed_suffix avoidance
+	function flt_log_insert_post( $val ) {
+		$this->inserting_post = true;
+		return $val;
+	}
+	
 	function flt_posts_clauses( $clauses, $_wp_query = false, $args = array() ) {
 		global $pagenow;
 		
@@ -88,8 +97,14 @@ class PP_QueryInterceptor
 		if ( is_admin() && ( ! defined( 'PPCE_VERSION' ) || defined( 'PP_ADMIN_READONLY_LISTABLE' ) ) && ! pp_get_option( 'admin_hide_uneditable_posts' ) )
 			return $clauses;
 		
-		if ( ! empty( $_wp_query ) && ! empty( $_wp_query->query_vars ) )
+		if ( ! empty( $_wp_query ) && ! empty( $_wp_query->query_vars ) ) {
 			$args['query_vars'] = $_wp_query->query_vars;
+			
+			// don't filter wp_add_trashed_suffix_to_post_name_for_trashed_posts()
+			if ( ! empty( $args['query_vars']['post_status'] ) && ( 'trash' == $args['query_vars']['post_status'] ) && ! empty( $args['query_vars']['name'] ) && $this->inserting_post ) {  
+				return $clauses;
+			}
+		}
 		
 		if ( defined('DOING_AJAX') && DOING_AJAX ) { // todo: separate function to eliminate redundancy with PP_Find::find_post_type()
 			if ( in_array( $action, (array) apply_filters( 'pp_unfiltered_ajax', array() ) ) )

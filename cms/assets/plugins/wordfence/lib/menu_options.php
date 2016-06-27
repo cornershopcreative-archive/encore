@@ -1,9 +1,6 @@
 <?php
 $w = new wfConfig();
 ?>
-<script type="text/javascript">
-	var WFSLevels = <?php echo json_encode(wfConfig::$securityLevels); ?>;
-</script>
 <div class="wordfenceModeElem" id="wordfenceMode_options"></div>
 <div class="wrap">
 	<?php require( 'menuHeader.php' ); ?>
@@ -179,7 +176,7 @@ $w = new wfConfig();
 					<?php if (getenv( 'noabort' ) != '1' && stristr( $_SERVER['SERVER_SOFTWARE'], 'litespeed' ) !== false){ ?>
 					<span style="color: #F00;">Warning: </span>You are running LiteSpeed web server and you don't have
 					the "noabort" variable set in your .htaccess.<br/>
-					<a href="https://support.wordfence.com/solution/articles/1000129050-running-wordfence-under-litespeed-web-server-and-preventing-process-killing-or"
+					<a href="https://docs.wordfence.com/en/LiteSpeed_aborts_Wordfence_scans_and_updates._How_do_I_prevent_that%3F"
 					   target="_blank">Please read this article in our FAQ to make an important change that will ensure
 						your site stability during an update.<br/>
 						<?php } ?>
@@ -197,30 +194,6 @@ $w = new wfConfig();
 			</tr>
 			<tr>
 				<th colspan="2">&nbsp;</th>
-			</tr>
-			<tr>
-				<th>Security Level:<a href="http://docs.wordfence.com/en/Wordfence_options#Security_Level"
-				                      target="_blank" class="wfhelp"></a></th>
-				<td>
-					<select id="securityLevel" name="securityLevel" onchange="WFAD.changeSecurityLevel(); return true;">
-						<option value="0"<?php $w->sel( 'securityLevel', '0' ); ?>>Level 0: Disable all Wordfence
-							security measures
-						</option>
-						<option value="1"<?php $w->sel( 'securityLevel', '1' ); ?>>Level 1: Light protection. Just the
-							basics
-						</option>
-						<option value="2"<?php $w->sel( 'securityLevel', '2' ); ?>>Level 2: Medium protection. Suitable
-							for most sites
-						</option>
-						<option value="3"<?php $w->sel( 'securityLevel', '3' ); ?>>Level 3: High security. Use this when
-							an attack is imminent
-						</option>
-						<option value="4"<?php $w->sel( 'securityLevel', '4' ); ?>>Level 4: Lockdown. Protect the site
-							against an attack in progress at the cost of inconveniencing some users
-						</option>
-						<option value="CUSTOM"<?php $w->sel( 'securityLevel', 'CUSTOM' ); ?>>Custom settings</option>
-					</select>
-				</td>
 			</tr>
 			<tr>
 				<th>How does Wordfence get IPs:<a
@@ -574,7 +547,7 @@ $w = new wfConfig();
 					           value="1" <?php $w->cb( 'other_scanOutside' ); ?> /></td>
 				</tr>
 				<tr>
-					<th>Scan images and binary files as if they were executable<a
+					<th>Scan images, binary, and other files as if they were executable<a
 							href="http://docs.wordfence.com/en/Wordfence_options#Scan_image_files_as_if_they_were_executable"
 							target="_blank" class="wfhelp"></a></th>
 					<td><input type="checkbox" id="scansEnabled_scanImages" class="wfConfigElem"
@@ -836,7 +809,7 @@ $w = new wfConfig();
 					           name="loginSec_blockAdminReg" <?php $w->cb( 'loginSec_blockAdminReg' ); ?> /></td>
 				</tr>
 				<tr>
-					<th>Prevent discovery of usernames through '/?author=N' scans<a
+					<th>Prevent discovery of usernames through '/?author=N' scans and the oEmbed API<a
 							href="http://docs.wordfence.com/en/Wordfence_options#Prevent_discovery_of_usernames_through_.27.3F.2Fauthor.3DN.27_scans"
 							target="_blank" class="wfhelp"></a></th>
 					<td><input type="checkbox" id="loginSec_disableAuthorScan" class="wfConfigElem"

@@ -5,7 +5,7 @@ Tags: restrict, access, permissions, cms, user, private, category, pages, privac
 License: GPLv3
 Requires at least: 3.4
 Tested up to: 4.5.2
-Stable tag: 2.3.11
+Stable tag: 2.3.12
 
 Advanced yet accessible content permissions. Give users or groups type-specific roles. Enable or block access for specific posts or terms.
 
@@ -48,6 +48,10 @@ Pro [extensions](http://presspermit.com/extensions) are [available](http://press
 Initial production release
 
 == Changelog ==
+
+= 2.3.12 - 15 Jun 2016 =
+* Fixed : _trashed suffix was added to post slug inappropriately following Menu editing (and possibly other wp-admin actions)
+* Compat : CMS Tree Page View - Avoid page listing error due to non-standard 'get_pages' filter application by CMSTPV
 
 = 2.3.11 - 9 May 2016 =
 * Perf : Simplify query clauses that ensure non-blockage of unfiltered post types for anonymous viewer

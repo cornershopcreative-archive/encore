@@ -86,6 +86,7 @@ class wfScanEngine {
 		$this->jobList[] = 'publicSite';
 		$this->jobList[] = 'checkSpamvertized';
 		$this->jobList[] = 'checkSpamIP';
+		$this->jobList[] = 'checkGSB';
 		$this->jobList[] = 'heartbleed';
 		$this->jobList[] = 'knownFiles_init';
 		$this->jobList[] = 'knownFiles_main';
@@ -238,6 +239,48 @@ class wfScanEngine {
 
 		} else {
 			wordfence::statusPaidOnly("Checking if your IP is generating spam is for paid members only");
+			sleep(2);
+		}
+	}
+	
+	private function scan_checkGSB(){
+		if(wfConfig::get('isPaid')){
+			$this->statusIDX['checkGSB'] = wordfence::statusStart("Checking if your site is on the Google Safe Browsing list");
+			
+			$urlsToCheck = array(array(get_site_url()));
+			$haveIssues = false;
+			$badURLs = $this->api->call('check_bad_urls', array(), array( 'toCheck' => json_encode($urlsToCheck)) );
+			if (is_array($badURLs) && sizeof($badURLs) > 0) {
+				foreach ($badURLs as $id => $badSiteList) {
+					foreach ($badSiteList as $badSite) {
+						$url = $badSite[0];
+						$badList = $badSite[1];
+						
+						if ($badList == 'goog-malware-shavar') {
+							$shortMsg = 'Your site is listed on Google\'s Safe Browsing malware list.';
+							$longMsg = "The URL " . esc_html($url) . " is on the malware list. More info available at <a href=\"http://safebrowsing.clients.google.com/safebrowsing/diagnostic?site=" . urlencode($url) . "&client=googlechrome&hl=en-US\" target=\"_blank\">Google Safe Browsing diagnostic page</a>.";
+							$gsb = $badList;
+						}
+						else if ($badList == 'googpub-phish-shavar') {
+							$shortMsg = 'Your site is listed on Google\'s Safe Browsing phishing list.';
+							$longMsg = "The URL " . esc_html($url) . " is on the phishing list. More info available at <a href=\"http://safebrowsing.clients.google.com/safebrowsing/diagnostic?site=" . urlencode($url) . "&client=googlechrome&hl=en-US\" target=\"_blank\">Google Safe Browsing diagnostic page</a>.";
+							$gsb = $badList;
+						}
+						else {
+							$shortMsg = 'Your site is listed on Google\'s Safe Browsing list.';
+							$longMsg = "The URL is: " . esc_html($url) . ". More info available at <a href=\"http://safebrowsing.clients.google.com/safebrowsing/diagnostic?site=" . urlencode($url) . "&client=googlechrome&hl=en-US\" target=\"_blank\">Google Safe Browsing diagnostic page</a>.";
+							$gsb = 'unknown';
+						}
+						
+						$this->addIssue('checkGSB', 1, 'checkGSB', 'checkGSB' . $url, $shortMsg, $longMsg, array('badURL' => $url, 'gsb' => $gsb));
+						$haveIssues = true;
+					}
+				}
+			}
+			
+			wordfence::statusEnd($this->statusIDX['checkGSB'], $haveIssues);
+		} else {
+			wordfence::statusPaidOnly("Checking if your site is on the Google Safe Browsing list is for paid members only");
 			sleep(2);
 		}
 	}
@@ -466,7 +509,7 @@ class wfScanEngine {
 
 
 	private function scan_posts_init(){
-		$this->statusIDX['posts'] = wordfence::statusStart('Scanning posts for URL\'s in Google\'s Safe Browsing List');
+		$this->statusIDX['posts'] = wordfence::statusStart('Scanning posts for URLs in Google\'s Safe Browsing List');
 		$blogsToScan = self::getBlogsToScan('posts');
 		$wfdb = new wfDB();
 		$this->hoover = new wordfenceURLHoover($this->apiKey, $this->wp_version);
@@ -573,7 +616,7 @@ class wfScanEngine {
 		wordfence::statusEnd($this->statusIDX['posts'], $haveIssues);
 	}
 	private function scan_comments_init(){
-		$this->statusIDX['comments'] = wordfence::statusStart('Scanning comments for URL\'s in Google\'s Safe Browsing List');
+		$this->statusIDX['comments'] = wordfence::statusStart('Scanning comments for URLs in Google\'s Safe Browsing List');
 		$this->scanData = array();
 		$this->scanQueue = array();
 		$this->hoover = new wordfenceURLHoover($this->apiKey, $this->wp_version);
@@ -767,7 +810,7 @@ class wfScanEngine {
 			$this->userPasswdQueue = substr($this->userPasswdQueue, 4);
 			$userLogin = $wfdb->querySingle("select user_login from $wpdb->users where ID=%s", $userID);
 			if(! $userLogin){
-				wordfence::status(2, 'error', "Could not get username for user with ID $userID when checking password strenght.");
+				wordfence::status(2, 'error', "Could not get username for user with ID $userID when checking password strength.");
 				continue;
 			}
 			wordfence::status(4, 'info', "Checking password strength for user $userLogin with ID $userID");
@@ -883,9 +926,9 @@ class wfScanEngine {
 		if(preg_match('/https?:\/\/([^\/]+)/i', $home, $matches)){
 			$host = strtolower($matches[1]);
 			$this->status(2, 'info', "Starting DNS scan for $host");
-
+			
 			$cnameArrRec = @dns_get_record($host, DNS_CNAME);
-			$cnameArr = array(); 
+			$cnameArr = array();
 			$cnamesWeMustTrack = array();
 			if ($cnameArrRec) {
 				foreach($cnameArrRec as $elem){
@@ -896,7 +939,7 @@ class wfScanEngine {
 					}
 				}
 			}
-
+			
 			function wfAnonFunc1($a){ return $a['host'] . ' points to ' . $a['target']; }
 			$cnameArr = array_map('wfAnonFunc1', $cnameArr);
 			sort($cnameArr, SORT_STRING);
@@ -905,24 +948,26 @@ class wfScanEngine {
 			$dnsLogged = wfConfig::get('wf_dnsLogged', false);
 			$msg = "A change in your DNS records may indicate that a hacker has hacked into your DNS administration system and has pointed your email or website to their own server for malicious purposes. It could also indicate that your domain has expired. If you made this change yourself you can mark it 'resolved' and safely ignore it.";
 			if($dnsLogged && $loggedCNAME != $currentCNAME){
-				if($this->addIssue('dnsChange', 2, 'dnsChanges', 'dnsChanges', "Your DNS records have changed", "We have detected a change in the CNAME records of your DNS configuration for the domain $host. A CNAME record is an alias that is used to point a domain name to another domain name. For example foo.example.com can point to bar.example.com which then points to an IP address of 10.1.1.1. $msg", array( 
+				if($this->addIssue('dnsChange', 2, 'dnsChanges', 'dnsChanges', "Your DNS records have changed", "We have detected a change in the CNAME records of your DNS configuration for the domain $host. A CNAME record is an alias that is used to point a domain name to another domain name. For example foo.example.com can point to bar.example.com which then points to an IP address of 10.1.1.1. $msg", array(
 					'type' => 'CNAME',
 					'host' => $host,
 					'oldDNS' => $loggedCNAME,
 					'newDNS' => $currentCNAME
-					))){
+				))){
 					$haveIssues = true;
 				}
 			}
 			wfConfig::set('wf_dnsCNAME', $currentCNAME);
-
-			$aArrRec = dns_get_record($host, DNS_A); 
+			
+			$aArrRec = @dns_get_record($host, DNS_A);
 			$aArr = array();
-			foreach($aArrRec as $elem){ 
-				$this->status(2, 'info', "Scanning DNS A record for " . $elem['host']);
-				if($elem['host'] == $host || in_array($elem['host'], $cnamesWeMustTrack) ){ 
-					$aArr[] = $elem; 
-				} 
+			if ($aArrRec) {
+				foreach($aArrRec as $elem){
+					$this->status(2, 'info', "Scanning DNS A record for " . $elem['host']);
+					if($elem['host'] == $host || in_array($elem['host'], $cnamesWeMustTrack) ){
+						$aArr[] = $elem;
+					}
+				}
 			}
 			function wfAnonFunc2($a){ return $a['host'] . ' points to ' . $a['ip']; }
 			$aArr = array_map('wfAnonFunc2', $aArr);
@@ -931,26 +976,30 @@ class wfScanEngine {
 			$loggedA = wfConfig::get('wf_dnsA');
 			$dnsLogged = wfConfig::get('wf_dnsLogged', false);
 			if($dnsLogged && $loggedA != $currentA){
-				if($this->addIssue('dnsChange', 2, 'dnsChanges', 'dnsChanges', "Your DNS records have changed", "We have detected a change in the A records of your DNS configuration that may affect the domain $host. An A record is a record in DNS that points a domain name to an IP address. $msg", array( 
+				if($this->addIssue('dnsChange', 2, 'dnsChanges', 'dnsChanges', "Your DNS records have changed", "We have detected a change in the A records of your DNS configuration that may affect the domain $host. An A record is a record in DNS that points a domain name to an IP address. $msg", array(
 					'type' => 'A',
 					'host' => $host,
 					'oldDNS' => $loggedA,
 					'newDNS' => $currentA
-					))){
+				))){
 					$haveIssues = true;
 				}
 			}
 			wfConfig::set('wf_dnsA', $currentA);
-
-
-
-			$mxArrRec = dns_get_record($host, DNS_MX); 
+			
+			
+			
+			$mxArrRec = @dns_get_record($host, DNS_MX);
 			$mxArr = array();
-			foreach($mxArrRec as $elem){
-				$this->status(2, 'info', "Scanning DNS MX record for " . $elem['host']); 
-				if($elem['host'] == $host){ 
-					$mxArr[] = $elem; 
-				} 
+			if ($mxArrRec) {
+				foreach ($mxArrRec as $elem)
+				{
+					$this->status(2, 'info', "Scanning DNS MX record for " . $elem['host']);
+					if ($elem['host'] == $host)
+					{
+						$mxArr[] = $elem;
+					}
+				}
 			}
 			function wfAnonFunc3($a){ return $a['target']; }
 			$mxArr = array_map('wfAnonFunc3', $mxArr);

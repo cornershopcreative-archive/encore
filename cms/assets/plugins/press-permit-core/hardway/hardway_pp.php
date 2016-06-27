@@ -99,6 +99,11 @@ class PP_Hardway
 
 		extract( apply_filters( 'pp_get_pages_args', $r ), EXTR_SKIP );  // PPE filter modifies append_page, exclude_tree
 
+		// workaround for CMS Tree Page View
+		if ( 'ids' == $fields && isset( $args['xsuppress_filters'] ) && ! empty( $args['ignore_sticky_posts'] ) ) {
+			return $results;
+		}
+		
 		// workaround for CMS Tree Page View (passes post_parent instead of parent)
 		if ( ( -1 == $parent ) && isset($args['post_parent']) ) {
 			$args['parent'] = $args['post_parent'];
@@ -344,9 +349,18 @@ class PP_Hardway
 
 				$clauses = apply_filters( 'pp_posts_clauses', compact( 'distinct', 'fields', 'join', 'where', 'groupby', 'orderby', 'limits' ), $_args );
 			}
-
+			
+			switch ( $fields ) {
+				case 'ids':		// workaround for plugins (like CMS Tree Page View) which pass get_posts() args into 'get_pages' filter
+				case 'id=>parent':
+					$_fields = "$wpdb->posts.*";
+					break;
+				default:
+					$_fields = $clauses['fields'];
+			}
+			
 			// Execute the filtered query
-			$pages = $wpdb->get_results( "SELECT {$distinct} {$clauses['fields']} FROM $wpdb->posts {$clauses['join']} WHERE 1=1 {$clauses['where']} {$clauses['orderby']} {$clauses['limits']}" );
+			$pages = $wpdb->get_results( "SELECT {$distinct} $_fields FROM $wpdb->posts {$clauses['join']} WHERE 1=1 {$clauses['where']} {$clauses['orderby']} {$clauses['limits']}" );
 		}
 		
 		if ( empty($pages) )

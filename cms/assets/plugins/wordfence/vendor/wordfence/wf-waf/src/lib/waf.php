@@ -421,8 +421,8 @@ auEa+7b+FGTKs7dUo2BNGR7OVifK4GZ8w/ajS0TelhrSRi3BBQCGXLzUO/UURUAh
 			if (!is_writable($this->getCompiledRulesFile())) {
 				throw new wfWAFBuildRulesException('Rules file not writable.');
 			}
-
-			file_put_contents($this->getCompiledRulesFile(), sprintf(<<<PHP
+			
+			wfWAFStorageFile::atomicFilePutContents($this->getCompiledRulesFile(), sprintf(<<<PHP
 <?php
 if (!defined('WFWAF_VERSION')) {
 	exit('Access denied');
@@ -433,9 +433,9 @@ if (!defined('WFWAF_VERSION')) {
 
 %s?>
 PHP
-				, $this->buildRuleSet($rules)), LOCK_EX);
+				, $this->buildRuleSet($rules)), 'rules');
 			if (!empty($ruleString) && !WFWAF_DEBUG) {
-				file_put_contents($this->getStorageEngine()->getRulesDSLCacheFile(), $ruleString, LOCK_EX);
+				wfWAFStorageFile::atomicFilePutContents($this->getStorageEngine()->getRulesDSLCacheFile(), $ruleString, 'rules');
 			}
 
 			if ($updateLastUpdatedTimestamp) {
@@ -881,7 +881,7 @@ HTML
 							'k'      => $this->getStorageEngine()->getConfig('apiKey'),
 							's'      => $this->getStorageEngine()->getConfig('siteURL') ? $this->getStorageEngine()->getConfig('siteURL') :
 								sprintf('%s://%s/', $this->getRequest()->getProtocol(), rawurlencode($this->getRequest()->getHost())),
-						)), $this->getStorageEngine()->getAttackData(), $request);
+						), null, '&'), $this->getStorageEngine()->getAttackData(), $request);
 
 					if ($response instanceof wfWAFHTTPResponse && $response->getBody()) {
 						$jsonData = wfWAFUtils::json_decode($response->getBody(), true);
@@ -1260,7 +1260,7 @@ class wfWAFCronFetchRulesEvent extends wfWAFCronEvent {
 					'h'        => $waf->getStorageEngine()->getConfig('homeURL') ? $waf->getStorageEngine()->getConfig('homeURL') : $guessSiteURL,
 					'openssl'  => $waf->hasOpenSSL() ? 1 : 0,
 					'betaFeed' => (int) $waf->getStorageEngine()->getConfig('betaThreatDefenseFeed'),
-				)));
+				), null, '&'));
 			if ($this->response) {
 				$jsonData = wfWAFUtils::json_decode($this->response->getBody(), true);
 				if (is_array($jsonData)) {

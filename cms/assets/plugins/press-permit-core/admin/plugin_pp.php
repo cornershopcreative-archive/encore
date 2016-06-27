@@ -62,8 +62,13 @@ class PP_Plugin_Status {
 		
 		$const = 'PP_DEBUG_' . strtoupper( str_replace( '-', '_', $request_topic ) );
 		if ( is_admin() && defined( $const ) && constant( $const ) ) {
-			dump($server_response);
-			agp_bt_die();
+			if ( defined( 'PP_DEBUG' ) && ( 'var_dump' !== constant( $const ) ) ) {
+				dump($server_response);
+				agp_bt_die();
+			} else {
+				var_dump($server_response);
+				die('--- PP TEST ---');
+			}
 		}
 		
 		$result = false;

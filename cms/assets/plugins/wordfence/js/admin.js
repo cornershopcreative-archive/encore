@@ -153,9 +153,6 @@
 					}
 				} else if (jQuery('#wordfenceMode_options').length > 0) {
 					this.mode = 'options';
-					jQuery('.wfConfigElem').change(function() {
-						jQuery('#securityLevel').val('CUSTOM');
-					});
 					this.updateTicker(true);
 					startTicker = true;
 					if (this.needTour()) {
@@ -1030,7 +1027,11 @@
 					issueID: issueID,
 					forceDelete: force
 				}, function(res) {
-					self.doneDeleteFile(res);
+					if (res.needsCredentials) {
+						document.location.href = res.redirect;
+					} else {
+						self.doneDeleteFile(res);
+					}
 				});
 			},
 			doneDeleteFile: function(res) {
@@ -1154,7 +1155,11 @@
 				this.ajax('wordfence_restoreFile', {
 					issueID: issueID
 				}, function(res) {
-					self.doneRestoreFile(res);
+					if (res.needsCredentials) {
+						document.location.href = res.redirect;
+					} else {
+						self.doneRestoreFile(res);
+					}
 				});
 			},
 			doneRestoreFile: function(res) {
@@ -1288,7 +1293,7 @@
 				});
 			},
 			emailActivityLog: function() {
-				this.colorbox('400px', 'Email Wordfence Activity Log', "Enter the email address you would like to send the Wordfence activity log to. Note that the activity log may contain thousands of lines of data. This log is usually only sent to a member of the Wordfence support team. It also contains your PHP configuration from the phpinfo() function for diagnostic data.<br /><br /><input type='text' value='support@wordfence.com' size='20' id='wfALogRecip' /><input type='button' value='Send' onclick=\"WFAD.completeEmailActivityLog();\" /><input type='button' value='Cancel' onclick='jQuery.colorbox.close();' /><br /><br />");
+				this.colorbox('400px', 'Email Wordfence Activity Log', "Enter the email address you would like to send the Wordfence activity log to. Note that the activity log may contain thousands of lines of data. This log is usually only sent to a member of the Wordfence support team. It also contains your PHP configuration from the phpinfo() function for diagnostic data.<br /><br /><input type='text' value='wftest@wordfence.com' size='20' id='wfALogRecip' /><input type='button' value='Send' onclick=\"WFAD.completeEmailActivityLog();\" /><input type='button' value='Cancel' onclick='jQuery.colorbox.close();' /><br /><br />");
 			},
 			completeEmailActivityLog: function() {
 				jQuery.colorbox.close();
@@ -2102,7 +2107,9 @@
 				}, function(res) {
 					if (res.ok) {
 						self.twoFacStatus('User added! Check the user\'s phone to get the activation code.');
-						jQuery('<div id="twoFacCont_' + res.userID + '">' + jQuery('#wfTwoFacUserTmpl').tmpl(res).html() + '</div>').prependTo(jQuery('#wfTwoFacUsers'));
+						var updatedTwoFac = jQuery('#wfTwoFacUserTmpl').tmpl({users: [res]});
+						jQuery('#twoFactorUser-none').remove();
+						jQuery('#wfTwoFacUsers > table > tbody:last-child').append(updatedTwoFac.find('tbody > tr'));
 					}
 				});
 			},
@@ -2113,9 +2120,10 @@
 					code: code
 				}, function(res) {
 					if (res.ok) {
-						jQuery('#twoFacCont_' + res.userID).html(
-							jQuery('#wfTwoFacUserTmpl').tmpl(res)
-						);
+						var updatedTwoFac = jQuery('#wfTwoFacUserTmpl').tmpl({users: [res]});
+						updatedTwoFac.find('tbody > tr').each(function(index, element) {
+							jQuery('#' + jQuery(element).attr('id')).replaceWith(element);
+						});
 						self.twoFacStatus('Cellphone Sign-in activated for user.');
 					}
 				});
@@ -2125,20 +2133,19 @@
 					userID: userID
 				}, function(res) {
 					if (res.ok) {
-						jQuery('#twoFacCont_' + res.userID).fadeOut(function() {
+						jQuery('#twoFactorUser-' + res.userID).fadeOut(function() {
 							jQuery(this).remove();
+							
+							if (jQuery('#wfTwoFacUsers > table > tbody:last-child').children().length == 0) {
+								jQuery('#wfTwoFacUsers').html(jQuery('#wfTwoFacUserTmpl').tmpl({users: []}));
+							}
 						});
 					}
 				});
 			},
 			loadTwoFactor: function() {
 				this.ajax('wordfence_loadTwoFactor', {}, function(res) {
-					if (res.users && res.users.length > 0) {
-						for (var i = 0; i < res.users.length; i++) {
-							jQuery('<div id="twoFacCont_' + res.users[i].userID + '">' +
-								jQuery('#wfTwoFacUserTmpl').tmpl(res.users[i]).html() + '</div>').appendTo(jQuery('#wfTwoFacUsers'));
-						}
-					}
+					jQuery('#wfTwoFacUsers').html(jQuery('#wfTwoFacUserTmpl').tmpl(res));
 				});
 			},
 			getQueryParam: function(name) {
@@ -2491,6 +2498,20 @@
 					}, 500);
 			},
 
+			renderWAFRulesNextUpdate: function(date) {
+				var dateString = date.toString();
+				if (date.toLocaleString) {
+					dateString = date.toLocaleString();
+				}
+				$('#waf-rules-next-update').text('Next Update Check: ' + dateString)
+					.css({
+						'opacity': 0
+					})
+					.animate({
+						'opacity': 1
+					}, 500);
+			},
+
 			wafUpdateRules: function(onSuccess) {
 				var self = this;
 				this.ajax('wordfence_updateWAFRules', {}, function(res) {
@@ -2530,7 +2551,7 @@
 
 			wafConfigureAutoPrepend: function() {
 				var self = this;
-				self.colorbox("400px", 'Backup .htaccess before continuing', 'We are about to change your <em>.htaccess</em> file. Please make a backup of this file proceeding'
+				self.colorbox("400px", 'Backup .htaccess before continuing', 'We are about to change your <em>.htaccess</em> file. Please make a backup of this file before proceeding.'
 					+ '<br/>'
 					+ '<a href="' + WordfenceAdminVars.ajaxURL + '?action=wordfence_downloadHtaccess&nonce=' + self.nonce + '" onclick="jQuery(\'#wf-htaccess-confirm\').prop(\'disabled\', false); return true;">Click here to download a backup copy of your .htaccess file now</a>' +
 					'<br /><br />' +
