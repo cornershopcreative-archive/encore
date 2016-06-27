@@ -1,6 +1,3 @@
-[submodule "cms/assets/themes/largo"]
-	path = cms/assets/themes/largo
-	url = git@github.com:INN/Largo.git
 [submodule "cms/assets/plugins/conditional-overlay"]
 	path = cms/assets/plugins/conditional-overlay
-	url = git@bitbucket.org:cornershopcreative/conditional-overlay.git
+	url = https://cshopdevs@bitbucket.org/cornershopcreative/conditional-overlay.git
