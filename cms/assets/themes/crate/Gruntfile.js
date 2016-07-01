@@ -53,9 +53,9 @@ module.exports = function(grunt) {
 					outputStyle: 'compressed'
 				},
 				files: {
-					'css/core.min.css': 'sass/core.sass',
-					'css/print.min.css': 'sass/print.sass',
-					'css/editor-style.css': 'sass/editor-style.sass'
+					'css/core.min.css': 'sass/core.scss',
+					'css/print.min.css': 'sass/print.scss',
+					'css/editor-style.css': 'sass/editor-style.scss'
 				}
 			},
 			src: {
@@ -72,8 +72,8 @@ module.exports = function(grunt) {
 					outputStyle: 'expanded'
 				},
 				files: {
-					'css/core.css': 'sass/core.sass',
-					'css/print.css': 'sass/print.sass',
+					'css/core.css': 'sass/core.scss',
+					'css/print.css': 'sass/print.scss',
 				}
 			}
 		},
@@ -133,12 +133,12 @@ module.exports = function(grunt) {
 					delay: 4000,
 					server: 'http://' + pathParts[4] + '.' + pathParts[2] + '.cshp.co/',
 				},
-				files: {	
+				files: {
 					'images/screenshot.png' : ['index.php'],
-				}		
+				}
 			}
 		},
-		
+
 		resize_crop: {
 			screenshot: {
 				options: {

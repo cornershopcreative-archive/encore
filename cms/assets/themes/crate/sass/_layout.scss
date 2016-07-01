@@ -1,0 +1,44 @@
+// Note: Susy grid is configured in variables.sass
+
+body {
+  font-family: $sans;
+  font-size: $baseSize;
+  min-height: 100%;
+}
+
+#wrapper {
+  @include container($normal-width);
+  @include below-desktop {
+    max-width: 96%;
+  }
+}
+
+#content {
+  @include legacy-pie-clearfix;
+}
+
+#main {
+  @include span(8);
+  @include below-tablet {
+    @include span(full);
+  }
+
+  &.full {
+    @include span(full);
+  }
+}
+
+.rail {
+  @include span(4 last);
+  @include below-tablet {
+    @include span(full break);
+  }
+}
+
+.full {
+  @include span(full);
+}
+
+.visible-print {
+  display: none !important;
+}

@@ -1,0 +1,78 @@
+/**
+ * Print styles in here. Bah!
+ */
+@charset "UTF-8";
+
+@import "bourbon";
+@import "variables";
+@import "mixins";
+
+.visible-print {
+  display: inherit !important;
+}
+
+.hidden-print {
+  display: none !important;
+}
+
+body {
+  background: none;
+  color: black;
+}
+
+#main,
+#wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+
+#access,
+.comments,
+.rail,
+footer[role] .menu,
+.credit,
+#_atssh {
+  display: none;
+}
+
+.prose a:after,
+a.excerpt-more:after {
+  content: " [" attr(href) "] ";
+  word-wrap: break-word;
+}
+
+header[role] {
+  margin: 0 0 1em;
+  padding: 0 0 1em;
+  border-bottom: 1px solid #999;
+}
+
+footer[role] {
+  margin: 1em 0;
+  padding: 1em 0 0;
+  border-top: 1px solid #999;
+  font-size: 9pt;
+}
+
+#print-logo {
+  float: left;
+  max-width: 35%;
+  height: auto;
+}
+
+@page {
+  margin: 0.75in;
+}
+
+
+h1, h2, h3 {
+  page-break-after: avoid;
+}
+
+ul, img {
+  page-break-inside: avoid;
+}
+
+// More fun tips at http://www.smashingmagazine.com/2011/11/24/how-to-set-up-a-print-style-sheet/
