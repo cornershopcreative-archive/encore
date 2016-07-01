@@ -14,12 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * For more information on hooks, actions, and filters, see http://codex.wordpress.org/Plugin_API.
  */
 
-/**
- * Set the content width based on the theme's design and stylesheet.
- */
-if ( ! isset( $content_width ) ){
-	$content_width = 640;
-}
 
 if ( ! function_exists( 'crate_setup' ) ) :
 	/**
@@ -42,6 +36,7 @@ if ( ! function_exists( 'crate_setup' ) ) :
 		add_theme_support( 'automatic-feed-links' );
 
 		// Use Featured Images (also known as post thumbnails) for per-post/per-page Custom Header images
+		// Second argument can be an array of post types that should have them.
 		add_theme_support( 'post-thumbnails' );
 
 		// Let WordPress generate the <title> tag in the newfangled 4.1 way
@@ -76,13 +71,11 @@ $includes = array(
 	'/inc/widgets.php',     // Widget regions and custom widgets
 	'/inc/admin.php',       // Modifications to admin pages, new admin pages, etc
 	'/inc/shortcodes.php',  // Custom shortcodes
-	'/inc/filters.php',     // Filters for overriding default WP behavior
+	'/inc/filters.php',     // Filters for overriding various WP behavior that doesn't belong elsewhere
 	'/inc/menus.php',       // Define menus and custom menu walkers
 	'/inc/post-types.php',  // Custom post type definitions
 	'/inc/utilities.php',   // Misc helper functions and conditionals for templates
-	'/inc/acf-export.php',  // Exported code from ACF so the plugin isn't needed
-	'/inc/plugins.php',	    // Exported code from ACF so the plugin isn't needed
-
+	'/inc/plugins.php',	    // Provides a way to delineate required plugins. Cool!
 	/**
 	 * Stuff that might still need a home:
 			scheduler/cron-related stuff
@@ -90,36 +83,10 @@ $includes = array(
 			ajax handlers
 	 */
 );
-
 foreach ( $includes as $include ) {
 	require_once( get_template_directory() . $include );
 }
 
-/**
- * Removes the default styles that are packaged with the Recent Comments widget.
- */
-add_action( 'widgets_init', 'crate_remove_recent_comments_style' );
-function crate_remove_recent_comments_style() {
-	global $wp_widget_factory;
-	remove_action( 'wp_head', array( $wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style' ) );
-}
-
-/**
- * Returns the current page URL
- */
-function current_page_url() {
-	$pageURL = 'http';
-	if ( isset( $_SERVER['HTTPS'] ) && 'on' == $_SERVER['HTTPS'] ) {
-		$pageURL .= 's';
-	}
-	$pageURL .= '://';
-	if ( '80' != $_SERVER['SERVER_PORT'] ) {
-		$pageURL .= $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
-	} else {
-		$pageURL .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-	}
-	return $pageURL;
-}
 
 /**
  * Make sure sites don't die when Kint Debugger isn't around

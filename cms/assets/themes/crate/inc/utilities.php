@@ -164,3 +164,21 @@ function get_post_thumbnail_field( $field = 'caption', $post_id = NULL, $suppres
 function the_post_thumbnail_field( $field = 'caption', $post_id = NULL, $suppress_filters = FALSE ) {
 	echo get_post_thumbnail_field( $field, $post_id, $suppress_filters );
 }
+
+
+/**
+ * Returns the current page URL
+ */
+function current_page_url() {
+	$pageURL = 'http';
+	if ( isset( $_SERVER['HTTPS'] ) && 'on' == $_SERVER['HTTPS'] ) {
+		$pageURL .= 's';
+	}
+	$pageURL .= '://';
+	if ( '80' != $_SERVER['SERVER_PORT'] ) {
+		$pageURL .= $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
+	} else {
+		$pageURL .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+	}
+	return $pageURL;
+}
