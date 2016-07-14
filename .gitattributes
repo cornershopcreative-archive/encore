@@ -1,0 +1,5 @@
+# Don't bother showing diffs for Crate's compiled CSS,
+# or for sourcemaps or minified files in general
+cms/assets/themes/crate/css/*.css -diff
+*.map -diff
+*.min.* -diff
