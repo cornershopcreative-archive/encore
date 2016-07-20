@@ -39,130 +39,46 @@
 	</article><!-- #post-0 -->
 <?php endif; ?>
 
-<?php
-	/* Start the Loop.
-	 *
-	 * In Twenty Ten we use the same loop in multiple contexts.
-	 * It is broken into three main parts: when we're displaying
-	 * posts that are in the gallery category, when we're displaying
-	 * posts in the asides category, and finally all other posts.
-	 *
-	 * Additionally, we sometimes check for whether we are on an
-	 * archive page, a search page, etc., allowing for small differences
-	 * in the loop on each template without actually duplicating
-	 * the rest of the loop that is shared.
-	 *
-	 * Without further ado, the loop:
-	 */ ?>
 <?php while ( have_posts() ) : the_post(); ?>
 
-<?php /* How to display posts in the Gallery category. */ ?>
+	<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+		<h2 class="entry-title"><a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'crate' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a></h2>
 
-	<?php if ( in_category( _x('gallery', 'gallery category slug', 'crate') ) ) : ?>
-		<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-			<h2 class="entry-title"><a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'crate' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a></h2>
+		<div class="entry-meta">
+			<?php crate_posted_on(); ?>
+		</div><!-- .entry-meta -->
 
-			<div class="entry-meta">
-				<?php crate_posted_on(); ?>
-			</div><!-- .entry-meta -->
-
-			<div class="entry-content">
-<?php if ( post_password_required() ) : ?>
-				<?php the_content(); ?>
+<?php if ( is_archive() || is_search() ) : // Only display excerpts for archives and search. ?>
+		<div class="entry-summary">
+			<?php the_excerpt(); ?>
+		</div><!-- .entry-summary -->
 <?php else : ?>
-				<?php
-					$images = get_children( array( 'post_parent' => $post->ID, 'post_type' => 'attachment', 'post_mime_type' => 'image', 'orderby' => 'menu_order', 'order' => 'ASC', 'numberposts' => 999 ) );
-					if ( $images ) :
-						$total_images = count( $images );
-						$image = array_shift( $images );
-						$image_img_tag = wp_get_attachment_image( $image->ID, 'thumbnail' );
-				?>
-						<div class="gallery-thumb">
-							<a class="size-thumbnail" href="<?php the_permalink(); ?>"><?php echo $image_img_tag; ?></a>
-						</div><!-- .gallery-thumb -->
-						<p><em><?php printf( __( 'This gallery contains <a %1$s>%2$s photos</a>.', 'crate' ),
-								'href="' . get_permalink() . '" title="' . sprintf( esc_attr__( 'Permalink to %s', 'crate' ), the_title_attribute( 'echo=0' ) ) . '" rel="bookmark"',
-								$total_images
-							); ?></em></p>
-				<?php endif; ?>
-						<?php the_excerpt(); ?>
+		<div class="entry-content">
+			<?php the_content( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'crate' ) ); ?>
+			<?php wp_link_pages( array( 'before' => '<div class="page-link">' . __( 'Pages:', 'crate' ), 'after' => '</div>' ) ); ?>
+		</div><!-- .entry-content -->
 <?php endif; ?>
-			</div><!-- .entry-content -->
 
-			<footer class="entry-utility">
-				<a href="<?php echo get_term_link( _x('gallery', 'gallery category slug', 'crate'), 'category' ); ?>" title="<?php esc_attr_e( 'View posts in the Gallery category', 'crate' ); ?>"><?php _e( 'More Galleries', 'crate' ); ?></a>
+		<footer class="entry-utility">
+			<?php if ( count( get_the_category() ) ) : ?>
+				<?php printf( __( 'Posted in %2$s', 'crate' ), 'entry-utility-prep entry-utility-prep-cat-links', get_the_category_list( ', ' ) ); ?>
 				|
-				<?php comments_popup_link( __( 'Leave a comment', 'crate' ), __( '1 Comment', 'crate' ), __( '% Comments', 'crate' ) ); ?>
-				<?php edit_post_link( __( 'Edit', 'crate' ), '|', '' ); ?>
-			</footer><!-- .entry-utility -->
-		</article><!-- #post-## -->
-
-<?php /* How to display posts in the asides category */ ?>
-
-	<?php elseif ( in_category( _x('asides', 'asides category slug', 'crate') ) ) : ?>
-		<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-
-		<?php if ( is_archive() || is_search() ) : // Display excerpts for archives and search. ?>
-			<div class="entry-summary">
-				<?php the_excerpt(); ?>
-			</div><!-- .entry-summary -->
-		<?php else : ?>
-			<div class="entry-content">
-				<?php the_content( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'crate' ) ); ?>
-			</div><!-- .entry-content -->
-		<?php endif; ?>
-
-			<footer class="entry-utility">
-				<?php crate_posted_on(); ?>
+			<?php endif; ?>
+			<?php
+				$tags_list = get_the_tag_list( '', ', ' );
+				if ( $tags_list ):
+			?>
+				<?php printf( __( 'Tagged %2$s', 'crate' ), 'entry-utility-prep entry-utility-prep-tag-links', $tags_list ); ?>
 				|
-				<?php comments_popup_link( __( 'Leave a comment', 'crate' ), __( '1 Comment', 'crate' ), __( '% Comments', 'crate' ) ); ?>
-				<?php edit_post_link( __( 'Edit', 'crate' ), '| ', '' ); ?>
-			</footer><!-- .entry-utility -->
-		</article><!-- #post-## -->
+			<?php endif; ?>
+			<?php comments_popup_link( __( 'Leave a comment', 'crate' ), __( '1 Comment', 'crate' ), __( '% Comments', 'crate' ) ); ?>
+			<?php edit_post_link( __( 'Edit', 'crate' ), '| ', '' ); ?>
+		</footer><!-- .entry-utility -->
+	</article><!-- #post-## -->
 
-<?php /* How to display all other posts. */ ?>
+	<?php comments_template( '', true ); ?>
 
-	<?php else : ?>
-		<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-			<h2 class="entry-title"><a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'crate' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a></h2>
-
-			<div class="entry-meta">
-				<?php crate_posted_on(); ?>
-			</div><!-- .entry-meta -->
-
-	<?php if ( is_archive() || is_search() ) : // Only display excerpts for archives and search. ?>
-			<div class="entry-summary">
-				<?php the_excerpt(); ?>
-			</div><!-- .entry-summary -->
-	<?php else : ?>
-			<div class="entry-content">
-				<?php the_content( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'crate' ) ); ?>
-				<?php wp_link_pages( array( 'before' => '<div class="page-link">' . __( 'Pages:', 'crate' ), 'after' => '</div>' ) ); ?>
-			</div><!-- .entry-content -->
-	<?php endif; ?>
-
-			<footer class="entry-utility">
-				<?php if ( count( get_the_category() ) ) : ?>
-					<?php printf( __( 'Posted in %2$s', 'crate' ), 'entry-utility-prep entry-utility-prep-cat-links', get_the_category_list( ', ' ) ); ?>
-					|
-				<?php endif; ?>
-				<?php
-					$tags_list = get_the_tag_list( '', ', ' );
-					if ( $tags_list ):
-				?>
-					<?php printf( __( 'Tagged %2$s', 'crate' ), 'entry-utility-prep entry-utility-prep-tag-links', $tags_list ); ?>
-					|
-				<?php endif; ?>
-				<?php comments_popup_link( __( 'Leave a comment', 'crate' ), __( '1 Comment', 'crate' ), __( '% Comments', 'crate' ) ); ?>
-				<?php edit_post_link( __( 'Edit', 'crate' ), '| ', '' ); ?>
-			</footer><!-- .entry-utility -->
-		</article><!-- #post-## -->
-
-		<?php comments_template( '', true ); ?>
-
-	<?php endif; // This was the if statement that broke the loop into three parts based on categories. ?>
-
-<?php endwhile; // End the loop. Whew. ?>
+<?php endwhile; // End the Loop. ?>
 
 <?php /* Display navigation to next/previous pages when applicable */ ?>
 <?php if (  $wp_query->max_num_pages > 1 ) : ?>
