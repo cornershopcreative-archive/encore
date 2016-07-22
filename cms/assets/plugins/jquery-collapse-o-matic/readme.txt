@@ -4,8 +4,8 @@ Contributors: twinpictures, baden03
 Donate link: http://plugins.twinpictures.de/plugins/collapse-o-matic/
 Tags: collapse, expand, collapsible, expandable, expandable content, collapsable content, shortcode, hidden, hide, display, accordion, accordion, jQuery, javascript, roll-your-own, twinpictures, read me, read more, more, plugin oven
 Requires at least: 4.0
-Tested up to: 4.5
-Stable tag: 1.7.1
+Tested up to: 4.6-beta-3
+Stable tag: 1.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,10 @@ No. Not even close.
 3. Options Page? Yes, Options Page!
 
 == Changelog ==
+
+= 1.7.2 =
+* adjusted data-findme to deal with ‘auto’ value
+* added the must-be-one class to force one highlander element to stay open
 
 = 1.7.1 =
 * integrated new collapse-commander image trigger feature
@@ -321,4 +325,5 @@ Fixed auto-expand of urls with id-anchors
 * The plug-in came to be.
 
 == Upgrade Notice ==
-Integrated new collapse-commander image trigger feature. Added new togglegroup shortcode attribute and data-togglegroup html attribute to reference groups of expand elements with out auto-collapsing other groups, such as when using the real attribute. Added the ability to load plugin css only when shortcode is used. Removed language files in favour of WordPress language packs. Plugin has been fully tested to work with WordPress 4.5.
+adjusted data-findme attribute to work with auto value.
+added new must-be-one class to force one highlander element to stay open

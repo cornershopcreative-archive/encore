@@ -89,7 +89,7 @@ class PP_DB_Setup {
 			operation: read / edit / assign / parent / revise / etc.
 			mod_type: include / exclude / additional
 			via_item_source: data source of the item which triggers the exception (if for_item_type is page, via_item_source could be term)
-			via_item_type: post type or taxonomy which triggers the exception (Needed for include exceptions. Nullstring means redundant / not applicable)
+			via_item_type: post type or taxonomy which triggers the exception (Needed for when post exceptions are based on term assignment. Nullstring means redundant / not applicable)
 			assigner_id: ID of user who stored the exception
 		*/
 		

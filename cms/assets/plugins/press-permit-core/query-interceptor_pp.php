@@ -101,7 +101,8 @@ class PP_QueryInterceptor
 			$args['query_vars'] = $_wp_query->query_vars;
 			
 			// don't filter wp_add_trashed_suffix_to_post_name_for_trashed_posts()
-			if ( ! empty( $args['query_vars']['post_status'] ) && ( 'trash' == $args['query_vars']['post_status'] ) && ! empty( $args['query_vars']['name'] ) && $this->inserting_post ) {  
+			//if ( ! empty( $args['query_vars']['post_status'] ) && ( 'trash' == $args['query_vars']['post_status'] ) && ! empty( $args['query_vars']['name'] ) && $this->inserting_post ) {  
+			if ( ! empty( $args['query_vars']['post_status'] ) && ( 'trash' == $args['query_vars']['post_status'] ) && ! empty( $args['query_vars']['name'] ) && ! empty( $args['query_vars']['post__not_in'] ) ) {  
 				return $clauses;
 			}
 		}

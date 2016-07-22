@@ -4,8 +4,8 @@ Donate Link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=JWZVF
 Tags: restrict, access, permissions, cms, user, private, category, pages, privacy, capabilities, role, scoper
 License: GPLv3
 Requires at least: 3.4
-Tested up to: 4.5.2
-Stable tag: 2.3.12
+Tested up to: 4.5.3
+Stable tag: 2.3.13
 
 Advanced yet accessible content permissions. Give users or groups type-specific roles. Enable or block access for specific posts or terms.
 
@@ -48,6 +48,10 @@ Pro [extensions](http://presspermit.com/extensions) are [available](http://press
 Initial production release
 
 == Changelog ==
+
+= 2.3.13 - 17 Jul 2016 =
+* Fixed : _trashed suffix was added to post slug inappropriately under some conditions
+* Fixed : Pro - Invalid page parent filtering if PPCE deactivated after page association exceptions were assigned
 
 = 2.3.12 - 15 Jun 2016 =
 * Fixed : _trashed suffix was added to post slug inappropriately following Menu editing (and possibly other wp-admin actions)
