@@ -4,8 +4,8 @@ Contributors: twinpictures, baden03
 Donate link: http://plugins.twinpictures.de/plugins/collapse-o-matic/
 Tags: collapse, expand, collapsible, expandable, expandable content, collapsable content, shortcode, hidden, hide, display, accordion, accordion, jQuery, javascript, roll-your-own, twinpictures, read me, read more, more, plugin oven
 Requires at least: 4.0
-Tested up to: 4.6-beta-3
-Stable tag: 1.7.2
+Tested up to: 4.6
+Stable tag: 1.7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,11 @@ No. Not even close.
 3. Options Page? Yes, Options Page!
 
 == Changelog ==
+
+= 1.7.3 =
+* added effect and duration attributes and data-attributes
+* if duration is a number, string will be converted to integer
+* fully tested with WordPress 4.6
 
 = 1.7.2 =
 * adjusted data-findme to deal with ‘auto’ value
