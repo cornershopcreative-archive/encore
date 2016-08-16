@@ -22,6 +22,7 @@ cms/assets/wfcache/
 cms/assets/wflogs/
 backups/
 cms/wp-content/uploads/backupbuddy_temp/
+/cms/settings_backup-*.php
 
 # Cornershop files
 design/
