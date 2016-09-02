@@ -1,96 +1,112 @@
 <?php
-
-if ( ! defined( 'ABSPATH' ) ) {
-	die( 'Direct access not allowed' );
-}
-
 /**
- * crate functions and definitions
+ * Empty Crate functions and definitions.
  *
- * Sets up the theme and provides some helper functions. Some helper functions
- * are used in the theme as custom template tags. Others are attached to action and
- * filter hooks in WordPress to change core functionality.
+ * @link https://developer.wordpress.org/themes/basics/theme-functions/
  *
- * For more information on hooks, actions, and filters, see http://codex.wordpress.org/Plugin_API.
+ * @package Empty_Crate
  */
 
-
-if ( ! function_exists( 'crate_setup' ) ) :
-	/**
-	 * Sets up theme defaults and registers support for various WordPress features.
-	 *
-	 * Note that this function is hooked into the after_setup_theme hook, which runs
-	 * before the init hook. The init hook is too late for some features, such as indicating
-	 * support post thumbnails.
-	 *
-	 * To override crate_setup() in a child theme, add your own crate_setup to your child theme's
-	 * functions.php file.
-	 *
+if ( ! function_exists( 'empty_crate_setup' ) ) :
+/**
+ * Sets up theme defaults and registers support for various WordPress features.
+ *
+ * Note that this function is hooked into the after_setup_theme hook, which
+ * runs before the init hook. The init hook is too late for some features, such
+ * as indicating support for post thumbnails.
+ */
+function empty_crate_setup() {
+	/*
+	 * Make theme available for translation.
+	 * Translations can be filed in the /languages/ directory.
+	 * If you're building a theme based on Empty Crate, use a find and replace
+	 * to change 'empty_crate' to the name of your theme in all the template files.
 	 */
-	function crate_setup() {
+	load_theme_textdomain( 'empty_crate', get_template_directory() . '/languages' );
 
-		// This theme styles the visual editor with editor-style.css to match the theme style.
-		add_editor_style( 'css/editor-style.css' );
+	// Add default posts and comments RSS feed links to head.
+	add_theme_support( 'automatic-feed-links' );
 
-		// Add default posts and comments RSS feed links to head
-		add_theme_support( 'automatic-feed-links' );
+	/*
+	 * Let WordPress manage the document title.
+	 * By adding theme support, we declare that this theme does not use a
+	 * hard-coded <title> tag in the document head, and expect WordPress to
+	 * provide it for us.
+	 */
+	add_theme_support( 'title-tag' );
 
-		// Use Featured Images (also known as post thumbnails) for per-post/per-page Custom Header images
-		// Second argument can be an array of post types that should have them.
-		add_theme_support( 'post-thumbnails' );
+	/*
+	 * Enable support for Post Thumbnails on posts and pages.
+	 *
+	 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
+	 */
+	add_theme_support( 'post-thumbnails' );
+	
+	add_image_size( 'gallery', 800, 800, true ); // gallery image cropped
 
-		// Let WordPress generate the <title> tag in the newfangled 4.1 way
-		add_theme_support( 'title-tag' );
+	// This theme uses wp_nav_menu() in one location.
+	register_nav_menus( array(
+		'primary' => esc_html__( 'Primary', 'empty_crate' ),
+	) );
 
-		// Make the default markup for some things more semantic HTML5-y
-		add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' ) );
-
-		//Uncomment for custom background in admin. Outputs inline CSS per http://codex.wordpress.org/Custom_Backgrounds
-		//add_theme_support( 'custom-background' );
-
-		//Make sure to call header_image() and/or get_custom_header() per http://codex.wordpress.org/Custom_Headers
-		//add_theme_support( 'custom-header' );	//this also lets users set a text color, which crate doesn't support (because it's a pain)
-
-		//Post formats, to be like Tumblr, see http://codex.wordpress.org/Post_Formats
-		//add_theme_support( 'post-formats', array( 'aside', 'gallery', 'link', 'image', 'quote', 'status', 'video', 'audio', 'chat' ) );
-
-		//Custom image sizes
-		//add_image_size( 'slide', 938, 418, true );
-
-	}
+	/*
+	 * Switch default core markup for search form, comment form, and comments
+	 * to output valid HTML5.
+	 */
+	add_theme_support( 'html5', array(
+		'search-form',
+		'comment-form',
+		'comment-list',
+		'gallery',
+		'caption',
+	) );
+}
 endif;
-add_action( 'after_setup_theme', 'crate_setup' );
+add_action( 'after_setup_theme', 'empty_crate_setup' );
 
 /**
- * Load up all of the other goodies from the /inc directory
+ * Set the content width in pixels, based on the theme's design and stylesheet.
+ *
+ * Priority 0 to make it available to lower priority callbacks.
+ *
+ * @global int $content_width
  */
-$includes = array(
-	'/inc/urls.php',        // URL rewriting and redirection handlers as well as template overrides
-	'/inc/query.php',       // pre_get_posts() query alterations
-	'/inc/enqueue.php',     // Enqueue styles and scripts
-	'/inc/widgets.php',     // Widget regions and custom widgets
-	'/inc/admin.php',       // Modifications to admin pages, new admin pages, etc
-	'/inc/shortcodes.php',  // Custom shortcodes
-	'/inc/filters.php',     // Filters for overriding various WP behavior that doesn't belong elsewhere
-	'/inc/menus.php',       // Define menus and custom menu walkers
-	'/inc/post-types.php',  // Custom post type definitions
-	'/inc/utilities.php',   // Misc helper functions and conditionals for templates
-	'/inc/plugins.php',	    // Provides a way to delineate required plugins. Cool!
-	/**
-	 * Stuff that might still need a home:
-			scheduler/cron-related stuff
-			feed-related filters and overrides
-			ajax handlers
-	 */
-);
-foreach ( $includes as $include ) {
-	require_once( get_template_directory() . $include );
+function empty_crate_content_width() {
+	$GLOBALS['content_width'] = apply_filters( 'empty_crate_content_width', 640 );
 }
-
+add_action( 'after_setup_theme', 'empty_crate_content_width', 0 );
 
 /**
- * Make sure sites don't die when Kint Debugger isn't around
+ * Register widget area.
+ *
+ * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
  */
-if ( ! function_exists('d') ) {
-	function d( $arg ) {}
+function empty_crate_widgets_init() {
+	register_sidebar( array(
+		'name'          => esc_html__( 'Sidebar', 'empty_crate' ),
+		'id'            => 'sidebar-1',
+		'description'   => esc_html__( 'Add widgets here.', 'empty_crate' ),
+		'before_widget' => '<section id="%1$s" class="widget %2$s">',
+		'after_widget'  => '</section>',
+		'before_title'  => '<h2 class="widget-title">',
+		'after_title'   => '</h2>',
+	) );
 }
+add_action( 'widgets_init', 'empty_crate_widgets_init' );
+
+/**
+ * Enqueue scripts and styles.
+ */
+function empty_crate_enqueue() {
+	wp_enqueue_style( 'empty_crate_theme_setup', get_stylesheet_uri() );
+	
+	wp_enqueue_style( 'empty_crate_style', get_template_directory_uri() . '/css/crate.css', array(), '1.0.0' );
+
+	wp_enqueue_script( 'empty_crate_scripts', get_template_directory_uri() . '/js/crate.js', array('jquery'), '1.0.0', true );
+}
+add_action( 'wp_enqueue_scripts', 'empty_crate_enqueue' );
+
+/**
+ * Include other functions
+ */
+//require get_template_directory() . '/inc/custom-header.php';

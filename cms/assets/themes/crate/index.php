@@ -6,22 +6,36 @@
  * and one of the two required files for a theme (the other being style.css).
  * It is used to display a page when nothing more specific matches a query.
  * E.g., it puts together the home page when no home.php file exists.
- * Learn more: http://codex.wordpress.org/Template_Hierarchy
  *
- * @package WordPress
- * @subpackage crate
- * @since crate 1.0
+ * @link https://codex.wordpress.org/Template_Hierarchy
+ *
+ * @package Empty_Crate
  */
 
 get_header(); ?>
 
-			<?php
-			/* Run the loop to output the posts.
-			 * If you want to overload this in a child theme then include a file
-			 * called loop-index.php and that will be used instead.
-			 */
-			 get_template_part( 'loop', 'index' );
-			?>
+		<?php
+		if ( have_posts() ) :
 
-<?php get_sidebar(); ?>
-<?php get_footer(); ?>
+			if ( is_home() && ! is_front_page() ) : ?>
+
+
+			<?php
+			endif;
+
+			while ( have_posts() ) : the_post();
+
+
+			endwhile;
+
+			the_posts_navigation();
+
+		else :
+
+
+
+		endif; ?>
+
+<?php
+
+get_footer();

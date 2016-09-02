@@ -1,62 +1,35 @@
 <?php
 /**
- * The Header for our theme.
+ * The header for our theme.
  *
- * Displays all of the <head> section and everything up till <div id="main">
+ * This is the template that displays all of the <head> section and everything up until <div id="content">
  *
- * @package WordPress
- * @subpackage crate
- * @since crate 1.0
+ * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
+ *
+ * @package Empty_Crate
  */
- header('X-UA-Compatible: IE=edge,chrome=1'); //kill compatibility mode
-?><!DOCTYPE html>
-<!--[if lt IE 7 ]><html <?php language_attributes(); ?> class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
-<!--[if IE 7 ]><html <?php language_attributes(); ?> class="no-js lt-ie9 lt-ie8"><![endif]-->
-<!--[if IE 8 ]><html <?php language_attributes(); ?> class="no-js lt-ie9"><![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
-	<head>
-		<meta charset="<?php bloginfo( 'charset' ); ?>" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<?php
-			wp_head();
-		?>
-		<?php /* If adding in Google Fonts or somesuch, also put an @import into editor-style.sass so they're available to TinyMCE */ ?>
 
-		<?php
-		/* We add some JavaScript to pages with the comment form
-		 * to support sites with threaded comments (when in use).
-		 */
-		if ( is_singular() && get_option( 'thread_comments' ) )
-			wp_enqueue_script( 'comment-reply' );
-	?>
-	</head>
-	<body <?php body_class(); ?>>
-  	<div id="fb-root"></div>
-  	<div id="wrapper">
-		<header role="banner">
-			<h1><a href="<?php echo home_url( '/' ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></h1>
-			<p><?php bloginfo( 'description' ); ?></p>
-			<?php
-  			$custom_header = get_custom_header();
-  			if ($custom_header->url) :
-      		?>
-    			<img src="<?php header_image(); ?>" height="<?php echo $custom_header->height; ?>" width="<?php echo $custom_header->width; ?>" alt="" />
-    			<?php
-  			endif;
-			?>
-			<div class="visible-print">
-				<img src="<?php header_image(); ?>" height="<?php echo $custom_header->height / 2; ?>" width="<?php echo $custom_header->width / 2; ?>" alt="" id="print-logo">
-				<div id="qrcode">
-					<img src="https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=<?php echo current_page_url(); ?>" width="70" height="70">
-					<div><?php echo current_page_url(); ?></div>
-				</div>
-			</div>
-		</header>
-		<nav id="access" role="navigation">
-		  <?php /*  Allow screen readers / text browsers to skip the navigation menu and get right to the good stuff */ ?>
-			<a id="skip" class="visuallyhidden focusable" href="#content" title="<?php esc_attr_e( 'Skip to content', 'crate' ); ?>"><?php _e( 'Skip to content', 'crate' ); ?></a>
-			<?php /* Our navigation menu.  If one isn't filled out, wp_nav_menu falls back to wp_page_menu.  The menu assiged to the primary position is the one used.  If none is assigned, the menu with the lowest ID is used.  */ ?>
-			<?php wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' ) ); ?>
-		</nav><!-- #access -->
-		<section id="content" role="main">
+?><!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+<meta charset="<?php bloginfo( 'charset' ); ?>">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="profile" href="http://gmpg.org/xfn/11">
+<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
+
+<?php wp_head(); ?>
+</head>
+
+<body <?php body_class(); ?>>
+
+<div style="height: 0; width: 0; position: absolute; visibility: hidden">
+  <!-- inject:svg -->
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><symbol id="icon-home" viewBox="0 0 32 32">
+<path d="M32 18.451l-16-12.42-16 12.42v-5.064l16-12.42 16 12.42zM28 18v12h-8v-8h-8v8h-8v-12l12-9z"/>
+</symbol><symbol id="icon-home2" viewBox="0 0 32 32">
+<path d="M16 1l-16 16 3 3 3-3v13h8v-6h4v6h8v-13l3 3 3-3-16-16zM16 14c-1.105 0-2-0.895-2-2s0.895-2 2-2c1.105 0 2 0.895 2 2s-0.895 2-2 2z"/>
+</symbol><symbol id="icon-home3" viewBox="0 0 32 32">
+<path d="M32 19l-6-6v-9h-4v5l-6-6-16 16v1h4v10h10v-6h4v6h10v-10h4z"/>
+</symbol></svg>
+  <!-- endinject -->
+</div>

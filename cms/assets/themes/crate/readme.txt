@@ -1,1 +1,0 @@
-This is the base theme used by Cornershop Creative.

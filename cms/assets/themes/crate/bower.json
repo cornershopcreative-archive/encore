@@ -1,0 +1,26 @@
+{
+  "name": "empty-crate",
+  "description": "Empty WordPress Theme",
+  "main": "index.js",
+  "authors": [
+    "Cornershop Creative"
+  ],
+  "license": "GPL-3.0",
+  "keywords": [
+    "wordpress",
+    "gulp",
+    "sass"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "imagesloaded": "^4.1.0"
+  }
+}
