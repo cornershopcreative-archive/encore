@@ -1,15 +1,9 @@
 'use strict';
 
 var $ = require('jQuery');
+
+// example of requiring a JS package and implementing it
 var imagesLoaded = require('imagesloaded');
-
-var slider = require('slider.js');
-
 imagesLoaded( 'body', { background: true }, function() {
   console.log('site images loaded');
 });
-
-// Use slider script
-slider();
-
-$('body').addClass('jquery-working');
