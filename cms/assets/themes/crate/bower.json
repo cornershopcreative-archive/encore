@@ -1,6 +1,6 @@
 {
-  "name": "empty-crate",
-  "description": "Empty WordPress Theme",
+  "name": "crate",
+  "description": "Starter WordPress theme for Cornershop Creative",
   "main": "index.js",
   "authors": [
     "Cornershop Creative"

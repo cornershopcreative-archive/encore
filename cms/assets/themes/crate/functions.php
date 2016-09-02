@@ -83,15 +83,6 @@ function crate_widgets_init() {
 }
 add_action( 'widgets_init', 'crate_widgets_init' );
 
-/**
- * Enqueue scripts and styles.
- */
-function crate_enqueue() {
-	wp_enqueue_style( 'crate_theme_setup', get_stylesheet_uri() );
-	wp_enqueue_style( 'crate_style', get_template_directory_uri() . '/css/crate.css', array(), '1.0.0' );
-	wp_enqueue_script( 'crate_scripts', get_template_directory_uri() . '/js/crate.js', array('jquery'), '1.0.0', true );
-}
-add_action( 'wp_enqueue_scripts', 'crate_enqueue' );
 
 /**
  * Include other functions
