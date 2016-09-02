@@ -1,0 +1,128 @@
+/**
+ * Print styles in here. Bah!
+ */
+/* line 19, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_variables.sass */
+.hidden {
+  display: none !important;
+  visibility: hidden;
+}
+
+/**
+ * Hide only visually, but have it available for screen readers:
+ * http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+ */
+/* line 27, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_variables.sass */
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  /**
+	 * Extends the .visuallyhidden class to allow the element
+	 * to be focusable when navigated to via the keyboard:
+	 * https://www.drupal.org/node/897638
+	 */
+}
+
+/* line 42, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_variables.sass */
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto;
+}
+
+/**
+ * Breakpoints for use within selectors, e.g. +mobile-breakpoint
+ */
+/**
+ * Compass mixins not present in bourbon
+ */
+/**
+ * Mixins lost from Compass => Bourbon transition
+ */
+/* line 9, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/print.sass */
+.visible-print {
+  display: inherit !important;
+}
+
+/* line 11, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/print.sass */
+.hidden-print {
+  display: none !important;
+}
+
+/* line 14, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/print.sass */
+body {
+  background: none;
+  color: black;
+}
+
+/* line 18, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/print.sass */
+#main,
+#wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+
+/* line 25, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/print.sass */
+#access,
+.comments,
+.rail,
+footer[role] .menu,
+.credit,
+#_atssh {
+  display: none;
+}
+
+/* line 33, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/print.sass */
+.prose a:after,
+a.excerpt-more:after {
+  content: " [" attr(href) "] ";
+  word-wrap: break-word;
+}
+
+/* line 38, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/print.sass */
+header[role] {
+  margin: 0 0 1em;
+  padding: 0 0 1em;
+  border-bottom: 1px solid #999;
+}
+
+/* line 43, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/print.sass */
+footer[role] {
+  margin: 1em 0;
+  padding: 1em 0 0;
+  border-top: 1px solid #999;
+  font-size: 9pt;
+}
+
+/* line 49, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/print.sass */
+#print-logo {
+  float: left;
+  max-width: 35%;
+  height: auto;
+}
+
+@page {
+  margin: 0.75in;
+}
+
+/* line 57, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/print.sass */
+h1, h2, h3 {
+  page-break-after: avoid;
+}
+
+/* line 60, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/print.sass */
+ul, img {
+  page-break-inside: avoid;
+}
+
+/*# sourceMappingURL=print.css.map */

@@ -1,0 +1,40 @@
+Type
+$ bower install
+and then...
+
+# HTML5 placeholder polyfill
+jquery-placeholder
+
+# jQuery Querystring parser
+gehsekky/jquery-querystring
+
+# Slideshow/carousel: Cycle2
+jquery-cycle2
+
+# jQuery plugin hover, but smarter
+jquery-hoverintent
+
+# jQuery Image lazyloading
+jquery_lazyload
+
+# jQuery BBQ: back button & query library, param/hash history etc
+# currently not working via bower
+https://raw.githubusercontent.com/cowboy/jquery-bbq/master/jquery.ba-bbq.js
+
+# jQuery hashchange: basically a polyfill. needed by BBQ
+https://raw.githubusercontent.com/cowboy/jquery-hashchange/v1.3/jquery.ba-hashchange.js
+
+# jQuery scrollTo for animated scrolling
+jquery.scrollTo
+
+# jQuery mousewheel so using a mousewheel registers as a scroll event
+jquery-mousewheel
+
+# jQuery jScrollPane creates a scrollbar in markup
+jquery.jscrollpane
+
+# jQuery cookie handling
+jquery.cookie
+
+# jQuery jPanelMenu for mobile menu slideout
+https://raw.githubusercontent.com/acolangelo/jPanelMenu/master/jquery.jpanelmenu.js

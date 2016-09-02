@@ -1,0 +1,5 @@
+.mk-blog-teaser .blockquote-post-type,
+.mk-blog-teaser .instagram-post-type,
+.mk-blog-teaser .twitter-post-type{
+  display: none;
+}

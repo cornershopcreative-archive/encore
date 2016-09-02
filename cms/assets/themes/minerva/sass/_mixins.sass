@@ -1,0 +1,191 @@
+/**
+ * Breakpoints for use within selectors, e.g. +mobile-breakpoint
+ */
+$media-query-mixin-warning: "You should be using the Breakpoint SASS mixin library to take advantage of cool features. Your media query will still compile though"
+
+=phone-only
+	+phone("down")
+    	@content
+
+=tablet-only
+	+tablet("only")
+    	@content
+
+=wide-only
+	+wide("up")
+    	@content
+
+=desktop-plus
+	+desktop("up")
+    	@content
+
+=below-desktop
+	+desktop("down")
+		@content
+
+=below-tablet
+	+tablet("down")
+    	@content
+
+=phone($breakpoint: "")
+	@if $breakpoint == "up" or $breakpoint == ""
+		@if mixin-exists(breakpoint)
+			+breakpoint($phone-width)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media($phone-width)
+				@content
+		@else
+			@media only screen and (min-width: $phone-width)
+				@warn $media-query-mixin-warning
+				@content
+	@else if $breakpoint == "down" or $breakpoint == "only"
+		@if mixin-exists(breakpoint)
+			+breakpoint(max-width $phone-width)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media(max-width $phone-width)
+				@content
+		@else
+			@media only screen and (max-width: $tablet-width)
+				@warn $media-query-mixin-warning
+				@content
+	@else
+		@if mixin-exists(breakpoint)
+			+breakpoint($breakpoint)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media($breakpoint)
+				@content
+		@else
+			@media only screen and (min-width: $phone-width)
+				@warn $media-query-mixin-warning
+				@content
+
+=tablet($breakpoint: "")
+	@if $breakpoint == "up" or $breakpoint == ""
+		@if mixin-exists(breakpoint)
+			+breakpoint($tablet-width)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media($tablet-width)
+				@content
+		@else
+			@media only screen and (min-width: $tablet-width)
+				@warn $media-query-mixin-warning
+				@content
+	@else if $breakpoint == "down"
+		@if mixin-exists(breakpoint)
+			+breakpoint(max-width $tablet-width)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media(max-width $tablet-width)
+				@content
+		@else
+			@media only screen and (max-width: $tablet-width)
+				@warn $media-query-mixin-warning
+				@content
+	@else if $breakpoint == "only"
+		@if mixin-exists(breakpoint)
+			+breakpoint($phone-width $tablet-width)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media($phone-width $tablet-width)
+				@content
+		@else
+			@media only screen and (min-width: $phone-width) and (max-width: $tablet-width)
+				@warn $media-query-mixin-warning
+				@content
+	@else
+		@if mixin-exists(breakpoint)
+			+breakpoint($breakpoint)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media($breakpoint)
+				@content
+		@else
+			@media only screen and (min-width: $tablet-width)
+				@warn $media-query-mixin-warning
+				@content
+
+=desktop($breakpoint: "")
+	@if $breakpoint == "up" or $breakpoint == ""
+		@if mixin-exists(breakpoint)
+			+breakpoint($normal-width)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media($normal-width)
+				@content
+		@else
+			@media only screen and (min-width: $normal-width)
+				@warn $media-query-mixin-warning
+				@content
+	@else if $breakpoint == "down"
+		@if mixin-exists(breakpoint)
+			+breakpoint(max-width $normal-width)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media(max-width $normal-width)
+				@content
+		@else
+			@media only screen and (max-width: $normal-width)
+				@warn $media-query-mixin-warning
+				@content
+	@else if $breakpoint == "only"
+		@if mixin-exists(breakpoint)
+			+breakpoint($tablet-width $normal-width)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media($tablet-width $normal-width)
+				@content
+		@else
+			@media only screen and (min-width: $tablet-width) and (max-width: $normal-width)
+				@warn $media-query-mixin-warning
+				@content
+	@else
+		@if mixin-exists(breakpoint)
+			+breakpoint($breakpoint)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media($breakpoint)
+				@content
+		@else
+			@media only screen and (min-width: $normal-width)
+				@warn $media-query-mixin-warning
+				@content
+
+=wide($breakpoint: "")
+	@if $breakpoint == "up" or $breakpoint == "only" or $breakpoint == ""
+		@if mixin-exists(breakpoint)
+			+breakpoint($wide-width)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media($wide-width)
+				@content
+		@else
+			@media only screen and (min-width: $wide-width)
+				@warn $media-query-mixin-warning
+				@content
+	@else if $breakpoint == "down"
+		@if mixin-exists(breakpoint)
+			+breakpoint(max-width $wide-width)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media(max-width $wide-width)
+				@content
+		@else
+			@media only screen and (max-width: $wide-width)
+				@warn $media-query-mixin-warning
+				@content
+	@else
+		@if mixin-exists(breakpoint)
+			+breakpoint($breakpoint)
+				@content
+		@else if mixin-exists(susy-media)
+			+susy-media($breakpoint)
+				@content
+		@else
+			@media only screen and (min-width: $wide-width)
+				@warn $media-query-mixin-warning
+				@content
+

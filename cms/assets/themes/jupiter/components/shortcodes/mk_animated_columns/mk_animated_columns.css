@@ -1,0 +1,70 @@
+/*=========================================
+general
+===========================================*/
+.mk-animated-columns {
+  /*.animated-column-holder {} moved to atoms fully*/
+  /*.animated-column-icon {} moved to atoms fully*/
+  /*.s_title {} moved to atoms fully*/
+  /*.animated-column-btn {} moved to atoms fully*/
+}
+.animated-column-icon {
+  display: block !important;
+}
+.mk-animated-columns.has-border .s_item:nth-last-of-type(1) {
+  border-right-width: 1px;
+}
+.mk-animated-columns .s_item {
+  transition: background 0.2s ease-out;
+  border-style: solid;
+}
+.mk-animated-columns .s_desc {
+  padding: 20px 30px 50px 30px;
+}
+@media handheld, only screen and (max-width: 960px) {
+  .mk-animated-columns.o3col .s_item {
+    width: 33.33%;
+  }
+  .mk-animated-columns.has-border.o3col .s_item:nth-of-type(3n) {
+    border-right-width: 1px;
+  }
+  .mk-animated-columns.has-border.o3col .s_item:nth-last-of-type(1) {
+    border-right-width: 0;
+  }
+}
+@media handheld, only screen and (max-width: 767px) {
+  .mk-animated-columns.o2col .s_item {
+    width: 100%;
+  }
+  .mk-animated-columns.o3col .s_item:nth-of-type(3n) {
+    border-right-width: 0;
+  }
+  .mk-animated-columns.has-border.o2col .s_item {
+    border-right-width: 1px;
+  }
+}
+/*=========================================
+full-style
+===========================================*/
+.mk-animated-columns.full-style .s_title:after {
+  position: absolute;
+  content: '';
+  display: block;
+  bottom: -10px;
+  left: 50%;
+  margin-left: -15px;
+  height: 2px;
+  width: 30px;
+}
+/*=========================================
+simple-style
+===========================================*/
+.mk-animated-columns.simple-style .s_title {
+  top: -100%;
+}
+
+/*=========================================
+simple-style
+===========================================*/
+.mk-animated-columns .animated-column-item .mk-button-container {
+  margin-right: 0 !important;
+}

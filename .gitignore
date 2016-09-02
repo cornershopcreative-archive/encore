@@ -1,0 +1,35 @@
+cms/wp-config.php
+cms/assets/uploads/
+cms/assets/uploads
+cms/assets/upgrade/*
+cms/assets/backup-db/*
+cms/assets/cache/*
+cms/assets/cache/supercache/*
+cms/assets/w3tc/*
+sitemap.xml
+sitemap.xml.gz
+*.log
+error_log
+design/
+wires/
+cms/assets/themes/crate/.sass-cache/
+.sass-cache/
+backups/
+cms/assets/plugins/wordfence/tmp/
+node_modules
+advanced-cache.php
+object-cache.php
+cms/assets/db.php
+
+# GoWP files
+/sucuri-*
+
+# Exported top level SQL files
+/*.sql
+cms/*.sql
+
+# Project Files
+*.sublime-*
+.idea/
+.ideas/
+sftp-config.json

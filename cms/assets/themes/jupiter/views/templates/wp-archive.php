@@ -1,0 +1,11 @@
+<?php
+global $mk_options;
+
+echo do_shortcode('
+						[mk_blog 
+							style =					"' . $mk_options['archive_loop_style'] . '" 
+							grid_image_height =		"' . $mk_options['archive_blog_image_height'] . '" 
+							disable_meta = 			"' . $mk_options['archive_blog_meta'] . '" 
+							pagination_style = 		"' . $mk_options['archive_pagination_style'] . '"
+						]'
+				  );

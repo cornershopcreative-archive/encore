@@ -1,0 +1,23 @@
+/*
+Theme Name: Crate
+Theme URI: http://cornershopcreative.com
+Description: Base theme developed by Cornershop Creative, LLC
+Author: Ben Byrne, Cornershop Creative
+Author URI: http://cornershopcreative.com
+Version: 3.1.1
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: crate
+*/
+
+/**
+ * Note: This CSS file is not actually loaded by the theme!
+ */
+.wp-caption,
+.wp-caption-text,
+.sticky,
+.gallery-caption,
+.bypostauthor,
+.aligncenter {
+	display: inherit;
+}

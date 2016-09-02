@@ -1,0 +1,905 @@
+/**
+* 1. Set default font family to sans-serif.
+* 2. Prevent iOS and IE text size adjust after device orientation
+*    change, without disabling
+*    user zoom.
+*/
+/* line 108, node_modules/normalize-libsass/_normalize.scss */
+html {
+  font-family: sans-serif;
+  /* 1 */
+  -ms-text-size-adjust: 100%;
+  /* 2 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */
+}
+
+/**
+* Remove default margin.
+*/
+/* line 118, node_modules/normalize-libsass/_normalize.scss */
+body {
+  margin: 0;
+}
+
+/* HTML5 display definitions
+   ========================================================================== */
+/**
+* Correct `block` display not defined for any HTML5 element in IE 8/9.
+* Correct `block` display not defined for `details` or `summary` in IE 10/11
+* and Firefox.
+* Correct `block` display not defined for `main` in IE 11.
+*/
+/* line 132, node_modules/normalize-libsass/_normalize.scss */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+
+/**
+* 1. Correct `inline-block` display not defined in IE 8/9.
+* 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
+*/
+/* line 153, node_modules/normalize-libsass/_normalize.scss */
+audio,
+canvas,
+progress,
+video {
+  display: inline-block;
+  /* 1 */
+  vertical-align: baseline;
+  /* 2 */
+}
+
+/**
+* Prevent modern browsers from displaying `audio` without controls.
+* Remove excess height in iOS 5 devices.
+*/
+/* line 168, node_modules/normalize-libsass/_normalize.scss */
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+
+/**
+   * Address `[hidden]` styling not present in IE 8/9/10.
+   */
+/* line 178, node_modules/normalize-libsass/_normalize.scss */
+[hidden] {
+  display: none;
+}
+
+/**
+* Hide the `template` element in IE 8/9/10/11, Safari, and Firefox < 22.
+*/
+/* line 187, node_modules/normalize-libsass/_normalize.scss */
+template {
+  display: none;
+}
+
+/* Links
+   ========================================================================== */
+/**
+   * Remove the gray background color from active links in IE 10.
+   */
+/* line 199, node_modules/normalize-libsass/_normalize.scss */
+a {
+  background-color: transparent;
+}
+
+/**
+* Improve readability of focused elements when they are also in an
+* active/hover state.
+*/
+/* line 209, node_modules/normalize-libsass/_normalize.scss */
+a:active,
+a:hover {
+  outline: 0;
+}
+
+/* Text-level semantics
+   ========================================================================== */
+/**
+* Address styling not present in IE 8/9/10/11, Safari, and Chrome.
+*/
+/* line 221, node_modules/normalize-libsass/_normalize.scss */
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+
+/**
+* Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
+*/
+/* line 229, node_modules/normalize-libsass/_normalize.scss */
+b,
+strong {
+  font-weight: bold;
+}
+
+/**
+* Address styling not present in Safari and Chrome.
+*/
+/* line 238, node_modules/normalize-libsass/_normalize.scss */
+dfn {
+  font-style: italic;
+}
+
+/**
+* Address variable `h1` font-size and margin within `section` and `article`
+* contexts in Firefox 4+, Safari, and Chrome.
+*/
+/* line 247, node_modules/normalize-libsass/_normalize.scss */
+h1 {
+  font-size: 2em;
+  margin: 0.6666666667em 0;
+}
+
+/**
+   * Address styling not present in IE 8/9.
+   */
+/* line 257, node_modules/normalize-libsass/_normalize.scss */
+mark {
+  background: #ff0;
+  color: #000;
+}
+
+/**
+* Address inconsistent and variable font size in all browsers.
+*/
+/* line 267, node_modules/normalize-libsass/_normalize.scss */
+small {
+  font-size: 80%;
+}
+
+/**
+* Prevent `sub` and `sup` affecting `line-height` in all browsers.
+*/
+/* line 275, node_modules/normalize-libsass/_normalize.scss */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+/* line 283, node_modules/normalize-libsass/_normalize.scss */
+sup {
+  top: -0.5em;
+}
+
+/* line 287, node_modules/normalize-libsass/_normalize.scss */
+sub {
+  bottom: -0.25em;
+}
+
+/* Embedded content
+   ========================================================================== */
+/**
+   * Remove border when inside `a` element in IE 8/9/10.
+   */
+/* line 299, node_modules/normalize-libsass/_normalize.scss */
+img {
+  border: 0;
+}
+
+/**
+   * Correct overflow not hidden in IE 9/10/11.
+   */
+/* line 309, node_modules/normalize-libsass/_normalize.scss */
+svg:not(:root) {
+  overflow: hidden;
+}
+
+/* Grouping content
+   ========================================================================== */
+/**
+   * Address margin not present in IE 8/9 and Safari.
+   */
+/* line 322, node_modules/normalize-libsass/_normalize.scss */
+figure {
+  margin: 1em 40px;
+}
+
+/**
+* Address differences between Firefox and other browsers.
+*/
+/* line 331, node_modules/normalize-libsass/_normalize.scss */
+hr {
+  box-sizing: content-box;
+  height: 0;
+}
+
+/**
+* Contain overflow in all browsers.
+*/
+/* line 340, node_modules/normalize-libsass/_normalize.scss */
+pre {
+  overflow: auto;
+}
+
+/**
+* Address odd `em`-unit font size rendering in all browsers.
+*/
+/* line 348, node_modules/normalize-libsass/_normalize.scss */
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+
+/* Forms
+   ========================================================================== */
+/**
+* Known limitation: by default, Chrome and Safari on OS X allow very limited
+* styling of `select`, unless a `border` property is set.
+*/
+/**
+* 1. Correct color not being inherited.
+*    Known issue: affects color of disabled elements.
+* 2. Correct font properties not being inherited.
+* 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
+*/
+/* line 371, node_modules/normalize-libsass/_normalize.scss */
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit;
+  /* 1 */
+  font: inherit;
+  /* 2 */
+  margin: 0;
+  /* 3 */
+}
+
+/**
+   * Address `overflow` set to `hidden` in IE 8/9/10/11.
+   */
+/* line 386, node_modules/normalize-libsass/_normalize.scss */
+button {
+  overflow: visible;
+}
+
+/**
+* Address inconsistent `text-transform` inheritance for `button` and `select`.
+* All other form control elements do not inherit `text-transform` values.
+* Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
+* Correct `select` style inheritance in Firefox.
+*/
+/* line 398, node_modules/normalize-libsass/_normalize.scss */
+button,
+select {
+  text-transform: none;
+}
+
+/**
+* 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+*    and `video` controls.
+* 2. Correct inability to style clickable `input` types in iOS.
+* 3. Improve usability and consistency of cursor style between image-type
+*    `input` and others.
+*/
+/* line 411, node_modules/normalize-libsass/_normalize.scss */
+button,
+html input[type='button'],
+input[type='reset'],
+input[type='submit'] {
+  -webkit-appearance: button;
+  /* 2 */
+  cursor: pointer;
+  /* 3 */
+}
+
+/**
+* Re-set default cursor for disabled elements.
+*/
+/* line 423, node_modules/normalize-libsass/_normalize.scss */
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+
+/**
+* Remove inner padding and border in Firefox 4+.
+*/
+/* line 432, node_modules/normalize-libsass/_normalize.scss */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/**
+* Address Firefox 4+ setting `line-height` on `input` using `!important` in
+* the UA stylesheet.
+*/
+/* line 443, node_modules/normalize-libsass/_normalize.scss */
+input {
+  line-height: normal;
+}
+
+/**
+   * It's recommended that you don't attempt to style these elements.
+   * Firefox's implementation doesn't respect box-sizing, padding, or width.
+   *
+   * 1. Address box sizing set to `content-box` in IE 8/9/10.
+   * 2. Remove excess padding in IE 8/9/10.
+   */
+/* line 456, node_modules/normalize-libsass/_normalize.scss */
+input[type='checkbox'],
+input[type='radio'] {
+  box-sizing: border-box;
+  /* 1 */
+  padding: 0;
+  /* 2 */
+}
+
+/**
+* Fix the cursor style for Chrome's increment/decrement buttons. For certain
+* `font-size` values of the `input`, it causes the cursor style of the
+* decrement button to change from `default` to `text`.
+*/
+/* line 469, node_modules/normalize-libsass/_normalize.scss */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/**
+* 1. Address `appearance` set to `searchfield` in Safari and Chrome.
+* 2. Address `box-sizing` set to `border-box` in Safari and Chrome.
+*/
+/* line 479, node_modules/normalize-libsass/_normalize.scss */
+input[type='search'] {
+  box-sizing: content-box;
+}
+
+/**
+* Remove inner padding and search cancel button in Safari and Chrome on OS X.
+* Safari (but not Chrome) clips the cancel button when the search input has
+* padding (and `textfield` appearance).
+*/
+/* line 489, node_modules/normalize-libsass/_normalize.scss */
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/**
+* Define consistent border, margin, and padding.
+*/
+/* line 498, node_modules/normalize-libsass/_normalize.scss */
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+* 1. Correct `color` not being inherited in IE 8/9/10/11.
+* 2. Remove padding so people aren't caught out if they zero out fieldsets.
+*/
+/* line 509, node_modules/normalize-libsass/_normalize.scss */
+legend {
+  border: 0;
+  /* 1 */
+  padding: 0;
+  /* 2 */
+}
+
+/**
+   * Remove default vertical scrollbar in IE 8/9/10/11.
+   */
+/* line 521, node_modules/normalize-libsass/_normalize.scss */
+textarea {
+  overflow: auto;
+}
+
+/**
+* Don't inherit the `font-weight` (applied by a rule above).
+* NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
+*/
+/* line 531, node_modules/normalize-libsass/_normalize.scss */
+optgroup {
+  font-weight: bold;
+}
+
+/* Tables
+   ========================================================================== */
+/**
+* Remove most spacing between table cells.
+*/
+/* line 542, node_modules/normalize-libsass/_normalize.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 547, node_modules/normalize-libsass/_normalize.scss */
+td,
+th {
+  padding: 0;
+}
+
+/*
+* Scut, a collection of Sass utilities
+* to ease and improve our implementations of common style-code patterns.
+* v1.3.0
+* Docs at http://davidtheclark.github.io/scut
+*/
+/* line 19, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_variables.sass */
+.hidden {
+  display: none !important;
+  visibility: hidden;
+}
+
+/**
+ * Hide only visually, but have it available for screen readers:
+ * http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+ */
+/* line 27, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_variables.sass */
+.visuallyhidden, .assistive-text {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  /**
+	 * Extends the .visuallyhidden class to allow the element
+	 * to be focusable when navigated to via the keyboard:
+	 * https://www.drupal.org/node/897638
+	 */
+}
+
+/* line 42, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_variables.sass */
+.visuallyhidden.focusable:active, .focusable.assistive-text:active, .visuallyhidden.focusable:focus, .focusable.assistive-text:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto;
+}
+
+/**
+ * Breakpoints for use within selectors, e.g. +mobile-breakpoint
+ */
+/**
+ * Compass mixins not present in bourbon
+ */
+/**
+ * Mixins lost from Compass => Bourbon transition
+ */
+/* line 1, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_sprites.sass */
+.spr-cornershop, .credit a i {
+  display: inline-block;
+  background-image: url(../images/spr-generated.png);
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 16px;
+}
+
+/**
+ * Helper classes, pulled from bootstrap. Not sure the logic is right....
+ */
+/* line 6, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_responsive.sass */
+.visible-phone,
+.visible-tablet,
+.hidden-desktop {
+  display: none !important;
+}
+
+/* line 10, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_responsive.sass */
+.visible-desktop {
+  display: inherit !important;
+}
+
+@media only screen and (min-width: 500px) and (max-width: 960px) {
+  /* line 15, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_responsive.sass */
+  .hidden-desktop,
+  .visible-tablet {
+    display: inherit !important;
+  }
+  /* line 18, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_responsive.sass */
+  .visible-desktop,
+  .hidden-tablet {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  /* line 24, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_responsive.sass */
+  .hidden-desktop,
+  .visible-phone {
+    display: inherit !important;
+  }
+  /* line 27, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_responsive.sass */
+  .visible-desktop,
+  .hidden-phone {
+    display: none !important;
+  }
+}
+
+/* line 3, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
+body {
+  font-family: "Museo Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  min-height: 100%;
+}
+
+/* line 8, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
+#wrapper {
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* line 12, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/node_modules/susy/sass/susy/output/support/_clearfix.scss */
+#wrapper:after {
+  content: " ";
+  display: block;
+  clear: both;
+}
+
+@media only screen and (max-width: 960px) {
+  /* line 8, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
+  #wrapper {
+    max-width: 96%;
+  }
+}
+
+/* line 44, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_mixins.sass */
+#content:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+/* line 16, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
+#main {
+  width: 65.9574468085%;
+  float: left;
+  margin-right: 2.1276595745%;
+}
+
+@media only screen and (max-width: 800px) {
+  /* line 16, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
+  #main {
+    width: 100%;
+    float: left;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* line 20, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
+#main.full {
+  width: 100%;
+  float: left;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* line 23, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
+.rail {
+  width: 31.914893617%;
+  float: right;
+  margin-right: 0;
+}
+
+@media only screen and (max-width: 800px) {
+  /* line 23, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
+  .rail {
+    clear: both;
+    width: 100%;
+    float: left;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* line 28, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
+.full {
+  width: 100%;
+  float: left;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* line 31, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_layout.sass */
+.visible-print {
+  display: none !important;
+}
+
+/**
+ * hide stuff
+ */
+/**
+ * improve links
+ */
+/* line 11, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+a {
+  text-decoration: none;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+/* line 14, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+a:hover {
+  text-shadow: 0 0 5px blue;
+}
+
+/**
+ * Eliminate bullets on widgets
+ */
+/* line 20, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+.xoxo {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+
+/* line 23, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+.xoxo li {
+  display: block;
+}
+
+/**
+ * Make nav lists better
+ */
+/* line 29, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+nav ul {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+
+/* line 44, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_mixins.sass */
+nav ul:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+/* line 35, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+nav ul li {
+  display: block;
+  float: left;
+}
+
+/* line 38, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+nav ul li a {
+  display: block;
+  text-align: center;
+  background-color: #eee;
+  padding: 1em;
+  margin-right: 1px;
+}
+
+/* line 44, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+nav ul li a:hover, nav ul li a.hover {
+  background-color: #999;
+  color: #fff;
+  text-shadow: none;
+}
+
+/* line 49, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+nav ul li a:hover ul, nav ul li a.hover ul {
+  display: block;
+}
+
+/* line 53, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+nav ul li ul {
+  display: none;
+  position: absolute;
+  left: 0;
+}
+
+/* line 58, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+nav ul li ul li {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+
+/* line 61, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+nav ul li ul a {
+  display: block;
+}
+
+/**
+ * Footer
+ */
+/* line 67, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+#wrapper > footer {
+  background: #eee;
+  padding: 1em;
+}
+
+/* line 71, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+#wrapper > footer .menu ul {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+
+/* line 74, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_clean.sass */
+#wrapper > footer .menu li {
+  display: inline-block;
+  border-right: 1px solid #000;
+  padding: 0 1em;
+}
+
+/* line 1, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_footer.sass */
+.credit {
+  clear: both;
+  float: right;
+  text-align: right;
+  margin-bottom: 7px;
+}
+
+/* line 6, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_footer.sass */
+.credit a {
+  display: block;
+  font-size: 11px;
+}
+
+/* line 9, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_footer.sass */
+.credit a i {
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0);
+  -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  -ms-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  -o-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  margin-left: 5px;
+  display: inline-block;
+}
+
+/* line 16, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_footer.sass */
+.credit a span {
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  padding-top: 5px;
+}
+
+/* line 24, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_footer.sass */
+.credit a:hover span {
+  width: 180px;
+}
+
+/* line 26, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_footer.sass */
+.credit a:hover i {
+  -webkit-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  -ms-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  -o-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* line 6, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_forms.sass */
+textarea {
+  border: 1px solid #c1c3c3;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -webkit-box-shadow: inset 1px 1px 2px #cfd1d1;
+  -moz-box-shadow: inset 1px 1px 2px #cfd1d1;
+  -ms-box-shadow: inset 1px 1px 2px #cfd1d1;
+  -o-box-shadow: inset 1px 1px 2px #cfd1d1;
+  box-shadow: inset 1px 1px 2px #cfd1d1;
+  box-sizing: border-box;
+  padding: 2px;
+}
+
+/* line 47, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/core.sass */
+.prose {
+  /**
+ * Stuff in here automatically gets dumped underneath .prose on the frontend and into editor-styles for the back
+ */
+  /**
+ * Other candidates:
+ * p, hr, a...
+ */
+}
+
+/* line 5, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
+.prose h1 {
+  font-size: 171.428571429%;
+  font-family: "Lobster", cursive;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+/* line 12, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
+.prose h2 {
+  text-transform: uppercase;
+  font-size: 135.714285714%;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+/* line 19, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
+.prose h3, .prose h4 {
+  font-size: 121.428571429%;
+  font-weight: normal;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+/* line 26, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
+.prose h5, .prose h6 {
+  font-weight: bold;
+  font-size: 100%;
+}
+
+/* line 30, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
+.prose blockquote {
+  margin: 1.3em 1.5em;
+  padding: 0.2em 1em;
+  font-style: italic;
+  font-size: 112%;
+}
+
+/* line 36, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
+.prose .alignleft,
+.prose .alignright {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 92%;
+  text-align: center;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+/* line 44, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
+.prose .alignleft p,
+.prose .alignright p {
+  margin: 0.2em 0;
+  font-style: italic;
+}
+
+/* line 48, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
+.prose .alignright {
+  float: right;
+  margin: 0 0 0.5em 1em;
+}
+
+/* line 52, /home/bbyrne/sites/wordpress/cms/assets/themes/crate/sass/_prose.sass */
+.prose .alignleft {
+  float: left;
+  margin: 0 1em 0.5em 0;
+}
+
+/*# sourceMappingURL=core.css.map */

@@ -1,0 +1,20 @@
+.flip-horizontal:hover .mk-flipbox-holder .mk-flipbox-front {
+  -webkit-transform: rotateY(180deg);
+          transform: rotateY(180deg);
+}
+.flip-horizontal:hover .mk-flipbox-holder .mk-flipbox-back {
+  -webkit-transform: translateX(-100%) rotateY(0);
+          transform: translateX(-100%) rotateY(0);
+}
+.flip-vertical:hover .mk-flipbox-holder .mk-flipbox-front {
+  -webkit-transform: rotateX(180deg);
+          transform: rotateX(180deg);
+}
+.flip-vertical:hover .mk-flipbox-holder .mk-flipbox-back {
+  -webkit-transform: translateX(-100%) rotateX(0);
+          transform: translateX(-100%) rotateX(0);
+}
+.mk-flipbox .mk-flipbox-holder .mk-button-container {
+	margin-right: 0 !important;
+	margin-left: 0 !important;
+}
