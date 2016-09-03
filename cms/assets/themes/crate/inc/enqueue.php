@@ -5,6 +5,8 @@
  * @package Crate
  */
 
+if ( ! defined( 'ABSPATH' ) ) { die( 'Direct access not allowed' ); }
+
 /**
  * Main enqueue handler for front-end of the site
  */
