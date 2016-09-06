@@ -1,3 +1,6 @@
 [submodule "cms/assets/plugins/conditional-overlay"]
 	path = cms/assets/plugins/conditional-overlay
 	url = https://cshopdevs@bitbucket.org/cornershopcreative/conditional-overlay.git
+[submodule "cms/assets/plugins/produce"]
+	path = cms/assets/plugins/produce
+	url = git@bitbucket.org:cornershopcreative/plugin-produce.git
