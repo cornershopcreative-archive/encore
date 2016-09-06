@@ -12,7 +12,7 @@ define('DB_PASSWORD', 'lamecanyon');
 define('DB_HOST',     'localhost');
 
 /**
- * For developers: WordPress debugging mode.
+ * For developers: WordPress debugging modes, caching, etc.
  */
 define('WP_DEBUG',         true);
 define('WP_DEBUG_LOG',     true);
@@ -20,11 +20,3 @@ define('WP_DEBUG_DISPLAY', false);
 define('WP_CACHE',         false);
 define('SAVEQUERIES',      true);
 define('SCRIPT_DEBUG',     true);
-
-/**
- * Fancy tricks for Crate
- * ENVIRONMENT is now deprecated in favor of SCRIPT_DEBUG for loading minification
- */
-define('ENVIRONMENT',      'dev');
-// This should match what's on line ~10 of crate/Gruntfile.js
-define('LIVERELOAD_PORT',  12345);
