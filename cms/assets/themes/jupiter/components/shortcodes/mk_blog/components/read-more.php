@@ -1,1 +1,0 @@
-<a class="mk-readmore" href="<?php echo get_permalink(); ?>"><i class="mk-moon-arrow-right-2"></i><?php _e('Read More', 'mk_framework'); ?></a>
