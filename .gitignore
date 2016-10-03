@@ -52,5 +52,11 @@ wflogs/
 .ideas/
 sftp-config.json
 
+# Misc
+.DS_Store
+**/.DS_Store
+__MACOSX/
+**/__MACOSX/
+
 # Site specific ignores
 
