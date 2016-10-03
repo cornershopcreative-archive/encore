@@ -1,0 +1,45 @@
+{
+	"name": "cornershopcreative/wordpress",
+	"description": "This repo contains Cornershop Creative's stock WordPress install. It includes a number of oft-used plugins, our custom-built Crate theme, and a database dump to facilitate getting up and running quickly.",
+	"repositories": {
+		"wpackagist": {
+			"type": "composer",
+			"url": "https://wpackagist.org"
+		}
+	},
+	"require": {
+		"wpackagist-plugin/akismet": "dev-trunk",
+		"wpackagist-plugin/duplicate-post": "dev-trunk",
+		"wpackagist-plugin/google-analyticator": "dev-trunk",
+		"wpackagist-plugin/intuitive-custom-post-order": "dev-trunk",
+		"wpackagist-plugin/jquery-collapse-o-matic": "dev-trunk",
+		"wpackagist-plugin/jquery-collapse-o-matic": "dev-trunk",
+		"wpackagist-plugin/media-deduper": "dev-trunk",
+		"wpackagist-plugin/post-thumbnail-editor": "dev-trunk",
+		"wpackagist-plugin/press-permit-core": "dev-trunk",
+		"wpackagist-plugin/redirection": "dev-trunk",
+		"wpackagist-plugin/relevanssi": "dev-trunk",
+		"wpackagist-plugin/security-audit": "dev-trunk",
+		"wpackagist-plugin/simple-section-navigation": "dev-trunk",
+		"wpackagist-plugin/tinymce-advanced": "dev-trunk",
+		"wpackagist-plugin/toolbar-publish-button": "dev-trunk",
+		"wpackagist-plugin/widget-menuizer": "dev-trunk",
+		"wpackagist-plugin/wordfence": "dev-trunk",
+		"wpackagist-plugin/wordpress-importer": "dev-trunk",
+		"wpackagist-plugin/wordpress-seo": "dev-trunk",
+		"wpackagist-plugin/wp-thumb": "dev-trunk"
+	},
+	"require-dev": {
+		"wpackagist-plugin/bulk-page-creator": "dev-trunk",
+		"wpackagist-plugin/debug-bar": "dev-trunk",
+		"wpackagist-plugin/kint-debugger": "dev-trunk",
+		"wpackagist-plugin/show-current-template": "dev-trunk",
+	},
+	"extra": {
+		"installer-paths": {
+			"cms/assets/themes/{$name}": "type:wordpress-theme",
+			"cms/assets/plugins/{$name}": "type:wordpress-plugin",
+			"cms/assets/mu-plugins/{$name}": "type:wordpress-muplugin"
+		}
+	}
+}
