@@ -6,7 +6,7 @@
 /*
  * CHANGE THESE
  */
-define('DB_NAME',     'demo_wordpress');
+define('DB_NAME',     'demo_encore');
 define('DB_USER',     'demo');
 define('DB_PASSWORD', 'lamecanyon');
 define('DB_HOST',     'localhost');
