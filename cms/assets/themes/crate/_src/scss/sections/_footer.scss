@@ -12,12 +12,18 @@
 
 	.menu-item {
 		margin: rem(15) 0;
+
+		a {
+			text-transform: uppercase;
+		}
 	}
 
 	.site-info {
 		@include container;
 		margin: rem(100) 0 0;
 		padding: rem(30) 0 0;
+		font-size: rem(15);
+		line-height: rem(25);
 		border-top: 1px solid $silver;
 
 		p {
