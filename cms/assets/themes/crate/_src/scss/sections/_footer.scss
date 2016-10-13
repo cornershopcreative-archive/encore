@@ -1,1 +1,35 @@
+.site-footer {
+	padding: rem(60) 0;
+	box-shadow: inset 0 6px 4px -3px rgba(0, 0, 0, 0.35);
 
+	.nav-footer {
+		@include container;
+	}
+
+	.menu {
+		@include span(2);
+	}
+
+	.menu-item {
+		margin: rem(15) 0;
+	}
+
+	.site-info {
+		@include container;
+		margin: rem(100) 0 0;
+		padding: rem(30) 0 0;
+		border-top: 1px solid $silver;
+
+		p {
+			margin: 0;
+		}
+	}
+
+	.contact {
+		float: left;
+	}
+
+	.credits {
+		float: right;
+	}
+}

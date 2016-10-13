@@ -1,11 +1,5 @@
 /*!
  *# Crate Stylesheet */
-/*
-* Scut, a collection of Sass utilities
-* to ease and improve our implementations of common style-code patterns.
-* v1.4.0
-* Docs at http://davidtheclark.github.io/scut
-*/
 html {
   box-sizing: border-box;
   font-size: 16px;
@@ -189,6 +183,12 @@ th {
 ul {
   list-style: none; }
 
+/*
+* Scut, a collection of Sass utilities
+* to ease and improve our implementations of common style-code patterns.
+* v1.4.0
+* Docs at http://davidtheclark.github.io/scut
+*/
 /**
  * Define styles for color suffixes for an element.
  *
@@ -539,5 +539,40 @@ img {
     .nav-nag {
       margin: 0;
       width: auto; } }
+
+.site-footer {
+  padding: 3.75rem 0;
+  box-shadow: inset 0 6px 4px -3px rgba(0, 0, 0, 0.35); }
+  .site-footer .nav-footer {
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 100%; }
+    .site-footer .nav-footer:after {
+      display: block;
+      clear: both;
+      content: " "; }
+  .site-footer .menu {
+    float: left;
+    margin-right: 1.69492%;
+    width: 15.25424%; }
+  .site-footer .menu-item {
+    margin: 0.9375rem 0; }
+  .site-footer .site-info {
+    margin: 6.25rem 0 0;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 1.875rem 0 0;
+    max-width: 100%;
+    border-top: 1px solid #d8d8d8; }
+    .site-footer .site-info:after {
+      display: block;
+      clear: both;
+      content: " "; }
+    .site-footer .site-info p {
+      margin: 0; }
+  .site-footer .contact {
+    float: left; }
+  .site-footer .credits {
+    float: right; }
 
 /*# sourceMappingURL=maps/crate.css.map */
