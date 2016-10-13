@@ -232,7 +232,7 @@ function svginline() {
   }
   
   return gulp
-    .src('header.php')
+    .src('svg.php')
     .pipe(inject(svgs, { transform: fileContents }))
     .pipe(gulp.dest('.'));
 }

@@ -1,0 +1,11 @@
+/**
+ * General link & transition styles.
+ */
+a {
+	color: $cobalt;
+	transition: background 0.2s ease, color 0.2s ease;
+
+	&:hover {
+		color: $cyan;
+	}
+}

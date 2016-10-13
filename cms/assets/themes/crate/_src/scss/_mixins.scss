@@ -1,0 +1,59 @@
+/**
+ * Define styles for color suffixes for an element.
+ *
+ * The mixin content block will be applied to each of the following classes:
+ * .color-orange, .color-grass, .color-sage, .color-cyan, and .color-cobalt.
+ * In the content block, the variable $color is assigned to the hex value for
+ * the color for each class. Boring example:
+ *
+ * .thing {
+ *   @include colorize {
+ *     color: $color;
+ *   }
+ * }
+ *
+ * ...becomes:
+ *
+ * .thing.color-orange {
+ *   color: #ff8a17;
+ * }
+ * .thing.color-grass {
+ *   color: #aacc00;
+ * }
+ * .thing.color-sage {
+ *   color: #3bdf9b;
+ * }
+ * ...etc.
+ */
+$color: null !global;
+@mixin colorize {
+
+	// Internal-use variables for iterating.
+	// $color-names: orange grass sage cyan cobalt;
+	$colors: (
+		orange: $orange,
+		grass: $grass,
+		sage: $sage,
+		cyan: $cyan,
+		cobalt: $cobalt
+	);
+
+	// Save current value of the $color global, just in case there is one.
+	$global-color: $color;
+
+	// Iterate over each color.
+	@each $color-name, $color-val in $colors {
+
+		// Temporarily assign the global $color variable to the color we're
+		// currently applying styles for.
+		$color: $color-val !global;
+
+		// Apply the styles in the mixin content block for this color class.
+		&.color-#{$color-name} {
+			@content;
+		}
+	}
+
+	// Restore previous value of $color.
+	$color: $global-color !global;
+}

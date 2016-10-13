@@ -1,1 +1,10 @@
+.container {
+	margin-left: rem(16);
+	margin-right: rem(16);
 
+	@include breakpoint( $desktop ) {
+		width: $desktop - 32px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
