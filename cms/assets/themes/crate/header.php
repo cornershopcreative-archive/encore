@@ -38,12 +38,12 @@
 				endif;
 				?>
 				<p class="powered-by">
-					<a class="icon-powered-by" href="http://encore.org/" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Powered by Encore.org', 'encore' ); ?></span></a>
+					<a class="icon-powered-by" href="http://encore.org/" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Powered by Encore.org', 'crate' ); ?></span></a>
 				</p>
 			</div><!-- .site-branding -->
 
 			<div class="nav-toggle">
-				<a class="icon-menu" href="#site-navigation"><span class="screen-reader-text"><?php esc_html_e( 'Show navigation', 'encore' ); ?></span></a>
+				<a class="icon-menu" href="#site-navigation"><span class="screen-reader-text"><?php esc_html_e( 'Show navigation', 'crate' ); ?></span></a>
 			</div>
 
 			<nav id="site-navigation" class="nav-primary" role="navigation">
@@ -55,7 +55,7 @@
 			</nav><!-- #site-navigation -->
 
 			<div class="button-group nav-nag">
-				<a class="button button-solid color-cyan" href="#"><?php echo esc_html_e( 'Count Me In', 'encore' ); ?></a>
+				<a class="button button-solid color-cyan" href="#"><?php echo esc_html_e( 'Count Me In', 'crate' ); ?></a>
 			</div>
 		</div>
 	</header><!-- #masthead -->
