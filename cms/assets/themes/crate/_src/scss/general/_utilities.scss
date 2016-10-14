@@ -48,7 +48,30 @@
 	text-transform: uppercase;
 	text-decoration: none;
 
-	@include colorize {
+	&.button-badge {
+		padding: rem(14) 0;
+		border-radius: 50%;
+		font-size: rem(28);
+		line-height: 1;
+		// Set width equal to vertical padding + border + font size.
+		width: rem(60);
+	}
+
+	&.button-facebook {
+		&:before {
+			@include fa-icon;
+			content: $fa-var-facebook;
+		}
+	}
+
+	&.button-twitter {
+		&:before {
+			@include fa-icon;
+			content: $fa-var-twitter;
+		}
+	}
+
+	@include colorize( button, rainbow social ) {
 		color: $color;
 		border-color: $color;
 		background-color: transparent;
@@ -59,7 +82,7 @@
 	}
 
 	&-solid {
-		@include colorize {
+		@include colorize( button, rainbow social ) {
 			color: $white;
 			background-color: $color;
 			&:hover {
@@ -71,9 +94,24 @@
 }
 
 .button-group {
+	padding: 0;
+	margin: 0;
 	display: flex;
 
 	.button {
-		flex: 1 0 auto;
+		display: block;
+	}
+
+	> * {
+
+		& ~ * {
+			margin-left: 1rem;
+		}
+	}
+
+	&.button-group-expand {
+		> * {
+			flex: 1 0 auto;
+		}
 	}
 }

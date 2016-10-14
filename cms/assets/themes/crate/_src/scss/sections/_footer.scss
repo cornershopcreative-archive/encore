@@ -18,6 +18,18 @@
 		}
 	}
 
+	.footer-logos {
+		float: right;
+
+		.icon-powered-by {
+			display: block;
+			width: 176px;
+			height: 50px;
+			background-size: contain;
+			background-repeat: no-repeat;
+		}
+	}
+
 	.site-info {
 		@include container;
 		margin: rem(100) 0 0;

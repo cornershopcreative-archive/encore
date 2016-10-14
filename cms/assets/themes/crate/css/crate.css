@@ -192,31 +192,35 @@ ul {
 * Docs at http://davidtheclark.github.io/scut
 */
 /**
- * Define styles for color suffixes for an element.
+ * Define styles for a set of per-color sub-classes of an element.
  *
- * The mixin content block will be applied to each of the following classes:
- * .color-orange, .color-grass, .color-sage, .color-cyan, and .color-cobalt.
- * In the content block, the variable $color is assigned to the hex value for
- * the color for each class. Boring example:
+ * The mixin content block will be applied to a set of classes determined by
+ * the $prefix and $sets arguments, and in the content block, the variable
+ * $color is assigned to the hex value for the color for each class.
+ *
+ * @param string $prefix Each generated class will be prefixed with this
+ *                       string, followed by a hyphen.
+ * @param list   $sets   Each member of this list should be a string that
+ *                       corresponds to a key in the global $color-sets map
+ *                       (see _variables.scss).
+ *
+ * Boring example:
  *
  * .thing {
- *   @include colorize {
+ *   @include colorize( pfx, rainbow social ) {
  *     color: $color;
  *   }
  * }
  *
  * ...becomes:
  *
- * .thing.color-orange {
- *   color: #ff8a17;
- * }
- * .thing.color-grass {
- *   color: #aacc00;
- * }
- * .thing.color-sage {
- *   color: #3bdf9b;
- * }
- * ...etc.
+ * // from the 'rainbow' set:
+ * .thing.pfx-orange { color: #ff8a17; }
+ * .thing.pfx-grass { color: #aacc00; }
+ * .thing.pfx-sage { color: #3bdf9b; }
+ * // ...etc., and from the 'social' set:
+ * .thing.pfx-facebook { color: #3b5998; }
+ * .thing.pfx-twitter { color: #4099ff; }
  */
 /**
  * General link & transition styles.
@@ -275,76 +279,130 @@ a {
   font-weight: 700;
   font-size: 0.9375rem;
   line-height: 1.5; }
-  .button.color-orange {
+  .button.button-badge {
+    padding: 0.875rem 0;
+    width: 3.75rem;
+    border-radius: 50%;
+    font-size: 1.75rem;
+    line-height: 1; }
+  .button.button-facebook:before {
+    display: inline-block;
+    content: "";
+    font: 400 normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; }
+  .button.button-twitter:before {
+    display: inline-block;
+    content: "";
+    font: 400 normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; }
+  .button.button-orange {
     border-color: #ff8a17;
     background-color: transparent;
     color: #ff8a17; }
-    .button.color-orange:hover {
+    .button.button-orange:hover {
       background-color: #ff8a17;
       color: #fff; }
-  .button.color-grass {
+  .button.button-grass {
     border-color: #aacc00;
     background-color: transparent;
     color: #aacc00; }
-    .button.color-grass:hover {
+    .button.button-grass:hover {
       background-color: #aacc00;
       color: #fff; }
-  .button.color-sage {
+  .button.button-sage {
     border-color: #3dbf9b;
     background-color: transparent;
     color: #3dbf9b; }
-    .button.color-sage:hover {
+    .button.button-sage:hover {
       background-color: #3dbf9b;
       color: #fff; }
-  .button.color-cyan {
+  .button.button-cyan {
     border-color: #00c7f5;
     background-color: transparent;
     color: #00c7f5; }
-    .button.color-cyan:hover {
+    .button.button-cyan:hover {
       background-color: #00c7f5;
       color: #fff; }
-  .button.color-cobalt {
+  .button.button-cobalt {
     border-color: #0047c1;
     background-color: transparent;
     color: #0047c1; }
-    .button.color-cobalt:hover {
+    .button.button-cobalt:hover {
       background-color: #0047c1;
       color: #fff; }
-  .button-solid.color-orange {
+  .button.button-facebook {
+    border-color: #3b5998;
+    background-color: transparent;
+    color: #3b5998; }
+    .button.button-facebook:hover {
+      background-color: #3b5998;
+      color: #fff; }
+  .button.button-twitter {
+    border-color: #4099ff;
+    background-color: transparent;
+    color: #4099ff; }
+    .button.button-twitter:hover {
+      background-color: #4099ff;
+      color: #fff; }
+  .button-solid.button-orange {
     background-color: #ff8a17;
     color: #fff; }
-    .button-solid.color-orange:hover {
+    .button-solid.button-orange:hover {
       background-color: transparent;
       color: #ff8a17; }
-  .button-solid.color-grass {
+  .button-solid.button-grass {
     background-color: #aacc00;
     color: #fff; }
-    .button-solid.color-grass:hover {
+    .button-solid.button-grass:hover {
       background-color: transparent;
       color: #aacc00; }
-  .button-solid.color-sage {
+  .button-solid.button-sage {
     background-color: #3dbf9b;
     color: #fff; }
-    .button-solid.color-sage:hover {
+    .button-solid.button-sage:hover {
       background-color: transparent;
       color: #3dbf9b; }
-  .button-solid.color-cyan {
+  .button-solid.button-cyan {
     background-color: #00c7f5;
     color: #fff; }
-    .button-solid.color-cyan:hover {
+    .button-solid.button-cyan:hover {
       background-color: transparent;
       color: #00c7f5; }
-  .button-solid.color-cobalt {
+  .button-solid.button-cobalt {
     background-color: #0047c1;
     color: #fff; }
-    .button-solid.color-cobalt:hover {
+    .button-solid.button-cobalt:hover {
       background-color: transparent;
       color: #0047c1; }
+  .button-solid.button-facebook {
+    background-color: #3b5998;
+    color: #fff; }
+    .button-solid.button-facebook:hover {
+      background-color: transparent;
+      color: #3b5998; }
+  .button-solid.button-twitter {
+    background-color: #4099ff;
+    color: #fff; }
+    .button-solid.button-twitter:hover {
+      background-color: transparent;
+      color: #4099ff; }
 
 .button-group {
   display: -ms-flexbox;
-  display: flex; }
+  display: flex;
+  margin: 0;
+  padding: 0; }
   .button-group .button {
+    display: block; }
+  .button-group > * ~ * {
+    margin-left: 1rem; }
+  .button-group.button-group-expand > * {
     -ms-flex: 1 0 auto;
         flex: 1 0 auto; }
 
@@ -609,6 +667,14 @@ img {
     margin: 0.9375rem 0; }
     .site-footer .menu-item a {
       text-transform: uppercase; }
+  .site-footer .footer-logos {
+    float: right; }
+    .site-footer .footer-logos .icon-powered-by {
+      display: block;
+      width: 176px;
+      height: 50px;
+      background-size: contain;
+      background-repeat: no-repeat; }
   .site-footer .site-info {
     margin: 6.25rem 0 0;
     margin-right: auto;

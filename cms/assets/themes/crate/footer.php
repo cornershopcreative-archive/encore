@@ -37,6 +37,13 @@
 				) );
 
 				?>
+				<div class="footer-logos">
+					<ul class="button-group">
+						<li><a class="button button-badge button-facebook" href="#" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Like Generation to Generation on Facebook', 'crate' ); ?></span></a></li>
+						<li><a class="button button-badge button-twitter" href="#" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Like Generation to Generation on Facebook', 'crate' ); ?></span></a></li>
+					</ul>
+					<p><a class="icon-powered-by" href="http://encore.org/" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Like Generation to Generation on Facebook', 'crate' ); ?></span></a></p>
+				</div>
 			</nav>
 			<div class="site-info">
 				<div class="contact">
