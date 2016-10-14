@@ -47,6 +47,8 @@
     <polyline id="Rectangle-2-Copy-17" stroke="#CCCCCC" stroke-width="2" fill="none" transform="translate(270.214405, 344.607203) scale(-1, -1) translate(-270.214405, -344.607203) " points="263 341 270.214405 348.214405 277.428811 341"/>
 </symbol><symbol id="icon-submenu-open" viewBox="143 13 17 11">
     <polyline id="Rectangle-2-Copy-18" stroke="#CCCCCC" stroke-width="2" fill="none" points="144 14.53 151.214405 21.7444054 158.428811 14.53"/>
+</symbol><symbol id="icon-submenu-pointer" viewBox="740 59 25 26">
+    <rect id="Rectangle-4" stroke="none" fill="#ABCA28" fill-rule="evenodd" transform="translate(752.020815, 72.020815) rotate(45.000000) translate(-752.020815, -72.020815) " x="743.520815" y="63.5208153" width="17" height="17"/>
 </symbol></svg>
   <!-- endinject -->
 </div>
