@@ -112,7 +112,7 @@ function styles() {
     .pipe(postcss(processors))
     .pipe(sourcemaps.write('./maps', {includeContent: false, sourceRoot: '/_src/scss'}))
     .pipe(gulp.dest(paths.styles.dest))
-    .pipe(browserSync.stream());
+    .pipe(browserSync.stream({ match: '**/*.css' }));
 }
 
 // Compile Styles for Production
