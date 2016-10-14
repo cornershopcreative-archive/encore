@@ -49,12 +49,20 @@
 	text-decoration: none;
 
 	&.button-badge {
-		padding: rem(14) 0;
+		// On small screens, badge buttons are 50px by 50px.
+		padding: rem(12) 0;
 		border-radius: 50%;
-		font-size: rem(28);
+		font-size: rem(22);
 		line-height: 1;
 		// Set width equal to vertical padding + border + font size.
-		width: rem(60);
+		width: rem(50);
+
+		@include breakpoint( $tablet ) {
+			// On larger screens, go to 60px by 60px.
+			padding: rem(14) 0;
+			font-size: rem(28);
+			width: rem(60);
+		}
 	}
 
 	&.button-facebook {

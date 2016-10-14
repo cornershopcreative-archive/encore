@@ -8,3 +8,31 @@
 		margin-right: auto;
 	}
 }
+
+// Narrower container, spanning 10 columns.
+.container-10 {
+
+	@include breakpoint( $tablet ) {
+		width: span(10);
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	@include breakpoint( $desktop ) {
+		width: ( span(10) * $desktop / 100% ) - 32px;
+	}
+}
+
+// Still-narrower container, spanning 8 columns.
+.container-8 {
+
+	@include breakpoint( $tablet ) {
+		width: span(8);
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	@include breakpoint( $desktop ) {
+		width: ( span(8) * $desktop / 100% ) - 32px;
+	}
+}

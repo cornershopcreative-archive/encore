@@ -1,53 +1,141 @@
 .site-footer {
-	padding: rem(60) 0;
+	padding: rem(20);
 	box-shadow: inset 0 6px 4px -3px rgba(0, 0, 0, 0.35);
+	text-align: center;
+
+	@include breakpoint( $tablet ) {
+		padding: rem(67) 0 rem(30);
+		text-align: left;
+	}
+
+	// Remove margins from <p>'s, since we're using them more as structural
+	// elements here.
+	p {
+		margin: 0;
+	}
 
 	.nav-footer {
 		@include container;
 	}
 
 	.menu {
-		@include span(2);
+		margin: rem(35) 0;
+
+		@include breakpoint( $tablet ) {
+			margin: 0;
+			@include span(3 of 10);
+		}
+
+		@include breakpoint( $desktop ) {
+			@include span(2 of 10);
+		}
+	}
+
+	.menu-footer-2,
+	.menu-footer-3 {
+		display: none;
+	}
+
+	.menu-footer-2 {
+		@include breakpoint( $tablet ) {
+			display: block;
+		}
+	}
+
+	.menu-footer-3 {
+		@include breakpoint( $desktop ) {
+			display: block;
+		}
 	}
 
 	.menu-item {
-		margin: rem(15) 0;
+		margin: 0 0 rem(15);
 
 		a {
 			text-transform: uppercase;
+
+			@include breakpoint( $tablet ) {
+				text-transform: none;
+			}
 		}
 	}
 
 	.footer-logos {
-		float: right;
+
+		@include breakpoint( $tablet ) {
+			float: right;
+		}
+
+		.button-group {
+			justify-content: center;
+
+			@include breakpoint( $tablet ) {
+				justify-content: flex-start;
+			}
+		}
+
+		.powered-by {
+			margin: rem(35) 0;
+
+			@include breakpoint( $tablet ) {
+				margin: rem(40) 0 rem(100);
+			}
+		}
 
 		.icon-powered-by {
 			display: block;
-			width: 176px;
-			height: 50px;
+			width: 134px;
+			height: 38px;
+			margin: 0 auto;
 			background-size: contain;
 			background-repeat: no-repeat;
+
+			@include breakpoint( $tablet ) {
+				width: 176px;
+				height: 50px;
+				margin-left: 0;
+			}
 		}
 	}
 
 	.site-info {
 		@include container;
-		margin: rem(100) 0 0;
-		padding: rem(30) 0 0;
 		font-size: rem(15);
 		line-height: rem(25);
 		border-top: 1px solid $silver;
+	}
 
-		p {
-			margin: 0;
+	.contact,
+	.credits {
+		margin: rem(25) 0;
+
+		@include breakpoint( $tablet ) {
+			margin: rem(30) 0;
 		}
 	}
 
 	.contact {
-		float: left;
+		// Weird trick: make Contact text flow together, ignore line breaks.
+		br {
+			display: none;
+		}
+
+		@include breakpoint( $tablet ) {
+			@include span(6 of 10);
+			// Add an extra column's worth of padding, so that .contact and .credits
+			// aren't too close together.
+			padding-right: span(1 wide);
+
+			br {
+				display: block;
+			}
+		}
 	}
 
 	.credits {
-		float: right;
+
+		@include breakpoint( $tablet ) {
+			@include span(4 of 10 last)
+		}
 	}
 }

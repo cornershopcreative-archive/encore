@@ -14,26 +14,26 @@
 	</div><!-- #content -->
 
 	<footer id="colophon" class="site-footer" role="contentinfo">
-		<div class="container">
+		<div class="container container-10">
 			<nav class="nav-footer">
 				<?php
 
 				wp_nav_menu( array(
 					'theme_location' => 'footer-1',
 					'menu_id' => 'footer-menu-1',
-					'menu_class' => 'menu menu-footer'
+					'menu_class' => 'menu menu-footer menu-footer-1'
 				) );
 
 				wp_nav_menu( array(
 					'theme_location' => 'footer-1',
 					'menu_id' => 'footer-menu-2',
-					'menu_class' => 'menu menu-footer'
+					'menu_class' => 'menu menu-footer menu-footer-2'
 				) );
 
 				wp_nav_menu( array(
 					'theme_location' => 'footer-1',
 					'menu_id' => 'footer-menu-3',
-					'menu_class' => 'menu menu-footer'
+					'menu_class' => 'menu menu-footer menu-footer-3'
 				) );
 
 				?>
@@ -42,7 +42,7 @@
 						<li><a class="button button-badge button-facebook" href="#" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Like Generation to Generation on Facebook', 'crate' ); ?></span></a></li>
 						<li><a class="button button-badge button-twitter" href="#" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Like Generation to Generation on Facebook', 'crate' ); ?></span></a></li>
 					</ul>
-					<p><a class="icon-powered-by" href="http://encore.org/" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Like Generation to Generation on Facebook', 'crate' ); ?></span></a></p>
+					<p class="powered-by"><a class="icon-powered-by" href="http://encore.org/" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Like Generation to Generation on Facebook', 'crate' ); ?></span></a></p>
 				</div>
 			</nav>
 			<div class="site-info">
