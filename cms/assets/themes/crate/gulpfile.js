@@ -65,6 +65,9 @@ var paths = {
   scripts: {
     src: '_src/js/**/*.js',
     dest: 'js'
+  },
+  php: {
+    src: '**/*.{php,inc}',
   }
 };
 
@@ -289,7 +292,10 @@ function watch() {
   gulp.watch(paths.sprite.src, sprite);
   gulp.watch(paths.imgs.template, optimizetemplate);
   gulp.watch(paths.svgs.src, svg);
-  gulp.watch('*.php').on('change', reload);
+  var watchphp = gulp.watch(paths.php.src);
+  watchphp.on('add', reload);
+  watchphp.on('change', reload);
+  watchphp.on('unlink', reload);
   var watchmedia = gulp.watch(paths.imgs.media);
 	watchmedia.on('add', media);
   
