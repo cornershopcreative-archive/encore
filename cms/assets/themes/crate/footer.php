@@ -11,8 +11,6 @@
 
 ?>
 
-	</div><!-- #content -->
-
 	<footer id="colophon" class="site-footer" role="contentinfo">
 		<div class="container container-10">
 			<nav class="nav-footer">

@@ -59,5 +59,3 @@
 			</div>
 		</div>
 	</header><!-- #masthead -->
-
-	<div id="content" class="site-content">
