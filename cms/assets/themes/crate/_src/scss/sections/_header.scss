@@ -1,1 +1,188 @@
+.site-header {
+	padding: rem(10) 0;
+	position: relative;
+	// We're using a 6px spread-radius instead of a 6px offset-y below, so that
+	// the left & right corners look better.
+	box-shadow: 0 0 9px 6px rgba(0, 0, 0, 0.15);
 
+	@include breakpoint( $tablet ) {
+		padding: rem(8) 0;
+	}
+
+	.container {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		// Make sure the .nav-nag button will wrap to a second line on mobile.
+		flex-wrap: wrap;
+	}
+}
+
+// Replace .site-branding with logo.
+.site-branding {
+	display: flex;
+	align-items: center;
+
+	.site-title {
+		margin: 0;
+	}
+
+	a {
+		display: block;
+	}
+
+	h1,
+	p {
+		margin: 0 0 0 rem(14);
+
+		@include breakpoint( $tablet ) {
+			margin-left: rem(18);
+		}
+	}
+
+	.icon-logo {
+		display: block;
+		background-size: cover;
+
+		@include breakpoint( $tablet ) {
+			width: 55px;
+			height: 55px;
+		}
+	}
+
+	.icon-powered-by {
+		display: block;
+		background-size: cover;
+
+		@include breakpoint( $desktop ) {
+			width: 88px;
+			height: 25px;
+		}
+	}
+}
+
+.nav-toggle {
+	flex-grow: 1; // Take up available space, and align contents right.
+	display: flex;
+	justify-content: flex-end;
+
+	@include breakpoint( $tablet ) {
+		// Here the nav-toggle is inline with .nav-nag, so make sure there's space
+		// between them.
+		margin: 0 1rem;
+	}
+
+	@include breakpoint( $desktop ) {
+		display: none;
+	}
+
+	a {
+		display: block;
+	}
+}
+
+.nav-primary {
+	position: absolute;
+	background: $white;
+	top: rem(70); // This is the height of the single-line menu.
+	right: 0;
+
+	&,
+	.sub-menu {
+		overflow: hidden;
+		max-height: 0;
+		transition: max-height 0.2s ease-out;
+	}
+
+	&.is-open,
+	.subnav-is-open .sub-menu {
+		max-height: 1000px;
+		transition: max-height 0.2s ease-in;
+	}
+
+	@include breakpoint( $desktop ) {
+		position: static;
+		max-height: 1000px;
+		padding: 0;
+	}
+
+	.menu {
+		font-size: rem(30);
+		padding: rem(15) 0;
+		// Keep line-heights relative to main menu font size, so that sub-items
+		// (which have smaller fonts) have the same line-height.
+		line-height: 1em;
+
+		@include breakpoint( $desktop ) {
+			font-size: rem(15);
+			padding: 0;
+			// When the screen is big enough, go inline.
+			display: flex;
+		}
+	}
+
+	.menu-item {
+		padding: rem(15) rem(40);
+
+		@include breakpoint( $desktop ) {
+			padding: 0 rem(15);
+		}
+
+		a {
+			display: inline-block;
+			vertical-align: middle;
+
+			@include breakpoint( $desktop ) {
+				text-transform: uppercase;
+			}
+		}
+
+		.subnav-toggle {
+			margin-left: rem(20);
+			@extend .icon-submenu-open;
+
+			@include breakpoint( $desktop ) {
+				display: none;
+			}
+		}
+	}
+
+	.current-menu-item > a {
+		color: $grass;
+	}
+
+	.sub-menu {
+		font-size: rem(18);
+		margin: 0 rem(-40);
+
+		@include breakpoint( $desktop ) {
+			display: none;
+		}
+
+		.menu-item {
+			border-bottom: 1px solid $silver;
+
+			&:first-child {
+				margin-top: rem(20);
+				border-top: 1px solid $silver;
+			}
+		}
+	}
+
+	.subnav-is-open {
+
+		.subnav-toggle {
+			@extend .icon-submenu-close;
+		}
+	}
+}
+
+.nav-nag {
+	width: 100%;
+	margin-top: 1rem;
+
+	@include breakpoint( $tablet ) {
+		width: auto;
+		margin: 0;
+	}
+}

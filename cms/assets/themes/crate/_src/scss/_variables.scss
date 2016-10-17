@@ -1,1 +1,66 @@
+//-----------------------------------------------------------------------------
+// Colors.
+//-----------------------------------------------------------------------------
 
+$white: #fff;
+$silver: #d8d8d8;
+$black: #2d2d2d;
+
+$orange: #ff8a17;
+$grass: #aacc00; // or sometimes #abca28
+$sage: #3dbf9b; // or sometimes #3dbf9a
+$cyan: #00c7f5;
+$cobalt: #0047c1;
+
+$color-facebook: #3b5998;
+$color-twitter: #4099ff;
+
+// Color sets, for the colorize mixin.
+$color-sets: (
+
+	// This is one color set.
+	rainbow: (
+		// These are color names within the set.
+		orange: $orange,
+		grass: $grass,
+		sage: $sage,
+		cyan: $cyan,
+		cobalt: $cobalt,
+	),
+
+	social: (
+		facebook: $color-facebook,
+		twitter: $color-twitter,
+	),
+
+);
+
+// The default color set for the colorize mixin to use.
+$color-set-default: rainbow;
+
+//-----------------------------------------------------------------------------
+// Fonts.
+//-----------------------------------------------------------------------------
+
+$sans: 'Avenir Next';
+$serif: 'Libre Baskerville';
+
+// Path to the Font Awesome webfont.
+$fa-font-path: '../node_modules/font-awesome/fonts';
+
+//-----------------------------------------------------------------------------
+// Screen widths.
+//-----------------------------------------------------------------------------
+
+$desktop: 1280px;
+$tablet: 640px; // Arbitrary.
+
+//-----------------------------------------------------------------------------
+// Grid setup.
+//-----------------------------------------------------------------------------
+
+$susy: (
+	columns: 12,
+	gutters: 20px/80px,
+	math: fluid,
+);

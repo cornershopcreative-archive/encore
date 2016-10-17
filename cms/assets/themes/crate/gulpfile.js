@@ -23,7 +23,7 @@ var gulp           = require('gulp'),                  // https://github.com/gul
 		reload         = browserSync.reload;               // Turns reload function into variable
 		path           = require('path'),                  // https://www.npmjs.com/package/path
 		userpath       = path.resolve().split(path.sep),   // splits path
-		svgcss         = require('gulp-svg-css'),          // https://www.npmjs.com/package/gulp-svg-to-css
+		svgcss         = require('gulp-svg-css'),          // https://www.npmjs.com/package/gulp-svg-css
 		svgmin         = require('gulp-svgmin'),           // https://www.npmjs.com/package/gulp-svgmin
 		svgstore       = require('gulp-svgstore'),         // https://www.npmjs.com/package/gulp-svgstore
 		inject         = require('gulp-inject'),           // https://www.npmjs.com/package/gulp-inject
@@ -112,7 +112,7 @@ function styles() {
     .pipe(postcss(processors))
     .pipe(sourcemaps.write('./maps', {includeContent: false, sourceRoot: '/_src/scss'}))
     .pipe(gulp.dest(paths.styles.dest))
-    .pipe(browserSync.stream());
+    .pipe(browserSync.stream({ match: '**/*.css' }));
 }
 
 // Compile Styles for Production
@@ -232,7 +232,7 @@ function svginline() {
   }
   
   return gulp
-    .src('header.php')
+    .src('svg.php')
     .pipe(inject(svgs, { transform: fileContents }))
     .pipe(gulp.dest('.'));
 }

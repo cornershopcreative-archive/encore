@@ -46,7 +46,10 @@ function crate_setup() {
 
 	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus( array(
-		'primary' => esc_html__( 'Primary', 'crate' ),
+		'primary'  => __( 'Primary', 'crate' ),
+		'footer-1' => __( 'Footer column 1', 'crate' ),
+		'footer-2' => __( 'Footer column 2 (desktop only)', 'crate' ),
+		'footer-3' => __( 'Footer column 3 (desktop only)', 'crate' ),
 	) );
 
 	/*

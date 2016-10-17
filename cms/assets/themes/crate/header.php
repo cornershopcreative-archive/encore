@@ -22,14 +22,42 @@
 
 <body <?php body_class(); ?>>
 
-<div style="height: 0; width: 0; position: absolute; visibility: hidden">
-  <!-- inject:svg -->
-  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><symbol id="icon-home" viewBox="0 0 32 32">
-<path d="M32 18.451l-16-12.42-16 12.42v-5.064l16-12.42 16 12.42zM28 18v12h-8v-8h-8v8h-8v-12l12-9z"/>
-</symbol><symbol id="icon-home2" viewBox="0 0 32 32">
-<path d="M16 1l-16 16 3 3 3-3v13h8v-6h4v6h8v-13l3 3 3-3-16-16zM16 14c-1.105 0-2-0.895-2-2s0.895-2 2-2c1.105 0 2 0.895 2 2s-0.895 2-2 2z"/>
-</symbol><symbol id="icon-home3" viewBox="0 0 32 32">
-<path d="M32 19l-6-6v-9h-4v5l-6-6-16 16v1h4v10h10v-6h4v6h10v-10h4z"/>
-</symbol></svg>
-  <!-- endinject -->
-</div>
+<?php include_once( 'svg.php' ); ?>
+<div id="page" class="site">
+	<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Skip to content', 'crate' ); ?></a>
+
+	<header id="masthead" class="site-header" role="banner">
+		<div class="container">
+			<div class="site-branding">
+				<?php
+				if ( is_front_page() && is_home() ) : ?>
+					<h1 class="site-title"><a class="icon-logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><span class="screen-reader-text"><?php bloginfo( 'name' ); ?></span></a></h1>
+				<?php else : ?>
+					<p class="site-title"><a class="icon-logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><span class="screen-reader-text"><?php bloginfo( 'name' ); ?></span></a></p>
+				<?php
+				endif;
+				?>
+				<p class="powered-by">
+					<a class="icon-powered-by" href="http://encore.org/" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Powered by Encore.org', 'crate' ); ?></span></a>
+				</p>
+			</div><!-- .site-branding -->
+
+			<div class="nav-toggle">
+				<a class="icon-menu" href="#site-navigation"><span class="screen-reader-text"><?php esc_html_e( 'Show navigation', 'crate' ); ?></span></a>
+			</div>
+
+			<nav id="site-navigation" class="nav-primary" role="navigation">
+				<?php wp_nav_menu( array(
+					'theme_location' => 'primary',
+					'menu_id' => 'primary-menu',
+					'menu_class' => 'menu menu-primary'
+				) ); ?>
+			</nav><!-- #site-navigation -->
+
+			<div class="button-group button-group-expand nav-nag">
+				<a class="button button-solid button-cyan" href="#"><?php echo esc_html_e( 'Count Me In', 'crate' ); ?></a>
+			</div>
+		</div>
+	</header><!-- #masthead -->
+
+	<div id="content" class="site-content">

@@ -1,0 +1,64 @@
+/**
+ * Define styles for a set of per-color sub-classes of an element.
+ *
+ * The mixin content block will be applied to a set of classes determined by
+ * the $prefix and $sets arguments, and in the content block, the variable
+ * $color is assigned to the hex value for the color for each class.
+ *
+ * @param string $prefix Each generated class will be prefixed with this
+ *                       string, followed by a hyphen.
+ * @param list   $sets   Each member of this list should be a string that
+ *                       corresponds to a key in the global $color-sets map
+ *                       (see _variables.scss).
+ *
+ * Boring example:
+ *
+ * .thing {
+ *   @include colorize( pfx, rainbow social ) {
+ *     color: $color;
+ *   }
+ * }
+ *
+ * ...becomes:
+ *
+ * // from the 'rainbow' set:
+ * .thing.pfx-orange { color: #ff8a17; }
+ * .thing.pfx-grass { color: #aacc00; }
+ * .thing.pfx-sage { color: #3bdf9b; }
+ * // ...etc., and from the 'social' set:
+ * .thing.pfx-facebook { color: #3b5998; }
+ * .thing.pfx-twitter { color: #4099ff; }
+ */
+
+// Initialize the global $color variable, which this mixin will use as it
+// iterates. $color needs to be global in order for the mixin content block to
+// be able to access it.
+$color: null !global;
+
+@mixin colorize( $prefix: color, $sets: $color-set-default ) {
+
+	// Save current value of the $color global, just in case there is one.
+	$global-color: $color;
+
+	// Initialize a map where we'll temporarily store the desired color sets.
+	$merged-sets: ();
+
+	// Merge all the desired color sets into $merged-sets.
+	@each $set-name in $sets {
+		$merged-sets: map-merge( $merged-sets, map-get( $color-sets, $set-name ) );
+	}
+
+	// Iterate over each color in $merged-sets.
+	@each $theme-name, $color-value in $merged-sets {
+
+		$color: $color-value !global;
+
+		// Apply the styles in the mixin content block for this color class.
+		&.#{$prefix}-#{$theme-name} {
+			@content;
+		}
+	}
+
+	// Restore previous value of $color.
+	$color: $global-color !global;
+}
