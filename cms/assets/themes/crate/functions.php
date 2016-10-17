@@ -43,6 +43,8 @@ function crate_setup() {
 	add_theme_support( 'post-thumbnails' );
 
 	add_image_size( 'gallery', 800, 800, true ); // gallery image cropped
+	add_image_size( 'hero-lg', 1280, 400, true ); // Page hero image.
+	add_image_size( 'hero-sm', 375, 214, true ); // Page hero image, taller mobile version.
 
 	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus( array(
