@@ -13,6 +13,7 @@
 
 // Narrower container, spanning 10 columns.
 .container-10 {
+	@extend .container;
 
 	@include breakpoint( $tablet ) {
 		width: span(10);
@@ -29,6 +30,7 @@
 
 // Still-narrower container, spanning 8 columns.
 .container-8 {
+	@extend .container;
 
 	@include breakpoint( $tablet ) {
 		width: span(8);
@@ -40,5 +42,22 @@
 
 	@include breakpoint( $desktop ) {
 		width: ( span(8) * $desktop / 100% ) - 32px;
+	}
+}
+
+// Super narrow container, spanning 6 columns.
+.container-6 {
+	@extend .container;
+
+	@include breakpoint( $tablet ) {
+		width: span(6);
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: 0;
+		padding-right: 0;
+	}
+
+	@include breakpoint( $desktop ) {
+		width: ( span(6 wide) * $desktop / 100% ) - 32px;
 	}
 }

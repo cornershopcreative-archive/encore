@@ -22,14 +22,14 @@
 				<?php the_post_thumbnail( 'hero-sm' ); ?>
 			</picture>
 		<?php endif; ?>
-		<div class="hero-text container-10">
+		<div class="hero-text prose prose-compact container-10">
 			<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
 			<p>This is an example of subtitle text.</p>
 			<p>This is some longer subtitle text. Lorem ipsum dolor sit amet etc. We shall see how this looks. Does it make the .hero-text thing way too wide, or does it still look OK?</p>
 		</div>
 	</header><!-- .entry-header -->
 
-	<div class="entry-content">
+	<div class="entry-content container-8 prose">
 		<?php
 			the_content( sprintf(
 				/* translators: %s: Name of current post. */
