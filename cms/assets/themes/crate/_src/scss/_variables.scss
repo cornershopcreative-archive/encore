@@ -64,3 +64,7 @@ $susy: (
 	gutters: 20px/80px,
 	math: fluid,
 );
+
+// Minimum desired distance between any (non-bleeding) element and either edge
+// of the viewport.
+$page-padding: rem(16);

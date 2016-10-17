@@ -16,6 +16,12 @@
 		// Make sure the .nav-nag button will wrap to a second line on mobile.
 		flex-wrap: wrap;
 	}
+
+	&.has-current-submenu { // This class is added in nav.js.
+		@include breakpoint( $desktop ) {
+			border-bottom: rem(60) solid $grass;
+		}
+	}
 }
 
 // Replace .site-branding with logo.
@@ -89,21 +95,28 @@
 
 	&,
 	.sub-menu {
+		// Hide menus and submenus by reducing their height.
 		overflow: hidden;
 		max-height: 0;
 		transition: max-height 0.2s ease-out;
+
+		@include breakpoint( $desktop ) {
+			// Reset positioning.
+			position: static;
+			// Don't hide menus on desktop.
+			overflow: visible;
+			max-height: none;
+			// Stretch vertically to fit header.
+			align-self: stretch;
+			display: flex;
+			align-items: stretch;
+		}
 	}
 
 	&.is-open,
 	.subnav-is-open .sub-menu {
 		max-height: 1000px;
 		transition: max-height 0.2s ease-in;
-	}
-
-	@include breakpoint( $desktop ) {
-		position: static;
-		max-height: 1000px;
-		padding: 0;
 	}
 
 	.menu {
@@ -115,6 +128,7 @@
 
 		@include breakpoint( $desktop ) {
 			font-size: rem(15);
+			line-height: 1.5;
 			padding: 0;
 			// When the screen is big enough, go inline.
 			display: flex;
@@ -123,9 +137,12 @@
 
 	.menu-item {
 		padding: rem(15) rem(40);
+		position: relative;
 
 		@include breakpoint( $desktop ) {
+			display: flex;
 			padding: 0 rem(15);
+			align-items: center;
 		}
 
 		a {
@@ -147,15 +164,22 @@
 		}
 	}
 
-	.current-menu-item > a {
-		color: $grass;
-	}
-
 	.sub-menu {
 		font-size: rem(18);
 		margin: 0 rem(-40);
 
 		@include breakpoint( $desktop ) {
+			position: absolute;
+			top: rem(81); // 70px-tall menu minus 8px top padding, plus 19px submenu padding
+			max-height: none;
+			font-size: rem(15);
+			background: $grass;
+			// Center horizontally.
+			left: -25vw;
+			margin-left: 50%;
+			width: 50vw;
+			// Hide. Only .current-menu-item .sub-menu and
+			// .current-menu-ancestor .sub-menu should be visible.
 			display: none;
 		}
 
@@ -166,8 +190,65 @@
 				margin-top: rem(20);
 				border-top: 1px solid $silver;
 			}
+
+			@include breakpoint( $desktop ) {
+
+				&,
+				&:first-child {
+					margin: 0;
+					border: 0;
+				}
+
+				a {
+					color: $white;
+					text-transform: none;
+					opacity: 0.4;
+
+					&:hover {
+						color: $white;
+						opacity: 1.0;
+					}
+				}
+
+				&.current-menu-item a {
+					opacity: 1.0;
+				}
+			}
 		}
 	}
+
+	.current-menu-item,
+	.current-menu-ancestor {
+
+		&.menu-item-has-children {
+
+			&::after {
+				@extend .icon-submenu-pointer;
+
+				@include breakpoint( $desktop ) {
+					content: '';
+					display: block;
+					position: absolute;
+					bottom: rem(-21); // - ( 8px menu padding + 1/2( 26px image height ))
+					left: -13px;
+					margin-left: 50%;
+				}
+			}
+		}
+
+		> a {
+			color: $grass;
+		}
+
+		.sub-menu {
+
+			@include breakpoint( $desktop ) {
+				display: flex;
+				justify-content: center;
+			}
+		}
+	}
+
 
 	.subnav-is-open {
 

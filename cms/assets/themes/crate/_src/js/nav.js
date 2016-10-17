@@ -38,4 +38,12 @@ module.exports = function( $ ) {
 			$item.toggleClass( 'subnav-is-open' );
 		} );
 	} );
+
+	// Add a class to the nav element if it contains a submenu that should be
+	// shown on desktop (i.e. a current menu item with children, or a current
+	// menu item's ancestor). This allows us to style this type of menu
+	// specifically.
+	if ( $nav.find( '.menu-item-has-children.current-menu-item, .current-menu-ancestor' ).length ) {
+		$( '.site-header' ).addClass( 'has-current-submenu' );
+	}
 };
