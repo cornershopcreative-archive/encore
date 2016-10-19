@@ -899,6 +899,17 @@ img {
       margin: 0;
       width: auto; } }
 
+/**
+ * Generic styles for Flexible Content sections.
+ */
+.content-section {
+  margin-top: 4rem;
+  margin-bottom: 4rem; }
+  .content-section::after {
+    display: block;
+    clear: both;
+    content: ''; }
+
 .hero {
   text-align: center; }
 

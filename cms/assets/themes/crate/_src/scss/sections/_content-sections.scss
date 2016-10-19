@@ -1,0 +1,17 @@
+/**
+ * Generic styles for Flexible Content sections.
+ */
+
+.content-section {
+	// Add plenty of space between sections.
+	margin-top: 4rem;
+	margin-bottom: 4rem;
+
+	// Clear any floated images.
+	&::after {
+		content: '';
+		display: block;
+		clear: both;
+	}
+}
+
