@@ -1,0 +1,23 @@
+{
+    "key": "group_57f7c88c9aa18",
+    "title": "Site Options",
+    "fields": false,
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "crate-site-options"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "description": "",
+    "modified": 1476899217
+}
