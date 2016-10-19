@@ -36,10 +36,13 @@
 
 				?>
 				<div class="footer-logos">
-					<ul class="button-group">
-						<li><a class="button button-badge button-facebook" href="#" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Like Generation to Generation on Facebook', 'crate' ); ?></span></a></li>
-						<li><a class="button button-badge button-twitter" href="#" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Like Generation to Generation on Facebook', 'crate' ); ?></span></a></li>
-					</ul>
+					<?php if ( $social_links = crate_get_social_links() ) : ?>
+						<ul class="button-group">
+							<?php foreach ( $social_links as $link ) : ?>
+								<li><a class="button button-badge button-<?php echo esc_attr( $link['service'] ); ?>" href="<?php echo esc_attr( $link['url'] ); ?>" target="_blank"><span class="screen-reader-text"><?php echo esc_html( $link['link_text'] ); ?></span></a></li>
+							<?php endforeach; ?>
+						</ul>
+					<?php endif; ?>
 					<p class="powered-by"><a class="icon-powered-by" href="http://encore.org/" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Like Generation to Generation on Facebook', 'crate' ); ?></span></a></p>
 				</div>
 			</nav>

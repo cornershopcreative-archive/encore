@@ -305,22 +305,6 @@
             ]
         },
         {
-            "key": "field_57f7cc1f82de3",
-            "label": "Donate URL",
-            "name": "donate_url",
-            "type": "url",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "placeholder": ""
-        },
-        {
             "key": "field_57fbf3ab6e7ec",
             "label": "Integrations\/API Keys",
             "name": "",
@@ -427,5 +411,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1476900544
+    "modified": 1476906122
 }
