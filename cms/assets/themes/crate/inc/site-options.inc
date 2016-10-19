@@ -324,7 +324,7 @@ function crate_get_copyright_text() {
  * Output the copyright text as specified on the Site Options page.
  */
 function crate_copyright_text() {
-	// Escape output (allowing basic markp) & prettify dashes, apostrophes, etc.
+	// Escape output (allowing basic markup) & prettify dashes, apostrophes, etc.
 	echo wp_kses_post( wptexturize( crate_get_copyright_text() ) );
 }
 
@@ -339,8 +339,8 @@ function crate_get_contact_info() {
  * Output the contact info as specified on the Site Options page.
  */
 function crate_contact_info() {
-	// Escape output (ACF takes care of wptexturize-ation, shortcodes, etc).
-	echo wp_kses_post( crate_get_contact_info() );
+	// Escape output (allowing basic markup) & prettify dashes, apostrophes, etc.
+	echo wp_kses_post( wptexturize( crate_get_contact_info() ) );
 }
 
 //-----------------------------------------------------------------------------

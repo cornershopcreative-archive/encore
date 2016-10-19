@@ -45,12 +45,12 @@
 			</nav>
 			<div class="site-info">
 				<div class="contact">
-					<p>&copy; Generation to Generation 2016. All rights reserved.<br/>
-						P.O. Box 29542 | San Fransisco, CA 94129</p>
+					<p><?php crate_copyright_text(); ?></p>
+					<p><?php crate_contact_info(); ?></p>
 				</div>
 				<div class="credits">
-					<p>Designed by Ronik<br/>
-						Crafted by Cornershop Creative</p>
+					<p>Designed by Ronik</p>
+					<p>Crafted by Cornershop Creative</p>
 				</div>
 			</div>
 		</div>

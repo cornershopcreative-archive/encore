@@ -981,15 +981,17 @@ img {
       .site-footer .contact,
       .site-footer .credits {
         margin: 1.875rem 0; } }
-  .site-footer .contact br {
-    display: none; }
+  .site-footer .contact br,
+  .site-footer .contact p {
+    display: inline; }
   @media (min-width: 640px) {
     .site-footer .contact {
       float: left;
       margin-right: 2.04082%;
       padding-right: 8.47458%;
       width: 59.18367%; }
-      .site-footer .contact br {
+      .site-footer .contact br,
+      .site-footer .contact p {
         display: block; } }
   @media (min-width: 640px) {
     .site-footer .credits {

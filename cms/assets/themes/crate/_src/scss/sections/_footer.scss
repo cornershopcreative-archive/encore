@@ -116,8 +116,9 @@
 
 	.contact {
 		// Weird trick: make Contact text flow together, ignore line breaks.
-		br {
-			display: none;
+		br,
+		p {
+			display: inline;
 		}
 
 		@include breakpoint( $tablet ) {
@@ -126,7 +127,8 @@
 			// aren't too close together.
 			padding-right: span(1 wide);
 
-			br {
+			br,
+			p {
 				display: block;
 			}
 		}
