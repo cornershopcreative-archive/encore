@@ -331,6 +331,36 @@ h6 {
   margin-bottom: 0.625rem; }
 
 /**
+ * Generic alignment classes, for images and captions inserted via WYSIWYG.
+ */
+.alignleft,
+.alignright {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 92%; }
+  .alignleft p,
+  .alignright p {
+    margin: 0.2em 0;
+    font-style: italic; }
+
+.alignleft {
+  float: left;
+  margin: 0 1em 0.5em 0; }
+
+.alignright {
+  float: right;
+  margin: 0 0 0.5em 1em; }
+
+.aligncenter {
+  display: block;
+  margin: 1em auto; }
+
+.alignnone {
+  display: inline-block; }
+
+/**
  * Text intended for ATs only.
  */
 .screen-reader-text {
