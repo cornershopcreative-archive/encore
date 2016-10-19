@@ -11,20 +11,13 @@ get_header(); ?>
 
 	<main id="main" class="site-main" role="main">
 
-		<section class="error-404 not-found">
-			<header class="page-header">
-				<h1 class="page-title"><?php esc_html_e( 'Oops! That page can&rsquo;t be found.', 'crate' ); ?></h1>
-			</header><!-- .page-header -->
+		<?php
+		while ( have_posts() ) : the_post();
 
-			<div class="page-content">
-				<p><?php esc_html_e( 'It looks like nothing was found at this location. Maybe try one of the links below or a search?', 'crate' ); ?></p>
+			get_template_part( 'template-parts/content', 'page' );
 
-				<?php
-					get_search_form();
-				?>
-
-			</div><!-- .page-content -->
-		</section><!-- .error-404 -->
+		endwhile; // End of the loop.
+		?>
 
 	</main><!-- #main -->
 
