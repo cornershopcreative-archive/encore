@@ -68,12 +68,18 @@ var paths = {
   },
   php: {
     src: '**/*.{php,inc}',
-  }
+  },
+  phpconfig: 'inc/gulp-config.inc'
 };
 
 // Clean Task
 function clean(cb) {
-  return del(['css/*', 'js/*', 'images/*']);
+  return del(['css/*', 'js/*', 'images/*', paths.phpconfig]);
+}
+
+// Clean PHP config only
+function clean_php() {
+  return del( paths.phpconfig );
 }
 
 // BrowserSync Task
@@ -82,11 +88,31 @@ function serve(cb) {
     browserSync.init({
       open: 'external',
       host: userpath[4] + '.' + userpath[2] + '.cshp.co',
-      proxy: userpath[4] + '.' + userpath[2] + '.cshp.co',
+      proxy: {
+        target: userpath[4] + '.' + userpath[2] + '.cshp.co',
+        proxyReq: function( proxyReq ) {
+          // Set a request header that will signify to the server that we're
+          // going through Browsersync.
+          proxyReq.setHeader( 'X-Browsersynced', 'Heck yeah' );
+        }
+      },
       port: portGenerator
     });
-    
+
+    // Write the BROWSERSYNC_PORT constant to an .inc file.
+    require('fs').writeFileSync( paths.phpconfig, '<?php define( "BROWSERSYNC_PORT", ' + portGenerator + ' );' );
+
     watch();
+
+    // Trap Ctrl-C signal and clean up the file containing the BROWSERSYNC_PORT
+    // constant before exiting.
+    process.once( 'SIGINT', function() {
+      clean_php().then( function() {
+        console.log( 'Removed ' + paths.phpconfig + ' file.' );
+        return process.exit();
+      } );
+    } );
+
     cb();
 }
 
