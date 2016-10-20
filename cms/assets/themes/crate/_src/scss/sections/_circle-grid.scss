@@ -1,0 +1,54 @@
+/**
+ * Styles for Circle Grid sections.
+ */
+
+.section-circle-grid {
+	position: relative; // So we can position the :before pseudo-element.
+	// padding-bottom: rem(50);
+	background-color: $cobalt;
+	color: $white;
+	text-align: center;
+	line-height: rem(28);
+
+	@include breakpoint( $tablet ) {
+		background-color: transparent;
+
+		&:before {
+			content: '';
+			position: absolute;
+			top: rem(125);
+			right: 0;
+			bottom: 0;
+			left: 0;
+			background-color: $cobalt;
+		}
+	}
+
+	.grid-item {
+		position: relative; // So these are rendered on top of .section-circle-grid:before.
+		margin-bottom: rem(50);
+
+		img {
+			display: block;
+			margin: 0 auto rem(30);
+			border-radius: 50%;
+		}
+	}
+
+	h3,
+	p {
+		margin: rem(10) 0;
+	}
+
+	h3 {
+		font-size: rem(18);
+	}
+
+	.grid-item-blurb {
+		font-weight: bold;
+	}
+
+	.grid-item-heading ~ .grid-item-blurb {
+		font-weight: normal;
+	}
+}

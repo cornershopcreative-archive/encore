@@ -8,10 +8,29 @@
 	margin-bottom: 4rem;
 
 	// Clear any floated images.
-	&::after {
+	&:after {
 		content: '';
 		display: block;
 		clear: both;
 	}
 }
 
+.content-section-grid {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+
+	// Hide :after element, so it doesn't get treated as a flex item
+	&:after {
+		display: none;
+	}
+}
+
+.grid-item-3 {
+	width: 100%;
+
+	@include breakpoint( $tablet ) {
+		width: rem(250);
+		margin: 0 rem(55);
+	}
+}

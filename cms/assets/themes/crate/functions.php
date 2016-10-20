@@ -45,6 +45,7 @@ function crate_setup() {
 	add_image_size( 'gallery', 800, 800, true ); // gallery image cropped
 	add_image_size( 'hero-lg', 1280, 400, true ); // Page hero image.
 	add_image_size( 'hero-sm', 375, 214, true ); // Page hero image, taller mobile version.
+	add_image_size( 'grid-item', 250, 250, true ); // Circle Grid section item.
 
 	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus( array(

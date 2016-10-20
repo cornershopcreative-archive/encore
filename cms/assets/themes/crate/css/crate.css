@@ -689,8 +689,8 @@ img {
   height: 11px;
   background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='17px' height='11px' viewBox='143 13 17 11' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Cpolyline id='Rectangle-2-Copy-18' stroke='%23CCCCCC' stroke-width='2' fill='none' points='144 14.53 151.214405 21.7444054 158.428811 14.53'%3E%3C/polyline%3E%3C/svg%3E"); }
 
-.icon-submenu-pointer, .nav-primary .current-menu-item.menu-item-has-children::after,
-.nav-primary .current-menu-ancestor.menu-item-has-children::after {
+.icon-submenu-pointer, .nav-primary .current-menu-item.menu-item-has-children:after,
+.nav-primary .current-menu-ancestor.menu-item-has-children:after {
   width: 25px;
   height: 26px;
   background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='25px' height='26px' viewBox='740 59 25 26' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Crect id='Rectangle-4' stroke='none' fill='%23ABCA28' fill-rule='evenodd' transform='translate(752.020815, 72.020815) rotate(45.000000) translate(-752.020815, -72.020815) ' x='743.520815' y='63.5208153' width='17' height='17'%3E%3C/rect%3E%3C/svg%3E"); }
@@ -872,8 +872,8 @@ img {
         .nav-primary .sub-menu .menu-item.current-menu-item a {
           opacity: 1.0; } }
   @media (min-width: 1280px) {
-    .nav-primary .current-menu-item.menu-item-has-children::after,
-    .nav-primary .current-menu-ancestor.menu-item-has-children::after {
+    .nav-primary .current-menu-item.menu-item-has-children:after,
+    .nav-primary .current-menu-ancestor.menu-item-has-children:after {
       position: absolute;
       bottom: -1.3125rem;
       left: -13px;
@@ -905,10 +905,27 @@ img {
 .content-section {
   margin-top: 4rem;
   margin-bottom: 4rem; }
-  .content-section::after {
+  .content-section:after {
     display: block;
     clear: both;
     content: ''; }
+
+.content-section-grid {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -ms-flex-pack: center;
+      justify-content: center; }
+  .content-section-grid:after {
+    display: none; }
+
+.grid-item-3 {
+  width: 100%; }
+  @media (min-width: 640px) {
+    .grid-item-3 {
+      margin: 0 3.4375rem;
+      width: 15.625rem; } }
 
 .hero {
   text-align: center; }
@@ -929,6 +946,43 @@ img {
       padding: 2.5rem 3.75rem; }
       .hero-image + .hero-text {
         margin-top: -3.75rem; } }
+
+/**
+ * Styles for Circle Grid sections.
+ */
+.section-circle-grid {
+  position: relative;
+  background-color: #0047c1;
+  color: #fff;
+  text-align: center;
+  line-height: 1.75rem; }
+  @media (min-width: 640px) {
+    .section-circle-grid {
+      background-color: transparent; }
+      .section-circle-grid:before {
+        position: absolute;
+        top: 7.8125rem;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: #0047c1;
+        content: ''; } }
+  .section-circle-grid .grid-item {
+    position: relative;
+    margin-bottom: 3.125rem; }
+    .section-circle-grid .grid-item img {
+      display: block;
+      margin: 0 auto 1.875rem;
+      border-radius: 50%; }
+  .section-circle-grid h3,
+  .section-circle-grid p {
+    margin: 0.625rem 0; }
+  .section-circle-grid h3 {
+    font-size: 1.125rem; }
+  .section-circle-grid .grid-item-blurb {
+    font-weight: 700; }
+  .section-circle-grid .grid-item-heading ~ .grid-item-blurb {
+    font-weight: 400; }
 
 .site-footer {
   padding: 1.25rem;
