@@ -974,6 +974,9 @@ img {
       display: block;
       margin: 0 auto 1.875rem;
       border-radius: 50%; }
+  .section-circle-grid a {
+    color: #fff;
+    text-decoration: none; }
   .section-circle-grid h3,
   .section-circle-grid p {
     margin: 0.625rem 0; }

@@ -4,7 +4,6 @@
 
 .section-circle-grid {
 	position: relative; // So we can position the :before pseudo-element.
-	// padding-bottom: rem(50);
 	background-color: $cobalt;
 	color: $white;
 	text-align: center;
@@ -33,6 +32,11 @@
 			margin: 0 auto rem(30);
 			border-radius: 50%;
 		}
+	}
+
+	a {
+		color: $white;
+		text-decoration: none;
 	}
 
 	h3,

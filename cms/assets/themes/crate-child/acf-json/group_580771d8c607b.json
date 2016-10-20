@@ -66,10 +66,10 @@
                                 "class": "",
                                 "id": ""
                             },
-                            "collapsed": "",
+                            "collapsed": "field_5808c7d5c1c37",
                             "min": 1,
                             "max": "",
-                            "layout": "table",
+                            "layout": "block",
                             "button_label": "Add Row",
                             "sub_fields": [
                                 {
@@ -133,6 +133,43 @@
                                     "maxlength": "",
                                     "rows": 4,
                                     "new_lines": "wpautop"
+                                },
+                                {
+                                    "key": "field_5808e01450f42",
+                                    "label": "Link URL",
+                                    "name": "link_url",
+                                    "type": "url",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "50",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "placeholder": ""
+                                },
+                                {
+                                    "key": "field_5808e07d50f43",
+                                    "label": "Link Options",
+                                    "name": "link_options",
+                                    "type": "checkbox",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "50",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "choices": {
+                                        "target_blank": "Open link in a new window\/tab"
+                                    },
+                                    "default_value": [],
+                                    "layout": "vertical",
+                                    "toggle": 0,
+                                    "return_format": "value"
                                 }
                             ]
                         }
@@ -162,5 +199,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1476970594
+    "modified": 1476976991
 }
