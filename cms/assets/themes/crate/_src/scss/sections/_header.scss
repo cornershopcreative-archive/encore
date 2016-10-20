@@ -222,7 +222,7 @@
 
 		&.menu-item-has-children {
 
-			&::after {
+			&:after {
 				@extend .icon-submenu-pointer;
 
 				@include breakpoint( $desktop ) {
