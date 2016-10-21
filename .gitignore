@@ -30,6 +30,7 @@ wires/
 .sass-cache/
 backups/
 node_modules
+bower_components
 
 # Wordfence things
 cms/assets/plugins/wordfence/tmp/

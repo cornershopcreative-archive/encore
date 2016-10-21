@@ -15,6 +15,10 @@
 	}
 }
 
+/**
+ * Grid sections.
+ */
+
 .content-section-grid {
 	display: flex;
 	justify-content: center;
@@ -32,5 +36,47 @@
 	@include breakpoint( $tablet ) {
 		width: rem(250);
 		margin: 0 rem(55);
+	}
+}
+
+/**
+ * Slider sections.
+ */
+
+.content-section-slider {
+	position: relative; // So we can position the prev/next buttons.
+}
+
+.slider-prev,
+.slider-next {
+	position: absolute;
+	// Center .icon-* spans.
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	// Overlap .cycle-slide (whose z-index may be up to 100).
+	z-index: 101;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-color: $grass;
+	color: $white;
+	top: 50%;
+	height: rem(68);
+	width: rem(68);
+	margin-top: rem(-34);
+}
+
+.slider-item {
+	// Without a hard width set, slides will change width as they
+	// advance/animate, which looks wack.
+	width: 100%;
+
+	&.cycle-slide {
+		opacity: 0 !important;
+		transition: opacity 0.5s ease-out;
+	}
+
+	&.cycle-slide-active {
+		opacity: 1.0 !important;
 	}
 }

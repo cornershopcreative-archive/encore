@@ -21,6 +21,6 @@
     "tests"
   ],
   "dependencies": {
-    "imagesloaded": "^4.1.0"
+    "jquery-cycle2": "^2.1.6"
   }
 }

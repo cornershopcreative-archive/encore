@@ -17,6 +17,7 @@
 
 	@include breakpoint( $tablet ) {
 		width: span(10);
+		max-width: span(10); // Setting max-width here means we can set `width: auto` elsewhere (in .container-flex).
 		margin-left: auto;
 		margin-right: auto;
 		padding-left: 0;
@@ -25,6 +26,7 @@
 
 	@include breakpoint( $desktop ) {
 		width: ( span(10) * $desktop / 100% ) - 32px;
+		max-width: ( span(10) * $desktop / 100% ) - 32px;
 	}
 }
 
@@ -34,6 +36,7 @@
 
 	@include breakpoint( $tablet ) {
 		width: span(8);
+		max-width: span(8);
 		margin-left: auto;
 		margin-right: auto;
 		padding-left: 0;
@@ -42,6 +45,7 @@
 
 	@include breakpoint( $desktop ) {
 		width: ( span(8) * $desktop / 100% ) - 32px;
+		max-width: ( span(8) * $desktop / 100% ) - 32px;
 	}
 }
 
@@ -51,6 +55,7 @@
 
 	@include breakpoint( $tablet ) {
 		width: span(6);
+		max-width: span(6);
 		margin-left: auto;
 		margin-right: auto;
 		padding-left: 0;
@@ -59,5 +64,17 @@
 
 	@include breakpoint( $desktop ) {
 		width: ( span(6 wide) * $desktop / 100% ) - 32px;
+		max-width: ( span(6 wide) * $desktop / 100% ) - 32px;
+	}
+}
+
+.container-flex {
+
+	@include breakpoint( $tablet ) {
+		width: auto;
+	}
+
+	@include breakpoint( $desktop ) {
+		width: auto;
 	}
 }
