@@ -4,7 +4,7 @@
 
 .section-circle-grid {
 	position: relative; // So we can position the :before pseudo-element.
-	background-color: $cobalt;
+	background-color: $deep-blue;
 	color: $white;
 	text-align: center;
 	line-height: rem(28);
@@ -19,7 +19,7 @@
 			right: 0;
 			bottom: 0;
 			left: 0;
-			background-color: $cobalt;
+			background-color: $deep-blue;
 		}
 	}
 

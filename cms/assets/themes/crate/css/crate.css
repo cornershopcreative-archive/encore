@@ -224,9 +224,9 @@ ul {
  * ...becomes:
  *
  * // from the 'rainbow' set:
- * .thing.pfx-orange { color: #ff8a17; }
- * .thing.pfx-grass { color: #aacc00; }
- * .thing.pfx-sage { color: #3bdf9b; }
+ * .thing.pfx-gold { color: #ff8b18; }
+ * .thing.pfx-teal { color: #3bdf9a; }
+ * .thing.pfx-lime { color: #aacc00; }
  * // ...etc., and from the 'social' set:
  * .thing.pfx-facebook { color: #3b5998; }
  * .thing.pfx-twitter { color: #4099ff; }
@@ -243,6 +243,9 @@ a {
 /**
  * General text styles.
  */
+html {
+  color: #2d2d2d; }
+
 h1, h2, h3,
 h4, h5, h6,
 p {
@@ -436,39 +439,39 @@ h6 {
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale; }
-  .button.button-orange {
-    border-color: #ff8a17;
+  .button.button-gold {
+    border-color: #ff8b18;
     background-color: transparent;
-    color: #ff8a17; }
-    .button.button-orange:hover {
-      background-color: #ff8a17;
+    color: #ff8b18; }
+    .button.button-gold:hover {
+      background-color: #ff8b18;
       color: #fff; }
-  .button.button-grass {
+  .button.button-lime {
     border-color: #aacc00;
     background-color: transparent;
     color: #aacc00; }
-    .button.button-grass:hover {
+    .button.button-lime:hover {
       background-color: #aacc00;
       color: #fff; }
-  .button.button-sage {
-    border-color: #3dbf9b;
+  .button.button-teal {
+    border-color: #3dbf9a;
     background-color: transparent;
-    color: #3dbf9b; }
-    .button.button-sage:hover {
-      background-color: #3dbf9b;
+    color: #3dbf9a; }
+    .button.button-teal:hover {
+      background-color: #3dbf9a;
       color: #fff; }
-  .button.button-cyan {
+  .button.button-bright-blue {
     border-color: #00c7f5;
     background-color: transparent;
     color: #00c7f5; }
-    .button.button-cyan:hover {
+    .button.button-bright-blue:hover {
       background-color: #00c7f5;
       color: #fff; }
-  .button.button-cobalt {
+  .button.button-deep-blue {
     border-color: #0047c1;
     background-color: transparent;
     color: #0047c1; }
-    .button.button-cobalt:hover {
+    .button.button-deep-blue:hover {
       background-color: #0047c1;
       color: #fff; }
   .button.button-facebook {
@@ -485,34 +488,34 @@ h6 {
     .button.button-twitter:hover {
       background-color: #4099ff;
       color: #fff; }
-  .button-solid.button-orange {
-    background-color: #ff8a17;
+  .button-solid.button-gold {
+    background-color: #ff8b18;
     color: #fff; }
-    .button-solid.button-orange:hover {
+    .button-solid.button-gold:hover {
       background-color: transparent;
-      color: #ff8a17; }
-  .button-solid.button-grass {
+      color: #ff8b18; }
+  .button-solid.button-lime {
     background-color: #aacc00;
     color: #fff; }
-    .button-solid.button-grass:hover {
+    .button-solid.button-lime:hover {
       background-color: transparent;
       color: #aacc00; }
-  .button-solid.button-sage {
-    background-color: #3dbf9b;
+  .button-solid.button-teal {
+    background-color: #3dbf9a;
     color: #fff; }
-    .button-solid.button-sage:hover {
+    .button-solid.button-teal:hover {
       background-color: transparent;
-      color: #3dbf9b; }
-  .button-solid.button-cyan {
+      color: #3dbf9a; }
+  .button-solid.button-bright-blue {
     background-color: #00c7f5;
     color: #fff; }
-    .button-solid.button-cyan:hover {
+    .button-solid.button-bright-blue:hover {
       background-color: transparent;
       color: #00c7f5; }
-  .button-solid.button-cobalt {
+  .button-solid.button-deep-blue {
     background-color: #0047c1;
     color: #fff; }
-    .button-solid.button-cobalt:hover {
+    .button-solid.button-deep-blue:hover {
       background-color: transparent;
       color: #0047c1; }
   .button-solid.button-facebook {

@@ -19,7 +19,7 @@
 
 	&.has-current-submenu { // This class is added in nav.js.
 		@include breakpoint( $desktop ) {
-			border-bottom: rem(60) solid $grass;
+			border-bottom: rem(60) solid $lime;
 		}
 	}
 }
@@ -173,7 +173,7 @@
 			top: rem(81); // 70px-tall menu minus 8px top padding, plus 19px submenu padding
 			max-height: none;
 			font-size: rem(15);
-			background: $grass;
+			background: $lime;
 			// Center horizontally.
 			left: -25vw;
 			margin-left: 50%;
@@ -237,7 +237,7 @@
 		}
 
 		> a {
-			color: $grass;
+			color: $lime;
 		}
 
 		.sub-menu {

@@ -12,7 +12,7 @@
 .hero-text {
 	padding: rem(35) $page-padding rem(45);
 	color: $white;
-	background: $cobalt;
+	background: $deep-blue;
 
 	@include breakpoint( $tablet ) {
 		display: inline-block;

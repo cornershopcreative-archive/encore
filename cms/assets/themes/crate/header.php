@@ -56,7 +56,7 @@
 			</nav><!-- #site-navigation -->
 
 			<div class="button-group button-group-expand nav-nag">
-				<a class="button button-solid button-cyan" href="#"><?php echo esc_html_e( 'Count Me In', 'crate' ); ?></a>
+				<a class="button button-solid button-bright-blue" href="#"><?php echo esc_html_e( 'Count Me In', 'crate' ); ?></a>
 			</div>
 		</div>
 	</header><!-- #masthead -->

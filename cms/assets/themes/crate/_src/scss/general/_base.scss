@@ -2,17 +2,21 @@
  * General link & transition styles.
  */
 a {
-	color: $cobalt;
+	color: $deep-blue;
 	transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
 
 	&:hover {
-		color: $cyan;
+		color: $bright-blue;
 	}
 }
 
 /**
  * General text styles.
  */
+
+html {
+	color: $charcoal;
+}
 
 h1, h2, h3,
 h4, h5, h6,

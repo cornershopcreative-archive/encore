@@ -26,7 +26,7 @@
 								endif;
 								?>
 								<div class="button-group">
-									<a href="<?php echo esc_url( $link_url ); ?>" class="button button-orange button-solid"<?php echo $link_attrs; ?>>
+									<a href="<?php echo esc_url( $link_url ); ?>" class="button button-gold button-solid"<?php echo $link_attrs; ?>>
 										<?php echo esc_html( get_sub_field( 'link_text' ) ); ?>
 									</a>
 								</div>

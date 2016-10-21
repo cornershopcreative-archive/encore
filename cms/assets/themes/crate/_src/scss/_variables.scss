@@ -3,14 +3,21 @@
 //-----------------------------------------------------------------------------
 
 $white: #fff;
-$silver: #d8d8d8;
-$black: #2d2d2d;
+$gray-light: #e7e7e4;
+$silver: #d8d8d8; // Not part of branding colors, but used throughout designs.
+$gray-med: #c0c0b9;
+$gray-dark: #6d6d6d;
+$charcoal: #2d2d2d;
+$black: #000;
 
-$orange: #ff8a17;
-$grass: #aacc00; // or sometimes #abca28
-$sage: #3dbf9b; // or sometimes #3dbf9a
-$cyan: #00c7f5;
-$cobalt: #0047c1;
+$red-orange: #ff4800;
+$orange: #ff6317;
+$gold: #ff8b18;
+$yellow: #ffcf0f;
+$lime: #aacc00;
+$teal: #3dbf9a;
+$bright-blue: #00c7f5;
+$deep-blue: #0047c1;
 
 $color-facebook: #3b5998;
 $color-twitter: #4099ff;
@@ -21,11 +28,12 @@ $color-sets: (
 	// This is one color set.
 	rainbow: (
 		// These are color names within the set.
-		orange: $orange,
-		grass: $grass,
-		sage: $sage,
-		cyan: $cyan,
-		cobalt: $cobalt,
+		// Red-Orange and Orange are rarely used in the designs.
+		gold: $gold,
+		lime: $lime,
+		teal: $teal,
+		bright-blue: $bright-blue,
+		deep-blue: $deep-blue,
 	),
 
 	social: (
