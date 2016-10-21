@@ -47,6 +47,14 @@
 	position: relative; // So we can position the prev/next buttons.
 }
 
+.slider-controls {
+	position: absolute; // So we can position the prev/next buttons.
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
 .slider-prev,
 .slider-next {
 	position: absolute;

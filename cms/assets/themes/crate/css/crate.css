@@ -963,6 +963,13 @@ img {
 .content-section-slider {
   position: relative; }
 
+.slider-controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0; }
+
 .slider-prev,
 .slider-next {
   position: absolute;
@@ -1049,6 +1056,10 @@ img {
     font-weight: 700; }
   .section-circle-grid .grid-item-heading ~ .grid-item-blurb {
     font-weight: 400; }
+
+.section-action-slider .slider-controls {
+  bottom: auto;
+  padding-top: 44.89796%; }
 
 .section-action-slider .slider-prev {
   left: -2.125rem; }

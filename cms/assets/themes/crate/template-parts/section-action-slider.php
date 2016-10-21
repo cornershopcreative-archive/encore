@@ -6,6 +6,10 @@
 
 	<div class="content-section section-action-slider">
 		<div class="content-section-slider container-10">
+			<div class="slider-controls">
+				<a href="#" class="slider-prev"><span class="icon-slider-arrow-white"></span><span class="screen-reader-text"><?php esc_html_e( 'Previous slide' ); ?></span></a>
+				<a href="#" class="slider-next"><span class="icon-slider-arrow-white"></span><span class="screen-reader-text"><?php esc_html_e( 'Next slide' ); ?></span></a>
+			</div>
 			<div class="slider-items">
 				<?php while ( have_rows( 'items' ) ) : the_row(); ?>
 					<div class="slider-item">
@@ -35,7 +39,5 @@
 					</div>
 				<?php endwhile; ?>
 			</div>
-			<a href="#" class="slider-prev"><span class="icon-slider-arrow-white"></span><span class="screen-reader-text"><?php esc_html_e( 'Previous slide' ); ?></span></a>
-			<a href="#" class="slider-next"><span class="icon-slider-arrow-white"></span><span class="screen-reader-text"><?php esc_html_e( 'Next slide' ); ?></span></a>
 		</div>
 	</div>

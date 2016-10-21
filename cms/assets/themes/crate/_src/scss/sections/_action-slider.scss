@@ -1,5 +1,10 @@
 .section-action-slider {
 
+	.slider-controls {
+		bottom: auto;
+		padding-top: (440 / 980) * 100%; // Height/width of a slide image.
+	}
+
 	.slider-prev {
 		left: rem(-34);
 	}
