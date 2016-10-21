@@ -13,6 +13,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
 // Logic to control which config file gets loaded when
 $configs = array(
+	'kenji.cshp.co'          => 'kenji',
 	'cshp.co'                => 'demo',
 	'CLIENT-LIVE-URL'        => 'prod',
 	'default'                => 'demo'
