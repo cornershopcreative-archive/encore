@@ -536,8 +536,8 @@
                             "name": "items",
                             "type": "repeater",
                             "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
+                            "required": 1,
+                            "conditional_logic": "",
                             "wrapper": {
                                 "width": "",
                                 "class": "",
@@ -695,5 +695,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1477071075
+    "modified": 1477071076
 }
