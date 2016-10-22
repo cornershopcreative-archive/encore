@@ -5,13 +5,19 @@
 		padding-top: (440 / 980) * 100%; // Height/width of a slide image.
 	}
 
+	.slider-prev,
+	.slider-next {
+		width: rem(68);
+		background-color: $lime;
+		color: $white;
+	}
+
 	.slider-prev {
 		left: rem(-34);
 	}
 
 	.slider-next {
 		right: rem(-34);
-		transform: scaleX(-1);
 	}
 
 	.slider-item {

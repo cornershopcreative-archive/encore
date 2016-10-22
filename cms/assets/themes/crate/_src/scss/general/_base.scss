@@ -10,6 +10,16 @@ a {
 	}
 }
 
+%charcoal-link {
+	color: $charcoal;
+	font-weight: bold;
+	text-decoration: none;
+
+	&:hover {
+		color: $lime;
+	}
+}
+
 /**
  * General text styles.
  */

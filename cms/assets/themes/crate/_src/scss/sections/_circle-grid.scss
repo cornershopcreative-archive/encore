@@ -25,7 +25,15 @@
 
 	.grid-item {
 		position: relative; // So these are rendered on top of .section-circle-grid:before.
+		margin-top: 0;
 		margin-bottom: rem(50);
+
+		@include breakpoint( $tablet ) {
+			width: rem(250);
+			margin-left: rem(55);
+			margin-right: rem(55);
+			padding: 0;
+		}
 
 		img {
 			display: block;

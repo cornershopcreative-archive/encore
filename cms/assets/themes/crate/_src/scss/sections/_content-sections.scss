@@ -30,12 +30,27 @@
 	}
 }
 
-.grid-item-3 {
+.grid-item {
 	width: 100%;
+}
+
+.grid-item-3 {
+	margin: rem(30) auto;
 
 	@include breakpoint( $tablet ) {
-		width: rem(250);
-		margin: 0 rem(55);
+
+		@include nested( 10 ) {
+			width: span(3);
+			margin-left: ( span(1) / 2 ) + gutter();
+			margin-right: ( span(1) / 2 ) + gutter();
+		}
+	}
+
+	@include breakpoint( $desktop ) {
+
+		@include nested( 10 ) {
+			width: span(2);
+		}
 	}
 }
 
@@ -53,6 +68,11 @@
 	right: 0;
 	bottom: 0;
 	left: 0;
+	display: none; // Hide unless the parent slider section has an active slider.
+
+	.slider-is-active & {
+		display: block;
+	}
 }
 
 .slider-prev,
@@ -64,14 +84,18 @@
 	align-items: center;
 	// Overlap .cycle-slide (whose z-index may be up to 100).
 	z-index: 101;
-	background-position: center center;
-	background-repeat: no-repeat;
-	background-color: $lime;
-	color: $white;
 	top: 50%;
 	height: rem(68);
-	width: rem(68);
 	margin-top: rem(-34);
+}
+
+.slider-prev {
+	left: 0;
+}
+
+.slider-next {
+	right: 0;
+	transform: scaleX(-1); // Flip arrow horizontally
 }
 
 .slider-item {

@@ -23,16 +23,13 @@
 							<div class="grid-item-blurb">
 								<?php echo wp_kses_post( get_sub_field( 'item_blurb' ) ); ?>
 							</div>
-							<?php if ( $link_url = get_sub_field( 'link_url' ) ) :
-								$link_options = get_sub_field( 'link_options' );
-								if ( is_array( $link_options) && in_array( 'target_blank', $link_options ) ) :
-									$link_attrs = ' target="_blank" rel="noopener noreferrer"';
-								endif;
-								?>
+							<?php if ( crate_item_has_link() ) : ?>
 								<div class="button-group">
-									<a href="<?php echo esc_url( $link_url ); ?>" class="button button-gold button-solid"<?php echo $link_attrs; ?>>
+									<?php crate_item_link( array(
+										'class' => 'button button-gold button-solid',
+									) ); ?>
 										<?php echo esc_html( get_sub_field( 'link_text' ) ); ?>
-									</a>
+									<?php crate_item_link_close(); ?>
 								</div>
 							<?php endif; ?>
 						</div>

@@ -1,0 +1,32 @@
+/**
+ * Styles for Partner Slider sections.
+ */
+
+.section-partner-slider {
+	text-align: center;
+
+	.content-section-slider {
+		padding-top: rem(20);
+		padding-bottom: rem(20);
+	}
+
+	.content-section-grid {
+		// Vertically center grid items in rows.
+		align-items: center;
+	}
+
+	.grid-item {
+
+		a {
+			@extend %charcoal-link;
+		}
+	}
+
+	.grid-item-image {
+		margin: 0 auto;
+	}
+
+	.button-group {
+		margin: rem(30) 0 0;
+	}
+}

@@ -4,8 +4,8 @@
     "fields": [
         {
             "key": "field_57fc6b0d6b8f7",
-            "label": "Link",
-            "name": "link",
+            "label": "Link URL",
+            "name": "link_url",
             "type": "url",
             "instructions": "",
             "required": 0,
@@ -124,5 +124,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1476883846
+    "modified": 1477092747
 }
