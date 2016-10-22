@@ -2,7 +2,8 @@
 	"name": "wp-composer-dependencies",
 	"description": "Theme and plugin dependencies for the site http://encore.kenji.cshp.co",
 	"require": {
-		"wpackagist-plugin/my-eyes-are-up-here": "*"
+		"wpackagist-plugin/my-eyes-are-up-here": "*",
+		"wpackagist-plugin/kint-debugger": "*"
 	},
 	"repositories": [
 		{
