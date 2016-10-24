@@ -24,8 +24,7 @@
 		<?php endif; ?>
 		<div class="hero-text prose prose-compact container-10 container-flex">
 			<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
-			<p>This is an example of subtitle text.</p>
-			<p>This is some longer subtitle text. Lorem ipsum dolor sit amet etc. We shall see how this looks. Does it make the .hero-text thing way too wide, or does it still look OK?</p>
+			<?php echo wp_kses_post( get_field( 'subtitle' ) ); ?>
 		</div>
 	</header><!-- .entry-header -->
 
