@@ -212,6 +212,9 @@ function crate_taxonomies() {
 			'label' => __( 'Locations', 'crate' ),
 			'rewrite' => array( 'slug' => 'classification' ),
 			'hierarchical' => true,
+			'public' => false,
+			'show_ui' => true,
+			'show_tagcloud' => false,
 		)
 	);
 
@@ -224,6 +227,9 @@ function crate_taxonomies() {
 			'label' => __( 'Topics', 'crate' ),
 			'rewrite' => array( 'slug' => 'classification' ),
 			'hierarchical' => true,
+			'public' => false,
+			'show_ui' => true,
+			'show_tagcloud' => false,
 		)
 	);
 
