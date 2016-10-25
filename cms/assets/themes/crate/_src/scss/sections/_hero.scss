@@ -19,7 +19,7 @@
 		position: relative;
 		z-index: 2; // Render on top of relatively positioned hero image.
 		padding: rem(40) rem(60);
-		margin-top: rem(-60);
+		margin-top: -4.7%; // 60px (overlap in mockups) / 1280px (hero width).
 
 		// If no hero image is present, remove negative top margin.
 		&:first-child {
