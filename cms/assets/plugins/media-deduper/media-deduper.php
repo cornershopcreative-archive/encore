@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Media Deduper
-Version: 1.0.3
+Version: 1.1.0
 Description: Save disk space and bring some order to the chaos of your media library by removing and preventing duplicate files.
 Plugin URI: https://cornershopcreative.com/
 Author: Cornershop Creative
@@ -22,7 +22,7 @@ class Media_Deduper {
 
 	const NOT_FOUND_HASH = 'not-found';
 	const NOT_FOUND_SIZE = 0;
-	const VERSION = '1.0.0';
+	const VERSION = '1.1.0';
 
 	protected $smart_deleted_count = 0;
 	protected $smart_skipped_count = 0;
@@ -335,13 +335,20 @@ class Media_Deduper {
 				'<p>' . __( 'Option 2: Delete Preserving Featured. This option preserves images that are assigned as Featured Images on posts. Deduper reassigns a single instance of the image to the post, and only deletes orphaned copies of that image. <em><strong>Please note:</strong></em> Although this option preserves Featured Images, it does <em>not</em> preserve media used in galleries, other shortcodes, custom fields, the bodies of posts, or other meta data. Please be careful.' ) . '</p>',
 		) );
 		$screen->add_help_tab( array(
+			'id'		=> 'shared',
+			'title'		=> __( 'Shared Files' ),
+			'content'	=>
+			'<p>' . __( 'In a typical WordPress installation, each different Media "post" relates to a separate file uploaded to the filesystem. However, some plugins facilitate copying media posts in a way that produces multiple posts all referencing a single file.' ) . '</p>' .
+				'<p>' . __( 'Media Deduper considers such posts to be "duplicates" because they share the same image data. However, in most cases you would not want to actually delete any of these posts because deleting any one of them would remove the media file they all share.' ) . '</p>'.
+				'<p>' . __( 'Because this can lead to unintentional data loss, Media Deduper prefers to suppress showing duplicates that share a file. However, it is possible to show these media items if you wish to review or delete them. <strong>Be extremely cautious</strong> when working with duplicates that share files as unintentional data loss can easily occur.' ) . '</p>',
+		) );
+		$screen->add_help_tab( array(
 			'id'		=> 'about',
 			'title'		=> __( 'About' ),
 			'content'	=>
 			'<p>' . __( 'Media Deduper was built by Cornershop Creative, on the web at <a href="https://cornershopcreative.com">https://cornershopcreative.com</a>' ) . '</p>' .
 				'<p>' . __( 'Need support? Got a feature idea? <a href="https://wordpress.org/support/plugin/media-deduper">Contact us on the wordpress.org plugin support page</a>. Thanks!' ) . '</p>',
 		) );
-
 	}
 
 	/**
@@ -396,13 +403,37 @@ class Media_Deduper {
 
 			<!-- the posts table -->
 			<h2><?php _e( 'Duplicate Media Files', 'media-deduper' ); ?></h2>
-			<style>
-				.column-mdd_size {
-					width: 6em;
-				}
-			</style>
 			<form id="posts-filter" method="get">
-
+				<div class="wp-filter">
+					<div class="view-switch">
+						<select name="show_shared">
+							<option value="0" <?php selected(1, $_GET['show_shared'] ); ?>><?php _e('Hide duplicates that share files', 'media-deduper'); ?></option>
+							<option value="1" <?php selected(1, $_GET['show_shared'] ); ?>><?php _e('Show duplicates that share files', 'media-deduper'); ?></option>
+						</select>
+						<input type="submit" name="filter_action" id="post-query-submit" class="button" value="<?php _e('Apply', 'media-deduper'); ?>">
+					</div>
+					<a href="javascript:void(0);" id="shared-help"><?php _e('What\'s this?', 'media-deduper'); ?></a>
+				</div>
+				<style>
+					.column-mdd_size {
+						width: 6em;
+					}
+				</style>
+				<script>
+					jQuery('#shared-help').on('click', function() {
+						// toggle help
+						if ( jQuery('#contextual-help-link').hasClass('screen-meta-active') ) {
+							if ( jQuery('#tab-link-shared').hasClass('active') ) {
+								jQuery('#contextual-help-link').trigger('click');
+							} else {
+								jQuery('#tab-link-shared a').trigger('click');
+							}
+						} else {
+							jQuery('#contextual-help-link').trigger('click');
+							jQuery('#tab-link-shared a').trigger('click');
+						}
+					});
+				</script>
 				<?php
 
 				$this->get_duplicate_ids();
@@ -418,13 +449,19 @@ class Media_Deduper {
 				);
 
 				// If sorting by size, handle that.
-				if ( 'mdd_size' === $_GET['orderby'] ) {
+				if ( isset( $_GET['orderby'] ) && 'mdd_size' === $_GET['orderby'] ) {
 					$query_parameters['meta_key'] = 'mdd_size';
 					$query_parameters['orderby'] = 'meta_value_num';
 					$query_parameters['order'] = 'DESC';
 					if ( 'asc' === $_GET['order'] ) {
 						$query_parameters['order'] = 'ASC';
 					}
+				}
+
+				// If suppressing shared files (the default), do that
+				if ( ! isset( $_GET['show_shared'] ) || 1 != $_GET['show_shared'] ) {
+					$this->get_shared_filename_ids();
+					$query_parameters['post__in'] = array_diff( $this->duplicate_ids, $this->shared_filename_ids );
 				}
 
 				$wp_query = new WP_Query( $query_parameters );
@@ -691,6 +728,39 @@ class Media_Deduper {
 	}
 
 	/**
+	 * Retrieves an array of post ids that have duplicate filenames/paths.
+	 */
+	private function get_shared_filename_ids() {
+
+		global $wpdb;
+
+		$sharedfile_ids = wp_cache_get( 'mdd_sharedfile_ids' );
+
+		if ( false === $sharedfile_ids ) {
+			$sql = "SELECT DISTINCT p.post_id
+				FROM $wpdb->postmeta AS p
+				JOIN (
+					SELECT count(*) AS sharedfile_count, meta_value
+					FROM $wpdb->postmeta
+					WHERE meta_key = '_wp_attached_file'
+					GROUP BY meta_value
+					HAVING sharedfile_count > 1
+				) AS p2
+				ON p.meta_value = p2.meta_value;";
+
+			$this->shared_filename_ids = $wpdb->get_col( $sql );
+			// we do this otherwise WP_Query's post__in gets an empty array and returns all posts
+			if ( ! count( $this->shared_filename_ids ) ) {
+				$this->shared_filename_ids = array( '0' );
+			}
+			wp_cache_set( 'mdd_sharedfile_ids', $wpdb->get_col( $sql ) );
+		}
+
+		return $this->shared_filename_ids;
+
+	}
+
+	/**
 	 * Process a bulk action performed on the media table.
 	 */
 	public function process_bulk_action() {
@@ -736,7 +806,18 @@ class Media_Deduper {
 			// Redirect before upload.php can!
 			wp_redirect( add_query_arg( array(
 				'page' => 'media-deduper',
+				'processed' => 1,
 				'deleted' => count( $post_ids ),
+				), 'upload.php' ) );
+			exit;
+		}
+
+		// clunky way of handling filter change
+		else if ( isset($_REQUEST['show_shared']) ) {
+		// Redirect before upload.php can!
+			wp_redirect( add_query_arg( array(
+				'page' => 'media-deduper',
+				'show_shared' => $_REQUEST['show_shared'],
 				), 'upload.php' ) );
 			exit;
 		}

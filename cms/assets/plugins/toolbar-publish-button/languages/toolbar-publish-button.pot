@@ -1,0 +1,124 @@
+# Copyright (C) 2015 Toolbar Publish Button
+# This file is distributed under the same license as the Toolbar Publish Button package.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Toolbar Publish Button\n"
+"POT-Creation-Date: 2016-10-11 18:29+0300\n"
+"PO-Revision-Date: 2015-07-06 21:52+0300\n"
+"Last-Translator: \n"
+"Language-Team: wpUXsolutions <wpUXsolutions@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.9\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: toolbar-publish-button.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;"
+"esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;"
+"__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#. Plugin Name of the plugin/theme
+#: toolbar-publish-button.php:88 toolbar-publish-button.php:353
+msgid "Toolbar Publish Button"
+msgstr ""
+
+#: toolbar-publish-button.php:221
+msgid "Please choose a valid color for background"
+msgstr ""
+
+#: toolbar-publish-button.php:352 toolbar-publish-button.php:386
+msgid "Toolbar Publish Button Settings"
+msgstr ""
+
+#: toolbar-publish-button.php:381
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: toolbar-publish-button.php:396
+msgid "Basic Settings"
+msgstr ""
+
+#: toolbar-publish-button.php:409
+msgid "Remember scrollbar position"
+msgstr ""
+
+#: toolbar-publish-button.php:411
+msgid ""
+"Returns the scrollbar of an admin page (including code Editor page) to its position "
+"after saving."
+msgstr ""
+
+#: toolbar-publish-button.php:413
+msgid "Works for Plugins page after plugin actiation / deactivation."
+msgstr ""
+
+#: toolbar-publish-button.php:418
+msgid "Button's Background"
+msgstr ""
+
+#: toolbar-publish-button.php:441
+msgid "Changelog"
+msgstr ""
+
+#: toolbar-publish-button.php:442
+msgid "What's new in"
+msgstr ""
+
+#: toolbar-publish-button.php:442
+msgid "version"
+msgstr ""
+
+#: toolbar-publish-button.php:444
+msgid "Support"
+msgstr ""
+
+#: toolbar-publish-button.php:445
+msgid "Feel free to ask for help on"
+msgstr ""
+
+#: toolbar-publish-button.php:447
+msgid "Plugin rating"
+msgstr ""
+
+#: toolbar-publish-button.php:448
+msgid "Please"
+msgstr ""
+
+#: toolbar-publish-button.php:448
+msgid "vote for the plugin"
+msgstr ""
+
+#: toolbar-publish-button.php:448
+msgid "Thanks!"
+msgstr ""
+
+#: toolbar-publish-button.php:450
+msgid "Other plugins you may find useful"
+msgstr ""
+
+#: toolbar-publish-button.php:488
+msgid "Settings"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://wpUXsolutions.com"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Save a lot of your time by scrolling less in WP admin! A small UX improvement that "
+"keeps Publish button within reach and retains the scrollbar position after saving in "
+"WordPress admin."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "wpUXsolutions"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://wpUXsolutions.com"
+msgstr ""
