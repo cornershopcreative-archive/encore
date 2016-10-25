@@ -1,10 +1,10 @@
 <?php
 /**
- * The template for displaying Partner Slider sections.
+ * The template for displaying News sections.
  */
 ?>
 
-	<div class="content-section section-partner-slider">
+	<div class="content-section section-news">
 		<?php if ( $title = get_sub_field( 'title' ) ): ?>
 			<h2 class="section-title"><?php echo wp_kses_post( wptexturize( $title ) ); ?></h2>
 		<?php endif; ?>
@@ -13,25 +13,25 @@
 		// Set up custom query vars.
 		$locations = get_sub_field( 'location' );
 		$topics = get_sub_field( 'topic' );
-		$partner_query_vars = array(
-			'post_type' => 'partners',
+		$news_query_vars = array(
+			'post_type' => 'news',
 			'posts_per_page' => -1,
 			'tax_query' => array(),
 		);
 		if ( ! empty( $locations ) ) :
-			$partner_query_vars['tax_query']['location'] = array(
+			$news_query_vars['tax_query']['location'] = array(
 				'taxonomy' => 'location',
 				'terms' => $locations,
 			);
 		endif;
 		if ( ! empty( $topics ) ) :
-			$partner_query_vars['tax_query']['topic'] = array(
+			$news_query_vars['tax_query']['topic'] = array(
 				'taxonomy' => 'topic',
 				'terms' => $topics,
 			);
 		endif;
 
-		$partners = new WP_Query( $partner_query_vars );
+		$news = new WP_Query( $news_query_vars );
 
 		?>
 		<div class="content-section-slider container-10">
@@ -39,57 +39,40 @@
 				<a href="#" class="slider-prev"><span class="icon-slider-arrow-charcoal"></span><span class="screen-reader-text"><?php esc_html_e( 'Previous slide' ); ?></span></a>
 				<a href="#" class="slider-next"><span class="icon-slider-arrow-charcoal"></span><span class="screen-reader-text"><?php esc_html_e( 'Next slide' ); ?></span></a>
 			</div>
-			<div class="slider-items">
-				<?php
-				$n_results = 0;
-				?>
-				<div class="slider-item"><div class="content-section-grid">
-					<?php while ( $partners->have_posts() ) : $partners->the_post();
+			<div class="content-section-list">
+				<?php while ( $news->have_posts() ) : $news->the_post(); ?>
 
-						// Break up query results into groups of 6.
-						// Count items.
-						$n_results += 1;
-						// After 6 items...
-						if ( $n_results > 6 ) :
-							// Reset the item count.
-							$n_results = 0;
-							// Close the current .slider-item and open a new one.
-							?>
-				</div></div><!-- /.content-section-grid, /.slider-item -->
-				<div class="slider-item"><div class="content-section-grid">
-							<?php
-						endif; ?>
+					<article class="list-item">
 
-						<div class="grid-item grid-item-3">
-							<?php if ( $partner_logo_id = get_post_thumbnail_id() ) :
-								// If a logo image is present, link that to the partner URL.
-								?>
-
+						<?php if ( $image_id = get_post_thumbnail_id() ) : ?>
+							<div class="entry-image">
 								<?php crate_post_item_link( array(
 									'target' => '_blank',
 									'rel'    => 'noopener noreferrer',
 								) ); ?>
-									<?php echo wp_get_attachment_image( $partner_logo_id, 'partner-logo', false, array( 'class' => 'grid-item-image', 'alt' => get_the_title() ) ); ?>
+									<?php echo wp_get_attachment_image( $image_id, 'news-logo', false ); ?>
 								<?php crate_post_item_link_close(); ?>
+							</div>
+						<?php endif; ?>
 
-							<?php else :
-								// If no logo image, link the partner's name to its URL.
-								?>
+						<div class="entry-summary">
 
-								<h3>
-									<?php crate_post_item_link( array(
-										'target' => '_blank',
-										'rel'    => 'noopener noreferrer',
-									) ); ?>
-										<?php echo esc_html( get_the_title() ); ?>
-									<?php crate_post_item_link_close(); ?>
-								</h3>
+							<?php crate_posted_on(); ?>
 
-							<?php endif; ?>
+							<h3 class="entry-title">
+								<?php crate_post_item_link( array(
+									'target' => '_blank',
+									'rel'    => 'noopener noreferrer',
+								) ); ?>
+									<?php echo esc_html( get_the_title() ); ?>
+								<?php crate_post_item_link_close(); ?>
+							</h3>
+
 						</div>
 
-					<?php endwhile; ?>
-				</div></div><!-- /.content-section-grid, /.slider-item -->
+					</article>
+
+				<?php endwhile; ?>
 			</div>
 		</div>
 

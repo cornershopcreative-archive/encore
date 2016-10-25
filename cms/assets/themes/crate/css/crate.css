@@ -343,12 +343,12 @@ a {
     color: #00c7f5; }
 
 .menu a,
-.sub-menu a, .section-partner-slider .grid-item a {
+.sub-menu a, .section-partner-slider .grid-item a, .section-news a {
   color: #2d2d2d;
   text-decoration: none;
   font-weight: 700; }
   .menu a:hover,
-  .sub-menu a:hover, .section-partner-slider .grid-item a:hover {
+  .sub-menu a:hover, .section-partner-slider .grid-item a:hover, .section-news a:hover {
     color: #aacc00; }
 
 /**
@@ -1050,6 +1050,11 @@ img {
     display: block;
     clear: both;
     content: ''; }
+  .content-section .button-group {
+    margin: 1.875rem 0 0; }
+
+.section-title {
+  text-align: center; }
 
 /**
  * Grid sections.
@@ -1077,6 +1082,15 @@ img {
   @media (min-width: 1280px) {
     .grid-item-3 {
       width: 18.36735%; } }
+
+/**
+ * Vertical lists with borders between items.
+ */
+.content-section-list .list-item {
+  padding: 2.5rem 0;
+  border-top: 1px solid #d8d8d8; }
+  .content-section-list .list-item:first-of-type {
+    border: 0; }
 
 /**
  * Slider sections.
@@ -1264,8 +1278,43 @@ img {
         align-items: center; }
   .section-partner-slider .grid-item-image {
     margin: 0 auto; }
-  .section-partner-slider .button-group {
-    margin: 1.875rem 0 0; }
+
+/**
+ * Styles for News content sections.
+ */
+@media (min-width: 640px) {
+  .section-news .list-item {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+    padding-right: 0.625rem;
+    padding-left: 0.625rem; } }
+
+.section-news .entry-image {
+  margin: -0.625rem 0 1.875rem; }
+  @media (min-width: 640px) {
+    .section-news .entry-image {
+      -ms-flex-positive: 0;
+          flex-grow: 0;
+      margin: 0 3.125rem 0 0;
+      width: 12.5rem; } }
+  .section-news .entry-image img {
+    margin: 0 auto; }
+
+.section-news .entry-summary {
+  line-height: 2rem; }
+
+.section-news .entry-date {
+  display: block;
+  margin: 0; }
+  .section-news .entry-date a {
+    font-weight: 400; }
+
+.section-news .entry-title {
+  margin: 0;
+  font-size: 1.3125rem;
+  line-height: 2rem; }
 
 .site-footer {
   padding: 1.25rem;

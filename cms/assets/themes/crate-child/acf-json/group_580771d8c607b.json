@@ -815,6 +815,149 @@
                     ],
                     "min": "",
                     "max": ""
+                },
+                {
+                    "key": "580fbcbf99ddf",
+                    "name": "news",
+                    "label": "News & Media",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_580fbcc099de0",
+                            "label": "Title",
+                            "name": "title",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_580fbcc099de1",
+                            "label": "Filter by Location",
+                            "name": "location",
+                            "type": "taxonomy",
+                            "instructions": "Leave all checkboxes unchecked to show all locations.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "taxonomy": "location",
+                            "field_type": "checkbox",
+                            "allow_null": 0,
+                            "add_term": 0,
+                            "save_terms": 0,
+                            "load_terms": 0,
+                            "return_format": "id",
+                            "multiple": 0
+                        },
+                        {
+                            "key": "field_580fbcc099de2",
+                            "label": "Filter by Topic",
+                            "name": "topic",
+                            "type": "taxonomy",
+                            "instructions": "Leave all checkboxes unchecked to show all topics.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "taxonomy": "topic",
+                            "field_type": "checkbox",
+                            "allow_null": 0,
+                            "add_term": 0,
+                            "save_terms": 0,
+                            "load_terms": 0,
+                            "return_format": "id",
+                            "multiple": 0
+                        },
+                        {
+                            "key": "field_580fbcc099de3",
+                            "label": "Primary Link Text",
+                            "name": "primary_link_text",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_580fbcc099de4",
+                            "label": "Primary Link URL",
+                            "name": "primary_link_url",
+                            "type": "url",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_580fbcc099de5",
+                            "label": "Secondary Link Text",
+                            "name": "secondary_link_text",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_580fbcc099de6",
+                            "label": "Secondary Link URL",
+                            "name": "secondary_link_url",
+                            "type": "url",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": ""
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
                 }
             ]
         }
@@ -838,5 +981,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1477095715
+    "modified": 1477426495
 }

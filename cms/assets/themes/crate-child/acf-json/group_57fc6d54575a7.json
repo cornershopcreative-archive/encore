@@ -5,7 +5,7 @@
         {
             "key": "field_57fc6d5d23507",
             "label": "External URL",
-            "name": "external_url",
+            "name": "link_url",
             "type": "url",
             "instructions": "",
             "required": 1,
@@ -36,5 +36,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1476883985
+    "modified": 1477426652
 }

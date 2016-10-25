@@ -255,3 +255,28 @@ function remove_categories() {
     if( taxonomy_exists( $tax ) )
         unset( $wp_taxonomies[$tax] );
 }
+
+/**
+ * Use the link_url field for News Item permalinks.
+ */
+function crate_news_post_type_link( $post_link, $post, $leavename, $sample ) {
+
+	// Bail if we're just generating a sample permalink for use in wp-admin.
+	if ( $leavename || $sample ) {
+		return $post_link;
+	}
+
+	// Bail if this is a non-News post.
+	if ( 'news' !== $post->post_type ) {
+		return $post_link;
+	}
+
+	// If an external link has been set, return it.
+	if ( $external_link = get_field( 'link_url', $post->ID ) ) {
+		return $external_link;
+	}
+
+	// Otherwise, pass the permalink through unaltered.
+	return $post_link;
+}
+add_filter( 'post_type_link', 'crate_news_post_type_link', 10, 3 );
