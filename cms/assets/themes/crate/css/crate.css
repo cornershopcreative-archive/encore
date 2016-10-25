@@ -201,6 +201,108 @@ ul {
   src: url("../node_modules/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.6.3") format("embedded-opentype"), url("../node_modules/font-awesome/fonts/fontawesome-webfont.woff2?v=4.6.3") format("woff2"), url("../node_modules/font-awesome/fonts/fontawesome-webfont.woff?v=4.6.3") format("woff"), url("../node_modules/font-awesome/fonts/fontawesome-webfont.ttf?v=4.6.3") format("truetype"), url("../node_modules/font-awesome/fonts/fontawesome-webfont.svg?v=4.6.3#fontawesomeregular") format("svg"); }
 
 /**
+ * Featherlight – ultra slim jQuery lightbox
+ * Version 1.5.0 - http://noelboss.github.io/featherlight/
+ *
+ * Copyright 2016, Noël Raoul Bossart (http://www.noelboss.com)
+ * MIT Licensed.
+**/
+@media all {
+  .featherlight {
+    /* dimensions: spanning the background from edge to edge */
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2147483647;
+    display: none;
+    background: #333;
+    /* IE8 "hack" for nested featherlights */
+    background: transparent;
+    /* z-index needs to be >= elements on the site. */
+    /* position: centering content */
+    text-align: center;
+    /* insures that the ::before pseudo element doesn't force wrap with fixed width content; */
+    white-space: nowrap;
+    /* styling */
+    cursor: pointer; }
+  /* support for nested featherlights. Does not work in IE8 (use JS to fix) */
+  .featherlight:last-of-type {
+    background: rgba(0, 0, 0, 0.8); }
+  .featherlight:before {
+    display: inline-block;
+    margin-right: -0.25em;
+    height: 100%;
+    /* position: trick to center content vertically */
+    content: '';
+    vertical-align: middle; }
+  .featherlight .featherlight-content {
+    /* make content container for positioned elements (close button) */
+    position: relative;
+    display: inline-block;
+    /* dimensions: cut off images */
+    overflow: auto;
+    margin-right: 5%;
+    /* dimensions: handling large content */
+    margin-left: 5%;
+    padding: 25px 25px 0;
+    max-height: 95%;
+    border-bottom: 25px solid transparent;
+    /* styling */
+    background: #fff;
+    vertical-align: middle;
+    /* position: centering vertical and horizontal */
+    text-align: left;
+    /* reset white-space wrapping */
+    white-space: normal;
+    cursor: auto; }
+  /* contains the content */
+  .featherlight .featherlight-inner {
+    /* make sure its visible */
+    display: block; }
+  .featherlight .featherlight-close-icon {
+    /* position: centering vertical and horizontal */
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    width: 25px;
+    background: #fff;
+    /* Set the background in case it overlaps the content */
+    background: rgba(255, 255, 255, 0.3);
+    color: #000;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    /* dimensions: 25px x 25px */
+    line-height: 25px;
+    /* styling */
+    cursor: pointer; }
+  .featherlight .featherlight-image {
+    /* styling */
+    width: 100%; }
+  .featherlight-iframe .featherlight-content {
+    padding: 0;
+    /* removed the border for image croping since iframe is edge to edge */
+    border-bottom: 0; }
+  .featherlight iframe {
+    /* styling */
+    border: none; }
+  .featherlight * {
+    /* See https://github.com/noelboss/featherlight/issues/42 */
+    box-sizing: border-box; } }
+
+/* handling phones and small screens */
+@media only screen and (max-width: 1024px) {
+  .featherlight .featherlight-content {
+    margin-right: 10px;
+    /* dimensions: maximize lightbox with for small screens */
+    margin-left: 10px;
+    padding: 10px 10px 0;
+    max-height: 98%;
+    border-bottom: 10px solid transparent; } }
+
+/**
  * Define styles for a set of per-color sub-classes of an element.
  *
  * The mixin content block will be applied to a set of classes determined by
@@ -728,6 +830,11 @@ img {
   height: 26px;
   background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='25px' height='26px' viewBox='740 59 25 26' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Crect id='Rectangle-4' stroke='none' fill='%23ABCA28' fill-rule='evenodd' transform='translate(752.020815, 72.020815) rotate(45.000000) translate(-752.020815, -72.020815) ' x='743.520815' y='63.5208153' width='17' height='17'%3E%3C/rect%3E%3C/svg%3E"); }
 
+.icon-video-play, .hero-video-link:after {
+  width: 81px;
+  height: 81px;
+  background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='81px' height='81px' viewBox='600 231 81 81' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Cpath d='M640.5,231 C618.041498,231 600,249.041498 600,271.5 C600,293.958502 618.041498,312 640.5,312 C662.958502,312 681,293.958502 681,271.5 C681,249.041498 662.958502,231 640.5,231 L640.5,231 Z M656.371114,274.575939 L634.611101,289.213758 C632.978229,290.31218 630.621185,289.945649 629.533764,288.116507 C629.170517,287.567296 628.989474,286.835405 628.989474,286.103514 L628.989474,256.827876 C628.989474,254.814883 630.621185,253.168421 632.616143,253.168421 C633.341476,253.168421 634.06681,253.351101 634.611101,253.717632 L656.371114,268.355451 C658.002825,269.452702 658.547116,271.831055 657.277491,273.478688 C657.096448,273.844048 656.733201,274.210579 656.371114,274.575939 L656.371114,274.575939 Z' id='video-play' stroke='none' fill='%23FFFFFF' fill-rule='evenodd'%3E%3C/path%3E%3C/svg%3E"); }
+
 .gallery {
   display: -ms-flexbox;
   display: flex;
@@ -749,6 +856,7 @@ img {
 
 .site-header {
   position: relative;
+  z-index: 10;
   padding: 0.625rem 0;
   box-shadow: 0 0 9px 6px rgba(0, 0, 0, 0.15); }
   @media (min-width: 640px) {
@@ -1031,10 +1139,34 @@ img {
   color: #fff; }
   @media (min-width: 640px) {
     .hero-text {
+      position: relative;
+      z-index: 2;
       display: inline-block;
+      margin-top: -3.75rem;
       padding: 2.5rem 3.75rem; }
-      .hero-image + .hero-text {
-        margin-top: -3.75rem; } }
+      .hero-text:first-child {
+        margin-top: 0; } }
+
+.hero-video {
+  display: none; }
+  .hero-video iframe {
+    display: block; }
+
+.hero-video-link {
+  position: relative;
+  display: block; }
+  .hero-video-link:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    content: ' ';
+    -webkit-filter: drop-shadow(1px 3px 12px rgba(0, 0, 0, 0.2));
+            filter: drop-shadow(1px 3px 12px rgba(0, 0, 0, 0.2)); }
 
 /**
  * Styles for Circle Grid sections.

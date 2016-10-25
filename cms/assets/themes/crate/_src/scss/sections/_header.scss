@@ -1,6 +1,7 @@
 .site-header {
 	padding: rem(10) 0;
 	position: relative;
+	z-index: 10; // Render on top of relatively-positioned hero elements.
 	// We're using a 6px spread-radius instead of a 6px offset-y below, so that
 	// the left & right corners look better.
 	box-shadow: 0 0 9px 6px rgba(0, 0, 0, 0.15);
