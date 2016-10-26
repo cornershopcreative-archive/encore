@@ -8,6 +8,16 @@
 	line-height: rem(33);
 	text-align: center;
 
+	> * {
+
+		& ~ * {
+			@include breakpoint( $tablet ) {
+				// Add wider margins between items (.button-group only has 16px).
+				margin-left: rem(32);
+			}
+		}
+	}
+
 	a {
 		margin-right: 0;
 		padding: rem(4) 0;
@@ -36,10 +46,25 @@
 	}
 
 	.icon-pager-arrow {
-		display: block;
+		display: inline-block;
+	}
+
+	.prev {
+		@include breakpoint( $tablet ) {
+			// This right margin plus the following item's 32px left margin = 68px
+			// (which matches .next's left margin).
+			margin-right: rem(36);
+		}
 	}
 
 	.next {
-		transform: scaleX(-1.0);
+		@include breakpoint( $tablet ) {
+			margin-left: rem(68);
+		}
+
+		// Flip icon horizontally.
+		span {
+			transform: scaleX(-1.0);
+		}
 	}
 }

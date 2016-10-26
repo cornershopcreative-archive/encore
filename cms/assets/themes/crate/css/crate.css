@@ -866,6 +866,9 @@ img {
   text-align: center;
   font-size: 1.3125rem;
   line-height: 2.0625rem; }
+  @media (min-width: 640px) {
+    .facetwp-pager > * ~ * {
+      margin-left: 2rem; } }
   .facetwp-pager a {
     margin-right: 0;
     padding: 0.25rem 0;
@@ -883,8 +886,14 @@ img {
     background: #00c7f5;
     color: #fff; }
   .facetwp-pager .icon-pager-arrow {
-    display: block; }
-  .facetwp-pager .next {
+    display: inline-block; }
+  @media (min-width: 640px) {
+    .facetwp-pager .prev {
+      margin-right: 2.25rem; } }
+  @media (min-width: 640px) {
+    .facetwp-pager .next {
+      margin-left: 4.25rem; } }
+  .facetwp-pager .next span {
     -ms-transform: scaleX(-1);
         transform: scaleX(-1); }
 
