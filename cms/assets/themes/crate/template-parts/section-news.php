@@ -79,10 +79,7 @@
 			<?php endwhile; ?>
 		</div>
 
-		<?php
-		// This is a little ugly, but count( get_sub_field(...) ) will return > 0
-		// if a checkbox is checked.
-		if ( get_sub_field( 'show_pager' ) ) :
+		<?php if ( get_sub_field( 'show_pager' ) ) :
 			echo facetwp_display( 'pager' );
 		endif; ?>
 
