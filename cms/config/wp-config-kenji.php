@@ -20,3 +20,5 @@ define('WP_DEBUG_DISPLAY', false);
 define('WP_CACHE',         false);
 define('SAVEQUERIES',      true);
 define('SCRIPT_DEBUG',     true);
+
+define('FACETWP_DEBUG',    true);

@@ -279,4 +279,4 @@ function crate_news_post_type_link( $post_link, $post, $leavename, $sample ) {
 	// Otherwise, pass the permalink through unaltered.
 	return $post_link;
 }
-add_filter( 'post_type_link', 'crate_news_post_type_link', 10, 3 );
+add_filter( 'post_type_link', 'crate_news_post_type_link', 10, 4 );

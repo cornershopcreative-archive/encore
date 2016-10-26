@@ -1,0 +1,45 @@
+/**
+ * Styles for FacetWP elements.
+ */
+
+.facetwp-pager {
+	@extend .button-group;
+	font-size: rem(21);
+	line-height: rem(33);
+	text-align: center;
+
+	a {
+		margin-right: 0;
+		padding: rem(4) 0;
+		width: rem(45);
+		border-radius: 50%;
+		border: 2px solid transparent;
+		background: transparent;
+
+		&.disabled {
+			opacity: 0.2;
+		}
+	}
+
+	.page-number-link {
+
+		&:hover {
+			color: $bright-blue;
+			border-color: $bright-blue;
+		}
+
+		&.active {
+			color: $white;
+			background: $bright-blue;
+			border-color: $bright-blue;
+		}
+	}
+
+	.icon-pager-arrow {
+		display: block;
+	}
+
+	.next {
+		transform: scaleX(-1.0);
+	}
+}
