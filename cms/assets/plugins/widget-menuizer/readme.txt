@@ -2,7 +2,7 @@
 Contributors: drywallbmb
 Tags: menus, widgets, sidebars
 Requires at least: 3.9.2
-Tested up to: 4.3.1
+Tested up to: 4.6.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -59,6 +59,9 @@ In the upper right corner of your window, click on 'Screen Options' and make sur
 4. Options for the HTML5 element used to contain the sidebar region. What you choose here depends on your theme and CSS; you will probably want to set this to whatever wrapper element the sidebar is usually displayed within for optimal appearance. Regardless, you'll probably need to add some CSS to get it looking exactly how you want.
 
 == Changelog ==
+
+= 0.5.8 =
+* Adding missing CSS class to correct appearance of settings sections in the WordPress menu editor
 
 = 0.5.7 =
 * Changing 'Title Display' to 'Label Display' to be more consistent with the element ('Navigation Label') it refers to
