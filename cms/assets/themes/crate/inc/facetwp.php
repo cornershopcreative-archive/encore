@@ -31,9 +31,16 @@ function crate_facetwp_pager_html( $output, $params ) {
 
 	// Clear out default pager HTML.
 	$output = '';
-	
+
+	// Get relevant info from $params.
 	$total_pages = (int)$params['total_pages'];
 	$page = (int)$params['page'];
+
+	// If there's only one page worth of content, don't bother outputting
+	// pagination.
+	if ( $total_pages < 2 ) {
+		return '';
+	}
 
 	// Add a 'previous page' link, unless this is the first page.
 	if ( $page > 1 ) {

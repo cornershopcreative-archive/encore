@@ -981,7 +981,7 @@
                             "label": "Pagination",
                             "name": "show_pager",
                             "type": "checkbox",
-                            "instructions": "Leave this unchecked to disallow paging (only the number of items set in \"items per page\" will be displayed).",
+                            "instructions": "Leave this unchecked to disallow paging (only the number of items set under \"Items per page\" will be displayed).",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
@@ -1023,5 +1023,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1477508970
+    "modified": 1477509966
 }

@@ -28,10 +28,6 @@
 			</picture>
 
 			<?php if ( $video_embed ) : ?>
-				<?php error_log( $video_embed ); ?>
-				<!-- <svg class="icon" viewBox="0 0 100 100">
-					<use xlink:href="#icon-video-play"></use>
-				</svg> -->
 				</a><!-- /.hero-video-link -->
 				<div class="hero-video" id="<?php echo esc_attr( $post->post_name . '-video' ); ?>">
 					<?php echo $video_embed; ?>
