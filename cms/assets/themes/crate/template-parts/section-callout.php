@@ -42,7 +42,7 @@
 			 else { echo '<a style="margin-top: 20px" class="button button-white" href="' . $callout_button_url . '"> ' . $callout_button_label . '</a>' ;} ?>
 </div>
 			 <?php if (empty($callout_title_two)) {  }
-	else  echo '<div class="second_column '.$callout_color_two .'">' ;?> 
+	else { echo '<div class="second_column '.$callout_color_two .'">' ;} ?> 
 
 				<h3 class="callout-heading"> <?php echo $callout_title_two ?> </h3>
 				<?php echo $callout_text_two ?>
@@ -51,5 +51,3 @@
 				 else { echo '<a style="margin-top: 20px" class="button button-white" href="' . $callout_button_url_two . '"> ' . $callout_button_label_two . '</a>' ;} ?>
 	</div>
 	</div>		
-	
-	</div>	
