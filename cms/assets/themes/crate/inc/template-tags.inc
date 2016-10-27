@@ -99,3 +99,17 @@ function crate_post_item_has_link( $prefix = '' ) {
 	return crate_item_has_link( $prefix, false );
 }
 
+/**
+ * Output the publication date of a post.
+ */
+function crate_posted_on() {
+	?>
+
+	<time class="post-date entry-date updated" datetime="<?php echo esc_attr( get_the_date( 'Y-m-d' ) ); ?>">
+		<span class="month"><?php echo get_the_date( 'F' ); ?></span>
+		<span class="day"><?php echo esc_html( get_the_date( 'j' ) ); ?></span>,
+		<span class="year"><?php echo esc_html( get_the_date( 'Y' ) ); ?></span>
+	</time>
+
+	<?php
+}

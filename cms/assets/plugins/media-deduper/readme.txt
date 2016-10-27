@@ -2,8 +2,8 @@
 Contributors: drywallbmb
 Tags: media, attachments, admin, upload
 Requires at least: 3.6
-Tested up to: 4.6
-Stable tag: 1.0.3
+Tested up to: 4.6.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,10 +19,13 @@ Once up and running, Media Deduper provides two key tools:
 1. A page listing all of your duplicate media files. The list makes it easy to see and delete duplicate files: delete one and its twin will disappear from the list because it's then no longer a duplicate. Easy! The list is optionally now sortable by file size, so you can focus on deleting the files that will free up the most space.
 2. A scan of media files as they're uploaded to prevent a duplicate from being added to your Media Library. Prevents new duplicates from being introduced, automagically!
 
-**New in 1.0**
 Media Deduper comes with a "Delete Preserving Featured" option that prevents a post's Featured Image from being deleted, even if that image is found to be a duplicate elsewhere on the site. If a post has a featured image that's a duplicate file, Media Deduper will re-assign that post's image to an already-in-use copy of the image before deleting the duplicate so that the post's appearance is unaffected. At this time, this feature only tracks Featured Images, and not images used in galleries, post bodies, shortcodes, meta fields, or anywhere else.
 
 Note that duplicate identification is based on the data of the files themselves, not any titles, captions or other metadata you may have provided in the WordPress admin.
+
+As of version 1.1.0, Media Deduper can differentiate between media items that are duplicates because the media files they link to have the same data and those that actually point to the same data file, which can happen if a plugin like WP Job Manager or Duplicate Post.
+
+As with any plugin that can perform destructive operations on your database and/or files, using Media Deduper can result in permanent data loss if you're not careful. **We strongly recommend backing up your entire WordPress site before deleting duplicate media.**
 
 == Installation ==
 1. Upload the `media-deduper` directory to your plugins directory (typically wp-content/plugins)
@@ -48,6 +51,10 @@ The git repository should be publicly available at https://bitbucket.org/corners
 
 
 == Changelog ==
+= 1.1.0 =
+* Implemented a check to differentiate posts that are duplicates because they actually share a single media file, and updated the UI to allow for controlling the display of these posts.
+* Fixed a notice-level error for undefined $_GET variable
+
 = 1.0.3 =
 * Fixed a bug with "Are you sure you want to do this?" appearing due to overly-aggressive referrer checking
 

@@ -6,7 +6,7 @@
 
 	<div class="content-section section-partner-slider">
 		<?php if ( $title = get_sub_field( 'title' ) ): ?>
-			<h2><?php echo wp_kses_post( wptexturize( $title ) ); ?></h2>
+			<h2 class="section-title"><?php echo wp_kses_post( wptexturize( $title ) ); ?></h2>
 		<?php endif; ?>
 		<?php
 

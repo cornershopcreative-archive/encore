@@ -3,6 +3,83 @@
     "title": "Page Options",
     "fields": [
         {
+            "key": "field_580e111941a18",
+            "label": "Featured Video",
+            "name": "has_video",
+            "type": "checkbox",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "1": "Feature a Video In Header"
+            },
+            "default_value": [],
+            "layout": "horizontal",
+            "toggle": 0,
+            "return_format": "value"
+        },
+        {
+            "key": "field_580e0f3c0f4b9",
+            "label": "Video",
+            "name": "video",
+            "type": "oembed",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_580e111941a18",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "60",
+                "class": "",
+                "id": ""
+            },
+            "width": 640,
+            "height": 390
+        },
+        {
+            "key": "field_580e0f7a714b5",
+            "label": "Video Display Style",
+            "name": "hero_style",
+            "type": "radio",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_580e111941a18",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "40",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "normal": "Rectangle (default)",
+                "circle": "Circle"
+            },
+            "allow_null": 0,
+            "other_choice": 0,
+            "save_other_choice": 0,
+            "default_value": "normal",
+            "layout": "vertical",
+            "return_format": "value"
+        },
+        {
             "key": "field_580e0c217a7c8",
             "label": "Subtitle",
             "name": "subtitle",
@@ -32,11 +109,11 @@
     ],
     "menu_order": 0,
     "position": "acf_after_title",
-    "style": "seamless",
+    "style": "default",
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1477316084
+    "modified": 1477421849
 }

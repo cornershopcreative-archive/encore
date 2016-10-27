@@ -3,7 +3,7 @@
  */
 a {
 	color: $deep-blue;
-	transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+	transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
 
 	&:hover {
 		color: $bright-blue;

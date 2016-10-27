@@ -968,6 +968,48 @@
                             },
                             "default_value": "",
                             "placeholder": ""
+                        },
+                        {
+                            "key": "field_5810fe73d9cbe",
+                            "label": "Items per page",
+                            "name": "items_per_page",
+                            "type": "number",
+                            "instructions": "Enter 0 to show all available items.",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": 5,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "min": 0,
+                            "max": "",
+                            "step": ""
+                        },
+                        {
+                            "key": "field_5810fe40d9cbd",
+                            "label": "Pagination",
+                            "name": "show_pager",
+                            "type": "checkbox",
+                            "instructions": "Leave this unchecked to disallow paging (only the number of items set under \"Items per page\" will be displayed).",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "1": "Show pagination controls"
+                            },
+                            "default_value": [],
+                            "layout": "vertical",
+                            "toggle": 0,
+                            "return_format": "value"
                         }
                     ],
                     "min": "",
@@ -995,5 +1037,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1477543281
+    "modified": 1477600854
 }

@@ -201,6 +201,108 @@ ul {
   src: url("../node_modules/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0") format("embedded-opentype"), url("../node_modules/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0") format("woff2"), url("../node_modules/font-awesome/fonts/fontawesome-webfont.woff?v=4.7.0") format("woff"), url("../node_modules/font-awesome/fonts/fontawesome-webfont.ttf?v=4.7.0") format("truetype"), url("../node_modules/font-awesome/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular") format("svg"); }
 
 /**
+ * Featherlight – ultra slim jQuery lightbox
+ * Version 1.5.0 - http://noelboss.github.io/featherlight/
+ *
+ * Copyright 2016, Noël Raoul Bossart (http://www.noelboss.com)
+ * MIT Licensed.
+**/
+@media all {
+  .featherlight {
+    /* dimensions: spanning the background from edge to edge */
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2147483647;
+    display: none;
+    background: #333;
+    /* IE8 "hack" for nested featherlights */
+    background: transparent;
+    /* z-index needs to be >= elements on the site. */
+    /* position: centering content */
+    text-align: center;
+    /* insures that the ::before pseudo element doesn't force wrap with fixed width content; */
+    white-space: nowrap;
+    /* styling */
+    cursor: pointer; }
+  /* support for nested featherlights. Does not work in IE8 (use JS to fix) */
+  .featherlight:last-of-type {
+    background: rgba(0, 0, 0, 0.8); }
+  .featherlight:before {
+    display: inline-block;
+    margin-right: -0.25em;
+    height: 100%;
+    /* position: trick to center content vertically */
+    content: '';
+    vertical-align: middle; }
+  .featherlight .featherlight-content {
+    /* make content container for positioned elements (close button) */
+    position: relative;
+    display: inline-block;
+    /* dimensions: cut off images */
+    overflow: auto;
+    margin-right: 5%;
+    /* dimensions: handling large content */
+    margin-left: 5%;
+    padding: 25px 25px 0;
+    max-height: 95%;
+    border-bottom: 25px solid transparent;
+    /* styling */
+    background: #fff;
+    vertical-align: middle;
+    /* position: centering vertical and horizontal */
+    text-align: left;
+    /* reset white-space wrapping */
+    white-space: normal;
+    cursor: auto; }
+  /* contains the content */
+  .featherlight .featherlight-inner {
+    /* make sure its visible */
+    display: block; }
+  .featherlight .featherlight-close-icon {
+    /* position: centering vertical and horizontal */
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    width: 25px;
+    background: #fff;
+    /* Set the background in case it overlaps the content */
+    background: rgba(255, 255, 255, 0.3);
+    color: #000;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    /* dimensions: 25px x 25px */
+    line-height: 25px;
+    /* styling */
+    cursor: pointer; }
+  .featherlight .featherlight-image {
+    /* styling */
+    width: 100%; }
+  .featherlight-iframe .featherlight-content {
+    padding: 0;
+    /* removed the border for image croping since iframe is edge to edge */
+    border-bottom: 0; }
+  .featherlight iframe {
+    /* styling */
+    border: none; }
+  .featherlight * {
+    /* See https://github.com/noelboss/featherlight/issues/42 */
+    box-sizing: border-box; } }
+
+/* handling phones and small screens */
+@media only screen and (max-width: 1024px) {
+  .featherlight .featherlight-content {
+    margin-right: 10px;
+    /* dimensions: maximize lightbox with for small screens */
+    margin-left: 10px;
+    padding: 10px 10px 0;
+    max-height: 98%;
+    border-bottom: 10px solid transparent; } }
+
+/**
  * Define styles for a set of per-color sub-classes of an element.
  *
  * The mixin content block will be applied to a set of classes determined by
@@ -236,17 +338,17 @@ ul {
  */
 a {
   color: #0047c1;
-  transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease; }
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease; }
   a:hover {
     color: #00c7f5; }
 
 .menu a,
-.sub-menu a, .section-partner-slider .grid-item a {
+.sub-menu a, .section-partner-slider .grid-item a, .section-news a {
   color: #2d2d2d;
   text-decoration: none;
   font-weight: 700; }
   .menu a:hover,
-  .sub-menu a:hover, .section-partner-slider .grid-item a:hover {
+  .sub-menu a:hover, .section-partner-slider .grid-item a:hover, .section-news a:hover {
     color: #aacc00; }
 
 /**
@@ -545,7 +647,7 @@ h6 {
       background-color: transparent;
       color: #4099ff; }
 
-.button-group {
+.button-group, .facetwp-pager {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-align: center;
@@ -554,11 +656,11 @@ h6 {
       justify-content: center;
   margin: 0;
   padding: 0; }
-  .button-group .button {
+  .button-group .button, .facetwp-pager .button {
     display: block; }
-  .button-group > * ~ * {
+  .button-group > * ~ *, .facetwp-pager > * ~ * {
     margin-left: 1rem; }
-  .button-group.button-group-expand > * {
+  .button-group.button-group-expand > *, .button-group-expand.facetwp-pager > * {
     -ms-flex: 1 0 auto;
         flex: 1 0 auto; }
 
@@ -710,6 +812,11 @@ img {
   height: 25px;
   background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='35px' height='25px' viewBox='324 23 35 25' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Cpath d='M357.080357,37.2857143 L325.741071,37.2857143 C324.778886,37.2857143 324,36.4868571 324,35.5 C324,34.5131429 324.778886,33.7142857 325.741071,33.7142857 L357.080357,33.7142857 C358.042543,33.7142857 358.821429,34.5131429 358.821429,35.5 C358.821429,36.4868571 358.042543,37.2857143 357.080357,37.2857143 L357.080357,37.2857143 Z M357.080357,26.5714286 L325.741071,26.5714286 C324.778886,26.5714286 324,25.7725714 324,24.7857143 C324,23.7988571 324.778886,23 325.741071,23 L357.080357,23 C358.042543,23 358.821429,23.7988571 358.821429,24.7857143 C358.821429,25.7725714 358.042543,26.5714286 357.080357,26.5714286 L357.080357,26.5714286 Z M325.741071,44.4285714 L357.080357,44.4285714 C358.042543,44.4285714 358.821429,45.2274286 358.821429,46.2142857 C358.821429,47.2011429 358.042543,48 357.080357,48 L325.741071,48 C324.778886,48 324,47.2011429 324,46.2142857 C324,45.2274286 324.778886,44.4285714 325.741071,44.4285714 L325.741071,44.4285714 Z' stroke='none' fill='%232D2D2D' fill-rule='evenodd'%3E%3C/path%3E%3C/svg%3E"); }
 
+.icon-pager-arrow {
+  width: 14px;
+  height: 15px;
+  background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='14px' height='15px' viewBox='0 24 14 15' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Cg id='Group-4' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' transform='translate(7.000000, 31.500000) scale(-1, 1) translate(-7.000000, -31.500000) translate(0.000000, 24.000000)' opacity='0.5'%3E        %3Cpath d='M6.27508487,0.755344041 C6.53419401,0.271673656 6.95266418,0.268633343 7.21340205,0.755344041 L13.7750849,13.0038186 C14.034194,13.487489 13.7953233,13.8795813 13.2367595,13.8795813 L0.251727435,13.8795813 C-0.304690599,13.8795813 -0.547335823,13.4905293 -0.286597949,13.0038186 L6.27508487,0.755344041 Z' id='Triangle-2-Copy' fill='%232D2D2D' transform='translate(6.744066, 7.135516) rotate(-270.000000) translate(-6.744066, -7.135516) '%3E%3C/path%3E    %3C/g%3E%3C/svg%3E"); }
+
 .icon-powered-by {
   width: 106px;
   height: 31px;
@@ -741,6 +848,11 @@ img {
   height: 26px;
   background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='25px' height='26px' viewBox='740 59 25 26' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Crect id='Rectangle-4' stroke='none' fill='%23ABCA28' fill-rule='evenodd' transform='translate(752.020815, 72.020815) rotate(45.000000) translate(-752.020815, -72.020815) ' x='743.520815' y='63.5208153' width='17' height='17'%3E%3C/rect%3E%3C/svg%3E"); }
 
+.icon-video-play, .hero-video-link:after {
+  width: 81px;
+  height: 81px;
+  background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='81px' height='81px' viewBox='600 231 81 81' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Cpath d='M640.5,231 C618.041498,231 600,249.041498 600,271.5 C600,293.958502 618.041498,312 640.5,312 C662.958502,312 681,293.958502 681,271.5 C681,249.041498 662.958502,231 640.5,231 L640.5,231 Z M656.371114,274.575939 L634.611101,289.213758 C632.978229,290.31218 630.621185,289.945649 629.533764,288.116507 C629.170517,287.567296 628.989474,286.835405 628.989474,286.103514 L628.989474,256.827876 C628.989474,254.814883 630.621185,253.168421 632.616143,253.168421 C633.341476,253.168421 634.06681,253.351101 634.611101,253.717632 L656.371114,268.355451 C658.002825,269.452702 658.547116,271.831055 657.277491,273.478688 C657.096448,273.844048 656.733201,274.210579 656.371114,274.575939 L656.371114,274.575939 Z' id='video-play' stroke='none' fill='%23FFFFFF' fill-rule='evenodd'%3E%3C/path%3E%3C/svg%3E"); }
+
 .gallery {
   display: -ms-flexbox;
   display: flex;
@@ -760,8 +872,47 @@ img {
   .gallery a {
     display: block; }
 
+/**
+ * Styles for FacetWP elements.
+ */
+.facetwp-pager {
+  text-align: center;
+  font-size: 1.3125rem;
+  line-height: 2.0625rem; }
+  @media (min-width: 640px) {
+    .facetwp-pager > * ~ * {
+      margin-left: 2rem; } }
+  .facetwp-pager a {
+    margin-right: 0;
+    padding: 0.25rem 0;
+    width: 2.8125rem;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    background: transparent; }
+    .facetwp-pager a.disabled {
+      opacity: 0.2; }
+  .facetwp-pager .page-number-link:hover {
+    border-color: #00c7f5;
+    color: #00c7f5; }
+  .facetwp-pager .page-number-link.active {
+    border-color: #00c7f5;
+    background: #00c7f5;
+    color: #fff; }
+  .facetwp-pager .icon-pager-arrow {
+    display: inline-block; }
+  @media (min-width: 640px) {
+    .facetwp-pager .prev {
+      margin-right: 2.25rem; } }
+  @media (min-width: 640px) {
+    .facetwp-pager .next {
+      margin-left: 4.25rem; } }
+  .facetwp-pager .next span {
+    -ms-transform: scaleX(-1);
+        transform: scaleX(-1); }
+
 .site-header {
   position: relative;
+  z-index: 10;
   padding: 0.625rem 0;
   box-shadow: 0 0 9px 6px rgba(0, 0, 0, 0.15); }
   @media (min-width: 640px) {
@@ -955,6 +1106,11 @@ img {
     display: block;
     clear: both;
     content: ''; }
+  .content-section .button-group, .content-section .facetwp-pager {
+    margin: 1.875rem 0 0; }
+
+.section-title {
+  text-align: center; }
 
 /**
  * Grid sections.
@@ -982,6 +1138,15 @@ img {
   @media (min-width: 1280px) {
     .grid-item-3 {
       width: 18.36735%; } }
+
+/**
+ * Vertical lists with borders between items.
+ */
+.content-section-list .list-item {
+  padding: 2.5rem 0;
+  border-top: 1px solid #d8d8d8; }
+  .content-section-list .list-item:first-of-type {
+    border: 0; }
 
 /**
  * Slider sections.
@@ -1044,10 +1209,34 @@ img {
   color: #fff; }
   @media (min-width: 640px) {
     .hero-text {
+      position: relative;
+      z-index: 2;
       display: inline-block;
+      margin-top: -4.7%;
       padding: 2.5rem 3.75rem; }
-      .hero-image + .hero-text {
-        margin-top: -3.75rem; } }
+      .hero-text:first-child {
+        margin-top: 0; } }
+
+.hero-video {
+  display: none; }
+  .hero-video iframe {
+    display: block; }
+
+.hero-video-link {
+  position: relative;
+  display: block; }
+  .hero-video-link:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    content: ' ';
+    -webkit-filter: drop-shadow(1px 3px 12px rgba(0, 0, 0, 0.2));
+            filter: drop-shadow(1px 3px 12px rgba(0, 0, 0, 0.2)); }
 
 /**
  * Styles for Circle Grid sections.
@@ -1129,7 +1318,7 @@ img {
 .section-action-slider h3 {
   font-size: 1.5rem; }
 
-.section-action-slider .button-group {
+.section-action-slider .button-group, .section-action-slider .facetwp-pager {
   margin: 2.5rem 0 0.625rem; }
 
 /**
@@ -1145,8 +1334,43 @@ img {
         align-items: center; }
   .section-partner-slider .grid-item-image {
     margin: 0 auto; }
-  .section-partner-slider .button-group {
-    margin: 1.875rem 0 0; }
+
+/**
+ * Styles for News content sections.
+ */
+@media (min-width: 640px) {
+  .section-news .list-item {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+    padding-right: 0.625rem;
+    padding-left: 0.625rem; } }
+
+.section-news .entry-image {
+  margin: -0.625rem 0 1.875rem; }
+  @media (min-width: 640px) {
+    .section-news .entry-image {
+      -ms-flex-positive: 0;
+          flex-grow: 0;
+      margin: 0 3.125rem 0 0;
+      width: 12.5rem; } }
+  .section-news .entry-image img {
+    margin: 0 auto; }
+
+.section-news .entry-summary {
+  line-height: 2rem; }
+
+.section-news .entry-date {
+  display: block;
+  margin: 0; }
+  .section-news .entry-date a {
+    font-weight: 400; }
+
+.section-news .entry-title {
+  margin: 0;
+  font-size: 1.3125rem;
+  line-height: 2rem; }
 
 .site-footer {
   padding: 1.25rem;
@@ -1198,11 +1422,11 @@ img {
   @media (min-width: 640px) {
     .site-footer .footer-logos {
       float: right; } }
-  .site-footer .footer-logos .button-group {
+  .site-footer .footer-logos .button-group, .site-footer .footer-logos .facetwp-pager {
     -ms-flex-pack: center;
         justify-content: center; }
     @media (min-width: 640px) {
-      .site-footer .footer-logos .button-group {
+      .site-footer .footer-logos .button-group, .site-footer .footer-logos .facetwp-pager {
         -ms-flex-pack: start;
             justify-content: flex-start; } }
   .site-footer .footer-logos .powered-by {

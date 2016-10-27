@@ -1,0 +1,56 @@
+/**
+ * Styles for News content sections.
+ */
+
+.section-news {
+
+	.list-item {
+
+		@include breakpoint( $tablet ) {
+			display: flex;
+			align-items: center;
+			padding-left: rem(10);
+			padding-right: rem(10);
+		}
+	}
+
+	a {
+		@extend %charcoal-link;
+	}
+
+	.entry-image {
+		// Pull up slightly into the containing .list-item's 40px padding.
+		margin: rem(-10) 0 rem(30);
+
+		@include breakpoint( $tablet ) {
+			margin: 0 rem(50) 0 0;
+			flex-grow: 0;
+			width: rem(200);
+		}
+
+		img {
+			margin: 0 auto;
+		}
+	}
+
+	.entry-summary {
+		// Set a static line-height, since .entry-date's and .entry-title's should
+		// be about the same.
+		line-height: rem(32);
+	}
+
+	.entry-date {
+		display: block;
+		margin: 0;
+
+		a {
+			font-weight: normal;
+		}
+	}
+
+	.entry-title {
+		margin: 0;
+		font-size: rem(21);
+		line-height: 2rem;
+	}
+}

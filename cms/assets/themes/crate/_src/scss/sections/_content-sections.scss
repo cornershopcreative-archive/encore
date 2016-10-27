@@ -13,6 +13,14 @@
 		display: block;
 		clear: both;
 	}
+
+	.button-group {
+		margin: rem(30) 0 0;
+	}
+}
+
+.section-title {
+	text-align: center;
 }
 
 /**
@@ -50,6 +58,21 @@
 
 		@include nested( 10 ) {
 			width: span(2);
+		}
+	}
+}
+
+/**
+ * Vertical lists with borders between items.
+ */
+.content-section-list {
+
+	.list-item {
+		border-top: 1px solid $silver;
+		padding: rem(40) 0;
+
+		&:first-of-type {
+			border: 0;
 		}
 	}
 }
