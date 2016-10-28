@@ -12,6 +12,7 @@
 		<?php
 
 		// Set up custom query vars.
+		$show_pager = get_sub_field( 'show_pager' );
 		$locations = get_sub_field( 'location' );
 		$topics = get_sub_field( 'topic' );
 		$posts_per_page = get_sub_field( 'items_per_page' );
@@ -19,7 +20,7 @@
 			$posts_per_page = -1;
 		}
 		$news_query_vars = array(
-			'facetwp' => true, // Allow filtering/pagination via FWP.
+			'facetwp' => $show_pager, // Allow filtering/pagination via FWP.
 			'post_type' => 'news',
 			'posts_per_page' => $posts_per_page,
 			'orderby' => 'post_date',
@@ -43,7 +44,7 @@
 
 		?>
 
-		<div class="content-section-list facetwp-template container-10">
+		<div class="content-section-list container-10<?php echo ( $show_pager ? ' facetwp-template' : '' ); ?>">
 			<?php while ( $news_query->have_posts() ) : $news_query->the_post(); ?>
 
 				<article class="list-item">
@@ -79,10 +80,7 @@
 			<?php endwhile; ?>
 		</div>
 
-		<?php
-		// This is a little ugly, but count( get_sub_field(...) ) will return > 0
-		// if a checkbox is checked.
-		if ( get_sub_field( 'show_pager' ) ) :
+		<?php if ( $show_pager ) :
 			echo facetwp_display( 'pager' );
 		endif; ?>
 

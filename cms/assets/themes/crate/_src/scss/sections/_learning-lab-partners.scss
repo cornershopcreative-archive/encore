@@ -1,0 +1,55 @@
+/**
+ * Styles for Learning Lab Partners content sections.
+ */
+
+.section-learning-lab-partners {
+
+	.list-item,
+	.list-pager {
+		padding: rem(70) 0; // Wider spacing between list items.
+	}
+
+	.list-item {
+
+		// Clearfix.
+		&:after {
+			content: '';
+			display: block;
+			clear: both;
+		}
+
+		.button {
+			margin-top: rem(25);
+		}
+	}
+
+	.entry-image {
+
+		@include breakpoint( $tablet ) {
+			@include span(5);
+			// Make sure .entry-summary gets pushed right, even if .entry-image is
+			// empty.
+			min-height: 1rem;
+		}
+
+		img {
+			margin: 0 auto;
+		}
+	}
+
+	.entry-summary {
+
+		@include breakpoint( $tablet ) {
+			@include span(5 wide);
+		}
+
+		p {
+			margin: 0;
+			line-height: 1.75;
+		}
+	}
+
+	.entry-title {
+		@extend h1;
+	}
+}

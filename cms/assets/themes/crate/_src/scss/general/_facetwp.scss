@@ -19,6 +19,7 @@
 	}
 
 	a {
+		@extend %charcoal-link;
 		margin-right: 0;
 		padding: rem(4) 0;
 		width: rem(45);

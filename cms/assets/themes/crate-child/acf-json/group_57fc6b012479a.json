@@ -19,31 +19,9 @@
             "placeholder": ""
         },
         {
-            "key": "field_57fc6b1e6b8f8",
-            "label": "Location",
-            "name": "location",
-            "type": "taxonomy",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "taxonomy": "category",
-            "field_type": "checkbox",
-            "allow_null": 0,
-            "add_term": 1,
-            "save_terms": 0,
-            "load_terms": 0,
-            "return_format": "id",
-            "multiple": 0
-        },
-        {
             "key": "field_57fc6b416b8f9",
-            "label": "Is Funder?",
-            "name": "funder",
+            "label": "Options",
+            "name": "options",
             "type": "checkbox",
             "instructions": "",
             "required": 0,
@@ -54,57 +32,13 @@
                 "id": ""
             },
             "choices": {
-                "Yes": "Yes",
-                "No": "No"
+                "funder": "List this partner as a Funder",
+                "learning-lab": "List this partner as a Learning Lab partner"
             },
             "default_value": [],
             "layout": "horizontal",
             "toggle": 0,
             "return_format": "value"
-        },
-        {
-            "key": "field_57fc6b666b8fa",
-            "label": "Topic",
-            "name": "topic",
-            "type": "taxonomy",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "taxonomy": "category",
-            "field_type": "checkbox",
-            "allow_null": 0,
-            "add_term": 1,
-            "save_terms": 0,
-            "load_terms": 0,
-            "return_format": "id",
-            "multiple": 0
-        },
-        {
-            "key": "field_57fc6b8c6b8fb",
-            "label": "Organization Type",
-            "name": "organization_type",
-            "type": "taxonomy",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "taxonomy": "category",
-            "field_type": "checkbox",
-            "allow_null": 0,
-            "add_term": 1,
-            "save_terms": 0,
-            "load_terms": 0,
-            "return_format": "id",
-            "multiple": 0
         }
     ],
     "location": [
@@ -124,5 +58,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1477092747
+    "modified": 1477581218
 }
