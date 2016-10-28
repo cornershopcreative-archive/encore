@@ -46,9 +46,6 @@ class VolunteerMatchAPI {
 			curl_setopt($curl_handle, CURLOPT_HTTPGET, 1);
 		}
 
-		curl_setopt($ch,CURLOPT_FAILONERROR,1);
-		curl_setopt($ch,CURLOPT_HEADER,1);
-
 		// prevent output of response contents to STDOUT
 		curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
 
@@ -211,9 +208,7 @@ class VolunteerMatchAPI {
 		$data['fieldsToDisplay'][] = 'description';
 		$data['fieldsToDisplay'][] = 'categoryIds';
 		$data['fieldsToDisplay'][] = 'type';
-		$data['fieldsToDisplay'][] = 'created';
-		$data['fieldsToDisplay'][] = 'avgRating';
-		$data['fieldsToDisplay'][] = 'numReviews';
+		$data['fieldsToDisplay'][] = 'plaintextDescription';
 		$data['fieldsToDisplay'][] = 'location';
 
 		if ($display != 'org summary') {
@@ -221,8 +216,10 @@ class VolunteerMatchAPI {
 			$data['fieldsToDisplay'][] = 'mission';
 			$data['fieldsToDisplay'][] = 'url';
 			$data['fieldsToDisplay'][] = 'contact';
-		} else {
-			$data['fieldsToDisplay'][] = 'plaintextDescription';
+			$data['fieldsToDisplay'][] = 'vmUrl';
+			$data['fieldsToDisplay'][] = 'created';
+			$data['fieldsToDisplay'][] = 'avgRating';
+			$data['fieldsToDisplay'][] = 'numReviews';
 		}
 		self::sendRequest('searchOrganizations', $data);
 		return self::displayResponse($display);
