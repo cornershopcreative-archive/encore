@@ -1409,6 +1409,10 @@ img {
     margin-right: 1.66667%;
     width: 42.37288%; } }
 
+.section-learning-lab-partners .entry-summary p {
+  margin: 0;
+  line-height: 1.75; }
+
 .site-footer {
   padding: 1.25rem;
   box-shadow: inset 0 6px 4px -3px rgba(0, 0, 0, 0.35);
