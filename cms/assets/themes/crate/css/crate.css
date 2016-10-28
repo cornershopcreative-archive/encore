@@ -1489,7 +1489,21 @@ img {
   width: 100%;
   color: #fff; }
 
+.section-callout-white {
+  display: block;
+  margin-top: 100px;
+  margin-bottom: 50px;
+  width: 100%;
+  color: #000;
+  font-family: Libre Baskerville; }
+
+.section-callout-white p {
+  margin-top: 20px;
+  font-size: 15px;
+  line-height: 32px; }
+
 .callout-content {
+  display: inline-block;
   margin-left: 12%;
   padding-top: 90px;
   padding-bottom: 60px;
@@ -1520,6 +1534,14 @@ img {
   margin-top: -175px;
   width: 380px;
   height: 380px;
+  border-radius: 50%; }
+
+.callout_circle_white {
+  float: left;
+  margin-right: 20px;
+  margin-left: 60px;
+  width: 350px;
+  height: 350px;
   border-radius: 50%; }
 
 .callout_image {
@@ -1559,5 +1581,34 @@ img {
 
 .callout_two .callout-heading {
   line-height: 50px; }
+
+.section-callout-white .callout-heading {
+  margin-top: 100px; }
+
+.callout-inner {
+  display: block;
+  float: right;
+  margin-top: -250px;
+  width: 50%; }
+
+.caption-bubble {
+  margin-bottom: -70px;
+  margin-left: -20px;
+  padding-top: 70px;
+  width: 270px;
+  height: 270px;
+  border-radius: 50%;
+  background-color: #aacc00; }
+
+.callout-caption {
+  margin-left: 10%;
+  width: 80%;
+  background-color: #aacc00;
+  color: #fff;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+  font-family: Avenir Next;
+  line-height: 28px; }
 
 /*# sourceMappingURL=maps/crate.css.map */

@@ -180,7 +180,7 @@
                 {
                     "key": "58090a7929e00",
                     "name": "callout",
-                    "label": "Callout",
+                    "label": "Colorful Callout",
                     "display": "block",
                     "sub_fields": [
                         {
@@ -198,7 +198,6 @@
                             },
                             "choices": {
                                 "callout_image": "Image",
-                                "callout_caption": "Image with Caption",
                                 "callout_two": "Two Column",
                                 "callout_text": "Text Only"
                             },
@@ -507,23 +506,44 @@
                             "max_height": "",
                             "max_size": "",
                             "mime_types": ""
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                {
+                    "key": "5813a2c1d31f3",
+                    "name": "callout-white",
+                    "label": "Callout on White",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_5813a2c2d31f8",
+                            "label": "Title",
+                            "name": "title",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
                         },
                         {
-                            "key": "field_5809954589d45",
-                            "label": "Image Caption",
-                            "name": "image_caption",
+                            "key": "field_5813a2c2d31f9",
+                            "label": "Text",
+                            "name": "text",
                             "type": "wysiwyg",
                             "instructions": "",
-                            "required": 0,
-                            "conditional_logic": [
-                                [
-                                    {
-                                        "field": "field_5809934a89d3b",
-                                        "operator": "==",
-                                        "value": "callout_caption"
-                                    }
-                                ]
-                            ],
+                            "required": 1,
+                            "conditional_logic": 0,
                             "wrapper": {
                                 "width": "",
                                 "class": "",
@@ -532,7 +552,85 @@
                             "default_value": "",
                             "tabs": "all",
                             "toolbar": "full",
-                            "media_upload": 0
+                            "media_upload": 1
+                        },
+                        {
+                            "key": "field_5813a2c2d31fc",
+                            "label": "Button Label",
+                            "name": "button_label",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_5813a2c2d31fd",
+                            "label": "Button URL",
+                            "name": "button_url",
+                            "type": "url",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_5813a2c2d3200",
+                            "label": "Featured Image",
+                            "name": "circle_image",
+                            "type": "image",
+                            "instructions": "Please use a square image.",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "return_format": "url",
+                            "preview_size": "thumbnail",
+                            "library": "all",
+                            "min_width": 250,
+                            "min_height": 250,
+                            "min_size": "",
+                            "max_width": "",
+                            "max_height": "",
+                            "max_size": "",
+                            "mime_types": ""
+                        },
+                        {
+                            "key": "field_5813a2c2d3201",
+                            "label": "Image Caption",
+                            "name": "image_caption",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": 100
                         }
                     ],
                     "min": "",
@@ -1037,5 +1135,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1477600854
+    "modified": 1477686721
 }
