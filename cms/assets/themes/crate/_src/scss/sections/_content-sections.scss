@@ -15,7 +15,7 @@
 	}
 
 	.button-group {
-		margin: rem(30) 0 0;
+		margin-top: rem(30);
 	}
 }
 
@@ -67,13 +67,21 @@
  */
 .content-section-list {
 
-	.list-item {
-		border-top: 1px solid $silver;
+	.list-item,
+	~ .list-pager {
 		padding: rem(40) 0;
+		border-top: 1px solid $silver;
+	}
 
-		&:first-of-type {
+	.list-item {
+
+		&:first-child {
 			border: 0;
 		}
+	}
+
+	~ .list-pager {
+		margin-top: 0;
 	}
 }
 

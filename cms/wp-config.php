@@ -14,6 +14,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 // Logic to control which config file gets loaded when
 $configs = array(
 	'kenji.cshp.co'          => 'kenji',
+	'ben.cshp.co'                => 'ben',
 	'cshp.co'                => 'demo',
 	'CLIENT-LIVE-URL'        => 'prod',
 	'default'                => 'demo'
@@ -61,14 +62,14 @@ define( 'DB_COLLATE', '' );
 * @since 2.6.0
 */
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
-define('AUTH_KEY',         'G%HEW-*=eif6^o0t|vS^xoNC}1$bB`;Z30Ztl~/Ch[B@&~M!s9<BBNg&Wg4Ef<MY');
-define('SECURE_AUTH_KEY',  'H(:&:8P2Cu7s|;8rZ$oJ~m d:[)!L#}p$6T$eX7-;I?!0Gpxaq+wnCZTm=,m/f2J');
-define('LOGGED_IN_KEY',    'lC%Ssk>x.GQ-T(7^)LNfb8>S ,?~pNr#A~Vd_D.=XY4U]56IO7@X,4%n)*4;a8;m');
-define('NONCE_KEY',        ':7[l9!g^SJv-@QL:y-(%e8F$!EEh%YU qz`KY^dA>-d$jNyJfG2-Jc:J[rr0Jd+*');
-define('AUTH_SALT',        'hHl/%uPfGT4bT}1v]MkPd*#!}T/Q~zYhAIuH3:D,SW$I.wGdL|5xqYWLZEOrvuD*');
-define('SECURE_AUTH_SALT', 'D#[q~2uNeoPZ)m8KF-%Q:>tgo=fw+K(K/]K[lx`tbQJq,-<@3/trlzY=Z{ANIKYA');
-define('LOGGED_IN_SALT',   '(>=0Xn]+tvY?J&#-;dI/MalEai4jVW|JA/?+gx_/Nfw1td&aYMkiZ%Xg`q+YT<u;');
-define('NONCE_SALT',       'Q$72Ux*s}xyXX>vYw,dQV1j )X&KKILt9r5M{k:%u-_+&S/eNDu!u 2T&e7}Of|U');
+define('AUTH_KEY',         '*E[sye-w0>].:0O4MMc+1h2u+mZ;Y(t0iJwVQ5W3:6-TN0FEWJ [di}rC; O4Jn8');
+define('SECURE_AUTH_KEY',  ']Gqzs+:xbzp;shCoo[?n- K-ma^dD~;,.&o15WB|N=9xl{6cgg:6`o=)#lG)-=QQ');
+define('LOGGED_IN_KEY',    '0H#V$%WD(O!9uRDC~-wG{!,eYd6RgWz(+a:T4L~Zkw;i|6-*F(C^l1lE~]qe>2zK');
+define('NONCE_KEY',        'BR?ipw6@r2:w6C|eZ]7w]3;HhelxE+rrm64SBLaCg$Qt{smvA-9-kCxt.+-_Hg]3');
+define('AUTH_SALT',        '|Y5Po$}I<Q!@Q/*kAjNc<d;e++x[w./s5/|[|+;n|QW`]o7~t/$xw)5~->8(wy=>');
+define('SECURE_AUTH_SALT', 'aV_zb@^G|YJ&XQ4/nW+a8&!3}MAZZT-Qed=I?9;^I~-h,5;ORU~N=k.9W|7i#0zZ');
+define('LOGGED_IN_SALT',   '+J~0DSa;(g<#dBtLtDkC*Y+WX+hyU|1=p_S-jmZ|6L5Z0D:WD=AW%Z0=&GEBi+qt');
+define('NONCE_SALT',       'KRM<|2}I,nB9Q_vygAg)6~U6wkQ_OX#6.|<#c;X(fO!p2_x%hY$MHe1mYX$MbP->');
 }
 /**#@-*/
 
