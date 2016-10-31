@@ -113,3 +113,48 @@ function crate_posted_on() {
 
 	<?php
 }
+
+/**
+ * Query posts for a content section.
+ *
+ * @return WP_Query $query A new WP Query object.
+ */
+function crate_section_query( $query_vars ) {
+
+	// Get fields for standard query vars.
+	$show_pager = get_sub_field( 'show_pager' );
+	$posts_per_page = get_sub_field( 'items_per_page' );
+	if ( $posts_per_page < 1 ) {
+		$posts_per_page = -1;
+	}
+
+	$defaults = array(
+		'facetwp' => $show_pager, // Allow filtering/pagination via FWP.
+		'posts_per_page' => $posts_per_page,
+		'orderby' => 'post_date',
+		'order' => 'DESC',
+		'tax_query' => array(),
+	);
+
+	$query_vars = array_merge( $defaults, $query_vars );
+
+	// Add Location filter parameters, if any.
+	$locations = get_sub_field( 'location' );
+	if ( ! empty( $locations ) ) {
+		$query_vars['tax_query']['location'] = array(
+			'taxonomy' => 'location',
+			'terms' => $locations,
+		);
+	}
+
+	// Add Topic filter parameters, if any.
+	$topics = get_sub_field( 'topic' );
+	if ( ! empty( $topics ) ) {
+		$query_vars['tax_query']['topic'] = array(
+			'taxonomy' => 'topic',
+			'terms' => $topics,
+		);
+	}
+
+	return new WP_Query( $query_vars );
+}
