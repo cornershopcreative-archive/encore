@@ -1260,7 +1260,6 @@
                     "max": ""
                 },
                 {
-
                     "key": "58174ba69709a",
                     "name": "making_the_case",
                     "label": "Making the Case",
@@ -1342,7 +1341,11 @@
                             ]
                         }
                     ],
-              "key": "581371b2c98a2",
+                    "min": "",
+                    "max": ""
+                },
+                {
+                    "key": "581371b2c98a2",
                     "name": "volunteer-opportunities",
                     "label": "Volunteer Opportunities List",
                     "display": "block",
@@ -1372,5 +1375,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1477921797
+    "modified": 1477928910
 }
