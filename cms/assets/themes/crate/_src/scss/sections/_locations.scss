@@ -4,18 +4,36 @@
 
 .section-locations {
 
+	.content-section-grid {
+		align-items: stretch;
+	}
+
 	.grid-item {
-		line-height: rem(30);
+		display: flex;
+		flex-direction: column;
+		line-height: rem(24);
 		text-align: center;
+
+		@include breakpoint( $tablet ) {
+			line-height: rem(30);
+		}
 
 		img {
 			width: rem(143);
 			height: auto;
-			margin: rem(20) auto;
+			margin: rem(10) auto;
+		}
+
+		.grid-item-blurb {
+			flex-grow: 1;
 		}
 
 		.button-group {
-			margin-top: rem(40);
+			margin-top: rem(20);
+
+			@include breakpoint( $tablet ) {
+				margin-top: rem(30);
+			}
 		}
 	}
 }

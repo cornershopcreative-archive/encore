@@ -28,7 +28,7 @@
 					</a>
 					<div class="grid-item-blurb">
 						<?php crate_item_link(); ?>
-							<?php echo wp_kses_post( $term->description ); ?>
+							<?php echo apply_filters( 'the_content', $term->description ); ?>
 						<?php crate_item_link_close(); ?>
 					</div>
 					<div class="button-group">

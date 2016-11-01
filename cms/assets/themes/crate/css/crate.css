@@ -1516,15 +1516,32 @@ img {
 /**
  * Styles for Learning Lab Communities (Locations) sections.
  */
+.section-locations .content-section-grid {
+  -ms-flex-align: stretch;
+      align-items: stretch; }
+
 .section-locations .grid-item {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
   text-align: center;
-  line-height: 1.875rem; }
+  line-height: 1.5rem; }
+  @media (min-width: 640px) {
+    .section-locations .grid-item {
+      line-height: 1.875rem; } }
   .section-locations .grid-item img {
-    margin: 1.25rem auto;
+    margin: 0.625rem auto;
     width: 8.9375rem;
     height: auto; }
+  .section-locations .grid-item .grid-item-blurb {
+    -ms-flex-positive: 1;
+        flex-grow: 1; }
   .section-locations .grid-item .button-group, .section-locations .grid-item .facetwp-pager {
-    margin-top: 2.5rem; }
+    margin-top: 1.25rem; }
+    @media (min-width: 640px) {
+      .section-locations .grid-item .button-group, .section-locations .grid-item .facetwp-pager {
+        margin-top: 1.875rem; } }
 
 .site-footer {
   padding: 1.25rem;
