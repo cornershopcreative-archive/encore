@@ -8,7 +8,7 @@
             "name": "subtitle",
             "type": "text",
             "instructions": "",
-            "required": 1,
+            "required": 0,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
@@ -42,7 +42,7 @@
         },
         {
             "key": "field_57fc6db1d303a",
-            "label": "Show As Bright Spot?",
+            "label": "Bright Spot",
             "name": "bright_spot",
             "type": "checkbox",
             "instructions": "",
@@ -54,57 +54,12 @@
                 "id": ""
             },
             "choices": {
-                "Yes": "Yes",
-                "No": "No"
+                "1": "Show this story as a Bright Spot"
             },
             "default_value": [],
             "layout": "horizontal",
             "toggle": 0,
             "return_format": "value"
-        },
-        {
-            "key": "field_57fc6dd8d303b",
-            "label": "Location\/Community",
-            "name": "location",
-            "type": "taxonomy",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "taxonomy": "category",
-            "field_type": "checkbox",
-            "allow_null": 0,
-            "add_term": 1,
-            "save_terms": 0,
-            "load_terms": 0,
-            "return_format": "id",
-            "multiple": 0
-        },
-        {
-            "key": "field_57fc6de8d303c",
-            "label": "Category",
-            "name": "category",
-            "type": "taxonomy",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "taxonomy": "category",
-            "field_type": "checkbox",
-            "allow_null": 0,
-            "add_term": 1,
-            "save_terms": 0,
-            "load_terms": 0,
-            "return_format": "id",
-            "multiple": 0
         }
     ],
     "location": [
@@ -124,5 +79,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1476883847
+    "modified": 1477949034
 }

@@ -324,6 +324,39 @@
                             "return_format": "value"
                         },
                         {
+                            "key": "field_581162fe576ed",
+                            "label": "Color for Second Colum",
+                            "name": "color_two",
+                            "type": "radio",
+                            "instructions": "",
+                            "required": 1,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_5809934a89d3b",
+                                        "operator": "==",
+                                        "value": "callout_two"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "brightblue_background": "Bright Blue",
+                                "orange_background": "Orange",
+                                "teal_background": "Teal"
+                            },
+                            "allow_null": 0,
+                            "other_choice": 0,
+                            "save_other_choice": 0,
+                            "default_value": "",
+                            "layout": "vertical",
+                            "return_format": "value"
+                        },
+                        {
                             "key": "field_580995e57942f",
                             "label": "Background Style",
                             "name": "background_image",
@@ -391,7 +424,7 @@
                             "name": "title_two",
                             "type": "text",
                             "instructions": "",
-                            "required": 0,
+                            "required": 1,
                             "conditional_logic": [
                                 [
                                     {
@@ -528,7 +561,7 @@
                         {
                             "key": "field_5809950f89d42",
                             "label": "Featured Image",
-                            "name": "image",
+                            "name": "circle_image",
                             "type": "image",
                             "instructions": "Please use a square image.",
                             "required": 0,
@@ -1541,6 +1574,150 @@
                     "sub_fields": [],
                     "min": "",
                     "max": ""
+                },
+                {
+                    "key": "581759a294a02",
+                    "name": "stories-grid",
+                    "label": "Stories Grid",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_581759a294a03",
+                            "label": "Title",
+                            "name": "title",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_581759a294a04",
+                            "label": "Filter by Location",
+                            "name": "location",
+                            "type": "taxonomy",
+                            "instructions": "Leave all checkboxes unchecked to show all locations.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "taxonomy": "location",
+                            "field_type": "checkbox",
+                            "allow_null": 0,
+                            "add_term": 0,
+                            "save_terms": 0,
+                            "load_terms": 0,
+                            "return_format": "id",
+                            "multiple": 0
+                        },
+                        {
+                            "key": "field_581759a294a05",
+                            "label": "Filter by Topic",
+                            "name": "topic",
+                            "type": "taxonomy",
+                            "instructions": "Leave all checkboxes unchecked to show all topics.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "taxonomy": "topic",
+                            "field_type": "checkbox",
+                            "allow_null": 0,
+                            "add_term": 0,
+                            "save_terms": 0,
+                            "load_terms": 0,
+                            "return_format": "id",
+                            "multiple": 0
+                        },
+                        {
+                            "key": "field_581759a294a06",
+                            "label": "Items per page",
+                            "name": "items_per_page",
+                            "type": "number",
+                            "instructions": "Enter 0 to show all available items.",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": 5,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "min": 0,
+                            "max": "",
+                            "step": ""
+                        },
+                        {
+                            "key": "field_581759a294a07",
+                            "label": "Pagination",
+                            "name": "show_pager",
+                            "type": "checkbox",
+                            "instructions": "Leave this unchecked to disallow paging (only the number of items set under \"Items per page\" will be displayed).",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "1": "Show \"show more\" button"
+                            },
+                            "default_value": [],
+                            "layout": "vertical",
+                            "toggle": 0,
+                            "return_format": "value"
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                {
+                    "key": "5818a82f9e909",
+                    "name": "locations",
+                    "label": "Learning Lab Communities",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_5818a8309e90a",
+                            "label": "Title",
+                            "name": "title",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
                 }
             ]
         }
@@ -1564,5 +1741,6 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1477975720
+    "modified": 1477975725
 }
+

@@ -1,0 +1,21 @@
+/**
+ * Styles for Learning Lab Communities (Locations) sections.
+ */
+
+.section-locations {
+
+	.grid-item {
+		line-height: rem(30);
+		text-align: center;
+
+		img {
+			width: rem(143);
+			height: auto;
+			margin: rem(20) auto;
+		}
+
+		.button-group {
+			margin-top: rem(40);
+		}
+	}
+}

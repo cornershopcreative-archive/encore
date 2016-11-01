@@ -62,6 +62,7 @@
 	}
 }
 
+
 .grid-item-4 {
 	margin: 0 0 20px 0;
 
@@ -78,6 +79,18 @@
 
 		@include nested( 16 ) {
 			width: span(2);
+		}
+	}
+
+.grid-item-2 {
+	margin: rem(30) auto;
+
+	@include breakpoint( $tablet ) {
+
+		@include nested( 10 ) {
+			width: span(4);
+			margin-left: ( span(1) / 2 );
+			margin-right: ( span(1) / 2 ) + gutter();
 		}
 	}
 }

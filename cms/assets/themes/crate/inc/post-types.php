@@ -210,11 +210,8 @@ function crate_taxonomies() {
 		array( 'post', 'partners', 'news', 'opportunities', 'stories'),		// post types supported, can be array('post', 'page' ... )
 		array(					// labels. See http://codex.wordpress.org/Function_Reference/register_taxonomy for full details
 			'label' => __( 'Locations', 'crate' ),
-			'rewrite' => array( 'slug' => 'classification' ),
+			'rewrite' => array( 'slug' => 'location' ),
 			'hierarchical' => true,
-			'public' => false,
-			'show_ui' => true,
-			'show_tagcloud' => false,
 		)
 	);
 
@@ -225,7 +222,7 @@ function crate_taxonomies() {
 		array( 'post', 'partners', 'news', 'opportunities', 'stories'),		// post types supported, can be array('post', 'page' ... )
 		array(					// labels. See http://codex.wordpress.org/Function_Reference/register_taxonomy for full details
 			'label' => __( 'Topics', 'crate' ),
-			'rewrite' => array( 'slug' => 'classification' ),
+			'rewrite' => array( 'slug' => 'topic' ),
 			'hierarchical' => true,
 			'public' => false,
 			'show_ui' => true,
