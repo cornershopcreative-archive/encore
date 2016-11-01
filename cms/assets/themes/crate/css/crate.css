@@ -1140,6 +1140,17 @@ img {
     .grid-item-3 {
       width: 18.36735%; } }
 
+.grid-item-4 {
+  margin: 0 0 20px 0; }
+  @media (min-width: 640px) {
+    .grid-item-4 {
+      margin-right: 5.08475%;
+      margin-left: 5.08475%;
+      width: 23.72881%; } }
+  @media (min-width: 1280px) {
+    .grid-item-4 {
+      width: 11.39241%; } }
+
 /**
  * Vertical lists with borders between items.
  */
@@ -1651,5 +1662,43 @@ img {
   font-size: 16px;
   font-family: Avenir Next;
   line-height: 28px; }
+
+.gray-background {
+  padding-top: 50px;
+  padding-bottom: 50px;
+  background-color: #F8F8F8;
+  opacity: .9; }
+
+.text-grid {
+  margin-top: 50px; }
+
+.grid-item-name {
+  color: #000;
+  font-weight: 700;
+  font-size: 21px;
+  font-family: Avenir Next;
+  line-height: 32px; }
+
+.grid-item-title {
+  color: #2D2D2D;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  font-size: 15px;
+  font-family: Avenir Next;
+  line-height: 22px;
+  opacity: 0.48; }
+
+.text-grid-item {
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 3.125rem;
+  text-align: center; }
+  @media (min-width: 640px) {
+    .text-grid-item {
+      margin-right: 3.4375rem;
+      margin-left: 3.4375rem;
+      padding: 0;
+      width: 15.625rem; } }
 
 /*# sourceMappingURL=maps/crate.css.map */

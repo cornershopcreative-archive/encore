@@ -62,6 +62,26 @@
 	}
 }
 
+.grid-item-4 {
+	margin: 0 0 20px 0;
+
+	@include breakpoint( $tablet ) {
+
+		@include nested( 12 ) {
+			width: span(3);
+			margin-left: ( span(1) / 2 ) + gutter();
+			margin-right: ( span(1) / 2 ) + gutter();
+		}
+	}
+
+	@include breakpoint( $desktop ) {
+
+		@include nested( 16 ) {
+			width: span(2);
+		}
+	}
+}
+
 /**
  * Vertical lists with borders between items.
  */
