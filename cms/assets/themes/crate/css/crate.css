@@ -1140,6 +1140,14 @@ img {
     .grid-item-3 {
       width: 18.36735%; } }
 
+.grid-item-2 {
+  margin: 1.875rem auto; }
+  @media (min-width: 640px) {
+    .grid-item-2 {
+      margin-right: 6.12245%;
+      margin-left: 4.08163%;
+      width: 38.77551%; } }
+
 /**
  * Vertical lists with borders between items.
  */
@@ -1504,6 +1512,19 @@ img {
   right: 0;
   bottom: 0;
   left: 0; }
+
+/**
+ * Styles for Learning Lab Communities (Locations) sections.
+ */
+.section-locations .grid-item {
+  text-align: center;
+  line-height: 1.875rem; }
+  .section-locations .grid-item img {
+    margin: 1.25rem auto;
+    width: 8.9375rem;
+    height: auto; }
+  .section-locations .grid-item .button-group, .section-locations .grid-item .facetwp-pager {
+    margin-top: 2.5rem; }
 
 .site-footer {
   padding: 1.25rem;

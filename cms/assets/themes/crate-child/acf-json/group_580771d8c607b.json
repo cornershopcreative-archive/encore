@@ -1657,6 +1657,35 @@
                     ],
                     "min": "",
                     "max": ""
+                },
+                {
+                    "key": "5818a82f9e909",
+                    "name": "locations",
+                    "label": "Learning Lab Communities",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_5818a8309e90a",
+                            "label": "Title",
+                            "name": "title",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
                 }
             ]
         }
@@ -1680,5 +1709,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1477938569
+    "modified": 1478021785
 }
