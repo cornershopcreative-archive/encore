@@ -1483,7 +1483,7 @@
                 },
                 {
                     "key": "58174ba69709a",
-                    "name": "making_the_case",
+                    "name": "making-the-case",
                     "label": "Making the Case",
                     "display": "block",
                     "sub_fields": [
@@ -1493,7 +1493,7 @@
                             "name": "items",
                             "type": "repeater",
                             "instructions": "",
-                            "required": 0,
+                            "required": 1,
                             "conditional_logic": 0,
                             "wrapper": {
                                 "width": "",
@@ -1501,9 +1501,9 @@
                                 "id": ""
                             },
                             "collapsed": "",
-                            "min": "",
+                            "min": 1,
                             "max": "",
-                            "layout": "table",
+                            "layout": "block",
                             "button_label": "Add Row",
                             "sub_fields": [
                                 {
@@ -1531,7 +1531,7 @@
                                     "name": "source_name",
                                     "type": "text",
                                     "instructions": "",
-                                    "required": 0,
+                                    "required": 1,
                                     "conditional_logic": 0,
                                     "wrapper": {
                                         "width": "",
@@ -1550,7 +1550,7 @@
                                     "name": "url",
                                     "type": "url",
                                     "instructions": "",
-                                    "required": 0,
+                                    "required": 1,
                                     "conditional_logic": 0,
                                     "wrapper": {
                                         "width": "",
@@ -1741,6 +1741,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1477975725
+    "modified": 1478033921
 }
-

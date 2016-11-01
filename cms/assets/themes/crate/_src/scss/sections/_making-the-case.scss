@@ -1,0 +1,27 @@
+.remove-underline {
+	text-decoration: none !important;
+}
+
+
+.mtc-grid-item {
+	background: $white;
+	box-shadow: 4px 6px 9px 0px rgba(0,0,0,0.15);
+	border-top: 15px solid $teal;
+	text-align: center;
+	padding-top: 50px;
+	padding-left: 60px;
+	padding-right: 60px;
+	padding-bottom: 50px;
+	margin-right: 1.5%;
+	margin-left: 1.5%;
+	margin-bottom: 1.5%;
+	min-height: 230px;
+}
+
+.mtc-grid-item:hover {
+	background: $teal;
+
+	span, h3, p {
+		color: $white;
+	}
+}

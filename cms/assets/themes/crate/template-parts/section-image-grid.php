@@ -16,7 +16,8 @@
 		<div class="content-section-grid container text-grid">
 				<?php while ( have_rows( 'items' ) ) : the_row(); ?>
 					<div class="grid-item grid-item-4">
-						<img src="<?php the_sub_field('image'); ?>">
+						<center><img src="<?php the_sub_field('image'); ?>"></center>
+						<p></p>
 				
 				</div>
 				<?php endwhile; ?>
