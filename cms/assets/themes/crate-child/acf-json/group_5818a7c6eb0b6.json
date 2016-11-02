@@ -1,0 +1,72 @@
+{
+    "key": "group_5818a7c6eb0b6",
+    "title": "Learning Lab Community",
+    "fields": [
+        {
+            "key": "field_5818a7d429d65",
+            "label": "Logo for light backgrounds",
+            "name": "logo",
+            "type": "image",
+            "instructions": "Upload a logo for this Learning Lab Community with colors suitable for displaying against a light background.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "id",
+            "preview_size": "thumbnail",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": ""
+        },
+        {
+            "key": "field_58193a0a034bd",
+            "label": "Logo for dark backgrounds",
+            "name": "logo_light",
+            "type": "image",
+            "instructions": "Upload a logo for this Learning Lab Community with colors suitable for displaying against a dark (usually blue) background.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "id",
+            "preview_size": "thumbnail",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "communities"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "description": "",
+    "modified": 1478048361
+}

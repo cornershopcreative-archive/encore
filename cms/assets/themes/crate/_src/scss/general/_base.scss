@@ -136,6 +136,14 @@ h6 {
 		margin-top: rem(10);
 		margin-bottom: rem(10);
 	}
+
+	.button-group {
+		margin: rem(40) 0;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
 }
 
 /**

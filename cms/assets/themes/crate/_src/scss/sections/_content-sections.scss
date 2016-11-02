@@ -23,6 +23,15 @@
 	text-align: center;
 }
 
+.section-subtitle {
+	font-family: Baskerville;
+	font-size: 22px;
+	color: $black;
+	letter-spacing: 0px;
+	line-height: 32px;
+	text-align: center !important;
+}
+
 /**
  * Grid sections.
  */
@@ -58,6 +67,40 @@
 
 		@include nested( 10 ) {
 			width: span(2);
+		}
+	}
+}
+
+
+.grid-item-4 {
+	margin: 0 0 20px 0;
+
+	@include breakpoint( $tablet ) {
+
+		@include nested( 12 ) {
+			width: span(3);
+			margin-left: ( span(1) / 2 ) + gutter();
+			margin-right: ( span(1) / 2 ) + gutter();
+		}
+	}
+
+	@include breakpoint( $desktop ) {
+
+		@include nested( 16 ) {
+			width: span(2);
+		}
+	}
+	}
+
+.grid-item-2 {
+	margin: rem(30) auto;
+
+	@include breakpoint( $tablet ) {
+
+		@include nested( 10 ) {
+			width: span(4);
+			margin-left: ( span(1) / 2 );
+			margin-right: ( span(1) / 2 ) + gutter();
 		}
 	}
 }
