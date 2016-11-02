@@ -49,14 +49,14 @@
                 },
                 {
                     "key": "58174a0a89593",
-                    "name": "image_grid",
+                    "name": "image-grid",
                     "label": "Image Grid",
                     "display": "block",
                     "sub_fields": [
                         {
                             "key": "field_58174a9e89594",
-                            "label": "Title",
-                            "name": "title",
+                            "label": "Heading",
+                            "name": "heading",
                             "type": "text",
                             "instructions": "",
                             "required": 0,
@@ -73,12 +73,12 @@
                             "maxlength": ""
                         },
                         {
-                            "key": "field_58174aa989595",
-                            "label": "Logos",
-                            "name": "logos",
+                            "key": "field_58181db153bd0",
+                            "label": "Items",
+                            "name": "items",
                             "type": "repeater",
                             "instructions": "",
-                            "required": 0,
+                            "required": 1,
                             "conditional_logic": 0,
                             "wrapper": {
                                 "width": "",
@@ -86,13 +86,13 @@
                                 "id": ""
                             },
                             "collapsed": "",
-                            "min": "",
+                            "min": 1,
                             "max": "",
-                            "layout": "table",
+                            "layout": "block",
                             "button_label": "Add Row",
                             "sub_fields": [
                                 {
-                                    "key": "field_58174ab489596",
+                                    "key": "field_58181dc853bd1",
                                     "label": "Image",
                                     "name": "image",
                                     "type": "image",
@@ -114,6 +114,22 @@
                                     "max_height": "",
                                     "max_size": "",
                                     "mime_types": ""
+                                },
+                                {
+                                    "key": "field_58181dd753bd2",
+                                    "label": "URL",
+                                    "name": "url",
+                                    "type": "url",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "placeholder": ""
                                 }
                             ]
                         }
@@ -861,7 +877,7 @@
                 },
                 {
                     "key": "581747e4f5e61",
-                    "name": "text_grid",
+                    "name": "text-grid",
                     "label": "Text Grid",
                     "display": "block",
                     "sub_fields": [
@@ -898,8 +914,8 @@
                                 "id": ""
                             },
                             "choices": {
-                                "background_gray": "Gray",
-                                "background_white: White": "background_white: White"
+                                "gray-background": "Gray",
+                                "white-background": "White"
                             },
                             "allow_null": 0,
                             "other_choice": 0,
@@ -946,10 +962,10 @@
                         {
                             "key": "field_5817483cf5e65",
                             "label": "Items",
-                            "name": "items",
+                            "name": "grid-items",
                             "type": "repeater",
                             "instructions": "",
-                            "required": 0,
+                            "required": 1,
                             "conditional_logic": 0,
                             "wrapper": {
                                 "width": "",
@@ -957,9 +973,9 @@
                                 "id": ""
                             },
                             "collapsed": "",
-                            "min": "",
+                            "min": 1,
                             "max": "",
-                            "layout": "table",
+                            "layout": "block",
                             "button_label": "Add Row",
                             "sub_fields": [
                                 {
@@ -999,6 +1015,22 @@
                                     "prepend": "",
                                     "append": "",
                                     "maxlength": ""
+                                },
+                                {
+                                    "key": "field_5818167807be5",
+                                    "label": "URL",
+                                    "name": "url",
+                                    "type": "url",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "placeholder": ""
                                 }
                             ]
                         }
@@ -1451,7 +1483,7 @@
                 },
                 {
                     "key": "58174ba69709a",
-                    "name": "making_the_case",
+                    "name": "making-the-case",
                     "label": "Making the Case",
                     "display": "block",
                     "sub_fields": [
@@ -1461,7 +1493,7 @@
                             "name": "items",
                             "type": "repeater",
                             "instructions": "",
-                            "required": 0,
+                            "required": 1,
                             "conditional_logic": 0,
                             "wrapper": {
                                 "width": "",
@@ -1469,9 +1501,9 @@
                                 "id": ""
                             },
                             "collapsed": "",
-                            "min": "",
+                            "min": 1,
                             "max": "",
-                            "layout": "table",
+                            "layout": "block",
                             "button_label": "Add Row",
                             "sub_fields": [
                                 {
@@ -1499,7 +1531,7 @@
                                     "name": "source_name",
                                     "type": "text",
                                     "instructions": "",
-                                    "required": 0,
+                                    "required": 1,
                                     "conditional_logic": 0,
                                     "wrapper": {
                                         "width": "",
@@ -1518,7 +1550,7 @@
                                     "name": "url",
                                     "type": "url",
                                     "instructions": "",
-                                    "required": 0,
+                                    "required": 1,
                                     "conditional_logic": 0,
                                     "wrapper": {
                                         "width": "",
@@ -1716,5 +1748,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1478049407
+    "modified": 1478049682
 }

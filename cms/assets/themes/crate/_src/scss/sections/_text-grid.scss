@@ -1,0 +1,43 @@
+.gray-background {
+	background-color: #F8F8F8;
+	opacity: .9;
+	padding-top: 50px;
+	padding-bottom: 50px;
+}
+
+.text-grid {
+	margin-top: 50px;
+}
+
+.grid-item-name {
+	font-family: Avenir Next;
+	font-weight: bold;
+	font-size: 21px;
+	color: $black;
+	line-height: 32px;
+	}
+
+.grid-item-title {
+	opacity: 0.48;
+	font-family: Avenir Next;
+	font-weight: bold;
+	font-size: 15px;
+	color: #2D2D2D;
+	letter-spacing: 0.5px;
+	line-height: 22px;
+	text-transform: uppercase;
+}
+
+	.text-grid-item {
+		position: relative; // So these are rendered on top of .section-circle-grid:before.
+		margin-top: 0;
+		margin-bottom: rem(50);
+		text-align: center;
+
+		@include breakpoint( $tablet ) {
+			width: rem(250);
+			margin-left: rem(55);
+			margin-right: rem(55);
+			padding: 0;
+		}
+	}
