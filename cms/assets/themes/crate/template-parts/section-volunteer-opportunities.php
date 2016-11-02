@@ -20,6 +20,7 @@ if ( get_transient( 'vmatch_basic' ) ) {
 	$query = array(
 		'location' => 'United States',
 		'sortCriteria' => 'update',
+		'numberOfResults' => 18,
 	);
 
 	$results = $api->searchOrganizations( $query, 'org detail' );
@@ -30,7 +31,7 @@ if ( get_transient( 'vmatch_basic' ) ) {
 	$organizations = $results['organizations'];
 
 	// Cache them
-	set_transient( 'vmatch_basic', $organizations, 10 * MINUTE_IN_SECONDS );
+	set_transient( 'vmatch_basic', $organizations, 5 * MINUTE_IN_SECONDS );
 }
 
 
@@ -54,7 +55,7 @@ if ( get_transient( 'vmatch_basic' ) ) {
 
 ?>
 
-<div class="content-section section-volunteer-opportunities">
+<div class="content-section section-volunteer-opportunities" data-page="1">
 
 	<h2 class="section-title">Volunteer Opportunities</h2>
 
@@ -86,4 +87,24 @@ if ( get_transient( 'vmatch_basic' ) ) {
 		<?php endforeach; ?>
 	</div>
 
+	<div class="section-title">
+		<a class="button more" href="#">Show More</a>
+	</div>
 </div>
+
+<script id="volunteer-opportunity" type="x-tmpl-mustache">
+	<article class="grid-item grid-item-3">
+		<div class="entry-image">
+			{{{imagehtml}}}
+		</div>
+		<h3 class="grid-item-heading">
+			<a href="{{{url}}}" target="_blank">{{name}}</a>
+		</h3>
+		<div class="grid-item-blurb">
+			<p>{{{summary}}}&nbsp;<a href="{{url}}" class="more" target="_blank">More</a></p>
+		</div>
+		<div class="grid-item-meta">
+			{{city}}, {{region}}
+		</div>
+	</article>
+</script>

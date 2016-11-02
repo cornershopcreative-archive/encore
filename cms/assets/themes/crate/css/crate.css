@@ -1652,4 +1652,54 @@ img {
   font-family: Avenir Next;
   line-height: 28px; }
 
+.section-volunteer-opportunities {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  background-color: #e7e7e4; }
+  .section-volunteer-opportunities .grid-item {
+    position: relative;
+    padding: 20px;
+    border: 1px solid #d8d8d8;
+    background-color: white; }
+    .section-volunteer-opportunities .grid-item a {
+      text-decoration: none; }
+  .section-volunteer-opportunities img {
+    margin: 0 auto;
+    max-width: 240px;
+    width: 100%; }
+  .section-volunteer-opportunities .grid-item-3 {
+    margin: 1.25rem auto; }
+    @media (min-width: 640px) {
+      .section-volunteer-opportunities .grid-item-3 {
+        margin-right: 2.27273%;
+        margin-left: 2.27273%;
+        width: 31.81818%; } }
+    @media (min-width: 1280px) {
+      .section-volunteer-opportunities .grid-item-3 {
+        width: 28.57143%; } }
+  .section-volunteer-opportunities .no-image {
+    padding-top: 60%;
+    width: 100%;
+    height: 0;
+    background-color: transparent; }
+  .section-volunteer-opportunities .grid-item-heading {
+    margin: 0.8rem 0;
+    font-size: 1.3rem;
+    line-height: 1.4rem; }
+  .section-volunteer-opportunities .grid-item-blurb {
+    margin-bottom: 30px; }
+  .section-volunteer-opportunities .more {
+    text-transform: lowercase;
+    font-weight: 700; }
+    .section-volunteer-opportunities .more:after {
+      content: "\00a0»"; }
+  .section-volunteer-opportunities .grid-item-meta {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    text-align: right;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 0.8rem; }
+
 /*# sourceMappingURL=maps/crate.css.map */
