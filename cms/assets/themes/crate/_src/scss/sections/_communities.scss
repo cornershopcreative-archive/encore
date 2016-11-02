@@ -13,8 +13,10 @@
 		flex-direction: column;
 		line-height: rem(24);
 		text-align: center;
+		margin-top: rem(40);
 
 		@include breakpoint( $tablet ) {
+			margin-top: rem(50);
 			line-height: rem(30);
 		}
 

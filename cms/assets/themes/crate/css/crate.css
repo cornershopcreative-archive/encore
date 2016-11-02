@@ -1544,10 +1544,12 @@ img {
   display: flex;
   -ms-flex-direction: column;
       flex-direction: column;
+  margin-top: 2.5rem;
   text-align: center;
   line-height: 1.5rem; }
   @media (min-width: 640px) {
     .section-communities .grid-item {
+      margin-top: 3.125rem;
       line-height: 1.875rem; } }
   .section-communities .grid-item img {
     margin: 0.875rem auto;
