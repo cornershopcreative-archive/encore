@@ -26,6 +26,11 @@
 			margin-top: 0;
 		}
 	}
+
+	// Make hovered buttons' text match this element's background.
+	.button-white:hover {
+		color: $deep-blue;
+	}
 }
 
 .hero-video {

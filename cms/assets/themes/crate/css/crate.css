@@ -444,6 +444,11 @@ h6 {
   margin-top: 0.625rem;
   margin-bottom: 0.625rem; }
 
+.prose-compact .button-group, .prose-compact .facetwp-pager {
+  margin: 2.5rem 0; }
+  .prose-compact .button-group:last-child, .prose-compact .facetwp-pager:last-child {
+    margin-bottom: 0; }
+
 /**
  * Generic alignment classes, for images and captions inserted via WYSIWYG.
  */
@@ -1249,6 +1254,8 @@ img {
       padding: 2.5rem 3.75rem; }
       .hero-text:first-child {
         margin-top: 0; } }
+  .hero-text .button-white:hover {
+    color: #0047c1; }
 
 .hero-video {
   display: none; }
