@@ -198,6 +198,52 @@ function crate_post_types() {
 	);
 
 	register_post_type('stories', $args);
+
+	// Learning Lab Communities
+	// Post Type contains Learning Lab Communities
+	// Plural: LL Communities
+	// Singular: LL Community
+	// URL: /communities/
+
+	$labels = array(
+		'name' 			=> _x( 'Learning Lab Community', 'Post Type General Name', 'crate' ),
+		'singular_name' => _x( 'Learning Lab Community', 'Post Type Singular Name', 'crate' ),
+		'menu_name' 	=> __( 'LL Communities', 'crate' ),
+		'parent_item_colon' => __( 'Parent Community', 'crate' ),
+		'all_items' 	=> __( 'All Learning Lab Communities', 'crate' ),
+		'view_item' 	=> __( 'View Community', 'crate' ),
+		'add_new_item' 	=> __( 'Add New Learning Lab Community', 'crate' ),
+		'add_new' 		=> __( 'Add New Learning Lab Community', 'crate' ),
+		'edit_item' 	=> __( 'Edit Community', 'crate' ),
+		'update_item' 	=> __( 'Update Community', 'crate' ),
+		'search_items' 	=> __( 'Search Learning Lab Communities', 'crate' ),
+		'not_found' 	=> __( 'No Learning Lab Communities found', 'crate' ),
+		'not_found_in_trash' => __( 'No Learning Lab Communities found in trash', 'crate' ),
+	);
+
+	$args = array(
+		'label' 		=> __( 'community', 'crate' ),
+		'description' 	=> __( 'Learning Lab Community', 'crate' ),
+		'labels' 		=> $labels,
+		'supports' 		=> array( 'title', 'editor', 'excerpt', 'thumbnail', ),
+		'taxonomies' 	=> array(),
+		'hierarchical' 	=> true,
+		'public' 		=> true,
+		'show_ui' 		=> true,
+		'show_in_menu' 	=> true,
+		'show_in_nav_menus' => true,
+		'show_in_admin_bar' => true,
+		'menu_position' => 5,
+		'menu_icon' 	=> 'dashicons-admin-multisite',
+		'rewrite' 		=> array( 'slug' => 'communities' ),
+		'can_export' 	=> true,
+		'has_archive' 	=> false,
+		'exclude_from_search' => false,
+		'publicly_queryable' => true,
+		'capability_type' => 'post',
+	);
+
+	register_post_type('communities', $args);
 }
 
 add_action( 'init', 'crate_post_types', 0 );

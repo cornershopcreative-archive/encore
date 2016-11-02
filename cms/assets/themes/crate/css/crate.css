@@ -550,11 +550,11 @@ h6 {
     .button.button-gold:hover {
       background-color: #ff8b18;
       color: #fff; }
-  .button.button-lime {
+  .button.button-lime, .section-communities .grid-item .button.button-gold:hover {
     border-color: #aacc00;
     background-color: transparent;
     color: #aacc00; }
-    .button.button-lime:hover {
+    .button.button-lime:hover, .section-communities .grid-item .button.button-gold:hover {
       background-color: #aacc00;
       color: #fff; }
   .button.button-teal {
@@ -599,52 +599,52 @@ h6 {
     .button.button-twitter:hover {
       background-color: #4099ff;
       color: #fff; }
-  .button-solid.button-gold {
+  .button-solid.button-gold, .section-communities .grid-item .button-gold:hover {
     background-color: #ff8b18;
     color: #fff; }
-    .button-solid.button-gold:hover {
+    .button-solid.button-gold:hover, .section-communities .grid-item .button-gold:hover {
       background-color: transparent;
       color: #ff8b18; }
-  .button-solid.button-lime {
+  .button-solid.button-lime, .section-communities .grid-item .button-gold:hover {
     background-color: #aacc00;
     color: #fff; }
-    .button-solid.button-lime:hover {
+    .button-solid.button-lime:hover, .section-communities .grid-item .button-gold:hover {
       background-color: transparent;
       color: #aacc00; }
-  .button-solid.button-teal {
+  .button-solid.button-teal, .section-communities .grid-item .button-teal.button-gold:hover {
     background-color: #3dbf9a;
     color: #fff; }
-    .button-solid.button-teal:hover {
+    .button-solid.button-teal:hover, .section-communities .grid-item .button-teal.button-gold:hover {
       background-color: transparent;
       color: #3dbf9a; }
-  .button-solid.button-bright-blue {
+  .button-solid.button-bright-blue, .section-communities .grid-item .button-bright-blue.button-gold:hover {
     background-color: #00c7f5;
     color: #fff; }
-    .button-solid.button-bright-blue:hover {
+    .button-solid.button-bright-blue:hover, .section-communities .grid-item .button-bright-blue.button-gold:hover {
       background-color: transparent;
       color: #00c7f5; }
-  .button-solid.button-deep-blue {
+  .button-solid.button-deep-blue, .section-communities .grid-item .button-deep-blue.button-gold:hover {
     background-color: #0047c1;
     color: #fff; }
-    .button-solid.button-deep-blue:hover {
+    .button-solid.button-deep-blue:hover, .section-communities .grid-item .button-deep-blue.button-gold:hover {
       background-color: transparent;
       color: #0047c1; }
-  .button-solid.button-white {
+  .button-solid.button-white, .section-communities .grid-item .button-white.button-gold:hover {
     background-color: #fff;
     color: #fff; }
-    .button-solid.button-white:hover {
+    .button-solid.button-white:hover, .section-communities .grid-item .button-white.button-gold:hover {
       background-color: transparent;
       color: #fff; }
-  .button-solid.button-facebook {
+  .button-solid.button-facebook, .section-communities .grid-item .button-facebook.button-gold:hover {
     background-color: #3b5998;
     color: #fff; }
-    .button-solid.button-facebook:hover {
+    .button-solid.button-facebook:hover, .section-communities .grid-item .button-facebook.button-gold:hover {
       background-color: transparent;
       color: #3b5998; }
-  .button-solid.button-twitter {
+  .button-solid.button-twitter, .section-communities .grid-item .button-twitter.button-gold:hover {
     background-color: #4099ff;
     color: #fff; }
-    .button-solid.button-twitter:hover {
+    .button-solid.button-twitter:hover, .section-communities .grid-item .button-twitter.button-gold:hover {
       background-color: transparent;
       color: #4099ff; }
 
@@ -1514,13 +1514,13 @@ img {
   left: 0; }
 
 /**
- * Styles for Learning Lab Communities (Locations) sections.
+ * Styles for Learning Lab Communities sections.
  */
-.section-locations .content-section-grid {
+.section-communities .content-section-grid {
   -ms-flex-align: stretch;
       align-items: stretch; }
 
-.section-locations .grid-item {
+.section-communities .grid-item {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-direction: column;
@@ -1528,19 +1528,19 @@ img {
   text-align: center;
   line-height: 1.5rem; }
   @media (min-width: 640px) {
-    .section-locations .grid-item {
+    .section-communities .grid-item {
       line-height: 1.875rem; } }
-  .section-locations .grid-item img {
-    margin: 0.625rem auto;
+  .section-communities .grid-item img {
+    margin: 0.875rem auto;
     width: 8.9375rem;
     height: auto; }
-  .section-locations .grid-item .grid-item-blurb {
+  .section-communities .grid-item .grid-item-blurb {
     -ms-flex-positive: 1;
         flex-grow: 1; }
-  .section-locations .grid-item .button-group, .section-locations .grid-item .facetwp-pager {
+  .section-communities .grid-item .button-group, .section-communities .grid-item .facetwp-pager {
     margin-top: 1.25rem; }
     @media (min-width: 640px) {
-      .section-locations .grid-item .button-group, .section-locations .grid-item .facetwp-pager {
+      .section-communities .grid-item .button-group, .section-communities .grid-item .facetwp-pager {
         margin-top: 1.875rem; } }
 
 .site-footer {

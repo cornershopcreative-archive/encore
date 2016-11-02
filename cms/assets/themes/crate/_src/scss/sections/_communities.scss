@@ -1,8 +1,8 @@
 /**
- * Styles for Learning Lab Communities (Locations) sections.
+ * Styles for Learning Lab Communities sections.
  */
 
-.section-locations {
+.section-communities {
 
 	.content-section-grid {
 		align-items: stretch;
@@ -21,7 +21,7 @@
 		img {
 			width: rem(143);
 			height: auto;
-			margin: rem(10) auto;
+			margin: rem(14) auto;
 		}
 
 		.grid-item-blurb {
@@ -33,6 +33,14 @@
 
 			@include breakpoint( $tablet ) {
 				margin-top: rem(30);
+			}
+		}
+
+		.button-gold {
+
+			&:hover {
+				@extend .button-solid;
+				@extend .button-lime;
 			}
 		}
 	}

@@ -1660,7 +1660,7 @@
                 },
                 {
                     "key": "5818a82f9e909",
-                    "name": "locations",
+                    "name": "communities",
                     "label": "Learning Lab Communities",
                     "display": "block",
                     "sub_fields": [
@@ -1697,6 +1697,13 @@
                 "operator": "==",
                 "value": "page"
             }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "communities"
+            }
         ]
     ],
     "menu_order": -1,
@@ -1709,5 +1716,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1478021785
+    "modified": 1478049407
 }
