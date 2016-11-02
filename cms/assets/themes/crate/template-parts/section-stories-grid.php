@@ -52,11 +52,9 @@
 			<?php endwhile; ?>
 		</div>
 
-		<?php if ( $show_pager ) : ?>
-			<div class="button-group grid-pager container">
-				<a class="button button-gold fwp-load-more" data-text-more="<?php esc_attr_e( 'Load More', 'crate' ); ?>" data-text-loading="<?php esc_attr_e( 'Loading...', 'crate' ); ?>"><?php esc_html_e( 'Load More', 'crate' ); ?></a>
-			</div>
-		<?php endif; ?>
+		<?php if ( $show_pager ) :
+			echo facetwp_display( 'pager' );
+		endif; ?>
 
 		<?php wp_reset_postdata(); ?>
 
