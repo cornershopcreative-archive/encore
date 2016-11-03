@@ -95,22 +95,6 @@
 
 		<?php wp_reset_postdata(); ?>
 
-		<?php if ( crate_item_has_link( 'primary' ) || crate_item_has_link( 'secondary' ) ) : ?>
-			<div class="button-group">
-
-				<?php crate_item_link( array(
-					'class' => 'button button-gold button-solid',
-				), 'primary' ); ?>
-					<?php echo esc_html( get_sub_field( 'primary_link_text' ) ); ?>
-				<?php crate_item_link_close( 'primary' ); ?>
-
-				<?php crate_item_link( array(
-					'class' => 'button button-gold',
-				), 'secondary' ); ?>
-					<?php echo esc_html( get_sub_field( 'secondary_link_text' ) ); ?>
-				<?php crate_item_link_close( 'secondary' ); ?>
-
-			</div>
-		<?php endif; ?>
+		<?php crate_section_links(); ?>
 
 	</div>

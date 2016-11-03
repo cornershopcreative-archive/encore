@@ -4,14 +4,13 @@
  * archives).
  */
 
+/**
+ * When viewing a single post of a type that has a pseudo-archive, highlight
+ * the pseudo-archive page and its ancestors in nav menus.
+ */
 function crate_pseudo_archive_nav_item_class( $classes, $item, $args ) {
 
-	$pseudo_archive_id = false;
-
-	if ( is_singular( 'stories' ) ) {
-		// Get the Stories pseudo-archive page.
-		$pseudo_archive_id = get_field( 'page_for_stories', 'option' );
-	}
+	$pseudo_archive_id = crate_get_pseudo_archive_id();
 
 	// Only bother with the following logic if there actually is a
 	// pseudo-archive, AND this menu item points to post.
@@ -35,3 +34,36 @@ function crate_pseudo_archive_nav_item_class( $classes, $item, $args ) {
 	return $classes;
 }
 add_filter( 'nav_menu_css_class', 'crate_pseudo_archive_nav_item_class', 10, 3 );
+
+/**
+ * When looking for a post type archive link, use the post type's
+ * pseudo-archive's permalink if there is one.
+ */
+function crate_pseudo_archive_link( $link, $post_type ) {
+
+	// Get pseudo-archive ID, if any.
+	$pseudo_archive_id = get_field( 'page_for_' . $post_type, 'option' );
+
+	// If a pseudo-archive was found, use its permalink.
+	if ( $pseudo_archive_id ) {
+		$link = get_permalink( $pseudo_archive_id );
+	}
+
+	return $link;
+}
+add_filter( 'post_type_archive_link', 'crate_pseudo_archive_link', 10, 2 );
+
+/**
+ * Get the ID of the current post's pseudo-archive, if any.
+ */
+function crate_get_pseudo_archive_id( $post = 0 ) {
+
+	$post = get_post( $post );
+
+	// If no post found, bail.
+	if ( ! $post ) {
+		return;
+	}
+
+	return get_field( 'page_for_' . $post->post_type, 'option' );
+}

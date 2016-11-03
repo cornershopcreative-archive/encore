@@ -158,3 +158,79 @@ function crate_section_query( $query_vars ) {
 
 	return new WP_Query( $query_vars );
 }
+
+/**
+ * Output HTML for a 'Back to [post type archive]' link.
+ */
+function crate_back_link( $args = array()) {
+
+	// Set default arguments.
+	$args = wp_parse_args( $args, array(
+		'text' => '', // If this is blank/empty, "Back to [archive name]" will be used.
+		'class' => 'back-link',
+	) );
+
+	global $post;
+
+	// Get the pseudo-archive ID, if any.
+	$pseudo_archive_id = crate_get_pseudo_archive_id( $post );
+
+	// If no link text was set, we'll use "Back to [archive name]". So first
+	// we'll need to figure out the archive name.
+	if ( empty( $args['text'] ) ) {
+
+		// If a pseudo-archive exists, use its title.
+		if ( $pseudo_archive_id ) {
+			$archive_name = get_the_title( $pseudo_archive_id );
+		}
+		// If no pseudo-archive exists, use the real post type archive link and the
+		// post type's plural name.
+		else {
+			$post_type = get_post_type_object( $post->post_type );
+			$archive_name = $post_type->labels->name;
+		}
+
+		// Prefix the archive name with "Back to".
+		$args['text'] = sprintf(
+			__( 'Back to %s', 'crate' ),
+			$archive_name
+		);
+	}
+
+	?>
+	<a href="<?php echo esc_url( get_post_type_archive_link( $post->post_type ) ); ?>" class="<?php echo esc_attr( $args['class'] ); ?>"><?php
+		echo esc_html( $args['text'] );
+	?></a>
+	<?php
+}
+
+/**
+ * Output 'primary' and 'secodary' links for a section.
+ */
+function crate_section_links() {
+
+	// If there's neither a primary nor a secondary link for this section, bail.
+	if ( ! crate_item_has_link( 'primary' ) && ! crate_item_has_link( 'secondary' ) ) {
+		return;
+	}
+
+	?>
+
+	<div class="button-group">
+
+		<?php crate_item_link( array(
+			'class' => 'button button-gold button-solid',
+		), 'primary' ); ?>
+			<?php echo esc_html( get_sub_field( 'primary_link_text' ) ); ?>
+		<?php crate_item_link_close( 'primary' ); ?>
+
+		<?php crate_item_link( array(
+			'class' => 'button button-gold',
+		), 'secondary' ); ?>
+			<?php echo esc_html( get_sub_field( 'secondary_link_text' ) ); ?>
+		<?php crate_item_link_close( 'secondary' ); ?>
+
+	</div>
+
+	<?php
+}

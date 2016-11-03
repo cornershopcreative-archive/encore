@@ -19,7 +19,7 @@ function crate_post_types() {
 	// URL: /partners/
 
 	$labels = array(
-		'name' 			=> _x( 'Partner', 'Post Type General Name', 'text_domain' ),
+		'name' 			=> _x( 'Partners', 'Post Type General Name', 'text_domain' ),
 		'singular_name' => _x( 'Partner', 'Post Type Singular Name', 'text_domain' ),
 		'menu_name' 	=> __( 'Partners', 'text_domain' ),
 		'parent_item_colon' => __( '', 'text_domain' ),
@@ -160,7 +160,7 @@ function crate_post_types() {
 	// URL: /stories/
 
 	$labels = array(
-		'name' 			=> _x( 'Story', 'Post Type General Name', 'text_domain' ),
+		'name' 			=> _x( 'Stories', 'Post Type General Name', 'text_domain' ),
 		'singular_name' => _x( 'Story', 'Post Type Singular Name', 'text_domain' ),
 		'menu_name' 	=> __( 'Stories', 'text_domain' ),
 		'parent_item_colon' => __( '', 'text_domain' ),
@@ -191,7 +191,7 @@ function crate_post_types() {
 		'menu_icon' 	=> 'dashicons-money',
 		'rewrite' 		=> array( 'slug' => 'stories' ),
 		'can_export' 	=> true,
-		'has_archive' 	=> false,
+		'has_archive' 	=> true,
 		'exclude_from_search' => false,
 		'publicly_queryable' => true,
 		'capability_type' => 'post',
@@ -206,7 +206,7 @@ function crate_post_types() {
 	// URL: /communities/
 
 	$labels = array(
-		'name' 			=> _x( 'Learning Lab Community', 'Post Type General Name', 'crate' ),
+		'name' 			=> _x( 'Learning Lab Communities', 'Post Type General Name', 'crate' ),
 		'singular_name' => _x( 'Learning Lab Community', 'Post Type Singular Name', 'crate' ),
 		'menu_name' 	=> __( 'LL Communities', 'crate' ),
 		'parent_item_colon' => __( 'Parent Community', 'crate' ),

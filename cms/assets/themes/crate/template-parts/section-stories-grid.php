@@ -9,6 +9,11 @@
 		<?php if ( $title = get_sub_field( 'title' ) ): ?>
 			<h2 class="section-title"><?php echo wp_kses_post( wptexturize( $title ) ); ?></h2>
 		<?php endif; ?>
+
+		<?php if ( $subtitle = get_sub_field( 'subtitle' ) ): ?>
+			<p class="section-subtitle"><?php echo wp_kses_post( wptexturize( $subtitle ) ); ?></p>
+		<?php endif; ?>
+
 		<?php
 
 		$show_pager = get_sub_field( 'show_pager' );
@@ -57,5 +62,7 @@
 		endif; ?>
 
 		<?php wp_reset_postdata(); ?>
+
+		<?php crate_section_links(); ?>
 
 	</div>

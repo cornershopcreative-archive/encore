@@ -1334,7 +1334,7 @@ img {
     line-height: 1.2; }
 
 /**
- * Action links below hero (back to post type archive, etc.)
+ * Styles for action links below hero/content (back to post type archive, etc.)
  */
 @media (min-width: 640px) {
   .entry-actions {
@@ -1368,6 +1368,12 @@ img {
     margin: 0 1.25rem 0 0;
     text-transform: uppercase;
     font-size: 1rem; }
+
+.entry-actions-after {
+  display: block;
+  border-top: 1px solid #d8d8d8; }
+  .entry-actions-after .button-group, .entry-actions-after .facetwp-pager {
+    margin: 3.75rem 0; }
 
 /**
  * Styles for Circle Grid sections.
