@@ -211,7 +211,8 @@
 					}
 				}
 
-				&.current-menu-item a {
+				&.current-menu-item a,
+				&.current-menu-ancestor a {
 					opacity: 1.0;
 				}
 			}

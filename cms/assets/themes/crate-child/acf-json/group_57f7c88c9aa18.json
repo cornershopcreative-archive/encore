@@ -146,6 +146,44 @@
             "maxlength": ""
         },
         {
+            "key": "field_581a50e22e750",
+            "label": "Page Structure",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_581a50ed2e751",
+            "label": "Stories Archive Page",
+            "name": "page_for_stories",
+            "type": "post_object",
+            "instructions": "When a user views an individual Story post, the \"Back\" link near the top of the page will link to this page.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "page"
+            ],
+            "taxonomy": [],
+            "allow_null": 0,
+            "multiple": 0,
+            "return_format": "id",
+            "ui": 1
+        },
+        {
             "key": "field_57fbf37a6e7ea",
             "label": "Text",
             "name": "",
@@ -411,5 +449,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1476906122
+    "modified": 1478119801
 }
