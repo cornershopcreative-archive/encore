@@ -1,0 +1,78 @@
+.section-volunteer-opportunities {
+
+	background-color: $gray-light;
+	padding-top: 2rem;
+	padding-bottom: 2rem;
+
+	$grid-item-padding: 20px;
+
+	.grid-item {
+		border: 1px solid $silver;
+		background-color: white;
+		padding: $grid-item-padding;
+		a {
+			text-decoration: none;
+		}
+		position: relative;
+	}
+
+	img {
+		margin: 0 auto;
+		width: 100%;
+		max-width: 240px;
+	}
+
+	.grid-item-3 {
+		margin: rem(20) auto;
+
+		@include breakpoint( $tablet ) {
+			@include nested( 9 ) {
+				width: span( 3 );
+				margin-left: gutter();
+				margin-right: gutter();
+			}
+		}
+
+		@include breakpoint( $desktop ) {
+			@include nested( 10 ) {
+				width: span( 3 );
+			}
+		}
+	}
+
+	.no-image {
+		width: 100%;
+		height: 0;
+		padding-top: 60%;
+		background-color: transparent;
+	}
+
+	.grid-item-heading {
+		font-size: 1.3rem;
+		line-height: 1.4rem;
+		margin: 0.8rem 0;
+	}
+
+	.grid-item-blurb {
+		margin-bottom: 30px; // this makes room for the city
+	}
+
+	.more {
+		text-transform: lowercase;
+		font-weight: bold;
+		&:after {
+			content: "\00a0»";
+		}
+	}
+
+	.grid-item-meta {
+		font-weight: bold;
+		text-transform: uppercase;
+		font-size: 0.8rem;
+		position: absolute;
+		bottom: $grid-item-padding;
+		right: $grid-item-padding;
+		text-align: right;
+	}
+
+}

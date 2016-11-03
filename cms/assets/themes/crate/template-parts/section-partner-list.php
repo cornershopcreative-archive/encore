@@ -1,53 +1,24 @@
 <?php
 /**
- * The template for displaying Learning Lab Partners sections.
+ * The template for displaying Partner List sections.
  */
 ?>
 
-	<div class="content-section section-learning-lab-partners">
+	<div class="content-section section-partner-list">
 
 		<?php if ( $title = get_sub_field( 'title' ) ): ?>
 			<h2 class="section-title"><?php echo wp_kses_post( wptexturize( $title ) ); ?></h2>
 		<?php endif; ?>
 		<?php
 
-		// Set up custom query vars.
 		$show_pager = get_sub_field( 'show_pager' );
-		$locations = get_sub_field( 'location' );
-		$topics = get_sub_field( 'topic' );
-		$posts_per_page = get_sub_field( 'items_per_page' );
-		if ( $posts_per_page < 1 ) {
-			$posts_per_page = -1;
-		}
-		$partner_query_vars = array(
-			'facetwp' => $show_pager, // Allow filtering/pagination via FWP.
+
+		// Set up custom query.
+		$partner_query = crate_section_query( array(
 			'post_type' => 'partners',
-			'posts_per_page' => $posts_per_page,
-			'meta_query' => array(
-				'learning-lab' => array(
-					'key' => 'options',
-					'value' => 's:12:"learning-lab"',
-					'compare' => 'LIKE',
-				)
-			),
 			'orderby' => 'post_title',
 			'order' => 'ASC',
-			'tax_query' => array(),
-		);
-		if ( ! empty( $locations ) ) :
-			$partner_query_vars['tax_query']['location'] = array(
-				'taxonomy' => 'location',
-				'terms' => $locations,
-			);
-		endif;
-		if ( ! empty( $topics ) ) :
-			$partner_query_vars['tax_query']['topic'] = array(
-				'taxonomy' => 'topic',
-				'terms' => $topics,
-			);
-		endif;
-
-		$partner_query = new WP_Query( $partner_query_vars );
+		) );
 
 		?>
 

@@ -410,6 +410,20 @@ function crate_donate_url() {
 	echo esc_url( crate_get_donate_url() );
 }
 
+/**
+ * Return the Submit Your Story URL as specified on the Site Options page.
+ */
+function crate_get_story_submit_url() {
+	return get_field( 'story_submit_url', 'option' );
+}
+
+/**
+ * Output the Submit Your Story URL as specified on the Site Options page.
+ */
+function crate_story_submit_url() {
+	echo esc_url( crate_get_story_submit_url() );
+}
+
 //-----------------------------------------------------------------------------
 // "Integrations" tab
 //-----------------------------------------------------------------------------

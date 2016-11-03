@@ -281,3 +281,69 @@ class VolunteerMatchAPI {
 VolunteerMatchAPI::init('http://www.volunteermatch.org/api/call',
 												'3d9bd6e429f0381fe484d1e6c085012d',
 												'generationtogeneration');
+
+
+// use ajax to get more pages
+add_action( 'rest_api_init', 'add_vmatch_api');
+
+function add_vmatch_api(){
+  register_rest_route( 'vmatch/v1', '/basic/page/(?P<page>\d+)', array(
+    'methods' => 'GET',
+    'callback' => 'get_vmatch_basic_page',
+  ));
+}
+
+function get_vmatch_basic_page( $data ) {
+
+	$api = new VolunteerMatchAPI();
+
+	$page = isset( $data['page'] ) ? $data['page'] : 2 ;
+
+	if ( get_transient( 'vmatch_basic_' . $page ) ) return get_transient( 'vmatch_basic_' . $page );
+
+	$query = array(
+		'location'     => 'United States',
+		'sortCriteria' => 'update',
+		'numberOfResults' => 18,
+		'pageNumber'   => (int) $page,
+	);
+
+	$results = $api->searchOrganizations( $query, 'org detail' );
+
+	// We can't do anything if VolunteerMatchAPI didn't give us anything useful
+	if ( ! isset( $results['organizations'] ) ) {
+		return array('page' => $page);
+	}
+
+	// If we have something useful, we need to reformat each organization to
+	// conform to what the mustache template needs
+	foreach ( $results['organizations'] as &$org ) {
+		$org = array(
+			'url'       => esc_url( urldecode( $org['vmUrl'] ) ),
+			'imagehtml' => _get_vmatch_org_image_html( $org ),
+			'name'      => esc_html( $org['name'] ),
+			'summary'   => wp_trim_words( wp_kses_post( $org['plaintextDescription'] ), 30 ),
+			'city'      => $org['location']['city'],
+			'region'    => $org['location']['region'],
+		);
+	}
+
+	// Cache them
+	set_transient( 'vmatch_basic_' . $page, $results, 5 * MINUTE_IN_SECONDS );
+	return $results;
+
+}
+
+/**
+ * Converts $org data returned by API into useful image html
+ */
+function _get_vmatch_org_image_html( $org ) {
+	
+	if ( empty( $org['imageUrl'] ) ) return '<div class="no-image"></div>';
+	
+	ob_start(); ?>
+		<a href="<?php echo esc_url( urldecode( $org['vmUrl'] ) ); ?>" target="_blank"><img src="<?php echo esc_url( urldecode( $org['imageUrl'] ) ); ?>" alt="Logo for <?php echo esc_attr( $org['name'] ) ; ?>"></a>
+	<?php
+		
+	return ob_get_clean();
+}

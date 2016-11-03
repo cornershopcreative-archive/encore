@@ -1064,6 +1064,25 @@
                             "maxlength": ""
                         },
                         {
+                            "key": "field_581a932934b79",
+                            "label": "Subtitle",
+                            "name": "subtitle",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
                             "key": "field_580a523ef2e3f",
                             "label": "Filter by Location",
                             "name": "location",
@@ -1368,8 +1387,8 @@
                 },
                 {
                     "key": "581129fc7486c",
-                    "name": "learning-lab-partners",
-                    "label": "Learning Lab Partners",
+                    "name": "partner-list",
+                    "label": "Partner List With Full Content",
                     "display": "block",
                     "sub_fields": [
                         {
@@ -1582,10 +1601,10 @@
                     "display": "block",
                     "sub_fields": [
                         {
-                            "key": "field_581759a294a03",
-                            "label": "Title",
-                            "name": "title",
-                            "type": "text",
+                            "key": "field_581a933d34b7a",
+                            "label": "Title\/Subtitle",
+                            "name": "title_subtitle",
+                            "type": "clone",
                             "instructions": "",
                             "required": 0,
                             "conditional_logic": 0,
@@ -1594,11 +1613,14 @@
                                 "class": "",
                                 "id": ""
                             },
-                            "default_value": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "maxlength": ""
+                            "clone": [
+                                "field_5809931289d39",
+                                "field_581a932934b79"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
                         },
                         {
                             "key": "field_581759a294a04",
@@ -1679,12 +1701,36 @@
                                 "id": ""
                             },
                             "choices": {
-                                "1": "Show \"show more\" button"
+                                "1": "Show pagination controls"
                             },
                             "default_value": [],
                             "layout": "vertical",
                             "toggle": 0,
                             "return_format": "value"
+                        },
+                        {
+                            "key": "field_581a92bc34b78",
+                            "label": "Button Link Options",
+                            "name": "button_link_options",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_580aa4a60eccd",
+                                "field_580aa1ec0eccc",
+                                "field_580aa4c30ecce",
+                                "field_580aa4f90ecd0"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
                         }
                     ],
                     "min": "",
@@ -1807,7 +1853,7 @@
                 },
                 {
                     "key": "5818a82f9e909",
-                    "name": "locations",
+                    "name": "communities",
                     "label": "Learning Lab Communities",
                     "display": "block",
                     "sub_fields": [
@@ -1844,6 +1890,13 @@
                 "operator": "==",
                 "value": "page"
             }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "communities"
+            }
         ]
     ],
     "menu_order": -1,
@@ -1856,5 +1909,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1478184247
+    "modified": 1478184257
 }

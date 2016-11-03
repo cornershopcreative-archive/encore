@@ -1,0 +1,49 @@
+/**
+ * Styles for Learning Lab Communities sections.
+ */
+
+.section-communities {
+
+	.content-section-grid {
+		align-items: stretch;
+	}
+
+	.grid-item {
+		display: flex;
+		flex-direction: column;
+		line-height: rem(24);
+		text-align: center;
+		margin-top: rem(40);
+
+		@include breakpoint( $tablet ) {
+			margin-top: rem(50);
+			line-height: rem(30);
+		}
+
+		img {
+			width: rem(143);
+			height: auto;
+			margin: rem(14) auto;
+		}
+
+		.grid-item-blurb {
+			flex-grow: 1;
+		}
+
+		.button-group {
+			margin-top: rem(20);
+
+			@include breakpoint( $tablet ) {
+				margin-top: rem(30);
+			}
+		}
+
+		.button-gold {
+
+			&:hover {
+				@extend .button-solid;
+				@extend .button-lime;
+			}
+		}
+	}
+}

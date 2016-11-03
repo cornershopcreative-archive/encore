@@ -26,6 +26,11 @@
 			margin-top: 0;
 		}
 	}
+
+	// Make hovered buttons' text match this element's background.
+	.button-white:hover {
+		color: $deep-blue;
+	}
 }
 
 .hero-video {
@@ -52,5 +57,80 @@
 		background-repeat: no-repeat;
 		background-position: center center;
 		filter: drop-shadow( 1px 3px 12px rgba(0, 0, 0, 0.2) );
+	}
+}
+
+/**
+ * Styles for alternate hero layouts involving floated circular images.
+ */
+
+.hero-float {
+	background: $deep-blue;
+	color: $white;
+	padding: rem(20) 0 rem(30);
+
+	@include breakpoint( $tablet ) {
+		padding: rem(60) 0;
+		margin-bottom: rem(70 + 10); // Negative margin of .hero-image + desired bottom margin.
+	}
+
+	// Background patterns.
+	.single-stories & {
+		@extend .icon-bubbles-1-white;
+		background-repeat: no-repeat;
+		background-position: center center;
+		width: auto;
+		height: auto;
+	}
+
+	.container {
+
+		@include breakpoint( $tablet ) {
+			display: flex;
+			justify-content: flex-start;
+		}
+	}
+
+	.hero-image {
+
+		img {
+			border-radius: 50%;
+			width: 75%; // 360px / 480px-wide container (at desktop widths / in mockups).
+			margin: 0 auto;
+		}
+
+		@include breakpoint( $tablet ) {
+
+			@include nested( 10 ) {
+				// This hero section's layout does use the global column widths, more or
+				// less, but they're all shuffled around.
+				width: span(5); // Don't include gutter margin.
+			}
+
+			img {
+				margin-bottom: rem(-70 - 60); // Desired overlap minus padding.
+			}
+		}
+	}
+
+	.hero-text {
+		padding: rem(14) 0;
+		margin: 0;
+		text-align: left;
+		line-height: 1.75;
+		background: transparent;
+
+		@include breakpoint( $tablet ) {
+		
+			@include nested( 10 ) {
+				width: span(4);
+			}
+		}
+
+	}
+
+	.entry-subtitle {
+		line-height: 1.2;
+		margin: 0 0 rem(20);
 	}
 }
