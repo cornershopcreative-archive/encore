@@ -14,7 +14,7 @@
 		$locations = get_sub_field( 'location' );
 		$topics = get_sub_field( 'topic' );
 		$partner_query_vars = array(
-			'post_type' => 'partners',
+			'post_type' => 'partner',
 			'posts_per_page' => -1,
 			'tax_query' => array(),
 		);

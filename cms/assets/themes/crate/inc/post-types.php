@@ -56,7 +56,7 @@ function crate_post_types() {
 		'capability_type' => 'post',
 	);
 
-	register_post_type('partners', $args);
+	register_post_type('partner', $args);
 
 
 	// News
@@ -149,7 +149,7 @@ function crate_post_types() {
 		'capability_type' => 'post',
 	);
 
-	register_post_type('stories', $args);
+	register_post_type('story', $args);
 
 	// Learning Lab Communities
 	// Post Type contains Learning Lab Communities
@@ -195,7 +195,7 @@ function crate_post_types() {
 		'capability_type' => 'post',
 	);
 
-	register_post_type('communities', $args);
+	register_post_type('community', $args);
 }
 
 add_action( 'init', 'crate_post_types', 0 );
@@ -205,7 +205,7 @@ add_action( 'init', 'crate_post_types', 0 );
 function crate_taxonomies() {
 	register_taxonomy(
 		'location',	// taxonomy machine name
-		array( 'post', 'partners', 'news', 'opportunities', 'stories'),		// post types supported, can be array('post', 'page' ... )
+		array( 'post', 'partner', 'news', 'story'),		// post types supported, can be array('post', 'page' ... )
 		array(					// labels. See http://codex.wordpress.org/Function_Reference/register_taxonomy for full details
 			'label' => __( 'Locations', 'crate' ),
 			'rewrite' => array( 'slug' => 'location' ),
@@ -217,7 +217,7 @@ function crate_taxonomies() {
 
 	register_taxonomy(
 		'topic',	// taxonomy machine name
-		array( 'post', 'partners', 'news', 'opportunities', 'stories'),		// post types supported, can be array('post', 'page' ... )
+		array( 'post', 'partner', 'news', 'story'),		// post types supported, can be array('post', 'page' ... )
 		array(					// labels. See http://codex.wordpress.org/Function_Reference/register_taxonomy for full details
 			'label' => __( 'Topics', 'crate' ),
 			'rewrite' => array( 'slug' => 'topic' ),

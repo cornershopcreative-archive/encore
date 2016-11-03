@@ -164,7 +164,7 @@
         {
             "key": "field_581a50ed2e751",
             "label": "Stories Archive Page",
-            "name": "page_for_stories",
+            "name": "page_for_story",
             "type": "post_object",
             "instructions": "When a user views an individual Story post, the \"Back\" link near the top of the page will link to this page.",
             "required": 0,
@@ -486,5 +486,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1478136116
+    "modified": 1478188433
 }

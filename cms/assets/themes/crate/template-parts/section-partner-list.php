@@ -15,7 +15,7 @@
 
 		// Set up custom query.
 		$partner_query = crate_section_query( array(
-			'post_type' => 'partners',
+			'post_type' => 'partner',
 			'orderby' => 'post_title',
 			'order' => 'ASC',
 		) );
