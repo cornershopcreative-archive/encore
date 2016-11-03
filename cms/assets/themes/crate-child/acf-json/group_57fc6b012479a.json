@@ -32,8 +32,7 @@
                 "id": ""
             },
             "choices": {
-                "funder": "List this partner as a Funder",
-                "learning-lab": "List this partner as a Learning Lab partner"
+                "funder": "List this partner as a Funder"
             },
             "default_value": [],
             "layout": "horizontal",
@@ -58,5 +57,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1477581218
+    "modified": 1478144324
 }

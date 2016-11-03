@@ -1387,8 +1387,8 @@
                 },
                 {
                     "key": "581129fc7486c",
-                    "name": "learning-lab-partners",
-                    "label": "Learning Lab Partners",
+                    "name": "partner-list",
+                    "label": "Partner List With Full Content",
                     "display": "block",
                     "sub_fields": [
                         {
@@ -1794,5 +1794,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1478136684
+    "modified": 1478144097
 }
