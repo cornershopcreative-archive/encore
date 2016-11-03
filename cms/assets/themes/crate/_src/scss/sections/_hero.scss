@@ -132,32 +132,49 @@
 	// Heroes with images floated right.
 	&.hero-float-right {
 
-		@include hero-float-margins( rem(110) );
+		.container {
+			flex-direction: row-reverse;
+		}
 
 		.hero-logo {
+			// These percentages come from the mobile mockups, where the hero section
+			// (not including page padding) is 345px wide.
+			margin: percentage(-40/345) percentage(105/345) 0 rem(16);
 
-			@include nested( 10 ) {
-				width: span(5);
-				margin-left: gutter();
+			@include breakpoint( $tablet ) {
+
+				@include nested( 10 ) {
+					width: span(5);
+					margin: 0 0 0 gutter();
+				}
 			}
 
 			img {
-				width: span(3 of 5 wide);
 				margin: 0 auto;
+				width: 100%;
+
+				@include breakpoint( $tablet ) {
+					width: span(3 of 5 wide);
+				}
 			}
 		}
 
 		.hero-image {
-			margin-top: rem(-30);
+			margin: 0 ( -$page-padding ) 0 auto;
+			width: percentage(295/345);
 
-			@include nested( 10 ) {
-				@include span(5 last);
+			@include breakpoint( $tablet ) {
+				width: span(5 of 10);
+				margin-top: rem(-30);
 			}
 
 			img {
 				width: 100%;
 			}
 		}
+
+		// Adding this at the bottom so it takes precedence over above rules.
+		@include hero-float-margins( rem(110) );
 	}
 
 	.hero-text {

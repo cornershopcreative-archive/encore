@@ -9,13 +9,13 @@
 	<header class="entry-header hero hero-float hero-float-right">
 		<div class="container-10">
 
+			<div class="hero-image">
+				<?php the_post_thumbnail( 'grid-item-lg' ); ?>
+			</div>
+
 			<div class="hero-logo">
 				<?php echo wp_get_attachment_image( get_field( 'logo_light' ) ); ?>
 				<?php the_title( '<h1 class="entry-title screen-reader-text">', '</h1>' ); ?>
-			</div>
-
-			<div class="hero-image">
-				<?php the_post_thumbnail( 'grid-item-lg' ); ?>
 			</div>
 
 		</div>

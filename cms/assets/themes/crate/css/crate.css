@@ -1330,31 +1330,44 @@ img {
   .hero-float .hero-image img {
     margin: 0 auto;
     border-radius: 50%; }
-  .hero-float.hero-float-left {
-    margin: 0 0 6.25rem;
-    padding: 3.75rem 0; }
-    .hero-float.hero-float-left .hero-image {
-      margin-bottom: -8.125rem; }
-    .hero-float.hero-float-left .hero-image img {
-      width: 75%; }
-  .hero-float.hero-float-right {
-    margin: 0 0 8.75rem;
-    padding: 3.75rem 0; }
-    .hero-float.hero-float-right .hero-image {
-      margin-bottom: -10.625rem; }
-    .hero-float.hero-float-right .hero-logo {
-      margin-left: 2.04082%;
-      width: 48.97959%; }
-      .hero-float.hero-float-right .hero-logo img {
-        margin: 0 auto;
-        width: 62.5%; }
-    .hero-float.hero-float-right .hero-image {
-      float: right;
-      margin-top: -1.875rem;
-      margin-right: 0;
-      width: 48.97959%; }
-      .hero-float.hero-float-right .hero-image img {
-        width: 100%; }
+  @media (min-width: 1280px) {
+    .hero-float.hero-float-left {
+      margin: 0 0 6.25rem;
+      padding: 3.75rem 0; }
+      .hero-float.hero-float-left .hero-image {
+        margin-bottom: -8.125rem; } }
+  .hero-float.hero-float-left .hero-image img {
+    width: 75%; }
+  .hero-float.hero-float-right .container, .hero-float.hero-float-right .container-10, .hero-float.hero-float-right .container-8, .hero-float.hero-float-right .container-6 {
+    -ms-flex-direction: row-reverse;
+        flex-direction: row-reverse; }
+  .hero-float.hero-float-right .hero-logo {
+    margin: -11.5942% 30.43478% 0 1rem; }
+    @media (min-width: 640px) {
+      .hero-float.hero-float-right .hero-logo {
+        margin: 0 0 0 2.04082%;
+        width: 48.97959%; } }
+    .hero-float.hero-float-right .hero-logo img {
+      margin: 0 auto;
+      width: 100%; }
+      @media (min-width: 640px) {
+        .hero-float.hero-float-right .hero-logo img {
+          width: 62.5%; } }
+  .hero-float.hero-float-right .hero-image {
+    margin: 0 -1rem 0 auto;
+    width: 85.50725%; }
+    @media (min-width: 640px) {
+      .hero-float.hero-float-right .hero-image {
+        margin-top: -1.875rem;
+        width: 48.97959%; } }
+    .hero-float.hero-float-right .hero-image img {
+      width: 100%; }
+  @media (min-width: 1280px) {
+    .hero-float.hero-float-right {
+      margin: 0 0 8.75rem;
+      padding: 3.75rem 0; }
+      .hero-float.hero-float-right .hero-image {
+        margin-bottom: -10.625rem; } }
   .hero-float .hero-text {
     margin: 0;
     padding: 0.875rem 0;
