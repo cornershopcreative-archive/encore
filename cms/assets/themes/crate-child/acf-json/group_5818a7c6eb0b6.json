@@ -56,7 +56,7 @@
             {
                 "param": "post_type",
                 "operator": "==",
-                "value": "communities"
+                "value": "community"
             }
         ]
     ],
@@ -68,5 +68,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1478048361
+    "modified": 1478194866
 }
