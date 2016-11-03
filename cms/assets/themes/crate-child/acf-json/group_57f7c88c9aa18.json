@@ -205,6 +205,28 @@
             "prefix_name": 1
         },
         {
+            "key": "field_581b3151c7766",
+            "label": "Learning Lab Communities Archive Page",
+            "name": "page_for_community",
+            "type": "post_object",
+            "instructions": "When a user views an individual Learning Lab Community post, the \"Back\" link near the top of the page will link to this page.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "page"
+            ],
+            "taxonomy": [],
+            "allow_null": 0,
+            "multiple": 0,
+            "return_format": "id",
+            "ui": 1
+        },
+        {
             "key": "field_57fbf37a6e7ea",
             "label": "Text",
             "name": "",
@@ -486,5 +508,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1478188433
+    "modified": 1478193619
 }

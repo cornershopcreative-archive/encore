@@ -334,6 +334,9 @@ ul {
  * .thing.pfx-twitter { color: #4099ff; }
  */
 /**
+ * Define padding + bottom margins for a hero element involving a floated image that should overlap with the bottom edge of the container.
+ */
+/**
  * General link & transition styles.
  */
 a {
@@ -817,6 +820,11 @@ img {
   width: 1447px;
   height: 342px;
   background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='1447px' height='342px' viewBox='-2 -1 1447 342' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Cpath d='M1258,288 C1258,317.270559 1234.27103,341 1205.00104,341 C1175.72897,341 1152,317.270559 1152,288 C1152,258.729441 1175.72897,235 1205.00104,235 C1234.27103,235 1258,258.729441 1258,288' stroke='none' fill='%23FFFFFF' fill-rule='evenodd'%3E%3C/path%3E    %3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' transform='translate(119.500000, 69.000000) scale(-1, -1) rotate(90.000000) translate(-119.500000, -69.000000) translate(50.500000, -50.500000)'%3E        %3Cg transform='translate(69.000000, 57.500000) scale(-1, -1) translate(-69.000000, -57.500000) ' fill='%23FFFFFF'%3E            %3Cpath d='M138,9 C138,13.9708558 133.970359,18 129.00032,18 C124.029641,18 120,13.9708558 120,9 C120,4.02914416 124.029641,2.27373675e-13 129.00032,2.27373675e-13 C133.970359,2.27373675e-13 138,4.02914416 138,9' transform='translate(129.000000, 9.000000) scale(-1, 1) translate(-129.000000, -9.000000) '%3E%3C/path%3E            %3Cpath d='M106,62 C106,91.270559 82.2710267,115 53.0010447,115 C23.7289733,115 0,91.270559 0,62 C0,32.729441 23.7289733,9 53.0010447,9 C82.2710267,9 106,32.729441 106,62' transform='translate(53.000000, 62.000000) scale(-1, 1) translate(-53.000000, -62.000000) '%3E%3C/path%3E        %3C/g%3E        %3Cpath d='M79,215 C79,228.255539 68.2555389,239 55,239 C41.7444611,239 31,228.255539 31,215 C31,201.744461 41.7444611,191 55,191 C68.2555389,191 79,201.744461 79,215' fill='%23FFFFFF'%3E%3C/path%3E    %3C/g%3E    %3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' transform='translate(1324.500000, 101.000000) scale(1, -1) rotate(90.000000) translate(-1324.500000, -101.000000) translate(1255.500000, -18.500000)'%3E        %3Cg transform='translate(69.000000, 57.500000) scale(-1, -1) translate(-69.000000, -57.500000) ' fill='%23FFFFFF'%3E            %3Cpath d='M138,9 C138,13.9708558 133.970359,18 129.00032,18 C124.029641,18 120,13.9708558 120,9 C120,4.02914416 124.029641,2.27373675e-13 129.00032,2.27373675e-13 C133.970359,2.27373675e-13 138,4.02914416 138,9' transform='translate(129.000000, 9.000000) scale(-1, 1) translate(-129.000000, -9.000000) '%3E%3C/path%3E            %3Cpath d='M106,62 C106,91.270559 82.2710267,115 53.0010447,115 C23.7289733,115 0,91.270559 0,62 C0,32.729441 23.7289733,9 53.0010447,9 C82.2710267,9 106,32.729441 106,62' transform='translate(53.000000, 62.000000) scale(-1, 1) translate(-53.000000, -62.000000) '%3E%3C/path%3E        %3C/g%3E        %3Cpath d='M79,215 C79,228.255539 68.2555389,239 55,239 C41.7444611,239 31,228.255539 31,215 C31,201.744461 41.7444611,191 55,191 C68.2555389,191 79,201.744461 79,215' fill='%23FFFFFF'%3E%3C/path%3E    %3C/g%3E%3C/svg%3E"); }
+
+.icon-bubbles-2-bright-blue, .single-community .hero-float {
+  width: 1189px;
+  height: 388px;
+  background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='1189px' height='388px' viewBox='0 -1 1189 388' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Ccircle id='Oval-5-Copy-18' stroke='none' fill='%2300C7F5' fill-rule='evenodd' transform='translate(1150.000000, 39.000000) rotate(90.000000) translate(-1150.000000, -39.000000) ' cx='1150' cy='39' r='39'%3E%3C/circle%3E    %3Ccircle id='Oval-5-Copy-19' stroke='none' fill='%2300C7F5' fill-rule='evenodd' transform='translate(1092.500000, 154.500000) rotate(90.000000) translate(-1092.500000, -154.500000) ' cx='1092.5' cy='154.5' r='18.5'%3E%3C/circle%3E    %3Ccircle id='Oval-5-Copy-20' stroke='none' fill='%2300C7F5' fill-rule='evenodd' transform='translate(1064.000000, 18.000000) rotate(90.000000) translate(-1064.000000, -18.000000) ' cx='1064' cy='18' r='9'%3E%3C/circle%3E    %3Ccircle id='Oval-5-Copy-21' stroke='none' fill='%2300C7F5' fill-rule='evenodd' transform='translate(756.000000, 115.000000) rotate(90.000000) translate(-756.000000, -115.000000) ' cx='756' cy='115' r='38'%3E%3C/circle%3E    %3Ccircle id='Oval-5-Copy-22' stroke='none' fill='%2300C7F5' fill-rule='evenodd' transform='translate(40.000000, 176.000000) rotate(90.000000) translate(-40.000000, -176.000000) ' cx='40' cy='176' r='40'%3E%3C/circle%3E    %3Cellipse id='Oval-5-Copy-23' stroke='none' fill='%2301C7F5' fill-rule='evenodd' transform='translate(163.640625, 318.390625) rotate(180.000000) translate(-163.640625, -318.390625) ' cx='163.640625' cy='318.390625' rx='15.390625' ry='15.390625'%3E%3C/ellipse%3E    %3Ccircle id='Oval-5-Copy-24' stroke='none' fill='%2301C7F5' fill-rule='evenodd' transform='translate(782.000000, 339.000000) rotate(180.000000) translate(-782.000000, -339.000000) ' cx='782' cy='339' r='19'%3E%3C/circle%3E    %3Ccircle id='Oval-5-Copy-25' stroke='none' fill='%2301C7F5' fill-rule='evenodd' transform='translate(697.000000, 378.000000) rotate(180.000000) translate(-697.000000, -378.000000) ' cx='697' cy='378' r='9'%3E%3C/circle%3E%3C/svg%3E"); }
 
 .icon-logo {
   width: 50px;
@@ -1305,21 +1313,48 @@ img {
     height: auto;
     background-position: center center;
     background-repeat: no-repeat; }
+  .single-community .hero-float {
+    width: auto;
+    height: auto;
+    background-position: center center;
+    background-repeat: no-repeat; }
   @media (min-width: 640px) {
     .hero-float .container, .hero-float .container-10, .hero-float .container-8, .hero-float .container-6 {
       display: -ms-flexbox;
       display: flex;
       -ms-flex-pack: start;
           justify-content: flex-start; } }
-  .hero-float .hero-image img {
-    margin: 0 auto;
-    width: 75%;
-    border-radius: 50%; }
   @media (min-width: 640px) {
     .hero-float .hero-image {
+      width: 48.97959%; } }
+  .hero-float .hero-image img {
+    margin: 0 auto;
+    border-radius: 50%; }
+  .hero-float.hero-float-left {
+    margin: 0 0 6.25rem;
+    padding: 3.75rem 0; }
+    .hero-float.hero-float-left .hero-image {
+      margin-bottom: -8.125rem; }
+    .hero-float.hero-float-left .hero-image img {
+      width: 75%; }
+  .hero-float.hero-float-right {
+    margin: 0 0 8.75rem;
+    padding: 3.75rem 0; }
+    .hero-float.hero-float-right .hero-image {
+      margin-bottom: -10.625rem; }
+    .hero-float.hero-float-right .hero-logo {
+      margin-left: 2.04082%;
       width: 48.97959%; }
-      .hero-float .hero-image img {
-        margin-bottom: -8.125rem; } }
+      .hero-float.hero-float-right .hero-logo img {
+        margin: 0 auto;
+        width: 62.5%; }
+    .hero-float.hero-float-right .hero-image {
+      float: right;
+      margin-top: -1.875rem;
+      margin-right: 0;
+      width: 48.97959%; }
+      .hero-float.hero-float-right .hero-image img {
+        width: 100%; }
   .hero-float .hero-text {
     margin: 0;
     padding: 0.875rem 0;

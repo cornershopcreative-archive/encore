@@ -83,6 +83,14 @@
 		height: auto;
 	}
 
+	.single-community & {
+		@extend .icon-bubbles-2-bright-blue;
+		background-repeat: no-repeat;
+		background-position: center center;
+		width: auto;
+		height: auto;
+	}
+
 	.container {
 
 		@include breakpoint( $tablet ) {
@@ -93,22 +101,61 @@
 
 	.hero-image {
 
-		img {
-			border-radius: 50%;
-			width: 75%; // 360px / 480px-wide container (at desktop widths / in mockups).
-			margin: 0 auto;
-		}
-
 		@include breakpoint( $tablet ) {
 
 			@include nested( 10 ) {
-				// This hero section's layout does use the global column widths, more or
-				// less, but they're all shuffled around.
+				// This hero section's layout does use the global column widths, more
+				// or less, but they're all shuffled around.
 				width: span(5); // Don't include gutter margin.
+			}
+		}
+
+		img {
+			border-radius: 50%;
+			margin: 0 auto;
+		}
+	}
+
+	// Heroes with images floated left.
+	&.hero-float-left {
+
+		@include hero-float-margins( rem(70) );
+
+		.hero-image {
+
+			img {
+				width: 75%; // 360px / 480px-wide container (at desktop widths / in mockups).
+			}
+		}
+	}
+
+	// Heroes with images floated right.
+	&.hero-float-right {
+
+		@include hero-float-margins( rem(110) );
+
+		.hero-logo {
+
+			@include nested( 10 ) {
+				width: span(5);
+				margin-left: gutter();
 			}
 
 			img {
-				margin-bottom: rem(-70 - 60); // Desired overlap minus padding.
+				width: span(3 of 5 wide);
+				margin: 0 auto;
+			}
+		}
+
+		.hero-image {
+			margin-top: rem(-30);
+
+			@include nested( 10 ) {
+				@include span(5 last);
+			}
+
+			img {
+				width: 100%;
 			}
 		}
 	}
@@ -126,7 +173,6 @@
 				width: span(4);
 			}
 		}
-
 	}
 
 	.entry-subtitle {

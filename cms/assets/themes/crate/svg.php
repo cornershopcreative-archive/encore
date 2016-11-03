@@ -18,6 +18,15 @@
         </g>
         <path d="M79,215 C79,228.255539 68.2555389,239 55,239 C41.7444611,239 31,228.255539 31,215 C31,201.744461 41.7444611,191 55,191 C68.2555389,191 79,201.744461 79,215" fill="#FFFFFF"/>
     </g>
+</symbol><symbol id="icon-bubbles-2-bright-blue" viewBox="0 -1 1189 388">
+    <circle id="Oval-5-Copy-18" stroke="none" fill="#00C7F5" fill-rule="evenodd" transform="translate(1150.000000, 39.000000) rotate(90.000000) translate(-1150.000000, -39.000000) " cx="1150" cy="39" r="39"/>
+    <circle id="Oval-5-Copy-19" stroke="none" fill="#00C7F5" fill-rule="evenodd" transform="translate(1092.500000, 154.500000) rotate(90.000000) translate(-1092.500000, -154.500000) " cx="1092.5" cy="154.5" r="18.5"/>
+    <circle id="Oval-5-Copy-20" stroke="none" fill="#00C7F5" fill-rule="evenodd" transform="translate(1064.000000, 18.000000) rotate(90.000000) translate(-1064.000000, -18.000000) " cx="1064" cy="18" r="9"/>
+    <circle id="Oval-5-Copy-21" stroke="none" fill="#00C7F5" fill-rule="evenodd" transform="translate(756.000000, 115.000000) rotate(90.000000) translate(-756.000000, -115.000000) " cx="756" cy="115" r="38"/>
+    <circle id="Oval-5-Copy-22" stroke="none" fill="#00C7F5" fill-rule="evenodd" transform="translate(40.000000, 176.000000) rotate(90.000000) translate(-40.000000, -176.000000) " cx="40" cy="176" r="40"/>
+    <ellipse id="Oval-5-Copy-23" stroke="none" fill="#01C7F5" fill-rule="evenodd" transform="translate(163.640625, 318.390625) rotate(180.000000) translate(-163.640625, -318.390625) " cx="163.640625" cy="318.390625" rx="15.390625" ry="15.390625"/>
+    <circle id="Oval-5-Copy-24" stroke="none" fill="#01C7F5" fill-rule="evenodd" transform="translate(782.000000, 339.000000) rotate(180.000000) translate(-782.000000, -339.000000) " cx="782" cy="339" r="19"/>
+    <circle id="Oval-5-Copy-25" stroke="none" fill="#01C7F5" fill-rule="evenodd" transform="translate(697.000000, 378.000000) rotate(180.000000) translate(-697.000000, -378.000000) " cx="697" cy="378" r="9"/>
 </symbol><symbol id="icon-logo" viewBox="0 -1 50 51">
     <g id="logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <path d="M4.74719643,34.7078419 C3.33179795,35.2148767 1.91856664,34.4940401 1.41338493,33.1264056 C1.02534515,32.0759346 1.28483677,30.7632391 2.3906703,30.0752087 L2.86630989,31.363749 C2.43458427,31.6754074 2.3096861,32.22154 2.500056,32.7368887 C2.7732351,33.4771618 3.53163501,33.7815175 4.30292396,33.5047998 C5.21530791,33.1783112 5.40795906,32.3834361 5.17105176,31.7421432 C5.00531931,31.2931933 4.64168885,30.9669294 4.21954445,30.8936773 L4.55671247,31.8057332 L3.64398633,32.1326713 L2.86813489,30.0312799 L5.3501295,29.1416939 L5.66745068,30.0008331 L5.05025984,30.2222746 C5.21850166,30.2665405 5.95043913,30.5204511 6.30197899,31.4719419 C6.79746541,32.8133989 6.16259492,34.2003577 4.74719643,34.7078419" id="Fill-1" fill="#0047C1"/>
