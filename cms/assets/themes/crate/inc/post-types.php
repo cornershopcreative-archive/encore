@@ -105,54 +105,6 @@ function crate_post_types() {
 
 	register_post_type('news', $args);
 
-	
-
-	// Opportunities
-	// Post Type contains Opportunities
-	// Plural: Opportunities
-	// Singular: Opportunity
-	// URL: /opportunities/
-
-
-	$labels = array(
-		'name' 			=> _x( 'Opportunity', 'Post Type General Name', 'text_domain' ),
-		'singular_name' => _x( 'Opportunity', 'Post Type Singular Name', 'text_domain' ),
-		'menu_name' 	=> __( 'Opportunities', 'text_domain' ),
-		'parent_item_colon' => __( '', 'text_domain' ),
-		'all_items' 	=> __( 'All Opportunities', 'text_domain' ),
-		'view_item' 	=> __( '', 'text_domain' ),
-		'add_new_item' 	=> __( 'Add New Opportunity', 'text_domain' ),
-		'add_new' 		=> __( 'Add New Opportunity', 'text_domain' ),
-		'edit_item' 	=> __( 'Edit Opportunity', 'text_domain' ),
-		'update_item' 	=> __( 'Update Opportunity', 'text_domain' ),
-		'search_items' 	=> __( 'Search the Opportunities', 'text_domain' ),
-		'not_found' 	=> __( 'No Opportunities found', 'text_domain' ),
-		'not_found_in_trash' => __( 'No Opportunities found in trash', 'text_domain' ),
-	);
-	$args = array(
-		'label' 		=> __( 'opportunity', 'text_domain' ),
-		'description' 	=> __( 'Opportunity', 'text_domain' ),
-		'labels' 		=> $labels,
-		'supports' 		=> array( 'title', 'editor', 'excerpt', 'thumbnail', ),
-		'taxonomies' 	=> array(),
-		'hierarchical' 	=> false,
-		'public' 		=> true,
-		'show_ui' 		=> true,
-		'show_in_menu' 	=> true,
-		'show_in_nav_menus' => true,
-		'show_in_admin_bar' => true,
-		'menu_position' => 5,
-		'menu_icon' 	=> 'dashicons-money',
-		'rewrite' 		=> array( 'slug' => 'opportunities' ),
-		'can_export' 	=> true,
-		'has_archive' 	=> true,
-		'exclude_from_search' => false,
-		'publicly_queryable' => true,
-		'capability_type' => 'post',
-	);
-	// NEVER USE 'action' HERE, IT'S A RESERVED WORD
-	register_post_type( 'opportunities', $args );
-
 	// Stories
 	// Post Type contains Stories
 	// Plural: Stories
