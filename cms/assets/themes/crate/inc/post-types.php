@@ -143,7 +143,7 @@ function crate_post_types() {
 		'menu_icon' 	=> 'dashicons-money',
 		'rewrite' 		=> array( 'slug' => 'stories' ),
 		'can_export' 	=> true,
-		'has_archive' 	=> true,
+		'has_archive' 	=> false,
 		'exclude_from_search' => false,
 		'publicly_queryable' => true,
 		'capability_type' => 'post',
