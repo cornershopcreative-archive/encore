@@ -10,7 +10,7 @@
 
 	.content-section-grid {
 		align-items: stretch; // Make all items the same height.
-		justify-content: flex-start; // Left-align if final row has less than 3 items.
+		justify-content: space-between; // Keep first and last items flush with edges.
 	}
 
 	.grid-item-3 {

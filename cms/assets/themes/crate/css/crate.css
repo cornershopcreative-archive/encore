@@ -1550,8 +1550,8 @@ img {
 .section-stories-grid .content-section-grid {
   -ms-flex-align: stretch;
       align-items: stretch;
-  -ms-flex-pack: start;
-      justify-content: flex-start; }
+  -ms-flex-pack: justify;
+      justify-content: space-between; }
 
 .section-stories-grid .grid-item-3 {
   -ms-flex-positive: 0;
