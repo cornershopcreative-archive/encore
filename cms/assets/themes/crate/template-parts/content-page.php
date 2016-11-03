@@ -37,7 +37,7 @@
 		<?php endif; ?>
 		<div class="hero-text prose prose-compact container-10 container-flex">
 			<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
-			<?php echo wp_kses_post( get_field( 'subtitle' ) ); ?>
+			<?php echo get_field( 'subtitle' ); ?>
 		</div>
 	</header><!-- .entry-header -->
 
