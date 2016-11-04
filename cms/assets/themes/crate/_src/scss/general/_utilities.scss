@@ -31,8 +31,10 @@
  */
 
 .button {
-	display: inline-block;
-	padding: rem(14) rem(28 + 14);
+	display: inline-flex;
+	align-items: center;
+	min-height: rem(55);
+	padding: rem(10) rem(28 + 14);
 	border-radius: rem(28);
 	border: 2px solid;
 	font-size: rem(15);
@@ -105,7 +107,7 @@
 	align-items: center;
 
 	.button {
-		display: block;
+		display: flex; // Fill container width (normally buttons are inline-flex).
 	}
 
 	> * {

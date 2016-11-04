@@ -512,8 +512,12 @@ h6 {
  * Buttons.
  */
 .button {
-  display: inline-block;
-  padding: 0.875rem 2.625rem;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+      align-items: center;
+  padding: 0.625rem 2.625rem;
+  min-height: 3.4375rem;
   border: 2px solid;
   border-radius: 1.75rem;
   text-align: center;
@@ -666,7 +670,8 @@ h6 {
   margin: 0;
   padding: 0; }
   .button-group .button, .facetwp-pager .button {
-    display: block; }
+    display: -ms-flexbox;
+    display: flex; }
   .button-group > * ~ *, .facetwp-pager > * ~ * {
     margin-left: 1rem; }
   .button-group.button-group-expand > *, .button-group-expand.facetwp-pager > * {
