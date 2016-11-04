@@ -2,12 +2,22 @@
 	padding: rem(10) 0;
 	position: relative;
 	z-index: 10; // Render on top of relatively-positioned hero elements.
+	background: $white;
 	// We're using a 6px spread-radius instead of a 6px offset-y below, so that
 	// the left & right corners look better.
 	box-shadow: 0 0 9px 6px rgba(0, 0, 0, 0.15);
 
 	@include breakpoint( $tablet ) {
 		padding: rem(8) 0;
+	}
+
+	@include breakpoint( $desktop ) {
+
+		// Alternate colors for the homepage on desktop.
+		.home & {
+			box-shadow: none;
+			background-color: $deep-blue;
+		}
 	}
 
 	.container {
@@ -30,10 +40,6 @@
 	display: flex;
 	align-items: center;
 
-	.site-title {
-		margin: 0;
-	}
-
 	a {
 		display: block;
 	}
@@ -47,23 +53,47 @@
 		}
 	}
 
-	.icon-logo {
-		display: block;
-		background-size: cover;
+	.site-title {
+		margin: 0;
 
-		@include breakpoint( $tablet ) {
-			width: 55px;
-			height: 55px;
+		svg {
+			width: rem(50);
+			height: auto;
+			fill: $deep-blue;
+			color: $bright-blue;
+
+			@include breakpoint( $tablet ) {
+				width: rem(55);
+				height: auto;
+			}
+
+			.home & {
+
+				@include breakpoint( $desktop ) {
+					fill: $white;
+					color: $white;
+				}
+			}
 		}
 	}
 
-	.icon-powered-by {
-		display: block;
-		background-size: cover;
+	.powered-by {
 
-		@include breakpoint( $desktop ) {
-			width: 88px;
-			height: 25px;
+		svg {
+			width: rem(106);
+			height: auto;
+			color: $charcoal;
+
+			@include breakpoint( $desktop ) {
+				width: rem(88);
+			}
+
+			.home & {
+
+				@include breakpoint( $desktop ) {
+					color: $white;
+				}
+			}
 		}
 	}
 }
@@ -90,9 +120,13 @@
 
 .nav-primary {
 	position: absolute;
-	background: $white;
+	background: $white; // Solid background for dropdown/hamburger menu.
 	top: rem(70); // This is the height of the single-line menu.
 	right: 0;
+
+	@include breakpoint( $desktop ) {
+		background: transparent;
+	}
 
 	&,
 	.sub-menu {
@@ -152,6 +186,14 @@
 
 			@include breakpoint( $desktop ) {
 				text-transform: uppercase;
+
+				.home & {
+					color: $white;
+
+					&:hover {
+						color: $bright-blue;
+					}
+				}
 			}
 		}
 
