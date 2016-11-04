@@ -51,12 +51,15 @@
 		@include breakpoint( $tablet ) {
 			margin-left: rem(18);
 		}
+
+		&:first-child {
+			margin-left: 0;
+		}
 	}
 
 	.site-title {
-		margin: 0;
 
-		svg {
+		.logo {
 			width: rem(50);
 			height: auto;
 			fill: $deep-blue;
@@ -72,6 +75,9 @@
 				@include breakpoint( $desktop ) {
 					fill: $white;
 					color: $white;
+					// Change size and re-align using negative margins.
+					width: rem(250);
+					margin-bottom: rem(25 - 250);
 				}
 			}
 		}
@@ -79,7 +85,15 @@
 
 	.powered-by {
 
-		svg {
+		.home & {
+
+			@include breakpoint( $desktop ) {
+				// Pull left to overlap with .site-logo's bounding box.
+				margin-left: rem(-4);
+			}
+		}
+
+		.logo {
 			width: rem(106);
 			height: auto;
 			color: $charcoal;
