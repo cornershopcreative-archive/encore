@@ -48,38 +48,6 @@
             "height": 390
         },
         {
-            "key": "field_580e0f7a714b5",
-            "label": "Video Display Style",
-            "name": "hero_style",
-            "type": "radio",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_580e111941a18",
-                        "operator": "==",
-                        "value": "1"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "40",
-                "class": "",
-                "id": ""
-            },
-            "choices": {
-                "normal": "Rectangle (default)",
-                "circle": "Circle"
-            },
-            "allow_null": 0,
-            "other_choice": 0,
-            "save_other_choice": 0,
-            "default_value": "normal",
-            "layout": "vertical",
-            "return_format": "value"
-        },
-        {
             "key": "field_580e0c217a7c8",
             "label": "Subtitle",
             "name": "subtitle",
@@ -104,6 +72,11 @@
                 "param": "post_type",
                 "operator": "==",
                 "value": "page"
+            },
+            {
+                "param": "page_type",
+                "operator": "!=",
+                "value": "front_page"
             }
         ]
     ],
@@ -115,5 +88,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1477421849
+    "modified": 1478279127
 }

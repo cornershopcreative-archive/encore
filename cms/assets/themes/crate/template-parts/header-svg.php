@@ -27,6 +27,17 @@
     <ellipse id="Oval-5-Copy-23" stroke="none" fill="#01C7F5" fill-rule="evenodd" transform="translate(163.640625, 318.390625) rotate(180.000000) translate(-163.640625, -318.390625) " cx="163.640625" cy="318.390625" rx="15.390625" ry="15.390625"/>
     <circle id="Oval-5-Copy-24" stroke="none" fill="#01C7F5" fill-rule="evenodd" transform="translate(782.000000, 339.000000) rotate(180.000000) translate(-782.000000, -339.000000) " cx="782" cy="339" r="19"/>
     <circle id="Oval-5-Copy-25" stroke="none" fill="#01C7F5" fill-rule="evenodd" transform="translate(697.000000, 378.000000) rotate(180.000000) translate(-697.000000, -378.000000) " cx="697" cy="378" r="9"/>
+</symbol><symbol id="icon-bubbles-3-bright-blue" viewBox="40 120 1203 318">
+    <g id="Group-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(471.000000, 120.000000)">
+        <circle id="Oval-5-Copy-18" fill="#00C7F5" transform="translate(732.000000, 40.000000) rotate(91.000000) translate(-732.000000, -40.000000) " cx="732" cy="40" r="39"/>
+        <circle id="Oval-5-Copy-19" fill="#00C7F5" transform="translate(674.500000, 155.500000) rotate(91.000000) translate(-674.500000, -155.500000) " cx="674.5" cy="155.5" r="18.5"/>
+        <circle id="Oval-5-Copy-20" fill="#00C7F5" transform="translate(646.000000, 19.000000) rotate(91.000000) translate(-646.000000, -19.000000) " cx="646" cy="19" r="9"/>
+        <circle id="Oval-5-Copy-21" fill="#00C7F5" transform="translate(338.000000, 116.000000) rotate(91.000000) translate(-338.000000, -116.000000) " cx="338" cy="116" r="38"/>
+        <ellipse id="Oval-5-Copy-22" fill="#00C7F5" transform="translate(40.000000, 89.000000) rotate(90.000000) translate(-40.000000, -89.000000) " cx="40" cy="89" rx="40" ry="40"/>
+        <circle id="Oval-5-Copy-23" fill="#01C7F5" transform="translate(153.460938, 241.679688) rotate(180.000000) translate(-153.460938, -241.679688) " cx="153.460938" cy="241.679688" r="15.390625"/>
+        <circle id="Oval-5-Copy-24" fill="#01C7F5" transform="translate(362.000000, 270.000000) rotate(180.000000) translate(-362.000000, -270.000000) " cx="362" cy="270" r="19"/>
+        <circle id="Oval-5-Copy-25" fill="#01C7F5" transform="translate(277.000000, 309.000000) rotate(180.000000) translate(-277.000000, -309.000000) " cx="277" cy="309" r="9"/>
+    </g>
 </symbol><symbol id="icon-logo" viewBox="0 0 50 50">
     <g id="logo" stroke="none" stroke-width="1" fill-rule="evenodd">
         <path d="M4.74719643,34.7078419 C3.33179795,35.2148767 1.91856664,34.4940401 1.41338493,33.1264056 C1.02534515,32.0759346 1.28483677,30.7632391 2.3906703,30.0752087 L2.86630989,31.363749 C2.43458427,31.6754074 2.3096861,32.22154 2.500056,32.7368887 C2.7732351,33.4771618 3.53163501,33.7815175 4.30292396,33.5047998 C5.21530791,33.1783112 5.40795906,32.3834361 5.17105176,31.7421432 C5.00531931,31.2931933 4.64168885,30.9669294 4.21954445,30.8936773 L4.55671247,31.8057332 L3.64398633,32.1326713 L2.86813489,30.0312799 L5.3501295,29.1416939 L5.66745068,30.0008331 L5.05025984,30.2222746 C5.21850166,30.2665405 5.95043913,30.5204511 6.30197899,31.4719419 C6.79746541,32.8133989 6.16259492,34.2003577 4.74719643,34.7078419" id="Fill-1" fill="inherit"/>

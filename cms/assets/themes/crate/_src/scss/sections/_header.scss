@@ -13,10 +13,11 @@
 
 	@include breakpoint( $desktop ) {
 
-		// Alternate colors for the homepage on desktop.
 		.home & {
+			// Use alternate colors + wider padding for the homepage on desktop.
 			box-shadow: none;
 			background-color: $deep-blue;
+			padding: rem(26) 0;
 		}
 	}
 
@@ -73,6 +74,7 @@
 			.home & {
 
 				@include breakpoint( $desktop ) {
+					// Recolor SVG on dektop.
 					fill: $white;
 					color: $white;
 					// Change size and re-align using negative margins.
@@ -105,6 +107,7 @@
 			.home & {
 
 				@include breakpoint( $desktop ) {
+					// Recolor SVG on desktop.
 					color: $white;
 				}
 			}

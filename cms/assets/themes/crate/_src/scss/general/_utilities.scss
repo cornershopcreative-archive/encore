@@ -33,6 +33,7 @@
 .button {
 	display: inline-flex;
 	align-items: center;
+	justify-content: center;
 	min-height: rem(55);
 	padding: rem(10) rem(28 + 14);
 	border-radius: rem(28);
