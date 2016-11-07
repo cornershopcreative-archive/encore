@@ -6,7 +6,7 @@
 			<p class="prose">Sign up below to learn more about how you can offer your knowledge and experience to younger generations this fall.</p>
 		</header>
 
-		<form name="signup" class="bsd-signup-2" action="https://generation.cp.bsd.net/page/signup/join-generation-to-generation" method="post" id="signup-generic" target="bsd-target">
+		<form name="signup" class="bsd-signup-2" action="https://generation.cp.bsd.net/page/signup/join-g2g" method="post" id="signup-generic" target="bsd-target">
 
 			<div class="row">
 				<div class="bsd-field-firstname half">

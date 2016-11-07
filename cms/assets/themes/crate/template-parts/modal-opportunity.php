@@ -6,7 +6,7 @@
 			<p class="prose">Pledge with Generation to Generation below to continue to the organization’s website to take action.</p>
 		</header>
 
-		<form name="signup-opportunity" class="bsd-signup-2" action="https://generation.cp.bsd.net/page/signup/join-generation-to-generation" method="post" id="signup-opportunity" target="bsd-target-opportunity">
+		<form name="signup-opportunity" class="bsd-signup-2" action="https://generation.cp.bsd.net/page/signup/join-g2g" method="post" id="signup-opportunity" target="bsd-target-opportunity">
 
 			<div class="row">
 				<div class="bsd-field-firstname half">
