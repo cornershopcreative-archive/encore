@@ -1,1 +1,26 @@
+form {
+	.row {
+		@include display(flex);
+		@include align-items(stretch);
+		@include flex-direction(row);
+		@include justify-content(center);
 
+		& > div {
+			@include flex(1);
+			padding: 5px;
+		}
+
+		& > .wide {
+			@include flex(2);
+		}
+	}
+}
+
+input[type='text'],
+input[type='password'],
+input[type='email'] {
+	width: 100%;
+	border-radius: 3px;
+	border: 1px solid #ccc;
+	padding: 22px 20px 18px;
+}
