@@ -1,17 +1,22 @@
 form {
 	.row {
-		@include display(flex);
-		@include align-items(stretch);
-		@include flex-direction(row);
-		@include justify-content(center);
-
 		& > div {
-			@include flex(1);
 			padding: 5px;
 		}
 
-		& > .wide {
-			@include flex(2);
+		@include breakpoint( $tablet ) {
+			@include display(flex);
+			@include align-items(stretch);
+			@include flex-direction(row);
+			@include justify-content(center);
+
+			& > div {
+				@include flex(1);
+			}
+
+			& > .wide {
+				@include flex(2);
+			}
 		}
 	}
 }

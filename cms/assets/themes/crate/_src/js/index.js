@@ -8,8 +8,8 @@ jQuery( nav );
 var slider = require( 'slider' );
 jQuery( slider );
 
-var video_modal = require( 'video-modal' );
-jQuery( video_modal );
+var modals = require( 'modals' );
+jQuery( modals );
 
 var fwp_load_more = require( 'fwp-load-more' );
 jQuery( fwp_load_more );
