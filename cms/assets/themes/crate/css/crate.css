@@ -1675,7 +1675,8 @@ svg {
     width: 40.67797%; } }
 
 .section-partner-list .entry-image img {
-  margin: 0 auto; }
+  margin: 0 auto;
+  max-width: 12.5rem; }
 
 @media (min-width: 640px) {
   .section-partner-list .entry-summary {
@@ -1699,7 +1700,8 @@ svg {
     -ms-flex-align: center;
         align-items: center; }
   .section-partner-slider .grid-item-image {
-    margin: 0 auto; }
+    margin: 0 auto;
+    max-width: 11.25rem; }
 
 /**
  * Styles for News content sections.
@@ -1722,7 +1724,8 @@ svg {
       margin: 0 3.125rem 0 0;
       width: 12.5rem; } }
   .section-news .entry-image img {
-    margin: 0 auto; }
+    margin: 0 auto;
+    max-width: 11.25rem; }
 
 .section-news .entry-summary {
   line-height: 2rem; }
