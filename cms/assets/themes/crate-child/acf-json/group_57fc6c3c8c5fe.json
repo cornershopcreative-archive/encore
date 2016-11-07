@@ -3,7 +3,7 @@
     "title": "Opportunity",
     "fields": [
         {
-            "key": "field_57fc6c4660e58",
+            "key": "field_57fc6c4660e58__trashed",
             "label": "Call to Action URL",
             "name": "link",
             "type": "url",
@@ -19,7 +19,7 @@
             "placeholder": ""
         },
         {
-            "key": "field_57fc6c4d60e59",
+            "key": "field_57fc6c4d60e59__trashed",
             "label": "Label for Button",
             "name": "CTA_text",
             "type": "text",
@@ -38,7 +38,7 @@
             "maxlength": ""
         },
         {
-            "key": "field_57fc6ca660e5a",
+            "key": "field_57fc6ca660e5a__trashed",
             "label": "Featured",
             "name": "featured",
             "type": "checkbox",
@@ -59,7 +59,7 @@
             "return_format": "value"
         },
         {
-            "key": "field_57fc6cd360e5b",
+            "key": "field_57fc6cd360e5b__trashed",
             "label": "Organization Logo",
             "name": "organization_logo",
             "type": "image",
@@ -83,7 +83,7 @@
             "mime_types": ""
         },
         {
-            "key": "field_57fc6d0360e5c",
+            "key": "field_57fc6d0360e5c__trashed",
             "label": "Topic\/Category",
             "name": "topic",
             "type": "taxonomy",
@@ -122,5 +122,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1476883843
+    "modified": 1478200034
 }

@@ -2,12 +2,23 @@
 	padding: rem(10) 0;
 	position: relative;
 	z-index: 10; // Render on top of relatively-positioned hero elements.
+	background: $white;
 	// We're using a 6px spread-radius instead of a 6px offset-y below, so that
 	// the left & right corners look better.
 	box-shadow: 0 0 9px 6px rgba(0, 0, 0, 0.15);
 
 	@include breakpoint( $tablet ) {
 		padding: rem(8) 0;
+	}
+
+	@include breakpoint( $desktop ) {
+
+		.home & {
+			// Use alternate colors + wider padding for the homepage on desktop.
+			box-shadow: none;
+			background-color: $deep-blue;
+			padding: rem(26) 0;
+		}
 	}
 
 	.container {
@@ -30,10 +41,6 @@
 	display: flex;
 	align-items: center;
 
-	.site-title {
-		margin: 0;
-	}
-
 	a {
 		display: block;
 	}
@@ -45,25 +52,65 @@
 		@include breakpoint( $tablet ) {
 			margin-left: rem(18);
 		}
-	}
 
-	.icon-logo {
-		display: block;
-		background-size: cover;
-
-		@include breakpoint( $tablet ) {
-			width: 55px;
-			height: 55px;
+		&:first-child {
+			margin-left: 0;
 		}
 	}
 
-	.icon-powered-by {
-		display: block;
-		background-size: cover;
+	.site-title {
 
-		@include breakpoint( $desktop ) {
-			width: 88px;
-			height: 25px;
+		.logo {
+			width: rem(50);
+			height: auto;
+			fill: $deep-blue;
+			color: $bright-blue;
+
+			@include breakpoint( $tablet ) {
+				width: rem(55);
+				height: auto;
+			}
+
+			.home & {
+
+				@include breakpoint( $desktop ) {
+					// Recolor SVG on dektop.
+					fill: $white;
+					color: $white;
+					// Change size and re-align using negative margins.
+					width: rem(250);
+					margin-bottom: rem(25 - 250);
+				}
+			}
+		}
+	}
+
+	.powered-by {
+
+		.home & {
+
+			@include breakpoint( $desktop ) {
+				// Pull left to overlap with .site-logo's bounding box.
+				margin-left: rem(-4);
+			}
+		}
+
+		.logo {
+			width: rem(106);
+			height: auto;
+			color: $charcoal;
+
+			@include breakpoint( $desktop ) {
+				width: rem(88);
+			}
+
+			.home & {
+
+				@include breakpoint( $desktop ) {
+					// Recolor SVG on desktop.
+					color: $white;
+				}
+			}
 		}
 	}
 }
@@ -90,9 +137,13 @@
 
 .nav-primary {
 	position: absolute;
-	background: $white;
+	background: $white; // Solid background for dropdown/hamburger menu.
 	top: rem(70); // This is the height of the single-line menu.
 	right: 0;
+
+	@include breakpoint( $desktop ) {
+		background: transparent;
+	}
 
 	&,
 	.sub-menu {
@@ -152,6 +203,14 @@
 
 			@include breakpoint( $desktop ) {
 				text-transform: uppercase;
+
+				.home & {
+					color: $white;
+
+					&:hover {
+						color: $bright-blue;
+					}
+				}
 			}
 		}
 

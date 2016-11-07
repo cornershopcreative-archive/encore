@@ -1,0 +1,86 @@
+{
+    "key": "group_581cbf1a8235b",
+    "title": "Homepage Options",
+    "fields": [
+        {
+            "key": "field_581cbf2031a7d",
+            "label": "Video fields from Page Options",
+            "name": "video_fields_from_page_options",
+            "type": "clone",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "clone": [
+                "field_580e111941a18",
+                "field_580e0f3c0f4b9"
+            ],
+            "display": "seamless",
+            "layout": "block",
+            "prefix_label": 0,
+            "prefix_name": 0
+        },
+        {
+            "key": "field_581cbead37155",
+            "label": "Video\/Image Callout Text",
+            "name": "hero_callout_text",
+            "type": "text",
+            "instructions": "Enter a short line of text to be displayed near the featured image \/ video link.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_581cbf5031a7e",
+            "label": "Text fields from Page Options",
+            "name": "text_fields_from_page_options",
+            "type": "clone",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "clone": [
+                "field_580e0c217a7c8"
+            ],
+            "display": "seamless",
+            "layout": "block",
+            "prefix_label": 0,
+            "prefix_name": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "page_type",
+                "operator": "==",
+                "value": "front_page"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "description": "",
+    "modified": 1478279349
+}
