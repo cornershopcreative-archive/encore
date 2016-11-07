@@ -1,0 +1,131 @@
+.modal {
+	padding: 5px;
+	@include breakpoint( $tablet ) {
+		padding: 40px;
+	}
+	header, h4 {
+		text-align: center;
+		max-width: 800px;
+		margin: 0 auto;
+	}
+	h4 {
+		@include breakpoint( max-width $tablet ) {
+			display: none;
+		}
+	}
+	.icon-logo {
+		display: none;
+		@include breakpoint( $tablet ) {
+			display: block;
+			margin: 0 auto;
+			width: 120px;
+			height: 120px;
+			background-size: cover;
+			margin-bottom: 30px;
+		}
+	}
+	/* labels are visually hidden, thanks to placeholders */
+	label {
+		border: 0;
+		clip: rect(0 0 0 0);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		width: 1px;
+	}
+	form {
+		max-width: 460px;
+		margin: 0 auto;
+		@include breakpoint( $tablet ) {
+			margin: 3rem auto 0;
+		}
+	}
+	footer {
+		display: none;
+
+		@include breakpoint( $tablet ) {
+			margin: 2em auto 0;
+			max-width: 1000px;
+			@include display(flex);
+
+			a {
+				@include flex(1);
+				@include display(flex);
+				@include align-items(center);
+				@include justify-content(center);
+				@include flex-direction(column);
+				text-align: center;
+				padding: 5px 20px;
+				text-decoration: none;
+				position: relative;
+				&:nth-child(2):after,
+				&:nth-child(2):before {
+					content: "";
+					width: 1px;
+					height: 80%;
+					background-color: $gray-med;
+					position: absolute;
+					right: 0;
+					top: 10%;
+				}
+				&:nth-child(2):before {
+					left: 0;
+					right: auto;
+				}
+				h5 {
+					color: $gold;
+				}
+				p {
+					color: black;
+				}
+				&:hover {
+					background-color: $lime;
+					h5, p {
+						color: white;
+					}
+					&:after, &:before {
+						display:none;
+					}
+				}
+			}
+
+		}
+	}
+}
+
+.featherlight {
+	background: rgba( shade($deep-blue, 20%), 0.9 );
+	&:last-of-type {
+		background: rgba( shade($deep-blue, 20%), 0.9 );
+	}
+	.featherlight-content {
+		border-radius: 3px;
+	}
+}
+
+.modalform.featherlight {
+	@include breakpoint( $tablet ) {
+		.featherlight-close-icon {
+			font-size: 20px;
+			opacity: 0.5;
+			top: 20px;
+			right: 20px;
+		}
+	}
+}
+
+#signup-modal-thanks,
+#signup-modal-opportunity-thanks, {
+	header .button-group {
+		margin-top: 2em;
+		margin-bottom: 5em;
+		@include breakpoint( max-width $tablet ) {
+			display: block;
+			& > .button {
+				margin: 10px 1em;
+			}
+		}
+	}
+}

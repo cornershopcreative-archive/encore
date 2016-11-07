@@ -607,6 +607,13 @@ h6 {
     .button.button-white:hover {
       background-color: #fff;
       color: #fff; }
+  .button.button-orange {
+    border-color: #ff6317;
+    background-color: transparent;
+    color: #ff6317; }
+    .button.button-orange:hover {
+      background-color: #ff6317;
+      color: #fff; }
   .button.button-facebook {
     border-color: #3b5998;
     background-color: transparent;
@@ -657,6 +664,12 @@ h6 {
     .button-solid.button-white:hover, .section-communities .grid-item .button-white.button-gold:hover {
       background-color: transparent;
       color: #fff; }
+  .button-solid.button-orange, .section-communities .grid-item .button-orange.button-gold:hover {
+    background-color: #ff6317;
+    color: #fff; }
+    .button-solid.button-orange:hover, .section-communities .grid-item .button-orange.button-gold:hover {
+      background-color: transparent;
+      color: #ff6317; }
   .button-solid.button-facebook, .section-communities .grid-item .button-facebook.button-gold:hover {
     background-color: #3b5998;
     color: #fff; }
@@ -687,6 +700,10 @@ h6 {
   .button-group.button-group-expand > *, .button-group-expand.facetwp-pager > * {
     -ms-flex: 1 0 auto;
         flex: 1 0 auto; }
+
+.totallyhidden {
+  display: none !important;
+  visibility: hidden; }
 
 /**
  * @license
@@ -920,6 +937,53 @@ svg {
     margin: 0; }
   .gallery a {
     display: block; }
+
+form .row > div {
+  padding: 5px; }
+
+@media (min-width: 640px) {
+  form .row {
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -moz-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-direction: row;
+    -moz-align-items: stretch;
+    -ms-align-items: stretch;
+    -o-align-items: stretch;
+    align-items: stretch;
+    -moz-justify-content: center;
+    -ms-justify-content: center;
+    -o-justify-content: center;
+    justify-content: center;
+    box-align: stretch;
+    -ms-flex-align: stretch;
+    box-orient: horizontal;
+    box-direction: normal;
+    box-pack: center;
+    -ms-flex-pack: center; }
+    form .row > div {
+      -moz-flex: 1;
+      -ms-flex: 1;
+      flex: 1;
+      box-flex: 1; }
+    form .row > .wide {
+      -moz-flex: 2;
+      -ms-flex: 2;
+      flex: 2;
+      box-flex: 2; } }
+
+input[type='text'],
+input[type='password'],
+input[type='email'] {
+  padding: 22px 20px 18px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 3px; }
 
 /**
  * Styles for FacetWP elements.
@@ -2257,5 +2321,139 @@ svg {
   background: #3dbf9a; }
   .mtc-grid-item:hover span, .mtc-grid-item:hover h3, .mtc-grid-item:hover p {
     color: #fff; }
+
+.modal {
+  padding: 5px;
+
+  /* labels are visually hidden, thanks to placeholders */ }
+  @media (min-width: 640px) {
+    .modal {
+      padding: 40px; } }
+  .modal header, .modal h4 {
+    margin: 0 auto;
+    max-width: 800px;
+    text-align: center; }
+  @media (max-width: 640px) {
+    .modal h4 {
+      display: none; } }
+  .modal .icon-logo {
+    display: none; }
+    @media (min-width: 640px) {
+      .modal .icon-logo {
+        display: block;
+        margin: 0 auto;
+        margin-bottom: 30px;
+        width: 120px;
+        height: 120px;
+        background-size: cover; } }
+  .modal label {
+    position: absolute;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    margin: -1px;
+    padding: 0;
+    width: 1px;
+    height: 1px;
+    border: 0; }
+  .modal form {
+    margin: 0 auto;
+    max-width: 460px; }
+    @media (min-width: 640px) {
+      .modal form {
+        margin: 3rem auto 0; } }
+  .modal footer {
+    display: none; }
+    @media (min-width: 640px) {
+      .modal footer {
+        display: -webkit-box;
+        display: -moz-box;
+        display: box;
+        display: -moz-flex;
+        display: -ms-flexbox;
+        display: flex;
+        margin: 2em auto 0;
+        max-width: 1000px; }
+        .modal footer a {
+          position: relative;
+          display: -webkit-box;
+          display: -moz-box;
+          display: box;
+          display: -moz-flex;
+          display: -ms-flexbox;
+          display: flex;
+          -moz-flex: 1;
+          -ms-flex: 1;
+          flex: 1;
+          -moz-flex-direction: column;
+          flex-direction: column;
+          -ms-flex-direction: column;
+          -moz-align-items: center;
+          -ms-align-items: center;
+          -o-align-items: center;
+          align-items: center;
+          -moz-justify-content: center;
+          -ms-justify-content: center;
+          -o-justify-content: center;
+          justify-content: center;
+          padding: 5px 20px;
+          text-align: center;
+          text-decoration: none;
+          box-flex: 1;
+          box-align: center;
+          -ms-flex-align: center;
+          box-pack: center;
+          -ms-flex-pack: center;
+          box-orient: vertical;
+          box-direction: normal; }
+          .modal footer a:nth-child(2):after, .modal footer a:nth-child(2):before {
+            position: absolute;
+            top: 10%;
+            right: 0;
+            width: 1px;
+            height: 80%;
+            background-color: #c0c0b9;
+            content: ""; }
+          .modal footer a:nth-child(2):before {
+            right: auto;
+            left: 0; }
+          .modal footer a h5 {
+            color: #ff8b18; }
+          .modal footer a p {
+            color: black; }
+          .modal footer a:hover {
+            background-color: #aacc00; }
+            .modal footer a:hover h5, .modal footer a:hover p {
+              color: white; }
+            .modal footer a:hover:after, .modal footer a:hover:before {
+              display: none; } }
+
+.featherlight {
+  background: rgba(0, 57, 154, 0.9); }
+  .featherlight:last-of-type {
+    background: rgba(0, 57, 154, 0.9); }
+  .featherlight .featherlight-content {
+    border-radius: 3px; }
+
+@media (min-width: 640px) {
+  .modalform.featherlight .featherlight-close-icon {
+    top: 20px;
+    right: 20px;
+    font-size: 20px;
+    opacity: 0.5; } }
+
+#signup-modal-thanks header .button-group, #signup-modal-thanks header .facetwp-pager,
+#signup-modal-opportunity-thanks header .button-group,
+#signup-modal-opportunity-thanks header .facetwp-pager {
+  margin-top: 2em;
+  margin-bottom: 5em; }
+  @media (max-width: 640px) {
+    #signup-modal-thanks header .button-group, #signup-modal-thanks header .facetwp-pager,
+    #signup-modal-opportunity-thanks header .button-group,
+    #signup-modal-opportunity-thanks header .facetwp-pager {
+      display: block; }
+      #signup-modal-thanks header .button-group > .button, #signup-modal-thanks header .facetwp-pager > .button,
+      #signup-modal-opportunity-thanks header .button-group > .button,
+      #signup-modal-opportunity-thanks header .facetwp-pager > .button {
+        margin: 10px 1em; } }
 
 /*# sourceMappingURL=maps/crate.css.map */
