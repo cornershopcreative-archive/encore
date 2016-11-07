@@ -6,7 +6,7 @@
 			<p class="prose">Sign up below to learn more about how you can offer your knowledge and experience to younger generations this fall.</p>
 		</header>
 
-		<form name="signup" class="bsd-signup-2" action="/page/signup/join-generation-to-generation" method="post" id="signup">
+		<form name="signup" class="bsd-signup-2" action="https://generation.cp.bsd.net/page/signup/join-generation-to-generation" method="post" id="signup">
 
 			<div class="row">
 				<div class="bsd-field-firstname half">
@@ -37,9 +37,35 @@
 		  </div>
 
 			<input name="country" type="hidden" value="US">
-			<input name="redirect_url" type="hidden" value="">
+			<input name="redirect_url" type="hidden" value="http:<?php echo acf_get_current_url() . "#thankyou" ?>">
 			<input id="_guid" name="_guid" type="hidden" value="">
 		</form>
 
+	</aside>
+</div>
+
+
+<div class="totallyhidden">
+	<aside id="signup-modal-thanks" class="modal">
+		<header>
+			<div class="icon-logo"></div>
+			<h2>Thank you for pledging!</h2>
+			<?php echo apply_filters( 'the_content', '[button-group][button style="facebook" href="#"]Share on Faccebook[/button][button style="twitter" href="#"]Share on Twitter[/button][/button-group]'); ?>
+		</header>
+
+		<footer>
+			<a href="#">
+				<h5>Go to Opportunities</h5>
+				<p>Find an organization to make a difference with.</p>
+			</a>
+			<a href="#">
+				<h5>DIY Initiatives</h5>
+				<p>Find your own way to get involved through our partner directory.</p>
+			</a>
+			<a href="#">
+				<h5>Learning Labs</h5>
+				<p>Get involved in your local community.</p>
+			</a>
+		</footer>
 	</aside>
 </div>

@@ -29,7 +29,7 @@
 }
 
 .featherlight {
-	background: rgba( darken($deep-blue, 15%), 0.9 );
+	background: rgba( shade($deep-blue, 20%), 0.9 );
 	.featherlight-content {
 		border-radius: 3px;
 	}
