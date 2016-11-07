@@ -765,10 +765,10 @@
                                         "id": ""
                                     },
                                     "return_format": "id",
-                                    "preview_size": "thumbnail",
+                                    "preview_size": "slider-item",
                                     "library": "all",
-                                    "min_width": "",
-                                    "min_height": "",
+                                    "min_width": 980,
+                                    "min_height": 440,
                                     "min_size": "",
                                     "max_width": "",
                                     "max_height": "",
@@ -1909,5 +1909,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1478534072
+    "modified": 1478558851
 }

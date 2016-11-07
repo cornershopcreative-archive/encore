@@ -36,8 +36,18 @@
 		?>
 		<div class="content-section-slider container-10">
 			<div class="slider-controls">
-				<a href="#" class="slider-prev"><span class="icon-slider-arrow-charcoal"></span><span class="screen-reader-text"><?php esc_html_e( 'Previous slide' ); ?></span></a>
-				<a href="#" class="slider-next"><span class="icon-slider-arrow-charcoal"></span><span class="screen-reader-text"><?php esc_html_e( 'Next slide' ); ?></span></a>
+				<a href="#" class="slider-prev">
+					<svg class="icon" viewBox="0 0 100 100">
+						<use xlink:href="#icon-slider-arrow"></use>
+					</svg>
+					<span class="screen-reader-text"><?php esc_html_e( 'Previous slide' ); ?></span>
+				</a>
+				<a href="#" class="slider-next">
+					<svg class="icon" viewBox="0 0 100 100">
+						<use xlink:href="#icon-slider-arrow"></use>
+					</svg>
+					<span class="screen-reader-text"><?php esc_html_e( 'Next slide' ); ?></span>
+				</a>
 			</div>
 			<div class="slider-items">
 				<?php

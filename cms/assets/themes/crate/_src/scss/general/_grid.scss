@@ -11,6 +11,11 @@
 	}
 }
 
+.container-bleed {
+	padding-left: 0;
+	padding-right: 0;
+}
+
 // Narrower container, spanning 10 columns.
 .container-10 {
 	@extend .container;
