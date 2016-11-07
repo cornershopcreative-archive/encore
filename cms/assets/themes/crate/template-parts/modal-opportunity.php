@@ -35,7 +35,7 @@
 		  <div class="row button-group" id="bsd-field-submit-btn">
 		    <div class="input"><input name="submit-btn" value="Count Me In" type="submit" class="button button-solid button-gold aligncenter"></div>
 		  </div>
-			<input name="partner" type="hidden" value="" id="partner">
+			<input name="custom-24" type="hidden" value="" id="partner">
 			<input name="country" type="hidden" value="US">
 			<input name="redirect_url" type="hidden" value="http:<?php echo acf_get_current_url() . "#thankyou" ?>">
 			<input id="_guid" name="_guid" type="hidden" value="">
