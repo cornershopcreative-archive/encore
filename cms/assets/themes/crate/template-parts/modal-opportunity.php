@@ -1,12 +1,12 @@
 <div class="totallyhidden">
-	<aside id="signup-modal" class="modal">
+	<aside id="signup-modal-opportunity" class="modal">
 		<header>
 			<div class="icon-logo"></div>
-			<h2>You are uniquely valuable.</h2>
-			<p class="prose">Sign up below to learn more about how you can offer your knowledge and experience to younger generations this fall.</p>
+			<h2>Before you take action...</h2>
+			<p class="prose">Pledge with Generation to Generation below to continue to the organization’s website to take action.</p>
 		</header>
 
-		<form name="signup" class="bsd-signup-2" action="https://generation.cp.bsd.net/page/signup/join-generation-to-generation" method="post" id="signup-generic" target="bsd-target">
+		<form name="signup-opportunity" class="bsd-signup-2" action="https://generation.cp.bsd.net/page/signup/join-generation-to-generation" method="post" id="signup-opportunity" target="bsd-target-opportunity">
 
 			<div class="row">
 				<div class="bsd-field-firstname half">
@@ -40,31 +40,20 @@
 			<input name="redirect_url" type="hidden" value="http:<?php echo acf_get_current_url() . "#thankyou" ?>">
 			<input id="_guid" name="_guid" type="hidden" value="">
 		</form>
-		<iframe id="bsd-target" width="0" class="totallyhidden" border="0" name="bsd-target"></iframe>
+		<iframe id="bsd-target" width="0" class="totallyhidden" border="0" name="bsd-target-opportunity"></iframe>
 	</aside>
 </div>
 
 <div class="totallyhidden">
-	<aside id="signup-modal-thanks" class="modal">
+	<aside id="signup-modal-opportunity-thanks" class="modal">
 		<header>
 			<div class="icon-logo"></div>
 			<h2>Thank you for pledging!</h2>
 			<?php echo apply_filters( 'the_content', '[button-group][button style="facebook" href="#"]Share on Faccebook[/button][button style="twitter" href="#"]Share on Twitter[/button][/button-group]'); ?>
 		</header>
-		<h4>Explore three ways to make a difference:</h4>
-		<footer>
-			<a href="#">
-				<h5>Go to Opportunities</h5>
-				<p>Find an organization to make a difference with.</p>
-			</a>
-			<a href="#">
-				<h5>DIY Initiatives</h5>
-				<p>Find your own way to get involved through our partner directory.</p>
-			</a>
-			<a href="#">
-				<h5>Learning Labs</h5>
-				<p>Get involved in your local community.</p>
-			</a>
-		</footer>
+		<h4>Continuing to organization website <span class="countdown">shortly</span>...</h4>
+		<div class="button-group">
+		  <a href="#" class="button button-solid button-gold aligncenter">Continue to Organization</a>
+		</div>
 	</aside>
 </div>

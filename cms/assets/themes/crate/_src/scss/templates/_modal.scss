@@ -8,6 +8,11 @@
 		max-width: 800px;
 		margin: 0 auto;
 	}
+	h4 {
+		@include breakpoint( max-width $tablet ) {
+			display: none;
+		}
+	}
 	.icon-logo {
 		display: none;
 		@include breakpoint( $tablet ) {
@@ -38,48 +43,54 @@
 		}
 	}
 	footer {
-		margin: 2em auto 0;
-		max-width: 1000px;
-		@include display(flex);
-		a {
-			@include flex(1);
+		display: none;
+
+		@include breakpoint( $tablet ) {
+			margin: 2em auto 0;
+			max-width: 1000px;
 			@include display(flex);
-			@include align-items(center);
-			@include justify-content(center);
-			@include flex-direction(column);
-			text-align: center;
-			padding: 5px 20px;
-			text-decoration: none;
-			position: relative;
-			&:nth-child(2):after,
-			&:nth-child(2):before {
-				content: "";
-				width: 1px;
-				height: 80%;
-				background-color: $gray-med;
-				position: absolute;
-				right: 0;
-				top: 10%;
-			}
-			&:nth-child(2):before {
-				left: 0;
-				right: auto;
-			}
-			h5 {
-				color: $gold;
-			}
-			p {
-				color: black;
-			}
-			&:hover {
-				background-color: $lime;
-				h5, p {
-					color: white;
+
+			a {
+				@include flex(1);
+				@include display(flex);
+				@include align-items(center);
+				@include justify-content(center);
+				@include flex-direction(column);
+				text-align: center;
+				padding: 5px 20px;
+				text-decoration: none;
+				position: relative;
+				&:nth-child(2):after,
+				&:nth-child(2):before {
+					content: "";
+					width: 1px;
+					height: 80%;
+					background-color: $gray-med;
+					position: absolute;
+					right: 0;
+					top: 10%;
 				}
-				&:after, &:before {
-					display:none;
+				&:nth-child(2):before {
+					left: 0;
+					right: auto;
+				}
+				h5 {
+					color: $gold;
+				}
+				p {
+					color: black;
+				}
+				&:hover {
+					background-color: $lime;
+					h5, p {
+						color: white;
+					}
+					&:after, &:before {
+						display:none;
+					}
 				}
 			}
+
 		}
 	}
 }
