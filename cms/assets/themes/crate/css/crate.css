@@ -530,33 +530,41 @@ h6 {
   font-family: "Avenir Next";
   line-height: 1.5;
   cursor: pointer; }
-  .button.button-badge {
-    padding: 0.75rem 0;
-    width: 3.125rem;
-    border-radius: 50%;
-    font-size: 1.375rem;
-    line-height: 1; }
-    @media (min-width: 640px) {
-      .button.button-badge {
-        padding: 0.875rem 0;
-        width: 3.75rem;
-        font-size: 1.75rem; } }
   .button.button-facebook:before {
     display: inline-block;
+    margin-right: 0.8125rem;
     content: "";
     font: 400 normal normal 14px/1 FontAwesome;
     font-size: inherit;
+    font-size: 1.375rem;
+    line-height: 1;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale; }
   .button.button-twitter:before {
     display: inline-block;
+    margin-right: 0.8125rem;
     content: "";
     font: 400 normal normal 14px/1 FontAwesome;
     font-size: inherit;
+    font-size: 1.375rem;
+    line-height: 1;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale; }
+  .button.button-badge {
+    padding: 0.75rem 0;
+    width: 3.125rem;
+    border-radius: 50%;
+    font-size: 1.375rem; }
+    @media (min-width: 640px) {
+      .button.button-badge {
+        padding: 0.875rem 0;
+        width: 3.75rem;
+        font-size: 1.75rem; } }
+    .button.button-badge:before {
+      margin-right: 0;
+      font-size: 1em; }
   .button.button-gold {
     border-color: #ff8b18;
     background-color: transparent;
