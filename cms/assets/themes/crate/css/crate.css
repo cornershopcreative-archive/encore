@@ -530,33 +530,41 @@ h6 {
   font-family: "Avenir Next";
   line-height: 1.5;
   cursor: pointer; }
-  .button.button-badge {
-    padding: 0.75rem 0;
-    width: 3.125rem;
-    border-radius: 50%;
-    font-size: 1.375rem;
-    line-height: 1; }
-    @media (min-width: 640px) {
-      .button.button-badge {
-        padding: 0.875rem 0;
-        width: 3.75rem;
-        font-size: 1.75rem; } }
   .button.button-facebook:before {
     display: inline-block;
+    margin-right: 0.8125rem;
     content: "";
     font: 400 normal normal 14px/1 FontAwesome;
     font-size: inherit;
+    font-size: 1.375rem;
+    line-height: 1;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale; }
   .button.button-twitter:before {
     display: inline-block;
+    margin-right: 0.8125rem;
     content: "";
     font: 400 normal normal 14px/1 FontAwesome;
     font-size: inherit;
+    font-size: 1.375rem;
+    line-height: 1;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale; }
+  .button.button-badge {
+    padding: 0.75rem 0;
+    width: 3.125rem;
+    border-radius: 50%;
+    font-size: 1.375rem; }
+    @media (min-width: 640px) {
+      .button.button-badge {
+        padding: 0.875rem 0;
+        width: 3.75rem;
+        font-size: 1.75rem; } }
+    .button.button-badge:before {
+      margin-right: 0;
+      font-size: 1em; }
   .button.button-gold {
     border-color: #ff8b18;
     background-color: transparent;
@@ -1739,7 +1747,8 @@ input[type='email'] {
     width: 40.67797%; } }
 
 .section-partner-list .entry-image img {
-  margin: 0 auto; }
+  margin: 0 auto;
+  max-width: 12.5rem; }
 
 @media (min-width: 640px) {
   .section-partner-list .entry-summary {
@@ -1763,7 +1772,8 @@ input[type='email'] {
     -ms-flex-align: center;
         align-items: center; }
   .section-partner-slider .grid-item-image {
-    margin: 0 auto; }
+    margin: 0 auto;
+    max-width: 11.25rem; }
 
 /**
  * Styles for News content sections.
@@ -1786,7 +1796,8 @@ input[type='email'] {
       margin: 0 3.125rem 0 0;
       width: 12.5rem; } }
   .section-news .entry-image img {
-    margin: 0 auto; }
+    margin: 0 auto;
+    max-width: 11.25rem; }
 
 .section-news .entry-summary {
   line-height: 2rem; }

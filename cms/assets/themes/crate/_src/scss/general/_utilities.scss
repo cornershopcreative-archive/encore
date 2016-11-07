@@ -47,12 +47,31 @@
 	text-decoration: none;
 	cursor: pointer;
 
+	&.button-facebook {
+		&:before {
+			@include fa-icon;
+			content: $fa-var-facebook;
+			font-size: rem(22);
+			line-height: 1;
+			margin-right: rem(13);
+		}
+	}
+
+	&.button-twitter {
+		&:before {
+			@include fa-icon;
+			content: $fa-var-twitter;
+			font-size: rem(22);
+			line-height: 1;
+			margin-right: rem(13);
+		}
+	}
+
 	&.button-badge {
 		// On small screens, badge buttons are 50px by 50px.
 		padding: rem(12) 0;
 		border-radius: 50%;
 		font-size: rem(22);
-		line-height: 1;
 		// Set width equal to vertical padding + border + font size.
 		width: rem(50);
 
@@ -62,19 +81,11 @@
 			font-size: rem(28);
 			width: rem(60);
 		}
-	}
 
-	&.button-facebook {
+		// Remove margin from icons.
 		&:before {
-			@include fa-icon;
-			content: $fa-var-facebook;
-		}
-	}
-
-	&.button-twitter {
-		&:before {
-			@include fa-icon;
-			content: $fa-var-twitter;
+			font-size: 1em; // Inherit responsive font size from .button.
+			margin-right: 0;
 		}
 	}
 
