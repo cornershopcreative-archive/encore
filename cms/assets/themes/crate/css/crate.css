@@ -2393,6 +2393,8 @@ input[type='email'] {
 
 .featherlight {
   background: rgba(0, 57, 154, 0.9); }
+  .featherlight:last-of-type {
+    background: rgba(0, 57, 154, 0.9); }
   .featherlight .featherlight-content {
     border-radius: 3px; }
 
@@ -2402,5 +2404,20 @@ input[type='email'] {
     right: 20px;
     font-size: 20px;
     opacity: 0.5; } }
+
+#signup-modal-thanks header .button-group, #signup-modal-thanks header .facetwp-pager,
+#signup-modal-opportunity-thanks header .button-group,
+#signup-modal-opportunity-thanks header .facetwp-pager {
+  margin-top: 2em;
+  margin-bottom: 5em; }
+  @media (max-width: 640px) {
+    #signup-modal-thanks header .button-group, #signup-modal-thanks header .facetwp-pager,
+    #signup-modal-opportunity-thanks header .button-group,
+    #signup-modal-opportunity-thanks header .facetwp-pager {
+      display: block; }
+      #signup-modal-thanks header .button-group > .button, #signup-modal-thanks header .facetwp-pager > .button,
+      #signup-modal-opportunity-thanks header .button-group > .button,
+      #signup-modal-opportunity-thanks header .facetwp-pager > .button {
+        margin: 10px 1em; } }
 
 /*# sourceMappingURL=maps/crate.css.map */

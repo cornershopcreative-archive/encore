@@ -49,7 +49,7 @@
 		<header>
 			<div class="icon-logo"></div>
 			<h2>Thank you for pledging!</h2>
-			<?php echo apply_filters( 'the_content', '[button-group][button style="facebook" href="#"]Share on Faccebook[/button][button style="twitter" href="#"]Share on Twitter[/button][/button-group]'); ?>
+			<?php echo apply_filters( 'the_content', '[button-group][button style="facebook" href="#"]Share on Facebook[/button][button style="twitter" href="#"]Share on Twitter[/button][/button-group]'); ?>
 		</header>
 		<h4>Explore three ways to make a difference:</h4>
 		<footer>
