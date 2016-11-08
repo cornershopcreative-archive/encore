@@ -1041,6 +1041,34 @@ input[type='email'] {
     -ms-transform: scaleX(-1);
         transform: scaleX(-1); }
 
+.collapseomatic {
+  padding: 40px 0 15px 16px !important;
+  width: 100%;
+  border-top: 1px solid #D8D8D8;
+  color: #000;
+  letter-spacing: 0.1px;
+  font-weight: 700;
+  font-size: 21px;
+  font-family: "Avenir Next";
+  line-height: 32px; }
+
+.collapseomatic:hover {
+  color: #aacc00;
+  text-decoration: none; }
+
+.colomat-close {
+  color: #aacc00; }
+
+.collapseomatic_content {
+  color: #000;
+  font-size: 16px;
+  font-family: "Avenir Next";
+  line-height: 28px; }
+
+.testingfordanny {
+  color: #fff;
+  font-size: 18px; }
+
 .site-header {
   position: relative;
   z-index: 10;

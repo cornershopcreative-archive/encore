@@ -1,0 +1,32 @@
+.collapseomatic {
+	width: 100%;
+	font-family: "Avenir Next";
+	font-weight: bold;
+	font-size: 21px;
+	color: $black;
+	letter-spacing: 0.1px;
+	line-height: 32px;
+	border-top: 1px solid #D8D8D8;
+	padding: 40px 0 15px 16px !important;
+	}
+	
+.collapseomatic:hover {
+	color: $lime;
+	text-decoration: none;
+	}
+	
+.colomat-close {
+	color: $lime;
+}
+
+.collapseomatic_content {
+	font-family: "Avenir Next";
+	font-size: 16px;
+	color: $black;
+	line-height: 28px;
+}
+
+.testingfordanny {
+	color: $white;
+	font-size: 18px;
+}
