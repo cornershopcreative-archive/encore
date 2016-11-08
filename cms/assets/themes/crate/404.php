@@ -10,7 +10,7 @@
 get_header(); ?>
 
 	<main id="main" class="site-main" role="main">
-
+	
 		<?php
 		while ( have_posts() ) : the_post();
 
@@ -18,6 +18,8 @@ get_header(); ?>
 
 		endwhile; // End of the loop.
 		?>
+
+		<center><a class="button button-solid button-gold" style="margin-bottom: 100px;" href="/">Go to Home</a></center>
 
 	</main><!-- #main -->
 
