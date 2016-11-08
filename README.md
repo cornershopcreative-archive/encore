@@ -1,6 +1,6 @@
 # What is this? #
 
-This repo contains Cornershop Creative's stock WordPress install. It includes a number of oft-used plugins, our custom-built Crate theme, and a database dump to facilitate getting up and running quickly.
+This repo contains Encore's Generation to Generation WordPress site.
 
 # How do I use it? #
 
