@@ -159,8 +159,23 @@
 	// Overlap .cycle-slide (whose z-index may be up to 100).
 	z-index: 101;
 	top: 50%;
-	height: rem(68);
-	margin-top: rem(-34);
+	height: rem(44);
+	margin-top: rem(-22);
+	color: $charcoal;
+
+	@include breakpoint( $tablet ) {
+		height: rem(68);
+		margin-top: rem(-34);
+	}
+
+	.icon {
+		width: rem(20);
+		height: auto;
+
+		@include breakpoint( $tablet ) {
+			width: rem(25);
+		}
+	}
 }
 
 .slider-prev {

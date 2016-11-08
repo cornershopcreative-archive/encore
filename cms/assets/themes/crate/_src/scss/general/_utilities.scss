@@ -31,8 +31,11 @@
  */
 
 .button {
-	display: inline-block;
-	padding: rem(14) rem(28 + 14);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: rem(55);
+	padding: rem(10) rem(28 + 14);
 	border-radius: rem(28);
 	border: 2px solid;
 	font-size: rem(15);
@@ -44,12 +47,31 @@
 	text-decoration: none;
 	cursor: pointer;
 
+	&.button-facebook {
+		&:before {
+			@include fa-icon;
+			content: $fa-var-facebook;
+			font-size: rem(22);
+			line-height: 1;
+			margin-right: rem(13);
+		}
+	}
+
+	&.button-twitter {
+		&:before {
+			@include fa-icon;
+			content: $fa-var-twitter;
+			font-size: rem(22);
+			line-height: 1;
+			margin-right: rem(13);
+		}
+	}
+
 	&.button-badge {
 		// On small screens, badge buttons are 50px by 50px.
 		padding: rem(12) 0;
 		border-radius: 50%;
 		font-size: rem(22);
-		line-height: 1;
 		// Set width equal to vertical padding + border + font size.
 		width: rem(50);
 
@@ -59,19 +81,11 @@
 			font-size: rem(28);
 			width: rem(60);
 		}
-	}
 
-	&.button-facebook {
+		// Remove margin from icons.
 		&:before {
-			@include fa-icon;
-			content: $fa-var-facebook;
-		}
-	}
-
-	&.button-twitter {
-		&:before {
-			@include fa-icon;
-			content: $fa-var-twitter;
+			font-size: 1em; // Inherit responsive font size from .button.
+			margin-right: 0;
 		}
 	}
 
@@ -105,7 +119,7 @@
 	align-items: center;
 
 	.button {
-		display: block;
+		display: flex; // Fill container width (normally buttons are inline-flex).
 	}
 
 	> * {
@@ -120,4 +134,9 @@
 			flex: 1 0 auto;
 		}
 	}
+}
+
+.totallyhidden {
+	display: none !important;
+	visibility: hidden;
 }

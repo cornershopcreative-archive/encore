@@ -15,7 +15,7 @@
 
 		// Set up custom query.
 		$partner_query = crate_section_query( array(
-			'post_type' => 'partners',
+			'post_type' => 'partner',
 			'orderby' => 'post_title',
 			'order' => 'ASC',
 		) );
@@ -41,6 +41,7 @@
 
 						<?php crate_post_item_link( array(
 							'class' => 'button button-gold button-solid',
+							'data-org-name' => trim( esc_attr( get_the_title() ) )
 						) ); ?>
 							<?php esc_html_e( 'Get Involved', 'crate' ); ?>
 						<?php crate_post_item_link_close(); ?>
@@ -61,3 +62,5 @@
 		<?php wp_reset_postdata(); ?>
 
 	</div>
+
+	<?php get_template_part( 'template-parts/modal', 'opportunity' ); ?>

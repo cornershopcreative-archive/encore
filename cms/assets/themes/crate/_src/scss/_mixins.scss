@@ -62,3 +62,18 @@ $color: null !global;
 	// Restore previous value of $color.
 	$color: $global-color !global;
 }
+
+/**
+ * Define padding + bottom margins for a hero element involving a floated image that should overlap with the bottom edge of the container.
+ */
+@mixin hero-float-margins( $overlap-bottom, $margin-bottom: rem(30), $breakpoint: $desktop ) { // $padding: rem(60) ) {
+
+	@include breakpoint( $breakpoint ) {
+		padding: rem(60) 0;
+		margin: 0 0 $overlap-bottom + $margin-bottom;
+
+		.hero-image {
+			margin-bottom: - ( $overlap-bottom + rem(60) );
+		}
+	}
+}

@@ -22,7 +22,8 @@
 
 <body <?php body_class(); ?>>
 
-<?php include_once( 'svg.php' ); ?>
+<?php get_template_part( 'template-parts/header-svg' ); ?>
+
 <div id="page" class="site">
 	<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Skip to content', 'crate' ); ?></a>
 
@@ -31,14 +32,29 @@
 			<div class="site-branding">
 				<?php
 				if ( is_front_page() && is_home() ) : ?>
-					<h1 class="site-title"><a class="icon-logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><span class="screen-reader-text"><?php bloginfo( 'name' ); ?></span></a></h1>
+					<h1 class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
+						<svg class="logo" viewBox="0 0 50 50">
+							<use xlink:href="#icon-logo"></use>
+						</svg>
+						<span class="screen-reader-text"><?php bloginfo( 'name' ); ?></span>
+					</a></h1>
 				<?php else : ?>
-					<p class="site-title"><a class="icon-logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><span class="screen-reader-text"><?php bloginfo( 'name' ); ?></span></a></p>
+					<p class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
+						<svg class="logo" viewBox="0 0 50 50">
+							<use xlink:href="#icon-logo"></use>
+						</svg>
+						<span class="screen-reader-text"><?php bloginfo( 'name' ); ?></span>
+					</a></p>
 				<?php
 				endif;
 				?>
 				<p class="powered-by">
-					<a class="icon-powered-by" href="http://encore.org/" target="_blank"><span class="screen-reader-text"><?php esc_html_e( 'Powered by Encore.org', 'crate' ); ?></span></a>
+					<a href="http://encore.org/" target="_blank">
+						<svg class="logo" viewBox="0 0 106 30">
+							<use xlink:href="#icon-powered-by"></use>
+						</svg>
+						<span class="screen-reader-text"><?php esc_html_e( 'Powered by Encore.org', 'crate' ); ?></span>
+					</a>
 				</p>
 			</div><!-- .site-branding -->
 
@@ -56,7 +72,7 @@
 			</nav><!-- #site-navigation -->
 
 			<div class="button-group button-group-expand nav-nag">
-				<a class="button button-solid button-bright-blue" href="#"><?php echo esc_html_e( 'Count Me In', 'crate' ); ?></a>
+				<a class="button button-solid button-bright-blue" href="#" data-featherlight="#signup-modal" data-featherlight-variant="modalform"><?php echo esc_html_e( 'Count Me In', 'crate' ); ?></a>
 			</div>
 		</div>
 	</header><!-- #masthead -->

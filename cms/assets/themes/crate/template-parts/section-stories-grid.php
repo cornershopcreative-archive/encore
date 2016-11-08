@@ -20,7 +20,7 @@
 
 		// Set up custom query.
 		$story_query = crate_section_query( array(
-			'post_type' => 'stories',
+			'post_type' => 'story',
 		) );
 
 		?>

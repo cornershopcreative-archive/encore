@@ -45,7 +45,7 @@
             {
                 "param": "post_type",
                 "operator": "==",
-                "value": "partners"
+                "value": "partner"
             }
         ]
     ],
@@ -57,5 +57,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1478144324
+    "modified": 1478194841
 }

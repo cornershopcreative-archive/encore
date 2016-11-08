@@ -198,10 +198,38 @@ function crate_back_link( $args = array()) {
 	}
 
 	?>
-	<a href="<?php echo esc_url( get_post_type_archive_link( $post->post_type ) ); ?>" class="<?php echo esc_attr( $args['class'] ); ?>"><?php
+	<a href="<?php echo esc_url( crate_get_post_type_archive_link( $post->post_type ) ); ?>" class="<?php echo esc_attr( $args['class'] ); ?>"><?php
 		echo esc_html( $args['text'] );
 	?></a>
 	<?php
+}
+
+/**
+ * Get the post type archive link for a post type, OR the pseudo-archive link
+ * if there is one.
+ */
+function crate_get_post_type_archive_link( $post_type ) {
+
+	// Get the post type object.
+	$post_type = get_post_type_object( $post_type );
+
+	// If no post type object was found, bail.
+	if ( is_wp_error( $post_type ) ) {
+		return;
+	}
+
+	// If the post type doesn't have a real archive, try looking for a
+	// pseudo-archive link.
+	// Even though we've got a filter on post_type_archive_link, that filter
+	// won't get called if the post type in question has has_archive set to
+	// false.
+	if ( ! $post_type->has_archive ) {
+		return crate_pseudo_archive_link( '', $post_type->name );
+	}
+
+	// Fall back on the normal WP post type archive link, or maybe the filtered
+	// version if has_archive is set to true but there's also a pseudo-archive.
+	return get_post_type_archive_link( $post_type->name );
 }
 
 /**

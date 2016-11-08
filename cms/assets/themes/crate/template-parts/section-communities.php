@@ -13,7 +13,7 @@
 		<?php
 
 		$communities = crate_section_query( array(
-			'post_type' => 'communities',
+			'post_type' => 'community',
 			'orderby' => 'post_title',
 			'order' => 'ASC',
 		) );

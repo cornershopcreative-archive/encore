@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<dwsync>
+<file name="another_symmetric.csv" server="computercourage.com//public_html/dev/codi/" local="129763950110408250" remote="129763988400000000" />
+<file name="asymmetric.csv" server="computercourage.com//public_html/dev/codi/" local="129763950109628249" remote="129763988400000000" />
+<file name="empty.csv" server="computercourage.com//public_html/dev/codi/" local="129763950107132244" remote="129763988400000000" />
+<file name="escape_ng.csv" server="computercourage.com//public_html/dev/codi/" local="129763950108224246" remote="129763988400000000" />
+<file name="escape_ok.csv" server="computercourage.com//public_html/dev/codi/" local="129763950108224246" remote="129763988400000000" />
+<file name="longer_headers.csv" server="computercourage.com//public_html/dev/codi/" local="129763950107132244" remote="129763988400000000" />
+<file name="multcased.CsV" server="computercourage.com//public_html/dev/codi/" local="129763950104948241" remote="129763988400000000" />
+<file name="non_csv_extension.txt" server="computercourage.com//public_html/dev/codi/" local="129763950104792240" remote="129763988400000000" />
+<file name="one_row_only.csv" server="computercourage.com//public_html/dev/codi/" local="129763950106040243" remote="129763988400000000" />
+<file name="only_headers.csv" server="computercourage.com//public_html/dev/codi/" local="129763950135212294" remote="129763988400000000" />
+<file name="raw.csv" server="computercourage.com//public_html/dev/codi/" local="129763950106040243" remote="129763988400000000" />
+<file name="symmetric.csv" server="computercourage.com//public_html/dev/codi/" local="129763950104948241" remote="129763988400000000" />
+<file name="symmetric_with_empty_lines.csv" server="computercourage.com//public_html/dev/codi/" local="129763950104792240" remote="129763988400000000" />
+<file name="symmetric_with_empty_records.csv" server="computercourage.com//public_html/dev/codi/" local="129763950104948241" remote="129763988400000000" />
+<file name="symmetric_with_trailing_spaces.csv" server="computercourage.com//public_html/dev/codi/" local="129763950103544238" remote="129763988400000000" />
+<file name="uppercased.CSV" server="computercourage.com//public_html/dev/codi/" local="129763950099020230" remote="129763988400000000" />
+</dwsync>
