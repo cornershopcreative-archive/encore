@@ -16,3 +16,6 @@ jQuery( fwp_load_more );
 
 var volunteer_pager = require( 'volunteer-opportunities' );
 jQuery( volunteer_pager );
+
+var footer_form = require( 'footer-form' );
+jQuery( footer_form );

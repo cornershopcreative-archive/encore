@@ -1,0 +1,128 @@
+/**
+ * Styles for the footer signup form.
+ */
+
+.footer-form {
+	position: relative; // Act as offset parent for .footer-form-dismiss.
+	padding: rem(25) 0 rem(18);
+	background: $deep-blue;
+	color: $white;
+
+	&.is-hidden {
+		display: none;
+	}
+
+	&.is-sticky {
+
+		@include breakpoint( $desktop ) {
+			position: fixed;
+			z-index: 1000;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			box-shadow: 0 0 7px rgba(0, 0, 0, 0.35);
+		}
+	}
+
+	.hide-until-submit {
+		display: none;
+	}
+
+	&.is-submitted {
+
+		.hide-until-submit {
+			display: block;
+		}
+
+		.hide-after-submit {
+			display: none;
+		}
+	}
+
+	a {
+		color: $white;
+
+		&:hover {
+			color: $white;
+		}
+	}
+
+	.section-title {
+		margin: rem(10) 0 rem(20);
+		font-size: rem(18);
+		line-height: 1.5;
+
+		@include breakpoint( $tablet ) {
+			margin: 0 0 rem(11);
+		}
+	}
+
+	.thank-you-message {
+		margin: rem(10) 0 rem(20);
+		font-size: rem(24);
+		text-align: center;
+		font-weight: bold;
+	}
+
+	.row {
+		align-items: center;
+
+		> .wide {
+			// Don't grow 'wide' fields THAT much more than narrow ones, or we'll get
+			// line breaks in labels and everything will blow up.
+			flex-grow: 1.3;
+		}
+
+		> .narrow {
+			// Don't grow 'narrow' fields/elements at all.
+			flex-grow: 0;
+		}
+	}
+
+	%text-input {
+		border-color: $white;
+		color: $deep-blue;
+	}
+
+	.button {
+		display: block;
+		width: 100%;
+		margin: rem(14) 0 rem(26);
+		// Prevent <button> elements from getting unnecessary line breaks.
+		white-space: nowrap;
+
+		@include breakpoint( $tablet ) {
+			width: auto;
+			margin: 0 rem(15);
+		}
+	}
+
+	.powered-by {
+		// Hide on mobile.
+		display: none;
+
+		@include breakpoint( $tablet ) {
+			display: block;
+		}
+
+		a {
+			display: block;
+			width: rem(88);
+		}
+	}
+}
+
+.footer-form-dismiss {
+	position: absolute;
+	top: rem(16);
+	right: rem(16);
+	font-size: rem(12);
+	line-height: 1;
+	cursor: pointer;
+
+	@include breakpoint( $tablet ) {
+		top: rem(20);
+		right: rem(20);
+		font-size: rem(16);
+	}
+}

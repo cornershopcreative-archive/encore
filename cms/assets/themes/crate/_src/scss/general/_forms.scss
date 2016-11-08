@@ -21,11 +21,32 @@ form {
 	}
 }
 
-input[type='text'],
-input[type='password'],
-input[type='email'] {
+%text-input {
 	width: 100%;
 	border-radius: 3px;
 	border: 1px solid #ccc;
 	padding: 22px 20px 18px;
+
+	.label-inside ~ & {
+		padding: 28px 16px 10px;
+		display: block;
+	}
+}
+
+input[type='text'],
+input[type='password'],
+input[type='email'] {
+	@extend %text-input;
+}
+
+// Labels that should be displayed inside form fields.
+.label-inside {
+	display: block;
+	padding: 9px 0 0 16px;
+	// Match fields' 1px border -- this way, paddings can match too.
+	border: 1px solid transparent;
+	font-size: 11px;
+	line-height: 15px;
+	margin-bottom: -24px;
+	color: #8d8f90;
 }
