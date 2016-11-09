@@ -33,8 +33,8 @@ function crate_facetwp_pager_html( $output, $params ) {
 	$output = '';
 
 	// Get relevant info from $params.
-	$total_pages = (int)$params['total_pages'];
-	$page = (int)$params['page'];
+	$total_pages = (int) $params['total_pages'];
+	$page = (int) $params['page'];
 
 	// If there's only one page worth of content, don't bother outputting
 	// pagination.

@@ -106,7 +106,7 @@ function crate_error_page_pre_get_posts( $query ) {
 	// Has an error page been specified?
 	if ( $error_page_id = crate_get_error_page_id() ) {
 
-		$exclude = (array)$query->get( 'post__not_in' );
+		$exclude = (array) $query->get( 'post__not_in' );
 		$exclude[] = absint( $error_page_id );
 
 		$query->set( 'post__not_in', $exclude );
@@ -232,7 +232,7 @@ function crate_get_post_thumbnail_id( $post = null ) {
 function crate_excerpt_length( $length ) {
 	if ( 'words' === get_field( 'excerpt_length_unit', 'option' ) ) {
 		if ( $custom_length = get_field( 'excerpt_length', 'option' ) ) {
-			$length = (int)$custom_length;
+			$length = (int) $custom_length;
 		}
 	}
 	return $length;
@@ -362,7 +362,7 @@ function crate_get_social_links( $services = false ) {
 
 	// Make sure $services is an array.
 	if ( $services ) {
-		$services = (array)$services;
+		$services = (array) $services;
 	} else {
 		$services = array();
 	}
