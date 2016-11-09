@@ -3,7 +3,7 @@
  * Plugin Name: My Eyes Are Up Here
  * Plugin URI: https://github.com/interconnectit/my-eyes-are-up-here
  * Description: Detects faces during thumbnail cropping and moves the crop position accordingly.
- * Version: 1.1.8
+ * Version: 1.1.8 (patched by Cornershop Creative)
  * Author: interconnect/it
  * Author URI: http://interconnectit.com
  *
@@ -22,6 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class MyEyesAreUpHere
  */
 final class MyEyesAreUpHere {
+	const REQUEST_WP_CLI = 'wp-cli';
 	const REQUEST_ADMIN = 'admin';
 	const REQUEST_AJAX = 'ajax';
 
@@ -62,6 +63,9 @@ final class MyEyesAreUpHere {
 	 */
 	public function is_request( $type ) {
 		switch ( $type ) {
+			case self::REQUEST_WP_CLI:
+				return ( defined( 'WP_CLI' ) && WP_CLI );
+
 			case self::REQUEST_ADMIN:
 				return is_admin();
 
@@ -115,6 +119,8 @@ final class MyEyesAreUpHere {
 
 		if ( $this->is_request( self::REQUEST_ADMIN ) ) {
 			require_once 'includes/class-meauh-admin.php';
+		} elseif( $this->is_request( self::REQUEST_WP_CLI ) ) {
+			require_once 'includes/class-meauh-attachment.php';
 		}
 	}
 
