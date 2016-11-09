@@ -16,7 +16,7 @@
 
 		// Set up custom query.
 		$story_query = crate_section_query( array(
-			'post_type' => 'partners',
+			'post_type' => 'partner',
 		) );
 
 		?>
