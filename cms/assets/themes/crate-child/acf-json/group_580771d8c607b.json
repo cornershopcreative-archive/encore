@@ -1722,6 +1722,25 @@
                             "maxlength": ""
                         },
                         {
+                            "key": "field_58223ff9ec68c",
+                            "label": "Subtitle",
+                            "name": "subtitle",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
                             "key": "field_58220933ee3dd",
                             "label": "Show Description",
                             "name": "description",
@@ -1893,5 +1912,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1478625645
+    "modified": 1478639623
 }

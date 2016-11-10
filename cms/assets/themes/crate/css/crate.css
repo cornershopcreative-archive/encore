@@ -2368,6 +2368,54 @@ input[type='email'] {
   .mtc-grid-item:hover span, .mtc-grid-item:hover h3, .mtc-grid-item:hover p {
     color: #fff; }
 
+<<<<<<< HEAD
+.partner-title {
+  padding-top: 10px;
+  color: #000;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08px;
+  font-weight: 700;
+  font-size: 16px;
+  font-family: "Avenir Next";
+  line-height: 24px; }
+
+.logo-container {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+  margin: 20px;
+  height: 200px; }
+  .logo-container img {
+    margin-bottom: 20px;
+    max-width: 180px; }
+
+.partners-header {
+  padding-top: 25px;
+  padding-bottom: 35px;
+  background-color: #f8f8f8; }
+
+.partners-grid-item {
+  position: relative;
+  -ms-flex-positive: 0;
+      flex-grow: 0;
+  margin: 0px !important;
+  padding: 20px;
+  border-right: 1px solid #d8d8d8;
+  border-bottom: 1px solid #d8d8d8;
+  background-color: #fff !important; }
+  @media (min-width: 640px) {
+    .partners-grid-item {
+      width: 33.3333%; }
+      .partners-grid-item:nth-child(3n) {
+        margin-right: 0;
+        border-right: none !important; }
+      .partners-grid-item:nth-last-child(-n+3) {
+        border-bottom: none !important; } }
+=======
 /**
  * Styles for the footer signup form.
  */
@@ -2452,6 +2500,7 @@ input[type='email'] {
       top: 1.25rem;
       right: 1.25rem;
       font-size: 1rem; } }
+>>>>>>> 0b6800e0a4887a2a459851c3f18978241f792ff3
 
 .modal {
   padding: 5px;
