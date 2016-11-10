@@ -62,15 +62,8 @@
 			<?php crate_back_link( array(
 				'class' => 'button button-gold button-solid'
 			) ); ?>
-			<?php if ( $story_submit_url = crate_get_story_submit_url() ) : ?>
-				<a href="<?php echo esc_url( $story_submit_url ); ?>" target="_blank" rel="noopener noreferrer" class="button button-gold"><?php esc_html_e( 'Submit Your Story', 'crate' ); ?></a>
-			<?php endif; ?>
 		</div>
 
 	</footer>
-
-	<?php while ( have_rows( 'single_story_footer_sections', 'option' ) ) : the_row(); ?>
-		<?php get_template_part( 'template-parts/section', get_row_layout() ); ?>
-	<?php endwhile; ?>
 
 </article><!-- #post-## -->

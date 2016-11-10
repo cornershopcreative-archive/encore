@@ -5,18 +5,22 @@
 ?>
 
 	<div class="content-section section-stories-grid">
-
-		<?php if ( $title = get_sub_field( 'title' ) ): ?>
+    <div class="partners-header prose">
+		<?php if ( get_sub_field( 'title' ) ): ?>
 			<h2 class="section-title"><?php echo wp_kses_post( wptexturize( $title ) ); ?></h2>
 		<?php endif; ?>
 
+		<?php if ( $subtitle = get_sub_field( 'subtitle' ) ): ?>
+			<center><p><?php echo wp_kses_post( wptexturize( $subtitle ) ); ?></p></center>
+		<?php endif; ?>
+	</div>
 		<?php
 
 		$show_pager = get_sub_field( 'show_pager' );
 
 		// Set up custom query.
 		$story_query = crate_section_query( array(
-			'post_type' => 'partners',
+			'post_type' => 'partner',
 		) );
 
 		?>
@@ -24,29 +28,38 @@
 		<div class="content-section-grid container<?php echo ( $show_pager ? ' facetwp-template' : '' ); ?>">
 			<?php while ( $story_query->have_posts() ) : $story_query->the_post(); ?>
 
-				<article class="grid-item grid-item-3<?php if ( get_field( 'bright_spot' ) ) echo ' bright-spot'; ?>">
+				<article class="partners-grid-item grid-item">
 
-					<div class="entry-thumbnail">
+					<div class="logo-container">
 
-						<?php echo get_the_post_thumbnail( null, 'grid-item-lg' ); ?>
+						<img src="<?php the_post_thumbnail_url(); ?>" class="partner-logo">
 
-						<div class="entry-quote">
-							<?php the_field( 'quote' ); ?>
-						</div>
 
 					</div>
 
-					<div class="entry-summary">
+					<div>
 
-						<h3 class="entry-title">
-							<a href="<?php echo esc_attr( get_permalink() ); ?>"><?php echo esc_html( get_the_title() ); ?></a>
+						<h3 class="partner-title">
+							<a href="<?php echo esc_url( get_field( 'link_url' ) ); ?>"><?php echo esc_html( get_the_title() ); ?></a>
 						</h3>
 
-						<p><?php the_field( 'subtitle' ); ?></p>
+
+						<?php
+
+if(get_sub_field('description') == "show")
+{
+	echo '<br><p style="padding-top: 10px">'.the_excerpt().'</p>';
+}
+
+?>
+
+				        
 
 					</div>
 
-					<a href="<?php echo esc_url( get_permalink() ); ?>" class="overlay-link"></a>
+					<a href="<?php echo esc_url( get_field( 'link_url' ) ); ?>" target="_blank" class="overlay-link"></a>
+
+
 
 				</article>
 

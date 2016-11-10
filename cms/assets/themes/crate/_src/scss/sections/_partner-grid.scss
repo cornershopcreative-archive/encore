@@ -1,0 +1,55 @@
+.partner-title {
+	font-family: "Avenir Next";
+	font-weight: bold;
+	text-transform: uppercase;
+	font-size: 16px;
+	color: $black;
+	letter-spacing: 0.08px;
+	line-height: 24px;
+	text-align: center;
+	padding-top: 10px;
+}
+
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  margin: 20px;
+
+  img {
+    max-width: 180px;
+    margin-bottom: 20px;
+  }
+}
+
+.partners-header {
+	background-color: $pale-silver;
+	padding-top: 25px;
+	padding-bottom: 35px;
+}
+
+.partners-grid-item {
+    background-color: $white !important;
+	border-right: 1px solid $silver;
+	border-bottom: 1px solid $silver;
+	margin: 0px !important;
+	position: relative;
+	padding: 20px;
+    flex-grow: 0;
+
+		@include breakpoint( $tablet ) {
+			width: 33.3333%;
+
+			&:nth-child(3n) {
+				margin-right: 0;
+				border-right: none !important;
+				
+			}
+
+			&:nth-last-child(-n+3) {
+  				 border-bottom: none !important;
+			}
+		}
+	}
