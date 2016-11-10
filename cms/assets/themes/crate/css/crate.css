@@ -2368,7 +2368,6 @@ input[type='email'] {
   .mtc-grid-item:hover span, .mtc-grid-item:hover h3, .mtc-grid-item:hover p {
     color: #fff; }
 
-<<<<<<< HEAD
 .partner-title {
   padding-top: 10px;
   color: #000;
@@ -2415,7 +2414,7 @@ input[type='email'] {
         border-right: none !important; }
       .partners-grid-item:nth-last-child(-n+3) {
         border-bottom: none !important; } }
-=======
+
 /**
  * Styles for the footer signup form.
  */
@@ -2500,7 +2499,6 @@ input[type='email'] {
       top: 1.25rem;
       right: 1.25rem;
       font-size: 1rem; } }
->>>>>>> 0b6800e0a4887a2a459851c3f18978241f792ff3
 
 .modal {
   padding: 5px;
