@@ -9,7 +9,7 @@
 			<?php while ( have_rows( 'items' ) ) : the_row(); ?>
 				<div class="grid-item grid-item-3">
 					<?php crate_item_link(); ?>
-						<?php echo wp_get_attachment_image( get_sub_field( 'image' ), 'grid-item', false, array( 'class' => 'grid-item-image' ) ); ?>
+						<?php echo wp_get_attachment_image( get_sub_field( 'image' ), 'square-md', false, array( 'class' => 'grid-item-image' ) ); ?>
 					<?php crate_item_link_close(); ?>
 					<?php if ( $grid_item_heading = get_sub_field( 'item_heading' ) ) : ?>
 						<h3 class="grid-item-heading">

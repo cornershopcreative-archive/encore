@@ -21,7 +21,7 @@
 						<a href="#<?php echo esc_attr( $post->post_name . '-video' ); ?>" class="hero-video-link play-button-link">
 					<?php endif; ?>
 
-							<?php the_post_thumbnail( 'grid-item-lg' ); ?>
+							<?php the_post_thumbnail( 'square-md' ); ?>
 
 							<?php if ( $hero_callout_text = get_field( 'hero_callout_text' ) ) : ?>
 								<div class="hero-callout-text">

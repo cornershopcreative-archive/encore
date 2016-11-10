@@ -34,7 +34,6 @@
 
 						<img src="<?php the_post_thumbnail_url(); ?>" class="partner-logo">
 
-
 					</div>
 
 					<div>

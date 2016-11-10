@@ -11,6 +11,8 @@
 
 ?>
 
+	<?php get_template_part( 'template-parts/form', 'footer' ); ?>
+
 	<footer id="colophon" class="site-footer" role="contentinfo">
 		<div class="container container-10">
 			<nav class="nav-footer">

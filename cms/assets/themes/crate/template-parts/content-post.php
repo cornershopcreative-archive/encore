@@ -15,7 +15,7 @@
 		<div class="container-10">
 
 			<div class="hero-image">
-				<?php the_post_thumbnail( 'grid-item-lg' ); ?>
+				<?php the_post_thumbnail( 'square-md' ); ?>
 			</div>
 
 			<div class="hero-text">

@@ -40,3 +40,11 @@ function crate_db_notice(){
 	echo '<div class="notice error"><p>The database is currently set to <strong>demo_wordpress</strong>. Please use a different database!</p></div>';
 }
 if ( DB_NAME == 'dev_wordpress' || DB_NAME == 'demo_wordpress' )add_action( 'admin_notices', 'crate_db_notice' );
+
+/**
+ * Remove the annoying Customize link from the admin bar
+ */
+function remove_admin_bar_customize( $wp_admin_bar ) {
+	$wp_admin_bar->remove_menu( 'customize' );
+}
+add_action( 'admin_bar_menu', 'remove_admin_bar_customize', 999 );

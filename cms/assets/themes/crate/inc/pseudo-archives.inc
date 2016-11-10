@@ -25,7 +25,7 @@ function crate_pseudo_archive_nav_item_class( $classes, $item, $args ) {
 		// it as an ancestor.
 		else {
 			$stories_page_ancestors = get_post_ancestors( $pseudo_archive_id );
-			if ( in_array( $item->object_id, $stories_page_ancestors ) ) {
+			if ( in_array( $item->object_id, $stories_page_ancestors, true ) ) {
 				$classes[] = 'current-menu-ancestor';
 			}
 		}

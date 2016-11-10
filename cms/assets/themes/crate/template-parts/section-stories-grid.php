@@ -32,7 +32,7 @@
 
 					<div class="entry-thumbnail">
 
-						<?php echo get_the_post_thumbnail( null, 'grid-item-lg' ); ?>
+						<?php echo get_the_post_thumbnail( null, 'square-md' ); ?>
 
 						<div class="entry-quote">
 							<?php the_field( 'quote' ); ?>

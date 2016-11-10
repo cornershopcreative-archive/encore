@@ -20,16 +20,22 @@ function crate_button_shortcode( $args = array(), $content ) {
 
 	// Add color class, if color attribute was a valid color.
 	if ( in_array( $args['color'], array(
-		'gold', 'lime', 'teal', 'bright-blue', 'deep-blue',
-	) ) ) {
+		'gold',
+		'lime',
+		'teal',
+		'bright-blue',
+		'deep-blue',
+	), true ) ) {
 		$classes[] = 'button-' . $args['color'];
 	}
 
 	// Add style class(es), if valid.
 	foreach ( explode( ' ', $args['style'] ) as $style ) {
 		if ( in_array( $style, array(
-			'solid', 'facebook', 'twitter',
-		) ) ) {
+			'solid',
+			'facebook',
+			'twitter',
+		), true ) ) {
 			$classes[] = 'button-' . $style;
 		}
 	}

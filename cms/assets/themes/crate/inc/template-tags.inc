@@ -162,7 +162,7 @@ function crate_section_query( $query_vars ) {
 /**
  * Output HTML for a 'Back to [post type archive]' link.
  */
-function crate_back_link( $args = array()) {
+function crate_back_link( $args = array() ) {
 
 	// Set default arguments.
 	$args = wp_parse_args( $args, array(

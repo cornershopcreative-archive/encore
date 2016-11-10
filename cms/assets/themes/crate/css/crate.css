@@ -202,7 +202,7 @@ ul {
 
 /**
  * Featherlight – ultra slim jQuery lightbox
- * Version 1.5.0 - http://noelboss.github.io/featherlight/
+ * Version 1.5.1 - http://noelboss.github.io/featherlight/
  *
  * Copyright 2016, Noël Raoul Bossart (http://www.noelboss.com)
  * MIT Licensed.
@@ -340,8 +340,7 @@ ul {
  * General link & transition styles.
  */
 a {
-  color: #0047c1;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease; }
+  color: #0047c1; }
   a:hover {
     color: #00c7f5; }
 
@@ -353,6 +352,11 @@ a {
   .menu a:hover,
   .sub-menu a:hover, .facetwp-pager a:hover, .entry-actions .back-link:hover, .section-partner-slider .grid-item a:hover, .section-news a:hover, .section-stories-grid a:hover {
     color: #aacc00; }
+
+button,
+input[type="submit"],
+a {
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease; }
 
 /**
  * General text styles.
@@ -984,6 +988,20 @@ input[type='email'] {
   width: 100%;
   border: 1px solid #ccc;
   border-radius: 3px; }
+  .label-inside ~ input[type='text'], .label-inside ~
+  input[type='password'], .label-inside ~
+  input[type='email'] {
+    display: block;
+    padding: 28px 16px 10px; }
+
+.label-inside {
+  display: block;
+  margin-bottom: -24px;
+  padding: 9px 0 0 16px;
+  border: 1px solid transparent;
+  color: #8d8f90;
+  font-size: 11px;
+  line-height: 15px; }
 
 /**
  * Styles for FacetWP elements.
@@ -2350,6 +2368,7 @@ input[type='email'] {
   .mtc-grid-item:hover span, .mtc-grid-item:hover h3, .mtc-grid-item:hover p {
     color: #fff; }
 
+<<<<<<< HEAD
 .partner-title {
   padding-top: 10px;
   color: #000;
@@ -2396,6 +2415,92 @@ input[type='email'] {
         border-right: none !important; }
       .partners-grid-item:nth-last-child(-n+3) {
         border-bottom: none !important; } }
+=======
+/**
+ * Styles for the footer signup form.
+ */
+.footer-form {
+  position: relative;
+  padding: 1.5625rem 0 1.125rem;
+  background: #0047c1;
+  color: #fff; }
+  .footer-form.is-hidden {
+    display: none; }
+  @media (min-width: 1280px) {
+    .footer-form.is-sticky {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1000;
+      box-shadow: 0 0 7px rgba(0, 0, 0, 0.35); } }
+  .footer-form .hide-until-submit {
+    display: none; }
+  .footer-form.is-submitted .hide-until-submit {
+    display: block; }
+  .footer-form.is-submitted .hide-after-submit {
+    display: none; }
+  .footer-form a {
+    color: #fff; }
+    .footer-form a:hover {
+      color: #fff; }
+  .footer-form .section-title {
+    margin: 0.625rem 0 1.25rem;
+    font-size: 1.125rem;
+    line-height: 1.5; }
+    @media (min-width: 640px) {
+      .footer-form .section-title {
+        margin: 0 0 0.6875rem; } }
+  .footer-form .thank-you-message {
+    margin: 0.625rem 0 1.25rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.5rem; }
+  .footer-form .row {
+    -ms-flex-align: center;
+        align-items: center; }
+    .footer-form .row > .wide {
+      -ms-flex-positive: 1.3;
+          flex-grow: 1.3; }
+    .footer-form .row > .narrow {
+      -ms-flex-positive: 0;
+          flex-grow: 0; }
+  .footer-form input[type='text'], .footer-form
+  input[type='password'], .footer-form
+  input[type='email'] {
+    border-color: #fff;
+    color: #0047c1; }
+  .footer-form .button {
+    display: block;
+    margin: 0.875rem 0 1.625rem;
+    width: 100%;
+    white-space: nowrap; }
+    @media (min-width: 640px) {
+      .footer-form .button {
+        margin: 0 0.9375rem;
+        width: auto; } }
+  .footer-form .powered-by {
+    display: none; }
+    @media (min-width: 640px) {
+      .footer-form .powered-by {
+        display: block; } }
+    .footer-form .powered-by a {
+      display: block;
+      width: 5.5rem; }
+
+.footer-form-dismiss {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer; }
+  @media (min-width: 640px) {
+    .footer-form-dismiss {
+      top: 1.25rem;
+      right: 1.25rem;
+      font-size: 1rem; } }
+>>>>>>> 0b6800e0a4887a2a459851c3f18978241f792ff3
 
 .modal {
   padding: 5px;
