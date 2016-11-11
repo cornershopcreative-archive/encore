@@ -136,6 +136,7 @@
 		padding-top: 70px;
 		margin-bottom: -70px;
 		margin-left: -20px;
+		z-index: 214748364;
 }
 
 .callout-caption {
@@ -148,4 +149,8 @@
 	color: $white;
 	line-height: 28px;
 	background-color: $lime;
+}
+
+.section-circle-grid + .section-callout-white {
+  margin-top: -10.5em;
 }

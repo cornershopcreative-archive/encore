@@ -5,7 +5,19 @@
 ?>
 
 	<div class="content-section section-stories-grid">
-    <div class="partners-header prose">
+<?php $link_url = get_field('link_url')?>
+		
+		<?php 
+
+				if(get_sub_field('background') == "silver")
+				{
+					echo '<div class="partners-header prose">';
+				}
+				else
+				{
+					echo '<div class="prose">';
+				}?>
+				
 		<?php if ( get_sub_field( 'title' ) ): ?>
 			<h2 class="section-title"><?php echo wp_kses_post( wptexturize( $title ) ); ?></h2>
 		<?php endif; ?>
@@ -28,7 +40,7 @@
 		<div class="content-section-grid container<?php echo ( $show_pager ? ' facetwp-template' : '' ); ?>">
 			<?php while ( $story_query->have_posts() ) : $story_query->the_post(); ?>
 
-				<article class="partners-grid-item grid-item">
+				<article class="partners-grid-item">
 
 					<div class="logo-container">
 
@@ -39,7 +51,12 @@
 					<div>
 
 						<h3 class="partner-title">
-							<a href="<?php echo esc_url( get_field( 'link_url' ) ); ?>"><?php echo esc_html( get_the_title() ); ?></a>
+						<?php if (get_sub_field('button') == "hide") {
+							echo esc_html( get_the_title() );
+						}
+						else
+						{} ?>
+						
 						</h3>
 
 
@@ -52,14 +69,29 @@ if(get_sub_field('description') == "show")
 
 ?>
 
-				        
+						<?php
+
+if(get_sub_field('button') == "show")
+{
+	echo '<center><a class="button button-solid button-gold" href="' . get_field( link_url ) . '">Get Involved</a></center>';
+}
+else
+{
+	echo '<a href="" target="_blank" class="overlay-link"></a>';
+}
+?>
+
+
+
+				      
 
 					</div>
+					
+					
+					
 
-					<a href="<?php echo esc_url( get_field( 'link_url' ) ); ?>" target="_blank" class="overlay-link"></a>
-
-
-
+					
+					
 				</article>
 
 			<?php endwhile; ?>
