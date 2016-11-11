@@ -8,6 +8,7 @@
 	color: $white;
 	text-align: center;
 	line-height: rem(28);
+	z-index: -1;
 
 	@include breakpoint( $tablet ) {
 		background-color: transparent;

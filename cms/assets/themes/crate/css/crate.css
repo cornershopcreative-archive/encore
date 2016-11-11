@@ -358,6 +358,15 @@ input[type="submit"],
 a {
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease; }
 
+.brightblue_background .button-white:hover {
+  color: #00c7f5 !important; }
+
+.teal_background .button-white:hover {
+  color: #3dbf9a !important; }
+
+.orange_background .button-white:hover {
+  color: #ff8b18 !important; }
+
 /**
  * General text styles.
  */
@@ -1710,6 +1719,7 @@ input[type='email'] {
  */
 .section-circle-grid {
   position: relative;
+  z-index: -1;
   background-color: #0047c1;
   color: #fff;
   text-align: center;
@@ -2130,11 +2140,15 @@ input[type='email'] {
       width: 38.77551%; } }
 
 .section-callout {
-  display: block;
+  display: -ms-flex;
+  display: -ms-flexbox;
+  display: flex;
   margin-top: 100px;
   margin-bottom: 50px;
-  width: 100%;
   color: #fff; }
+
+.section-callout > div:first-child {
+  margin-right: 20px; }
 
 .section-callout-white {
   display: block;
@@ -2180,7 +2194,6 @@ input[type='email'] {
   float: right;
   margin-top: -175px;
   width: 380px;
-  height: 380px;
   border-radius: 50%; }
 
 .callout_circle_white {
@@ -2188,7 +2201,6 @@ input[type='email'] {
   margin-right: 20px;
   margin-left: 60px;
   width: 350px;
-  height: 350px;
   border-radius: 50%; }
 
 .callout_image {
@@ -2207,9 +2219,7 @@ input[type='email'] {
   line-height: 36px; }
 
 .second_column {
-  display: inline-block;
-  float: left;
-  margin: 0px;
+  padding: 10px;
   padding: 50px !important;
   width: 50%;
   line-height: 28px; }
@@ -2261,6 +2271,14 @@ input[type='email'] {
 
 .section-circle-grid + .section-callout-white {
   margin-top: -10.5em; }
+
+.callout-content + .section-partners-grid {
+  margin-top: -60px; }
+
+@media screen and (max-width: 480px) {
+  .callout-inner {
+    margin-top: -70px;
+    width: 100%; } }
 
 .section-volunteer-opportunities {
   padding-top: 2rem;
@@ -2391,10 +2409,8 @@ input[type='email'] {
       align-items: center;
   -ms-flex-pack: center;
       justify-content: center;
-  margin: 20px;
   height: 200px; }
   .logo-container img {
-    margin-bottom: 20px;
     max-width: 180px; }
 
 .partners-header {
@@ -2407,7 +2423,7 @@ input[type='email'] {
   -ms-flex-positive: 0;
       flex-grow: 0;
   margin: 0px !important;
-  padding: 20px;
+  padding: 20px 20px 0px 20px;
   border-right: 1px solid #d8d8d8;
   border-bottom: 1px solid #d8d8d8;
   background-color: #fff !important; }

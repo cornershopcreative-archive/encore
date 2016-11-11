@@ -1,10 +1,17 @@
 .section-callout {
-	display: block;
-	width: 100%;
+	display: -ms-flex;
+	display: -webkit-flex;
+	display: flex;
 	color: $white;
 	margin-bottom: 50px;
 	margin-top: 100px
 	}
+
+
+
+.section-callout > div:first-child {
+	margin-right: 20px;
+}
 
 .section-callout-white {
 	font-family: Libre Baskerville;
@@ -58,7 +65,6 @@
 
 .callout_circle {
 	width: 380px;
-	height: 380px;
 	float: right;
 	margin-top: -175px;
 	border-radius: 50%;
@@ -66,7 +72,6 @@
 
 .callout_circle_white {
 	width: 350px;
-	height: 350px;
 	float: left;
 	border-radius: 50%;
 	margin-left: 60px;
@@ -91,10 +96,8 @@
 }
 
 .second_column {
-	float:left;
 	width: 50%;
-	margin: 0px;
-	display: inline-block;
+	padding: 10px;
 	line-height: 28px;
 	padding: 50px !important;
 }
@@ -153,4 +156,15 @@
 
 .section-circle-grid + .section-callout-white {
   margin-top: -10.5em;
+}
+
+.callout-content + .section-partners-grid {
+	margin-top: -60px;
+}
+
+@media screen and (max-width: 480px) {
+  .callout-inner {
+    width: 100%;
+    margin-top: -70px;
+  }
 }

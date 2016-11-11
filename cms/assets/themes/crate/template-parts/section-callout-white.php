@@ -44,6 +44,7 @@
 			
 		<?php if (empty($callout_button_label)) {  }
 			 else { echo '<a class="button button-lime" href="' . $callout_button_url . '"> ' . $callout_button_label . '</a>' ;} ?>
+	</div>
 </div>
 
 			
