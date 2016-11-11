@@ -1,0 +1,23 @@
+{
+	"name": "wp-composer-dependencies",
+	"description": "Theme and plugin dependencies for the site http://encore.demo.cshp.co",
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://wpackagist.org"
+		}
+	],
+	"extra": {
+		"installer-paths": {
+			"assets/themes/{$name}/": [
+				"type:wordpress-theme"
+			],
+			"assets/plugins/{$name}/": [
+				"type:wordpress-plugin"
+			],
+			"assets/mu-plugins/{$name}/": [
+				"type:wordpress-muplugin"
+			]
+		}
+	}
+}
