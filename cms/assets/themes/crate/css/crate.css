@@ -2285,6 +2285,7 @@ input[type='email'] {
   width: 50%; }
 
 .caption-bubble {
+  z-index: 214748364;
   margin-bottom: -70px;
   margin-left: -20px;
   padding-top: 70px;
@@ -2303,6 +2304,9 @@ input[type='email'] {
   font-size: 16px;
   font-family: Avenir Next;
   line-height: 28px; }
+
+.section-circle-grid + .section-callout-white {
+  margin-top: -10.5em; }
 
 .section-volunteer-opportunities {
   padding-top: 2rem;
@@ -2416,14 +2420,15 @@ input[type='email'] {
 
 .partner-title {
   padding-top: 10px;
+  padding-bottom: 10px;
   color: #000;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.08px;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 16px !important;
   font-family: "Avenir Next";
-  line-height: 24px; }
+  line-height: 24px !important; }
 
 .logo-container {
   display: -ms-flexbox;
