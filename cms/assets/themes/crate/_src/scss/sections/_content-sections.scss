@@ -201,3 +201,44 @@
 		opacity: 1.0 !important;
 	}
 }
+
+/**
+ * Filter form elements.
+ */
+
+.section-filters {
+	margin: rem(20) auto rem(30);
+
+	form {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.flex-space {
+		flex-grow: 1;
+	}
+
+	.filter {
+		border: 0;
+		border-radius: rem(7);
+		background-color: $white;
+		padding: rem(15) rem(54) rem(13) rem(23);
+		font-size: rem(16);
+		line-height: 2;
+		box-shadow: 4px 6px 9px 0 rgba(0,0,0,0.15);
+		@extend .icon-search;
+		height: auto;
+		width: 100%;
+		background-repeat: no-repeat;
+		background-position: right rem(20) center;
+
+		@include breakpoint( $tablet ) {
+			max-width: rem(280px);
+		}
+
+		&::placeholder {
+			color: $charcoal;
+			opacity: 1.0;
+		}
+	}
+}
