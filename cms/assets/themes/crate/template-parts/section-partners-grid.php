@@ -4,7 +4,7 @@
  */
 ?>
 
-	<div class="content-section section-partners-grid">
+	<div class="content-section section-stories-grid">
 <?php $link_url = get_field('link_url')?>
 		
 		<?php 
@@ -18,7 +18,7 @@
 					echo '<div class="prose">';
 				}?>
 				
-		<?php if ( $title = get_sub_field( 'title' ) ): ?>
+		<?php if ( get_sub_field( 'title' ) ): ?>
 			<h2 class="section-title"><?php echo wp_kses_post( wptexturize( $title ) ); ?></h2>
 		<?php endif; ?>
 
@@ -51,11 +51,11 @@
 					<div>
 
 						<h3 class="partner-title">
-						<?php if (get_sub_field('button') == "show") {
-							
+						<?php if (get_sub_field('button') == "hide") {
+							echo esc_html( get_the_title() );
 						}
 						else
-						{ echo esc_html( get_the_title() ); } ?>
+						{} ?>
 						
 						</h3>
 

@@ -17,6 +17,27 @@
             },
             "default_value": "",
             "placeholder": ""
+        },
+        {
+            "key": "field_5825743bbd336",
+            "label": "Sticky",
+            "name": "sticky",
+            "type": "checkbox",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "1": "Place this item at the top of lists wherever it appears"
+            },
+            "default_value": [],
+            "layout": "vertical",
+            "toggle": 0,
+            "return_format": "value"
         }
     ],
     "location": [
@@ -36,5 +57,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1477426652
+    "modified": 1478849629
 }

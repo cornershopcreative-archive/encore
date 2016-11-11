@@ -23,8 +23,24 @@
 			'facetwp' => $show_pager, // Allow filtering/pagination via FWP.
 			'post_type' => 'news',
 			'posts_per_page' => $posts_per_page,
-			'orderby' => 'post_date',
-			'order' => 'DESC',
+			'meta_query' => array(
+				// Add both 'exists' and 'not exists' conditions for 'sticky' status,
+				// so we can use it for ordering without affecting which posts are
+				// returned by the query.
+				'relation' => 'OR',
+				'sticky' => array(
+					'key' => 'sticky',
+					'compare' => 'EXISTS',
+				),
+				'not_sticky' => array(
+					'key' => 'sticky',
+					'compare' => 'NOT EXISTS',
+				),
+			),
+			'orderby' => array(
+				'sticky' => 'DESC',
+				'post_date' => 'DESC',
+			),
 			'tax_query' => array(),
 		);
 		if ( ! empty( $locations ) ) :

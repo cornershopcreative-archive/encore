@@ -16,7 +16,7 @@ module.exports = function( $ ) {
 
 	var opportunityUrl = "";
 
-	$('.section-partner-list a.button').on('click', function() {
+	$('.section-partner-list a.button, .partners-grid-item a.button').on('click', function() {
 		opportunityUrl = this.href;
 		$.featherlight( $('#signup-modal-opportunity'), { variant: 'modalform' } );
 		$('#signup-modal-opportunity #partner').val( $(this).data('org-name') );

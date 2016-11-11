@@ -287,36 +287,84 @@ VolunteerMatchAPI::init('http://www.volunteermatch.org/api/call',
 add_action( 'rest_api_init', 'add_vmatch_api');
 
 function add_vmatch_api(){
-  register_rest_route( 'vmatch/v1', '/basic/page/(?P<page>\d+)', array(
+  register_rest_route( 'vmatch/v1', '/search/page/(?P<page>\d+)', array(
     'methods' => 'GET',
     'callback' => 'get_vmatch_basic_page',
   ));
 }
 
+/**
+ * Get a page of VolunteerMatch API results for the REST API.
+ */
 function get_vmatch_basic_page( $data ) {
+
+	$page = isset( $data['page'] ) ? $data['page'] : 1;
+
+	$query = array(
+		'pageNumber' => (int)$page,
+	);
+
+	if ( isset( $_GET['location'] ) && ! empty( $_GET['location'] ) ) {
+		$query['location'] = $_GET['location'];
+	}
+
+	if ( isset( $_GET['keywords'] ) && ! empty( $_GET['keywords'] ) ) {
+		$query['keywords'] = split( ' ', $_GET['keywords'] );
+	}
+
+	error_log( print_r( $query, true ) );
+
+	// Get API results.
+	$results = get_vmatch_results( $query );
+
+	// Format them for the Mustache template.
+	$results = format_vmatch_results( $results );
+
+	return $results;
+}
+
+/**
+ * Get results for a VolunteerMatch API call.
+ */
+function get_vmatch_results( $query ) {
 
 	$api = new VolunteerMatchAPI();
 
-	$page = isset( $data['page'] ) ? $data['page'] : 2 ;
-
-	if ( get_transient( 'vmatch_basic_' . $page ) ) return get_transient( 'vmatch_basic_' . $page );
-
-	$query = array(
-		'location'     => 'United States',
-		'sortCriteria' => 'update',
+	$query = wp_parse_args( $query, array(
+		'location'        => 'United States',
+		'sortCriteria'    => 'update',
 		'numberOfResults' => 18,
-		'pageNumber'   => (int) $page,
-	);
+		'keywords'        => array(),
+		'pageNumber'      => 1,
+	) );
 
+	$cache_key = 'vmatch_result_' . md5( serialize( $query ) );
+
+	// If there's a cached result for this query, return it.
+	if ( get_transient( $cache_key ) ) return get_transient( $cache_key );
+
+	// No cached result? Query the API.
 	$results = $api->searchOrganizations( $query, 'org detail' );
 
 	// We can't do anything if VolunteerMatchAPI didn't give us anything useful
 	if ( ! isset( $results['organizations'] ) ) {
-		return array('page' => $page);
+		return array('page' => $query['pageNumber']);
 	}
 
-	// If we have something useful, we need to reformat each organization to
-	// conform to what the mustache template needs
+	// Cache results, unless this is a keyword search (saving every keyword
+	// search could get expensive, db-wise).
+	if ( empty( $query['keywords'] ) ) {
+		set_transient( $cache_key, $results, 5 * MINUTE_IN_SECONDS );
+	}
+
+	return $results;
+}
+
+/**
+ * Reformat VM query results to conform to what the mustache template needs.
+ */
+function format_vmatch_results( $results ) {
+
 	foreach ( $results['organizations'] as &$org ) {
 		$org = array(
 			'url'       => esc_url( urldecode( $org['vmUrl'] ) ),
@@ -328,10 +376,7 @@ function get_vmatch_basic_page( $data ) {
 		);
 	}
 
-	// Cache them
-	set_transient( 'vmatch_basic_' . $page, $results, 5 * MINUTE_IN_SECONDS );
 	return $results;
-
 }
 
 /**

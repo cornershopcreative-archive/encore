@@ -1482,7 +1482,27 @@
                     "name": "volunteer-opportunities",
                     "label": "Volunteer Opportunities List",
                     "display": "block",
-                    "sub_fields": [],
+                    "sub_fields": [
+                        {
+                            "key": "field_5824dfd7fd35e",
+                            "label": "Location",
+                            "name": "location",
+                            "type": "text",
+                            "instructions": "Enter the name of a location (e.g. \"United States\" or \"Boston\" to limit results).",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "United States",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        }
+                    ],
                     "min": "",
                     "max": ""
                 },
@@ -1968,5 +1988,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1478752067
+    "modified": 1478811671
 }

@@ -3,38 +3,19 @@
  * The template for displaying Volunteer Opportunities from the VolunteerMatch API.
  */
 
+$location = get_sub_field( 'location' );
 
-// Try to get cached results
-if ( get_transient( 'vmatch_basic' ) ) {
+// Get first set of API results.
+$api_results = get_vmatch_results( array(
+	'location' => $location,
+) );
 
-	$organizations = get_transient( 'vmatch_basic' );
+$organizations = $api_results['organizations'];
 
-// Use the API to get results
-} else {
-
-	// We can't do anything if VolunteerMatchAPI is missing
-	if ( ! class_exists('VolunteerMatchAPI') ) return;
-
-	$api = new VolunteerMatchAPI();
-
-	$query = array(
-		'location' => 'United States',
-		'sortCriteria' => 'update',
-		'numberOfResults' => 18,
-	);
-
-	$results = $api->searchOrganizations( $query, 'org detail' );
-
-	// We can't do anything if VolunteerMatchAPI didn't give us anything useful
-	if ( ! isset( $results['organizations'] ) ) return;
-
-	$organizations = $results['organizations'];
-
-	// Cache them
-	set_transient( 'vmatch_basic', $organizations, 5 * MINUTE_IN_SECONDS );
-}
-
-
+// If no results were found, bail.
+if ( ! $organizations ) :
+	return;
+endif;
 
 	/* each $org is an array with the following keys (see API call):
 		avgRating => float
@@ -55,9 +36,16 @@ if ( get_transient( 'vmatch_basic' ) ) {
 
 ?>
 
-<div class="content-section section-volunteer-opportunities" data-page="1">
+<div class="content-section section-volunteer-opportunities" data-page="1" data-location="<?php echo esc_attr( $location ); ?>">
 
 	<h2 class="section-title">Volunteer Opportunities</h2>
+
+	<div class="section-filters container">
+		<form class="filter-form" action="#">
+			<span class="flex-space"></span>
+			<input type="search" name="search_opportunities" class="filter filter-search" value="" placeholder="<?php esc_attr_e( 'Search', 'crate' ); ?>" />
+		</form>
+	</div>
 
 	<div class="content-section-grid container">
 		<?php foreach ( $organizations as $org ): ?>
