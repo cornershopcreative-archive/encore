@@ -2,10 +2,13 @@
 /**
  * The template for displaying Action Slider sections.
  */
+
+// Convert autoplay rate from seconds to milliseconds.
+$autoplay_rate = intval( get_sub_field( 'autoplay_rate' ) ) * 1000;
 ?>
 
 	<div class="content-section section-action-slider">
-		<div class="content-section-slider container-10 container-bleed">
+		<div class="content-section-slider container-10 container-bleed" data-timeout="<?php echo esc_attr( $autoplay_rate ); ?>">
 			<div class="slider-controls">
 				<a href="#" class="slider-prev">
 					<svg class="icon" viewBox="0 0 100 100">
