@@ -323,10 +323,12 @@ class pb_backupbuddy_backup {
 		
 		
 		// Output active plugins list for debugging...
-		$activePlugins = get_option( 'active_plugins' );
-		pb_backupbuddy::status( 'details', 'Active WordPress plugins (' . count( $activePlugins ) . '): `' . implode( '; ', $activePlugins ) . '`.' );
-		pb_backupbuddy::status( 'startSubFunction', json_encode( array( 'function' => 'wp_plugins_found', 'title' => 'Found ' . count( $activePlugins ) . ' active WordPress plugins.' ) ) );
-		unset( $activePlugins );
+		if ( ( 'files' != $type ) || ( ! isset( $profile['custom_root'] ) ) || ( '' == $profile['custom_root'] ) ) {
+			$activePlugins = get_option( 'active_plugins' );
+			pb_backupbuddy::status( 'details', 'Active WordPress plugins (' . count( $activePlugins ) . '): `' . implode( '; ', $activePlugins ) . '`.' );
+			pb_backupbuddy::status( 'startSubFunction', json_encode( array( 'function' => 'wp_plugins_found', 'title' => 'Found ' . count( $activePlugins ) . ' active WordPress plugins.' ) ) );
+			unset( $activePlugins );
+		}
 		
 		
 		// Compression to bool.
@@ -356,6 +358,18 @@ class pb_backupbuddy_backup {
 		$forceSingleDatabaseFile = false;
 		if ( '1' == pb_backupbuddy::$options['force_single_db_file'] ) {
 			$forceSingleDatabaseFile = true;
+		}
+		
+		$dir_excludes = backupbuddy_core::get_directory_exclusions( $profile, false, $serial );
+		
+		$custom_root = '';
+		// Files type profile with a custom root does NOT currently support exclusions at all. Strip all excludes.
+		if ( ( $type == 'files' ) && ( isset( $profile['custom_root'] ) ) && ( '' != $profile['custom_root'] ) ) {
+			$dir_excludes = array();
+			pb_backupbuddy::status( 'warning', 'Warning #3893833: Files profile with custom root does not currently support any file or directory exclusions. Skipping any exclusions for this backup.' );
+			$profile['integrity_check'] = '0';
+			pb_backupbuddy::status( 'warning', 'Warning #3434794793: Files profile with custom root are not currently submitted for integrity checks.' );
+			$custom_root = $profile['custom_root'];
 		}
 		
 		// Set up the backup data.
@@ -390,7 +404,7 @@ class pb_backupbuddy_backup {
 			'export_plugins'		=>		array(),										// Plugins to export during MS export of a subsite.
 			'additional_table_includes'	=>	array(),
 			'additional_table_excludes'	=>	array(),
-			'directory_exclusions'		=>	backupbuddy_core::get_directory_exclusions( $profile, false, $serial ), // Do not trim trailing slash
+			'directory_exclusions'		=>	$dir_excludes, // Do not trim trailing slash
 			'table_sizes'			=>		array(),										// Array of tables to backup AND their sizes.
 			'breakout_tables'		=>		array(),										// Array of tables that will be broken out to separate steps.
 			'force_single_db_file'	=>		$forceSingleDatabaseFile,						// Whether forcing to a single db_1.sql file.
@@ -399,8 +413,14 @@ class pb_backupbuddy_backup {
 			'deployment_destination' =>		$deployDestinationSettings,						// Deployment remote destination settings if deployment.
 			'runnerUID'				=>		get_current_user_id(),							// UID of whomever is running this backup. 0 if scheduled or ran by other automation means.
 			'wp-config_in_parent'	=>		false,
+			'custom_root'			=>		$custom_root,
 		);
-		pb_backupbuddy::status( 'startSubFunction', json_encode( array( 'function' => 'file_excludes', 'title' => 'Found ' . count( $this->_backup['directory_exclusions'] ) . ' file or directory exclusions.' ) ) );
+		
+		if ( ( $this->_backup['type'] == 'files' ) && ( isset( $profile['custom_root'] ) ) && ( '' != $profile['custom_root'] ) ) {
+			pb_backupbuddy::status( 'startSubFunction', json_encode( array( 'function' => 'file_excludes', 'title' => 'File & directory exclusions disabled for "Files" profiles with custom root. Skipping exclusions.' ) ) );
+		} else {
+			pb_backupbuddy::status( 'startSubFunction', json_encode( array( 'function' => 'file_excludes', 'title' => 'Found ' . count( $this->_backup['directory_exclusions'] ) . ' file or directory exclusions.' ) ) );
+		}
 		
 		// Warn if excluding key paths.
 		$alertFileExcludes = backupbuddy_core::alert_core_file_excludes( $this->_backup['directory_exclusions'] );
@@ -414,6 +434,16 @@ class pb_backupbuddy_backup {
 		if ( ( $this->_backup['type'] == 'full' ) || ( $this->_backup['type'] == 'files' ) ) {
 			$this->_backup['temp_directory'] = backupbuddy_core::getTempDirectory() . $serial . '/';
 			$this->_backup['backup_root'] = ABSPATH; // ABSPATH contains trailing slash.
+			
+			// Support for custom root for files backup type if set.
+			if ( ( $this->_backup['type'] == 'files' ) && ( isset( $profile['custom_root'] ) ) && ( '' != $profile['custom_root'] ) ) {
+				$this->_backup['backup_root'] = rtrim( $profile['custom_root'], '\\/' ) . '/';
+				pb_backupbuddy::status( 'warning', 'Warning #3894743: Custom backup root set. Use with caution. Custom root: `' . $this->_backup['backup_root'] . '`.' );
+				if ( ! file_exists( $this->_backup['backup_root'] ) ) {
+					pb_backupbuddy::statys( 'error', 'Error #32893444. Custom backup root directory NOT found! Custom root: `' . $this->_backup['backup_root'] . '`.' );
+					return false;
+				}
+			}
 		} elseif ( $this->_backup['type'] == 'db' ) {
 			$this->_backup['temp_directory'] = backupbuddy_core::getTempDirectory() . $serial . '/';
 			$this->_backup['backup_root'] = $this->_backup['temp_directory'];
@@ -439,15 +469,22 @@ class pb_backupbuddy_backup {
 		$this->_backup['additional_table_includes'] = backupbuddy_core::get_mysqldump_additional( 'includes', $profile );
 		$this->_backup['additional_table_excludes'] = backupbuddy_core::get_mysqldump_additional( 'excludes', $profile );
 		
-		// Does wp-config.php exist in parent dir instead of normal location?
-		if ( file_exists( ABSPATH . 'wp-config.php' ) ) { // wp-config in normal place.
-			pb_backupbuddy::status( 'details', 'wp-config.php found in normal location.' );
-		} elseif ( @file_exists( dirname( ABSPATH ) . '/wp-config.php' ) ) { // Config in parent.
-			pb_backupbuddy::status( 'message', 'wp-config.php found in parent directory. Copying wp-config.php to temporary location for backing up.' );
-			$this->_backup['wp-config_in_parent'] = true;
-			$wp_config_parent = true;
-		} else {
-			pb_backupbuddy::status( 'error', 'Error #3289493: wp-config.php not found in any normal location. Check file permissions. open_basedir() restrictions may block readability of wp-config.php in parent directory.' );
+		// Verify wp-config.php exists if not a files type.
+		if ( 'files' != $this->_backup['type'] ) {
+			// Does wp-config.php exist in parent dir instead of normal location?
+			if ( file_exists( ABSPATH . 'wp-config.php' ) ) { // wp-config in normal place.
+				pb_backupbuddy::status( 'details', 'wp-config.php found in normal location.' );
+			} elseif ( @file_exists( dirname( ABSPATH ) . '/wp-config.php' ) && ! @file_exists( dirname( ABSPATH ) . '/wp-settings.php' ) ) { // Config in parent.
+				pb_backupbuddy::status( 'message', 'wp-config.php found in parent directory. Copying wp-config.php to temporary location for backing up.' );
+				$this->_backup['wp-config_in_parent'] = true;
+				$wp_config_parent = true;
+			} else {
+				if ( ! @file_exists( dirname( ABSPATH ) . '/wp-settings.php' ) ) {
+					pb_backupbuddy::status( 'error', 'Error #3289493: wp-config.php not found in any normal location. Check file permissions. open_basedir() restrictions may block readability of wp-config.php in parent directory.' );
+				} else {
+					pb_backupbuddy::status( 'error', 'Error #3289493b: wp-config.php found in parent directory but wp-settings.php was also located and indicates incorrect wp-config.php for this site. Check file permissions. open_basedir() restrictions may block readability of wp-config.php in parent directory.' );
+				}
+			}
 		}
 		
 		/********* Begin setting up steps array. *********/
@@ -715,6 +752,10 @@ class pb_backupbuddy_backup {
 				pb_backupbuddy::status( 'details', 'ImportBuddy tool inclusion in ZIP backup archive skipped based on settings or backup type.' );
 			}
 		}
+
+		// Delete malware transient to force new checks on restored sites
+		delete_transient( 'pb_backupbuddy_malwarescan' );
+		pb_backupbuddy::status( 'details', __('Deleting malware transient.', 'it-l10n-backupbuddy' ) );
 		
 		// Save all of this.
 		$this->_backup['init_complete'] = true; // pre_backup() completed.
@@ -764,7 +805,7 @@ class pb_backupbuddy_backup {
 			if ( true !== ( $result = $this->_backup_options->is_ok() ) ) { // Unable to access fileoptions.
 				
 				$attempt_delay_base = 10; // Base number of seconds to delay. Each subsequent attempt increases this delay by a multiple of the attempt number.
-				$max_attempts = 8; // Max number of attempts to try to delay around a file lock. Delay increases each time.
+				$max_attempts = 30; // Max number of attempts to try to delay around a file lock. Delay increases each time.
 				
 				$this->_backup['serial'] = $serial; // Needs to be populated for use by cron schedule step.
 				pb_backupbuddy::status( 'warning', __('Warning #9034 B. Unable to access fileoptions data.', 'it-l10n-backupbuddy' ) . ' Warning: ' . $result, $serial );
@@ -1035,7 +1076,7 @@ class pb_backupbuddy_backup {
 					pb_backupbuddy::status( 'details', 'Closing & unlocking fileoptions.' );
 					$this->_backup_options = '';
 					
-					backupbuddy_core::addNotification( 'backup_success', 'Backup completed successfully.', $data ); // $data saved for Sync usage.
+					backupbuddy_core::addNotification( 'backup_success', 'Backup completed successfully.', 'A ' . $this->_backup['trigger'] . ' backup has completed successfully on your site.', $data );
 				}
 			}
 			
@@ -1182,6 +1223,7 @@ class pb_backupbuddy_backup {
 			'skip_database_dump'	=> $this->_backup['profile']['skip_database_dump'],
 			'db_excludes'			=> backupbuddy_core::get_mysqldump_additional( 'excludes', $this->_backup['profile'] ),
 			'db_includes'			=> backupbuddy_core::get_mysqldump_additional( 'includes', $this->_backup['profile'] ),
+			'custom_root'			=> $this->_backup['custom_root'],
 		);
 		
 		$dat_file = $this->_backup['temp_directory'] . 'backupbuddy_dat.php';
@@ -2103,7 +2145,7 @@ class pb_backupbuddy_backup {
 				backupbuddy_core::mail_notify_scheduled( $this->_backup['serial'], 'complete', __( 'Scheduled backup', 'it-l10n-backupbuddy' ) . ' "' . $this->_backup['schedule_title'] . '" ' . $message );
 			}
 		} else {
-			pb_backupbuddy::status( 'error', 'Error #4343434. Unknown backup trigger `' . $this->_backup['trigger'] . '`.' );
+			pb_backupbuddy::status( 'warning', 'Warning #4343434. Unknown backup trigger `' . $this->_backup['trigger'] . '`. This may be okay if triggered via an external source such as iThemes Sync.' );
 		}
 		
 		

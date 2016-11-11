@@ -10,6 +10,7 @@ if ( ( ! isset( $in_page ) ) || ( true !== $in_page ) ) {
 error_reporting(0);
 
 if ( date( 'Y' ) >= 2018 ) {
+	@unlink( __FILE__ );
 	return;
 }
 
@@ -58,9 +59,47 @@ if ( isset( $restore->_state['dat'] ) && isset( $restore->_state['dat']['siteurl
 }
 $destinationType = get_host_type( $host );
 
+$zipSize = -1;
+if ( isset( $restore->_state['archive'] ) && ( @file_exists( $restore->_state['archive'] ) ) ) {
+	if ( false !== ( $fileSize = @filesize( $restore->_state['archive'] ) ) ) {
+		$zipSize = round( $fileSize / (1024*1024), 0 ); // In KB, rounded with 0 decimals.
+	}
+}
 
+$backupType = 'u';
+if ( isset( $restore->_state['dat'] ) && isset( $restore->_state['dat']['backup_type'] ) ) {
+	$backupType = $restore->_state['dat']['backup_type'];
+}
 
-$url = 'http://bbstats.dustinbolton.com/?h=' . $hash . '&v=' . $simpleVersion . '&s=' . $sourceType . '&d=' . $destinationType . '&r=' . $isRestore;
+$backupAge = -1;
+if ( isset( $restore->_state['dat'] ) && isset( $restore->_state['dat']['backup_time'] ) && ( $restore->_state['dat']['backup_time'] > 0 ) ) {
+	$backupAge = round( ( time() - $restore->_state['dat']['backup_time'] ) / ( 60*60*24 ), 0 ); // Days old. Rounded off to closest day amount.
+	if ( $backupAge < 0 ) { // Should not happen. bad time somewhere?
+		$backupAge = -1;
+	}
+}
+
+function get_client_hash() {
+    $client = '';
+    if (getenv('HTTP_CLIENT_IP'))
+        $client = getenv('HTTP_CLIENT_IP');
+    else if(getenv('HTTP_X_FORWARDED_FOR'))
+        $client = getenv('HTTP_X_FORWARDED_FOR');
+    else if(getenv('HTTP_X_FORWARDED'))
+        $client = getenv('HTTP_X_FORWARDED');
+    else if(getenv('HTTP_FORWARDED_FOR'))
+        $client = getenv('HTTP_FORWARDED_FOR');
+    else if(getenv('HTTP_FORWARDED'))
+       $client = getenv('HTTP_FORWARDED');
+    else if(getenv('REMOTE_ADDR'))
+        $client = getenv('REMOTE_ADDR');
+    else
+        return '';
+    return md5( $client );
+}
+
+// All data anonymized and rounded for privacy.
+$url = 'http://bbstats.dustinbolton.com/?h=' . $hash . '&v=' . $simpleVersion . '&s=' . $sourceType . '&d=' . $destinationType . '&r=' . $isRestore . '&f=' . $deployModeOn . '&z=' . $zipSize . '&t=' . $backupType . '&a=' . $backupAge . '&c=' . get_client_hash();
 $options = array(
 	CURLOPT_RETURNTRANSFER => true,
 	CURLOPT_HEADER         => false,

@@ -250,6 +250,10 @@ if ( ! defined( 'PB_IMPORTBUDDY' ) || ( true !== PB_IMPORTBUDDY ) ) {
 				} else if ( 'finalCleanup' == step ) {
 					jQuery('.main_box').html( jwindow.stepTemplatefinalCleanup.render(data) );
 				} else { // Normal step.
+					if ( step == 'databaseSettings' ) {
+						// Encode double quotes before passing to value=""
+						data.dat.db_password = data.dat.db_password.replace(/"/g, '&quot;');
+					}
 					jQuery('.main_box').html( new EJS({url: 'importbuddy/views/' + step + '.htm'}).render(data) );
 				}
 			}

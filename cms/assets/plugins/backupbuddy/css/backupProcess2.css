@@ -791,11 +791,11 @@ a:focus {
     display: block;
 }
 
-.bb_destination-item.bb_destination-stash a {
-    background: #fff url('../destinations/stash/icon50.png') no-repeat center 22px;
-}
 .bb_destination-item.bb_destination-stash2 a {
     background: #fff url('../destinations/stash2/icon50.png') no-repeat center 22px;
+}
+.bb_destination-item.bb_destination-stash3 a {
+    background: #fff url('../destinations/stash3/icon50.png') no-repeat center 22px;
 }
 .bb_destination-item.bb_destination-live a {
     background: #fff url('../destinations/live/icon50.png') no-repeat center 22px;
@@ -806,13 +806,14 @@ a:focus {
 .bb_destination-item.bb_destination-s32 a {
     background: #fff url('../destinations/s32/icon50.png') no-repeat center 22px;
 }
+.bb_destination-item.bb_destination-s33 a {
+    background: #fff url('../destinations/s33/icon50.png') no-repeat center 22px;
+}
 .bb_destination-item.bb_destination-rackspace a {
     background: #fff url('../destinations/rackspace/icon50.png') no-repeat center 22px;
 }
 
-.bb_destination-item.bb_destination-dropbox a {
-    background: #fff url('../destinations/dropbox/icon50.png') no-repeat center 22px;
-}
+
 .bb_destination-item.bb_destination-dropbox2 a {
     background: #fff url('../destinations/dropbox2/icon50.png') no-repeat center 22px;
 }

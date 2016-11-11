@@ -24,6 +24,16 @@ if ( '' != pb_backupbuddy::_POST( 'pb_backupbuddy_' ) ) {
 		pb_backupbuddy::save();
 		pb_backupbuddy::alert( __( 'Settings saved. Restarting Live process so they take immediate effect.', 'it-l10n-backupbuddy' ) );
 		set_transient( 'backupbuddy_live_jump', array( 'daily_init', array() ), 60*60*48 ); // Tells Live process to restart from the beginning (if mid-process) so new settigns apply.
+
+		// Add final entry to log if disabled
+		if ( $destination_settings['disable_logging'] == 0 && $save_result['data']['disable_logging'] == 1 ) {
+			$previous_status_serial = pb_backupbuddy::get_status_serial(); // Hold current serial.
+			pb_backupbuddy::set_status_serial( 'live_periodic' ); // Redirect logging output to a certain log file.
+			pb_backupbuddy::status( 'details', '-----' );
+			pb_backupbuddy::status( 'details', 'Logging disabled in Stash Live --> Settings --> Advanced.' );
+			pb_backupbuddy::status( 'details', '-----' );
+			pb_backupbuddy::set_status_serial( $previous_status_serial );
+		}
 		
 		// Send new settings for archive limiting to Stash API.
 		backupbuddy_live::send_trim_settings();
@@ -43,7 +53,7 @@ if ( 'live' == $destination_settings['type'] ) {
 		$admin_url = admin_url( 'admin.php' );
 	}
 	?>
-	<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=disconnect' ); ?>" target="_top" style="float:right;margin-top:-3em;color:#f95050;" class="" onClick="if ( ! confirm( '<?php _e( "Are you sure you want to disconnect this site from BackupBuddy Stash Live?", "it-l10n-backupbuddy" ); ?>' ) ) { return false; }"><?php _e( 'Disconnect from Stash Live', 'it-l10n-backupbuddy' ); ?></a>
+	<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=disconnect' ); ?>" target="_top" style="float:right;margin-top:-3em;color:#f95050;"><?php _e( 'Disconnect from Stash Live', 'it-l10n-backupbuddy' ); ?></a>
 	<?php
 }
 

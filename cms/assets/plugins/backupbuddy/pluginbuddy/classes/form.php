@@ -762,19 +762,21 @@ class pb_backupbuddy_form {
 			 * make sure that $value is numeric, if so, make sure it fits inside of bounds
 			 * */
 			} elseif ( $rule_type == 'number' ) {
-				if( !is_numeric( $value ) ) {
-					$errors[] = $value . ' is not a number.';
-				}
-				$subrule = strstr( $rule, '[' );
-				$hyphen_pos = strpos( $subrule, '-' );
-				if( $hyphen_pos != '' ) {
-					$first_number = substr( $subrule, 1, $hyphen_pos - 1 );
-					$second_number = substr( $subrule, $hyphen_pos + 1, -1 );
-					if( $value < $first_number || $value > $second_number ) {
-						$errors[] = 'Value `' . htmlentities( $value ) . '` is outside of the set bounds.';
+				if ( '' != $value ) {
+					if( !is_numeric( $value ) ) {
+						$errors[] = $value . ' is not a number.';
+					}
+					$subrule = strstr( $rule, '[' );
+					$hyphen_pos = strpos( $subrule, '-' );
+					if( $hyphen_pos != '' ) {
+						$first_number = substr( $subrule, 1, $hyphen_pos - 1 );
+						$second_number = substr( $subrule, $hyphen_pos + 1, -1 );
+						if( $value < $first_number || $value > $second_number ) {
+							$errors[] = 'Value `' . htmlentities( $value ) . '` is outside of the set bounds.';
+						}
 					}
 				}
-			
+				
 			} else {
 				// TODO: Add custom callback functionality here.
 				

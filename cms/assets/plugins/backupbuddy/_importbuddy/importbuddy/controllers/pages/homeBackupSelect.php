@@ -140,11 +140,15 @@ function preflightScan() {
 	}
 	
 	if ( file_exists( ABSPATH . 'php.ini' ) ) {
-		$issues['php_ini_exists'] = 'WARNING: Existing php.ini file found. If your backup also contains a php.ini file it may overwrite the current one, possibly resulting in changes in cofiguration or problems. Make a backup of your existing file if your are unsure.';
+		$issues['php_ini_exists'] = 'WARNING: Existing php.ini file found which configures custom PHP settings. If your backup also contains a php.ini file it may overwrite the current one, possibly resulting in changes in configuration or problems. Make a backup of your existing file if your are unsure.';
+	}
+	
+	if ( file_exists( ABSPATH . '.user.ini' ) ) {
+		$issues['php_ini_exists'] = 'WARNING: Existing .user.ini file found which configures custom PHP settings. If your backup also contains a .user.ini file it may overwrite the current one, possibly resulting in changes in configuration or problems. Make a backup of your existing file if your are unsure.';
 	}
 	
 	if ( file_exists( ABSPATH . '.htaccess' ) ) {
-		$issues['htaccess_exists'] = 'WARNING: Existing .htaccess file found. If your backup also contains a .htaccess file it may overwrite the current one, possibly resulting in changed in configuration or problems. Make a backup of your existing file if you are unsure.';
+		$issues['htaccess_exists'] = 'WARNING: Existing .htaccess file found. If your backup also contains a .htaccess file it may overwrite the current one, possibly resulting in changes in configuration or problems. Make a backup of your existing file if you are unsure.';
 	}
 	
 	/* TODO: Move to post flight scan.

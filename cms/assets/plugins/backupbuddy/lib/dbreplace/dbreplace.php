@@ -402,7 +402,12 @@ if (!class_exists("pluginbuddy_dbreplace")) {
 						$UPDATE_SQL = $UPDATE_SQL . $WHERE_SQL;
 						$result = $wpdb->query( $UPDATE_SQL );
 						if ( false === $result ) {
-							pb_backupbuddy::status( 'error', 'ERROR: mysql error updating db: ' . mysql_error() . '. SQL Query: ' . htmlentities( $UPDATE_SQL ) );
+							if ( ! empty( $wpdb->use_mysqli ) ) {
+								$mysql_error = mysqli_error( $wpdb->dbh );
+							} else {
+								$mysql_error = mysql_error( $wpdb->dbh );
+							}
+							pb_backupbuddy::status( 'error', 'ERROR: mysql error updating db: ' . $mysql_error . '. SQL Query: ' . htmlentities( $UPDATE_SQL ) );
 						} 
 					}
 					

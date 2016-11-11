@@ -101,7 +101,10 @@ class pb_backupbuddy_cron extends pb_backupbuddy_croncore {
 		}
 		
 		require_once( pb_backupbuddy::plugin_path() . '/destinations/live/live.php' );
-		$liveID = backupbuddy_live::getLiveID();
+		if ( false === ( $liveID = backupbuddy_live::getLiveID() ) ) {
+			pb_backupbuddy::status( 'error', 'Error #483948934834: getLiveID() returned false. Live disabled?' );
+			return;
+		}
 		$periodic_period = pb_backupbuddy::$options['remote_destinations'][ $liveID ]['periodic_process_period'];
 		$schedule_times = wp_get_schedules();
 		if ( ! isset( $schedule_times[ $periodic_period ] ) ) {
@@ -334,65 +337,33 @@ class pb_backupbuddy_cron extends pb_backupbuddy_croncore {
 			}
 		} // end stash2.
 		
-		if ( $destination_type == 'stash' ) {
+		if ( $destination_type == 'stash3' ) {
+			require_once( ABSPATH . 'wp-admin/includes/file.php' );
 			
-			$itxapi_username = $settings['itxapi_username'];
-			$itxapi_password = $settings['itxapi_password'];
-			
-			// Load required files.
-			pb_backupbuddy::status( 'details', 'Load Stash files.' );
-			require_once( pb_backupbuddy::plugin_path() . '/destinations/stash/init.php' );
-			require_once( dirname( dirname( __FILE__ ) ) . '/destinations/_s3lib/aws-sdk/sdk.class.php' );
-			require_once( pb_backupbuddy::plugin_path() . '/destinations/stash/lib/class.itx_helper.php' );
-			
-			// Talk with the Stash API to get access to do things.
-			pb_backupbuddy::status( 'details', 'Authenticating Stash for remote copy to local.' );
-			$stash = new ITXAPI_Helper( pb_backupbuddy_destination_stash::ITXAPI_KEY, pb_backupbuddy_destination_stash::ITXAPI_URL, $itxapi_username, $itxapi_password );
-			$manage_url = $stash->get_manage_url();
-			$request = new RequestCore($manage_url);
-			$response = $request->send_request(true);
-			
-			// Validate response.
-			if(!$response->isOK()) {
-				$error = 'Request for management credentials failed.';
+			pb_backupbuddy::status( 'details', 'About to begin downloading from URL.' );
+			$download = download_url( $url );
+			pb_backupbuddy::status( 'details', 'Download process complete.' );
+			if ( is_wp_error( $download ) ) {
+				$error = 'Error #83444: Unable to download file `' . $file . '` from URL: `' . $url . '`. Details: `' . $download->get_error_message() . '`.';
 				pb_backupbuddy::status( 'error', $error );
 				pb_backupbuddy::alert( $error );
 				return false;
-			}
-			if(!$manage_data = json_decode($response->body, true)) {
-				$error = 'Did not get valid JSON response.';
-				pb_backupbuddy::status( 'error', $error );
-				pb_backupbuddy::alert( $error );
-				return false;
-			}
-			if(isset($manage_data['error'])) {
-				$error = 'Error: ' . implode(' - ', $manage_data['error']);
-				pb_backupbuddy::status( 'error', $error );
-				pb_backupbuddy::alert( $error );
-				return false;
-			}
-			
-			
-			// Connect to S3.
-			pb_backupbuddy::status( 'details', 'Instantiating S3 object.' );
-			$s3 = new AmazonS3( $manage_data['credentials'] );
-			pb_backupbuddy::status( 'details', 'About to get Stash object `' . $file . '`...' );
-			try {
-				$response = $s3->get_object( $manage_data['bucket'], $manage_data['subkey'] . pb_backupbuddy_destination_stash::get_remote_path() . $file, array( 'fileDownload' => $destination_file ) );
-			} catch (Exception $e) {
-				pb_backupbuddy::status( 'error', 'Error #5443984: ' . $e->getMessage() );
-				error_log( 'err:' . $e->getMessage() );
-				return false;
-			}
-			
-			if ( $response->isOK() ) {
-				pb_backupbuddy::status( 'details', 'Stash copy to local success.' );
-				return true;
 			} else {
-				pb_backupbuddy::status( 'error', 'Error #894597845. Stash copy to local FAILURE. Details: `' . print_r( $response, true ) . '`.' );
-				return false;
+				if ( false === copy( $download, $destination_file ) ) {
+					$error = 'Error #3344433: Unable to copy file from `' . $download . '` to `' . $destination_file . '`.';
+					pb_backupbuddy::status( 'error', $error );
+					pb_backupbuddy::alert( $error );
+					@unlink( $download );
+					return false;
+				} else {
+					pb_backupbuddy::status( 'details', 'File saved to `' . $destination_file . '`.' );
+					@unlink( $download );
+					return true;
+				}
 			}
-		} elseif ( $destination_type == 'gdrive' ) {
+		} // end stash3.
+		
+		if ( $destination_type == 'gdrive' ) {
 			die( 'Not implemented here.' );
 			require_once( pb_backupbuddy::plugin_path() . '/destinations/gdrive/init.php' );
 			$settings = array_merge( pb_backupbuddy_destination_gdrive::$default_settings, $settings );
@@ -427,6 +398,17 @@ class pb_backupbuddy_cron extends pb_backupbuddy_croncore {
 				return false;
 			}
 			
+		} elseif ( $destination_type == 's33' ) {
+			
+			require_once( pb_backupbuddy::plugin_path() . '/destinations/s33/init.php' );
+			if ( true === pb_backupbuddy_destination_s33::download_file( $settings, $file, $destination_file ) ) { // success
+				pb_backupbuddy::status( 'details', 'S3 (v3) copy to local success.' );
+				return true;
+			} else { // fail
+				pb_backupbuddy::status( 'details', 'Error #328932789345. S3 (v3) copy to local FAILURE.' );
+				return false;
+			}
+			
 		} else {
 			pb_backupbuddy::status( 'error', 'Error #859485. Unknown destination type for remote copy `' . $destination_type . '`.' );
 			return false;
@@ -437,44 +419,13 @@ class pb_backupbuddy_cron extends pb_backupbuddy_croncore {
 	
 	
 	
-	// TODO: Merge into v3.1 destinations system in destinations directory.
-	// Copy Dropbox backup to local backup directory
-	function _process_dropbox_copy( $destination_id, $file ) {
-		pb_backupbuddy::set_greedy_script_limits();
-		
-		if ( ! class_exists( 'backupbuddy_core' ) ) {
-			require_once( pb_backupbuddy::plugin_path() . '/classes/core.php' );
-		}
-		
-		require_once( pb_backupbuddy::plugin_path() . '/destinations/dropbox/lib/dropbuddy/dropbuddy.php' );
-		$dropbuddy = new pb_backupbuddy_dropbuddy( pb_backupbuddy::$options['remote_destinations'][$destination_id]['token'] );
-		if ( $dropbuddy->authenticate() !== true ) {
-			if ( ! class_exists( 'backupbuddy_core' ) ) {
-				require_once( pb_backupbuddy::plugin_path() . '/classes/core.php' );
-			}
-			backupbuddy_core::mail_error( 'Dropbox authentication failed in cron_process_dropbox_copy.' );
-			return false;
-		}
-		
-		$destination_file = backupbuddy_core::getBackupDirectory() . basename( $file );
-		if ( file_exists( $destination_file ) ) {
-			$destination_file = str_replace( 'backup-', 'backup_copy_' . pb_backupbuddy::random_string( 5 ) . '-', $destination_file );
-		}
-		
-		pb_backupbuddy::status( 'error', 'About to get file `' . $file . '` from Dropbox and save to `' . $destination_file . '`.' );
-		file_put_contents( $destination_file, $dropbuddy->get_file( $file ) );
-		pb_backupbuddy::status( 'error', 'Got object from Dropbox cron.' );
-	}
-	
-	
-	
 	/* _process_destination_copy()
 	 *
 	 * Downloads a remote backup and copies it to local server.
 	 *
 	 * @param	$destination_settings		array 		Array of destination settings.
 	 * @param	$remote_file				string		Filename of file to get. Basename only.  Remote directory / paths / buckets / etc should be passed in $destination_settings info.
-	 * @param	$fileID						string		If destination uses a special file ID (eg GDrive) then pass that to destination file function instead of $remote_file. $remote_file used for calculating local filename.
+	 * @param	$fileID						string		If stination uses a special file ID (eg GDrive) then pass that to destination file function instead of $remote_file. $remote_file used for calculating local filename.
 	 * @return	bool									true success, else false.
 	 *
 	 */
@@ -604,6 +555,15 @@ class pb_backupbuddy_cron extends pb_backupbuddy_croncore {
 		
 		require_once( pb_backupbuddy::plugin_path() . '/classes/housekeeping.php' );
 		backupbuddy_housekeeping::run_periodic();
+		
+	} // End _housekeeping().
+	
+	
+	
+	function _live_troubleshooting_check() {
+		
+		require( pb_backupbuddy::plugin_path() . '/destinations/live/_troubleshooting.php' );
+		backupbuddy_live_troubleshooting::run();
 		
 	} // End _housekeeping().
 	

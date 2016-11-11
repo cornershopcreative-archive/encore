@@ -183,7 +183,6 @@ if ( '' != pb_backupbuddy::_GET( 'live_action' ) ) {
 		echo '<h3>Stash Live Troubleshooting:</h3>';
 		
 		require( '_troubleshooting.php' );
-		
 		backupbuddy_live_troubleshooting::run();
 		$results = backupbuddy_live_troubleshooting::get_raw_results();
 		
@@ -342,8 +341,17 @@ if ( '' != pb_backupbuddy::_GET( 'live_action' ) ) {
 		</script>
 		<?php
 		echo '<textarea readonly="readonly" style="width: 100%;" wrap="off" cols="65" rows="20" id="backupbuddy_live_log">';
+
+		// Is Live Logging Enabled?
+		$liveID = backupbuddy_live::getLiveID();
+		$logging_disabled = ( isset( pb_backupbuddy::$options['remote_destinations'][ $liveID ]['disable_logging'] ) && ( '1' == pb_backupbuddy::$options['remote_destinations'][ $liveID ][     'disable_logging'] ) );
+
 		if ( ! file_exists( $sumLogFile ) ) {
-			echo __( 'Nothing has been logged.', 'it-l10n-backupbuddy' );
+			if ( $logging_disabled ) {
+				echo __( 'Live Logging has been disabled in Stash Live &#8594; Settings &#8594; Advanced.', 'it-l10n-backupbuddy' );
+			} else {
+				echo __( 'Nothing has been logged.', 'it-l10n-backupbuddy' );
+			}
 		} else {
 			$mtime = @filemtime( $sumLogFile );
 			$time_ago = pb_backupbuddy::$format->time_ago( $mtime );
@@ -372,7 +380,9 @@ if ( '' != pb_backupbuddy::_GET( 'live_action' ) ) {
 			}
 		}
 		?></textarea>
-		<div style="display: inline-block; margin-left: 8px; margin-top: 5px;"><span class="description">Current Time: <?php echo pb_backupbuddy::$format->date( pb_backupbuddy::$format->localize_time( microtime( true ) ), 'G:i:s' ); ?>. &nbsp; &nbsp; &nbsp; Modified: <?php echo $time_ago; ?> ago.</span></div>
+		<?php if ( ( ! $logging_disabled ) && ( isset( $time_ago ) ) ) { ?>
+			<div style="display: inline-block; margin-left: 8px; margin-top: 5px;"><span class="description">Current Time: <?php echo pb_backupbuddy::$format->date( pb_backupbuddy::$format->localize_time( microtime( true ) ), 'G:i:s' ); ?>. &nbsp; &nbsp; &nbsp; Modified: <?php echo $time_ago; ?> ago.</span></div>
+		<?php } ?>
 		<br><br>
 		<?php
 	} elseif ( 'delete_catalog' == $action ) {
@@ -443,6 +453,14 @@ if ( '' != pb_backupbuddy::_GET( 'live_action' ) ) {
 } // end if action.
 
 
+$troubleshooting_alerts_file = backupbuddy_core::getLogDirectory() . 'live/troubleshooting_alerts-' . pb_backupbuddy::$options['log_serial'] . '.txt';
+if ( false !== ( $troubleshooting_alerts = @file_get_contents( $troubleshooting_alerts_file ) ) ) {
+	pb_backupbuddy::disalert( 'troubleshooting_' . md5( $troubleshooting_alerts ), '<h3>' . __( 'Possible Problem Detected', 'it-l10n-backupbuddy' ) . '</h3><p class="description" style="max-width: 700px; display: inline-block;">' . __( 'One or more potential problems may have been detected. If you are experiencing problems with Stash Live the following information may help address your issue. If you are not experiencing issues you may dismiss this instance of this notice with the "Dismiss" link to the right. It will also automatically go away after a successful snapshot after the potential problem is corrected. Your host may be able to assist in correcting this issue.', 'it-l10n-backupbuddy' ) . '</p><br><br><b>Details:</b><br><br>' . $troubleshooting_alerts, $error = true );
+}
+
+if ( backupbuddy_core::detectMaxExecutionTime() < 28 ) {
+	pb_backupbuddy::disalert( 'troubleshooting_max_execution', '<h3>' . __( 'Possible Problem Detected', 'it-l10n-backupbuddy' ) . '</h3><p class="description" style="max-width: 700px; display: inline-block;">' . __( 'Your PHP maximum execution time appears to be below 30 seconds, the default PHP runtime limit and industry standard. Please contact your host to have them increase your PHP maximum execution time to 30 seconds or greater.', 'it-l10n-backupbuddy' ) . '</p><br><br><b>Details:</b><br><br>' . __( 'Current detected value PHP execution time limit:', 'it-l10n-backupbuddy' ) . ' `' . backupbuddy_core::detectMaxExecutionTime() . '` seconds.', $error = true );
+}
 
 // Backup types' Status.
 $database_status = '<span class="backpbuddy-live-stats-enabled">' .__( 'Enabled', 'it-l10n-backupbuddy' ) . '</span>';
@@ -998,7 +1016,56 @@ if ( 0 != $state['stats']['files_pending_delete'] ) {
 	<br><br>
 	
 	<b>Account:</b><br>
-	<?php echo $destination['itxapi_username']; ?>
+	<?php echo $destination['itxapi_username']; ?> (<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=disconnect' ); ?>">Disconnect</a>)
+	<br><br>
+	
+	<b>Stats by Day:</b><br>
+	<table class="widefat">
+		<thead>
+			<tr class="thead">
+				<th>&nbsp;</th>
+				<?php
+				foreach( $state['stats']['daily'] as $date => $stat ) {
+					echo '<th><b>' . $date . '</b></th>';
+				}
+				?>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="entry-row alternate">Database Tables Sent (Count)</td>
+				<?php
+				foreach( $state['stats']['daily'] as $stat ) {
+					echo '<td class="entry-row alternate">' . $stat['d_t'] . '</td>';
+				}
+				?>
+			</tr>
+			<tr>
+				<td class="entry-row alternate">Database Data Sent (Size)</td>
+				<?php
+				foreach( $state['stats']['daily'] as $stat ) {
+					echo '<td class="entry-row alternate">' . pb_backupbuddy::$format->file_size( $stat['d_s'] ) . '</td>';
+				}
+				?>
+			</tr>
+			<tr>
+				<td class="entry-row alternate">Files Sent (Count)</td>
+				<?php
+				foreach( $state['stats']['daily'] as $stat ) {
+					echo '<td class="entry-row alternate">' . $stat['f_t'] . '</td>';
+				}
+				?>
+			</tr>
+			<tr>
+				<td class="entry-row alternate">File Data Sent (Size)</td>
+				<?php
+				foreach( $state['stats']['daily'] as $stat ) {
+					echo '<td class="entry-row alternate">' . pb_backupbuddy::$format->file_size( $stat['f_s'] ) . '</td>';
+				}
+				?>
+			</tr>
+		</tbody>
+	</table>
 	<br><br>
 	
 	<h4>Actions:</h4>

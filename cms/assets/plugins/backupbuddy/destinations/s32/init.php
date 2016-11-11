@@ -41,7 +41,7 @@ class pb_backupbuddy_destination_s32 { // Change class name end to match destina
 		'manage_all_files'			=>		'1',		// Allow user to manage all files in S3? If enabled then user can view all files after entering their password. If disabled the link to view all is hidden.
 		'region'					=>		's3.amazonaws.com',	// Endpoint. Incorrectly named region here.
 		'storage'					=>		'STANDARD',	// Whether to use standard or reduced redundancy storage. Allowed values: STANDARD, REDUCED_REDUNDANCY
-		'use_packaged_cert'			=>		'0',		// When 1, use the packaged cacert.pem file included with the AWS SDK.
+		'use_server_cert'			=>		'0',		// When 1, do not use the packaged cacert.pem file included with the AWS SDK and instead just use curl default.
 		'disable_file_management'	=>		'0',		// When 1, _manage.php will not load which renders remote file management DISABLED.
 		//'skip_bucket_prepare'		=>		'0',		// when 1, we will skip creating the bucket and making sure it exists before trying to place files.
 		'max_filelist_keys'			=>		'250',		// Maximum number of files to list from server via listObjects calls.
@@ -49,6 +49,7 @@ class pb_backupbuddy_destination_s32 { // Change class name end to match destina
 		'stash_mode'				=>		'0',		// When 1, this destination is wrapped with Stash.
 		'live_mode'					=>		'0',		// When 1, this destination is wrapped in Live.
 		'max_filelist_keys'			=>		'250',		// Maximum number of files to list from server via listObjects calls.
+		'disable_hostpeer_verficiation' =>	'0',		// Disables SSL host/peer verification.
 		
 		// Do not store these for destination settings. Only used to pass to functions in this file.
 		'_multipart_id'				=>		'',			// Instance var. Internal use only for continuing a chunked upload.
@@ -134,11 +135,16 @@ class pb_backupbuddy_destination_s32 { // Change class name end to match destina
 			*/
 			
 			if ( pb_backupbuddy::$options['log_level'] == '3' ) { // Full logging enabled.
-				//error_log( print_r( $s3Config, true ) );
+				//error_log( '$s3config: ' . print_r( $s3Config, true ) );
 			}
 			
 			self::$_client = S3Client::factory( $s3Config );
 			self::$_client->getConfig()->set( 'curl.options', array( 'body_as_string' => true ) ); // Work around "[curl] 65: necessary data rewind wasn't possible" issue. See https://github.com/aws/aws-sdk-php/issues/284
+			
+			//if ( '1' == $settings['use_packaged_cert'] ) {
+				//pb_backupbuddy::status( 'details', 'Setting s3config packaged cacert.pem file to bundle.' );
+				//self::$_client->getConfig()->set( 'ssl.certificate_authority', pb_backupbuddy::plugin_path() . '/destinations/_s3lib2/Guzzle/Http/Resources/cacert.pem' );
+			//}
 			
 			// Verify bucket exists; create if not. Also set region to the region bucket exists in.
 			/*
@@ -215,7 +221,6 @@ class pb_backupbuddy_destination_s32 { // Change class name end to match destina
 			}
 			
 			// Initiate multipart upload with S3.
-			pb_backupbuddy::status( 'details', 'Initiating multipart transfer.' );
 			$thisCall = array(
 				'Bucket' => $settings['bucket'],
 				'Key' => $settings['directory'] . basename( $file ),
@@ -226,13 +231,14 @@ class pb_backupbuddy_destination_s32 { // Change class name end to match destina
 				$thisCall['Key'] = $settings['_stash_object'];
 				unset( $thisCall['StorageClass'] );
 			}
+			pb_backupbuddy::status( 'details', 'Initiating multipart transfer.' );
 			try {
 				$response = self::$_client->createMultipartUpload( $thisCall );
 			} Catch( Exception $e ) {
 				if ( pb_backupbuddy::$options['log_level'] == '3' ) { // Full logging enabled.
 					pb_backupbuddy::status( 'details', 'Call details due to logging level: `' . print_r( $thisCall, true ) . '`.' );
 				}
-				return self::_error ( 'Error #389383: Unable to initiate multipart upload. Details: `' . $e->getMessage() . '`.' );
+				return self::_error ( 'Error #389383: Unable to initiate multipart upload for file `' . $file . '`. Details: `' . $e->getMessage() . '`.' );
 			}
 			
 			// Made it here so SUCCESS initiating multipart!
@@ -309,7 +315,7 @@ class pb_backupbuddy_destination_s32 { // Change class name end to match destina
 					$contentLength = (integer) $settings['_multipart_counts'][ ( $settings['_multipart_partnumber'] - 1 ) ]['length'];
 				}
 				
-				pb_backupbuddy::status( 'details', 'Beginning upload of part `' . $settings['_multipart_partnumber'] . '` of `' . count( $settings['_multipart_counts'] ) . '` parts of file `' . $settings['_multipart_file'] . '` to remote location `' . $settings['_multipart_remotefile'] . '` with multipart ID `' . $settings['_multipart_id'] . '`.' );
+				pb_backupbuddy::status( 'details', 'About to read in part contents of part `' . $settings['_multipart_partnumber'] . '` of `' . count( $settings['_multipart_counts'] ) . '` parts of file `' . $settings['_multipart_file'] . '` to remote location `' . $settings['_multipart_remotefile'] . '` with multipart ID `' . $settings['_multipart_id'] . '`.' );
 				$uploadArr = array(
 					'Bucket' => $settings['bucket'],
 					'Key' => $settings['_multipart_remotefile'],
@@ -325,6 +331,7 @@ class pb_backupbuddy_destination_s32 { // Change class name end to match destina
 				//pb_backupbuddy::status( 'details', 'Send array: `' . print_r( $uploadArr, true ) . '`.' );
 				//error_log( print_r( $uploadArr, true ) );
 				
+				pb_backupbuddy::status( 'details', 'Beginning upload.' );
 				try {
 					$response = self::$_client->uploadPart( $uploadArr );
 				} Catch( Exception $e ) {
@@ -390,15 +397,16 @@ class pb_backupbuddy_destination_s32 { // Change class name end to match destina
 					$update_status = 'Sent part ' . $settings['_multipart_partnumber'] . ' of ' . count( $settings['_multipart_counts'] ) . ' parts.';
 					
 					pb_backupbuddy::status( 'details', 'Getting etags and notifying of multipart upload completion.' );
+					$multipartOptions = array(
+						'Bucket' => $settings['bucket'],
+						'UploadId' => $settings['_multipart_id'],
+						'Key' => $settings['_multipart_remotefile'],
+						'Parts' => $settings['_multipart_etag_parts']
+					);
 					try {
-						$response = self::$_client->completeMultipartUpload( array(
-							'Bucket' => $settings['bucket'],
-							'UploadId' => $settings['_multipart_id'],
-							'Key' => $settings['_multipart_remotefile'],
-							'Parts' => $settings['_multipart_etag_parts']
-						) );
+						$response = self::$_client->completeMultipartUpload( $multipartOptions );
 					} Catch( Exception $e ) {
-						return self::_error( 'Unable to notify server of completion of all parts for multipart upload `' . $settings['_multipart_id'] . '`. Details: `' . $e->getMessage() . '`.' );
+						return self::_error( 'Error #84397347437: Unable to notify server of completion of all parts for multipart upload `' . $settings['_multipart_id'] . '`. Parts count: `' . count( $settings['_multipart_counts'] ) . '`. Details: `' . $e->getMessage() . '`. Multipart options: `' . print_r( $multipartOptions, true ) . '`.' );
 					}
 					pb_backupbuddy::status( 'details', 'Server notified of multipart completion.' );
 					
@@ -927,19 +935,27 @@ class pb_backupbuddy_destination_s32 { // Change class name end to match destina
 	public static function getCredentials( $settings ) {
 		$settings['bucket'] = strtolower( $settings['bucket'] ); // Buckets must be lowercase.
 		
-		if ( '1' == $settings['use_packaged_cert'] ) {
-			pb_backupbuddy::status( 'details', 'Using packaged cacert.pem file based on destination settings.' );
-			$credentials['ssl.certificate_authority'] = pb_backupbuddy::plugin_path() . '/destinations/_s3lib2/Guzzle/Http/Resources/cacert.pem';
-		}
-		
 		if ( isset( $settings['credentials'] ) ) {
 			$credentials['credentials'] = $settings['credentials'];
-			return $credentials;
 		} else {
 			$credentials['key'] = $settings['accesskey'];
 			$credentials['secret'] =$settings['secretkey'];
-			return $credentials;
 		}
+		
+		if ( '1' == $settings['use_server_cert'] ) {
+			pb_backupbuddy::status( 'details', 'Using webserver certificates (not bundled with BackupBuddy) based on destination settings.' );
+			$credentials['ssl.certificate_authority'] = 'system';
+		} else {
+			pb_backupbuddy::status( 'details', 'Using bundled cacert.pem file based on destination settings.' );
+			$credentials['ssl.certificate_authority'] = true; //pb_backupbuddy::plugin_path() . '/destinations/_s3lib2/Guzzle/Http/Resources/cacert.pem';
+		}
+		
+		if ( '1' == $settings['disable_hostpeer_verficiation'] ) {
+			pb_backupbuddy::status( 'warning', 'Disabling SSL peer and host validation based on destination settings. Any prior certificate bundle settings will be ignored. CAUTION: This removes man-in-the-middle protections. Use only if needed due to host issues.' );
+			$credentials['ssl.certificate_authority'] = false; // Disables host & peer validations.
+		}
+		
+		return $credentials;
 		
 	} // End getCredentials().
 	

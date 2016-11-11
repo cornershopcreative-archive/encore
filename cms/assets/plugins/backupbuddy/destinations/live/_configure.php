@@ -324,12 +324,23 @@ $settings_form->add_setting( array(
 ) );
 $settings_form->add_setting( array(
 	'type'		=>		'checkbox',
-	'name'		=>		'use_packaged_cert',
+	'name'		=>		'use_server_cert',
 	'options'	=>		array( 'unchecked' => '0', 'checked' => '1' ),
-	'title'		=>		__( 'Use included CA bundle', 'it-l10n-backupbuddy' ),
-	'tip'		=>		__( '[Default: disabled] - When enabled, BackupBuddy will use its own bundled SSL certificate bundle for connecting to the server. Use this if SSL fails due to SSL certificate issues with your server.', 'it-l10n-backupbuddy' ),
+	'title'		=>		__( 'Use system CA bundle', 'it-l10n-backupbuddy' ),
+	'tip'		=>		__( '[Default: disabled] - When enabled, BackupBuddy will use your web server\'s certificate bundle for connecting to the server instead of BackupBuddy bundle. Use this if SSL fails due to SSL certificate issues.', 'it-l10n-backupbuddy' ),
 	'css'		=>		'',
-	'after'		=>		'<span class="description"> ' . __('Use included certificate bundle.', 'it-l10n-backupbuddy' ) . '</span>',
+	'after'		=>		'<span class="description"> ' . __('Use webserver certificate bundle instead of BackupBuddy\'s.', 'it-l10n-backupbuddy' ) . '</span>',
+	'rules'		=>		'',
+	'row_class'	=>		'advanced-toggle',
+) );
+$settings_form->add_setting( array(
+	'type'		=>		'checkbox',
+	'name'		=>		'disable_hostpeer_verficiation',
+	'options'	=>		array( 'unchecked' => '0', 'checked' => '1' ),
+	'title'		=>		__( 'Disable SSL Verifications', 'it-l10n-backupbuddy' ),
+	'tip'		=>		__( '[Default: disabled] - When enabled, the SSL host and peer information will not be verified. While the connection will still be encrypted SSL\'s man-in-the-middle protection will be voided. Disable only if you understand and if directed by support to work around host issues.', 'it-l10n-backupbuddy' ),
+	'css'		=>		'',
+	'after'		=>		'<span class="description"> ' . __('Check only if directed by support. Use with caution.', 'it-l10n-backupbuddy' ) . '</span>',
 	'rules'		=>		'',
 	'row_class'	=>		'advanced-toggle',
 ) );
@@ -354,6 +365,23 @@ $settings_form->add_setting( array(
 	'row_class'	=>		'advanced-toggle',
 	'after'		=>		'<span class="description"> ' . __('Use caution changing. See tip for details.', 'it-l10n-backupbuddy' ),
 ) );
+
+$available_versions = array(
+	'2' => 'Stash v2 (default)',
+);
+$stash3_php_minimum = file_get_contents( dirname( __FILE__ ) . '/_phpmin.php' );
+if ( version_compare( PHP_VERSION, $stash3_php_minimum, '>=' ) ) { // Server's PHP is insufficient for this option.
+	$available_versions['3'] = 'Stash v3 (BETA)';
+}
+$settings_form->add_setting( array(
+	'type'		=>		'select',
+	'name'		=>		'destination_version',
+	'title'		=>		__( 'Stash Version', 'it-l10n-backupbuddy' ),
+	'options'		=>		$available_versions,
+	'tip'		=>		__('[Default: v2] - Stash Live makes use of the Stash Remote Destination for file transfers. This allows selecting which Stash Remote Destination version is used behind the scenes. Only versions compatible with your server are listed.', 'it-l10n-backupbuddy' ),
+	'rules'		=>		'required',
+	'row_class'	=>		'advanced-toggle',
+));
 /*
 $settings_form->add_setting( array(
 	'type'		=>		'checkbox',

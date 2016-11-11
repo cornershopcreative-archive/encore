@@ -930,4 +930,258 @@
 		Various improvements to Deployment process.
 7.1.0.2 - 2016-04-12 - Dustin Bolton
 	Improved detection if importbuddy process is a restore vs migration.
+7.1.0.3 - 2016-04-13 - Dustin Bolton
+	Dropbox (v2): Updated SDK version to latest v1.1.6 to support new SSL and certificate changes.
+	Stash Live: Fixed user meta ID query for continuous database tracking.
+7.1.0.4 - 2016-04-18 - Dustin Bolton
+	Deployment wait for remote response now capped at adjustedMaxExecutionTime() which uses detected value (or manual value if overridden) instead of just 30 seconds.
+7.1.0.5 - 2016-04-19 - Dustin Bolton
+	Dropbox (v2) destination no longer throwing error on non-64-bit systems. Now only logging a BackupBuddy warning noting this.
+7.1.0.6 - 2016-04-20 - Dustin Bolton
+	FEATURE:
+		Amazon S3 (v2): Added support for S3 Transfer Acceleration to increase transfer speeds 50%-500% (or even more if sending to buckets out of country). See https://aws.amazon.com/blogs/aws/aws-storage-update-amazon-s3-transfer-acceleration-larger-snowballs-in-more-regions/ for more information.
+	32-bit architecture is now a Warning on Server Tools page.
+	Stash Live: Holding failed transfer logs longer for troubleshooting.
+	ImportBuddy: Fixed some notice typos on first page and scrollbars around file path.
+	Stash Live: Advanced troubleshooting now logs any detected crons which should have already run but have not, indicating cron malfunctioning.
+	Stash Live: Fixed 'Disconnect from Stash Live' not prompting for authentication resulting in server-side not properly disconnecting accounts.
+7.1.0.7 - 2016-04-20 - Dustin Bolton
+	Now removing Stash Live admin bar when menu item is hidden. - Glenn Ansley
+	Updates to Sync logging. - Lew Ayotte
+	Stash Live: Don't add log entries to report Logging is turned disabled. Report on View Log screen. - Glenn Ansley
+	Stash Live: When Logging is changed from Enabled to Disabled, add an entry in the Log to note that. - Glenn Ansley
+	Stash Live: Add percentage tracker to file size calculator. - Glenn Ansley
+	Stash Live: Don't log Catalog additions if log level isn't 3. - Glenn Ansley
+	Amazon S3 (v2): Added additional logging when etag verificiation fails for troubleshooting.
+	Stash Live: No longer trimming send logs before each logs' respective fileoptions file is logged to aid in troubleshooting. (log was being purged too soon making it difficult to view failure details)
+7.1.0.8 - 2016-04-22 - Dustin Bolton
+	Fixed undefined index for pb_backupbuddy::$options['max_execution_time'] when running in importbuddy.
+	Fixed mysql_error() call without checking to see if it was available. - Glenn Ansley
+	Fixed Dropbox (v2) error calling PB logging due to namespacing.
+7.1.1.0 - 2016-04-25 - Dustin Bolton
+	FEATURE:
+		Improved Sync logging for new Sync features.
+	Release of quick release updates 7.1.0.0-7.1.0.8.
+	Stash Live: Fixed single quote in JSON data breaking javascript due to some last_status messages.
+7.1.2.0 - 2016-05-01 - Dustin Bolton
+	Stash Live: Added headway cache directory to auto-exclude.
+	Added additional logging for Stash API calls failing to track URL that failed.
+	Added additional logging to S3 (v2) API calls failing to track URL that failed.
+	Improved stats on whether restore is a deployment.
+	Fixed Stash Live error message showing too long after file send errors fixed.
+7.1.2.1 - 2016-05-02 - Dustin Bolton
+	Loading fileoptions now logs how much memory increased to help get an idea of memory usage, especially for Stash Live with large numbers of files.
+7.1.3.0 - 2016-05-13 - Glenn Ansley
+	Release of Quick Release updates 7.1.2.0-7.1.2.1.
+	Remove advanced setting that clashes with old settings name and could potentially cause undesired results.
+7.1.3.1 - 2016-05-16 - Dustin Bolton
+	Added blank standalone preloaded function for _doing_it_wrong().
+	Reported max execution times below zero now treated as default 30 seconds.
+7.1.3.2 - 2016-05-25 - Dustin Bolton
+	French translation roughly edited to instruct against using ImportBuddy password the same as WordPress.
+	Serial calculation from zip filename made more robust against unexpected whitespace.
+	FEATURE:
+		Added new advanced option "Cron request timeout override" which allows overriding the Cron Loopback default timeout value of 0.01 seconds to a higher value. This is useful for servers which are unable to load wp-cron.php within 0.01 seconds, resulting in cron failure and multiple crons to become past-due.
+	S3 (v2) destionation: Added additional logging between reading in file chunk and beginning actual file upload to troubleshoot failure point better.
+7.1.3.3 - 2016-06-01 - Dustin Bolton
+	Cron request timeout override validation now number instead of int to allow decimal values.
+	ENHANCEMENT:
+		Stash Live: Added new 'memory' section to Advanced Troubleshooting Log to help identify memory problems based on actual calculated requirements based on catalog size and base memory usage of site compared to tested and/or reported PHP memory values. Also flags issues found into highlights section. Also scans log files to find largest seen memory usage for warning if getting to close to limits.
+		Stash Live: Various enhancements to memory issue detection.
+		Stash Live: Updated 'Creating Snapshot' step to note that is only happening if due for clarity.
+7.1.3.4 - 2016-06-07 - Dustin Bolton
+	FEATURE:
+		HTML email notification template can now be overridden with custom template. To do so copy the existing default template located at /wp-content/plugins/backupbuddy/views/backupbuddy-email-template.php into your theme directory at /wp-content/themes/backupbuddy-email-template.php. You may then edit this new template file to your liking. Its existance automatically enables using the new template rather than the default.
+	Misc minor bug fixes.
+	Fixed file exclusion of wp-config.php not being prevented.
+	File backupbuddy_dat.php can no longer be excluded as it can break database backups.
+	Warning added when checking box to disable backup integrity check. Description text also updated.
+7.1.3.5 - 2016-06-08 - Dustin Bolton
+	ENHANCEMENT:
+		Stash Live: Added alerts section to troubleshooting log to alert on highlights that are very likely to be a problem.
+	ENHANCEMENT:
+		Stash Live: Added automated running of troubleshooting data process via cron to detect possible causes of problems if Snaphost has not run in 72 hours or more.
+	ENHANCEMENT:
+		Stash Live: Added new potential problems alert to alert user if potential issues are detected such as low memory to aid user prior to having to seek support. Only runs if no snapshot has been made in > 3 days for performance. Auto-clears on successful snapshot or problem goes away and troubeleshooting log is re-viewed.
+	ENHANCEMENT:
+		Stash Live: Potential problem alert now detects definite memory shortages based on tested memory and alerts if no snapshot was made in 72 hours to help indicate actual problem. Also flags in new alerts section of troubleshooting log.
+7.1.4.0 - 2016-06-14 - Dustin Bolton
+	FEATURE:
+		Access Permission setting now adds support for restricting to custom roles.
+	Fixed importbuddy.php not being sent with automated send migration. - Glenn Ansley
+	FEATURE:
+		sFTP: Added beta support for sFTP key file.
+	Full release of Quick Release versions 7.1.3.1-7.1.3.5.
+7.1.4.1 - 2016-06-16 - Dustin Bolton
+	Stash Live: Added warnings if deep file scan max time is negative, indicating very low php runtime.
+	Updated Google Drive instructions to reflect their changes.
+	Fixed Integrity Check setting to properly indicate that it should only be _UN_selected if instructed by support.
+	Updated Integrity Check setting description for profiles to match global settings text.
+7.1.4.2 - 2016-06-17 - Dustin Bolton
+	ENHANCEMENT:
+		Stash Live: A detected PHP execution time limit below 30 seconds displays an alert on the Stash Live page with instructions to contact host.
+	Added some wiggle room to detected PHP value so 1 or 2 seconds below 30 will not result in potential false warning.
+	Stash Live: Troubleshooting log now more explicitly notes low PHP runtime in highlights.
+	Stash Live: Troubleshooting log now note low PHP runtime in 'alerts' section as it is critical if it is below 30 seconds.
+7.1.4.3 - 2016-06-20 - Dustin Bolton
+	Removed Windows server performance boost notification as zip.exe/unzip.exe are no longer supported with modern zip library.
+	Stash Live: Fixed bug causing PHP runtime override Advanced Setting to become populated with recent detected value.
+	Stash Live: Max php runtime detected now stored in _max_time variable as to not override manually entered max_time value.
+	Fixed exclusion button for files not working since recent quick release.
+7.1.4.4 - 2016-06-21 - Dustin Bolton
+	Fixed PHP warning when running Server Tools cron section via script and not UI.
+	S32, Stash2, Stash Live: Added additional logging of "Guzzle client cainfo" which includes any ca cert path/info overrides to help troubleshoot.
+	S32, Stash2, Stash Live: Added additional logging of "Guzzle client set to not validate peer nor host!" to verify when SSL validation is disabled.
+	S32, Stash2, Stash Live: Added new option to disable validation of host and peer to work around host certificate issues. Use with caution and only if directed by support.
+	S32, Stash2, Stash Live: Now defaulting to using included certificate bundle in options.
+	S32, Stash2, Stash Live: Improved option to control whether bundles or server certificate was to be use.
+	S32, Stash2, Stash Live: Changed option "Use included certificate bundle" to "Use server certificate bundle".
+	ENHANCEMENT:
+		Overdue cron warning now indicates how long past due the cron is.
+7.1.4.5 - 2016-06-23 - Dustin Bolton
+	GoDaddy Managed WordPress Hosting now detected, resulting in warnings being displayed (on Stash Live page, traditional backup page, and Server Tools section) as their cron system is currently broken. GoDaddy is aware of their broken cron system but there is not an ETA on is being fixed. Please contact their support for updates.
+	GoDaddy Managed WordPress Hosting now results in a warning being added to the Server Tools page.
+	GoDaddy Managed WordPress Hosting now results in warnings, highlights, and alerts displaying in the Stash Live Troubleshooting data.
+7.1.4.6 - 2016-06-23 - Dustin Bolton
+	Form validation "number" requirement no longer rejects a blank string as invalid.
+7.1.5.0 - 2016-07-05 - Dustin Bolton
+	Remote destination Dropbox (v1) will cease to function as of September 28, 2016, as Dropbox is retiring it. If you are using this destination you must update to using the newer Dropbox (v2) destination or your remote destination usage will be interrupted. See https://blogs.dropbox.com/developers/2016/06/api-v1-deprecated/
+	Added additional logging to Stash Live state variable not being an object to aid troubleshooting live periodic.
+	Stash Live: Added warnings if deep file scan max time is negative, indicating very low php runtime.
+	Updated Google Drive instructions to reflect their changes.
+	Fixed Integrity Check setting to properly indicate that it should only be _UN_selected if instructed by support.
+	Updated Integrity Check setting description for profiles to match global settings text.
+	ENHANCEMENT:
+		Stash Live: A detected PHP execution time limit below 30 seconds displays an alert on the Stash Live page with instructions to contact host.
+	Added some wiggle room to detected PHP value so 1 or 2 seconds below 30 will not result in potential false warning.
+	Stash Live: Troubleshooting log now more explicitly notes low PHP runtime in highlights.
+	Stash Live: Troubleshooting log now note low PHP runtime in 'alerts' section as it is critical if it is below 30 seconds.
+	Removed Windows server performance boost notification as zip.exe/unzip.exe are no longer supported with modern zip library.
+	Stash Live: Fixed bug causing PHP runtime override Advanced Setting to become populated with recent detected value.
+	Stash Live: Max php runtime detected now stored in _max_time variable as to not override manually entered max_time value.
+	Fixed exclusion button for files not working since recent quick release.
+	Fixed PHP warning when running Server Tools cron section via script and not UI.
+	S32, Stash2, Stash Live: Added additional logging of "Guzzle client cainfo" which includes any ca cert path/info overrides to help troubleshoot.
+	S32, Stash2, Stash Live: Added additional logging of "Guzzle client set to not validate peer nor host!" to verify when SSL validation is disabled.
+	S32, Stash2, Stash Live: Added new option to disable validation of host and peer to work around host certificate issues. Use with caution and only if directed by support.
+	S32, Stash2, Stash Live: Now defaulting to using included certificate bundle in options.
+	S32, Stash2, Stash Live: Improved option to control whether bundles or server certificate was to be use.
+	S32, Stash2, Stash Live: Changed option "Use included certificate bundle" to "Use server certificate bundle".
+	ENHANCEMENT:
+		Overdue cron warning now indicates how long past due the cron is.
+	GoDaddy Managed WordPress Hosting now detected, resulting in warnings being displayed (on Stash Live page, traditional backup page, and Server Tools section) as their cron system is currently broken. GoDaddy is aware of their broken cron system but there is not an ETA on is being fixed. Please contact their support for updates.
+	GoDaddy Managed WordPress Hosting now results in a warning being added to the Server Tools page.
+	GoDaddy Managed WordPress Hosting now results in warnings, highlights, and alerts displaying in the Stash Live Troubleshooting data.
+	Form validation "number" requirement no longer rejects a blank string as invalid.
+7.1.5.1 - 2016-07-13 - Dustin Bolton
+	Stash Live: Status polling now only running on pages not in an iframe to prevent multiple loads when on the Remote Destination page. Improved performance.
+	Stash (v2): Fixed download from Remote Destinations page not working (returned 404).
+7.1.5.2 - 2016-08-03 - Dustin Bolton
+	S3 (v2) destination: Fixed undefined index use_packaged_cert.
+	Increased retry attempts from 8 to 30 times when backup process_backup() fileoptions is locked due to long PHP runtime.
+	mail_error() function now defaults to get_option('admin_email') email if none is set on the Settings page for error notifications. Also helpful if settings get lost.
+	mail_error() is now able to function even if plugin settings are missing/corrupt.
+	BackupBuddy plugin settings are automatically backed up regularly in housekeeping function.
+	Corrupt or missing BackupBuddy plugin settings are now automatically restored/replaced with the last working version stored in a settings backup file in pb_backupbuddy log directory. Protected with random 32char string and anti directory browsing. Error notification email will be sent to admin_email.
+	FEATURE:
+		BackupBuddy now automatically backs up and restores its own settings if they become missing or corrupted due to database problems. This will help prevent loss of settings and backups.
+	ENHANCEMENT:
+		Database and file exclusion lists are now resizable.
+	FEATURE:
+		Added new "Delete All Cron Entries" button to Server Tools' WordPress Schedules (cron) section for clearing out all cron entries for all of WordPress.  Useful if a plugin clogs the cron system with too many entries.
+	Stash Live: Fixed excluding file(s) already in the catalog not being removed if they have never successfully sent.
+	Stash Live: Added new error when modified time is unable to be determined via stat() such as due to permissions to aid troubleshooting of pending files which never send. Ex: Error #8438934: File modified time unexpectly zero (0). File permissions may be blocking proper modification detection on file `/index.php`.
+	ENHANCEMENT:
+		ImportBuddy: DAT not found error now checks to see if the DAT file is contained within a subdirectory matching the zip file name. This is common if the user unzips the backup zip manually then re-zips the folder, resulting in site contents being inside a subdirectory matching the zip file name.
+7.1.5.3 - 2016-08-03 - Dustin Bolton
+	ENHANCEMENT:
+		ImportBuddy: cPanel wizard now supports connecting to https URLs instead of just http.
+7.1.5.4 - 2016-08-08 - Dustin Bolton
+	Fixed BackupBuddy settings backup storage location going to wrong directory. Corrected and cleanup added.
+7.1.5.5 - 2016-08-11 - Dustin Bolton
+	Now cleaning backupbuddy_dat.php files in root during housekeeping. - Glenn Ansley
+	Suppress error reporting during PHP runtime detection. - Glenn Ansley
+	Suppress error reporting during PHP maximum memory detection. - Dustin Bolton
+	Now clearing Malware Scanner transient pre-backup so it does not linger after restore on new site. - Glenn Ansley
+	Fix bug that breaks importbuddy Step 3 presentation of old DB pass if it includes a double quote ("). - Glenn Ansley
+	Fix importbuddy bug that breaks wp-config.php when password contains a single quote ('). - Glenn Ansley
+	When checking for wp-config.php in parent directory, also make sure wp-settings.php isn't there. - Glenn Ansley
+	Catch instances where fread length param was bad during log file truncation. - Glenn Ansley
+7.1.5.6 - 2016-08-17 - Dustin Bolton
+	ImportBuddy: Added additional logging to Deployment load of state file.
+	Deployment: Don't attempt to reset settings if missing during importbuddy resulting in Error #843797944. - Glenn Ansley
+	Fixed count of how many new edits have been made since the last backup. Was showing more changes than had actually been saved. - Gary Harris
+	Added additional logging and checks for Stash Live pending files to prevent hanging transfers.
+7.1.6.0 - 2016-08-23 - Dustin Bolton
+	Rollback: Now hiding next step button as process proceeds on its own.
+	FEATURE:
+		Stash Live: Now tracking daily statistics including the number of files and database tables sent and total size of database tables and files sent per day. Displayed under Advanced Troubleshooting Options.
+	FEATURE:
+		Sync: Added support for new daily stats tracking.
+	When creating a new remote destination auto-select the new destination. - Glenn Ansley
+	Skip local ssl verification. Don't show override options in Advanced settings in WP 4.6 or later as 4.6's new default it to skip this verification. - Glenn Ansley
+	ImportBuddy: Fixed version not being appended to asset URLs (js, css) resulting in caches not always getting busted with latest version.
+	Now excluding /error_log from backups by default. These can grow very large.
+	Changed PHP minimum value for Stash Live to a string for some PHP versions not casting it from float to string resulting in failure in version comparison.
+	Release of Quick Release updates 7.1.5.1-7.1.5.6.
+7.1.6.1 - 2016-09-02 - Dustin Bolton
+	Improved detection of GoDaddy Managed WordPress hosting to display warning about their broken cron system.
+	Stash Live stats cleanup.
+7.1.6.2 - 2016-09-08 - Dustin Bolton
+	Fixed importbuddy asset URL including spaces and other characters after version number.
+7.1.6.3 - 2016-09-16 - Dustin Bolton
+	Already-depricated Stash remote destination version 1 will be discontinued September 27, 2016. Please update to Stash v2 before then.
+	ImportBuddy: Fixed undefined index for max runtime if not set by server.
+	Server Tools: Made active plugin listing resizable.
+	Server Tools: Made 'Delete All Crons' button more visible and placed at the right side of the cron listing table. Shown at top and bottom of table.
+7.1.6.4 - 2016-09-16 - Dustin Bolton
+	Downgraded GoDaddy Managed WordPress Hosting warning as they have addressed the broken cron problems for US-based customers so the issue may now finally be resolved for USA-based hosting accounts. Non-US customers should contact GoDaddy support until this is resolved in non-USA datacenters.
+	Stash Live: Added last remote snapshot ID to stats.
+	Stash Live: Troubleshooting log will now highlight an issue if the last snapshot occurred greater than 7 days past the due time OR twice past the due time.
+	Stash Live: Troubleshooting log will now include response from API server of last snapshot request if last snapshot is either overdue by twice the snapshot interval OR 7 days past the snapshot interval due time.
+7.2.0.0 - 2016-09-27 - Dustin Bolton
+	FEATURE:
+		Added new BETA Amazon S3 (v3) remote destination. Improved performance, bug fixes, and troubleshooting capabilities. Uses new AWS SDK v3 which fixes several known bugs in the v2 SDK uses in the v2 destination.
+		Added new BETA Stash (v3) remote destination. Improved performance, bug fixes, and troubleshooting capabilities.
+		New S3 and Stash destinations recommended for any users experiencing problems with special encoded characters such as non-UTF8 non-ascii characters in filenames.
+	Removed discontinued Remote Destination Stash v1.
+	Removed discontinued Remote Receiption Dropbox v1 as Dropbox.com has removed support for this API version.
+	Stash Live: Now allowing daily snapshot to run up to 4 hours early, up from previous 3 hour 'wiggle room' on timing.
+7.2.0.1 - 2016-09-27 - Dustin Bolton
+	Removed remaining Stash (v1) and Dropbox (v1) references.
+7.2.0.3 - 2016-10-03 - Dustin Bolton
+	ENHANCEMENT:
+		ImportBuddy: PHP-based database import now temporarily turns off foreign key checking during import.
+7.2.0.4 - 2016-10-03 - Dustin Bolton
+	ImportBuddy: Fixed missing $wpdb global error.
+7.2.0.5 - 2016-10-06 - Dustin Bolton
+	Fix variable type of php_max_execution in Server Tools causing invalid Status Indication for PHP Max Execution Time in Server Tools. - Glenn Ansley
+	Fix error causing Restore from Stash to not display in importbuddy. - Glenn Ansley
+7.2.0.6 - 2016-10-17 - Dustin Bolton
+	ImportBuddy: cPAnel wizard now truncates prefixes to only first 8 characters or cPanel username.
+	Stash Live: Added new option to run Stash Live with Stash v3 instead of just the default Stash v2 destination backend.
+	iterate_edits_since_last 3rd parameter now optional.
+	Server Tools Page: Http Loopback Test now displays results in textarea for better readability or copy/pasting. - Josh Benham
+	Server Tools Page: Cron Loopback Test now displays results in textarea for better readability or copy/pasting. - Josh Benham
+	Server Tools Page: Now alternating table background color for better readability.
+	All tables in plugin now default to alternating backgrounds for improved readability.
+	Stash Live: Fixed too many daily stats building up. Now trimmed to last 14 days.
+	FEATURE:
+		'Files' profile types now support backing up from a custom directory root. Useful for backing up only individual directories without having to default to backing up everything and excluding everything else, whether within the site root or even above the site root such as when custom content directories are set above the ABSPATH. Note: File/directory exclusions not currently supported for custom root directories. All content within the custom root will be backed up. Note: Integrity check will not be performed on this backup type at this time as there are not 'expected' files to verify.
+7.2.0.7 - 2016-10-25 - Dustin Bolton
+	Fixed Scheduled Page Datepicker Date Format Issue in WP4.6 - Glenn Ansley
+	Fixed $this->_error called in static function without that method in housekeeping. - Glenn Ansley
+	Now checking PHP min version before offering Stash Version option in Stash Live settings. - Glenn Ansley
+	ImportBuddy: Added destination for .user.ini custom PHP configuration warnings.
+	Added cron loopback test to pre-backup preflight check.
+	Fixed error attempting to disconnect from Stash Live since last version release.
+	Added 'Show preflight results' button to upper right of Backups page.
+7.2.0.8 - 2016-10-25 - Dustin Bolton
+	Fixed undefined class backupbuddy when Google Drive multipart upload fails.
+	Fixed error about trigger being logged when backup triggered by Sync.
+	Stash Live Stash version now shows only compatible versions in listing.
+7.2.1.0 - 2016-11-09 - Dustin Bolton
+	Custom backup root setting fixed showing for all profile types as this feature is only for FILES type profiles.
+	Backgound color of error alerts now reddish for better visibility to color-blind persons.
+	Added additional changes to keep beta S3 (v3) memory usage low when bursing.
 	

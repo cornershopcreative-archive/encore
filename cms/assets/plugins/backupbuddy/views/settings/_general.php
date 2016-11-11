@@ -69,18 +69,38 @@ $settings_form->add_setting( array(
 	'rules'		=>		'',
 	'css'		=>		'width: 250px;',
 	'before'	=>		'<span style="white-space: nowrap;">',
-	'after'		=>		' <span class="description">' . __( 'Blank for default', 'it-l10n-backupbuddy' ) . ':</span>&nbsp; <span class="code" style="background: #EAEAEA; white-space: normal;">' . backupbuddy_core::_getBackupDirectoryDefault() . '</span>',
+	'after'		=>		' <span class="description">' . __( 'Blank for default', 'it-l10n-backupbuddy' ) . ':</span>&nbsp; <span class="code" style="background: #EAEAEA; white-space: normal;">' . backupbuddy_core::_getBackupDirectoryDefault() . '</span></span>',
 ) );
+
+
+
+$roles = get_editable_roles();
+unset( $roles['administrator'] );
+unset( $roles['editor'] );
+unset( $roles['author'] );
+unset( $roles['contributor'] );
+unset( $roles['subscriber'] );
+
+$roles_arr = array(
+	'activate_plugins'			=> __( 'Administrator (default)', 'it-l10n-backupbuddy' ),
+	'moderate_comments'		=> __( 'Editor [moderate_comments]', 'it-l10n-backupbuddy' ),
+	'edit_published_posts'	=> __( 'Author [edit_published_posts]', 'it-l10n-backupbuddy' ),
+	'edit_posts'			=> __( 'Contributor [edit_posts]', 'it-l10n-backupbuddy' ),
+);
+if ( count( $roles ) > 0 ) {
+	$roles_arr[''] = '----- Custom Roles: -----';
+}
+foreach( $roles as $role_slug => $role ) {
+	$roles_arr[ $role_slug ] = $role['name'];
+}
+
+
+
 $settings_form->add_setting( array(
 	'type'		=>		'select',
 	'name'		=>		'role_access',
 	'title'		=>		__('BackupBuddy access permission', 'it-l10n-backupbuddy' ),
-	'options'	=>		array(
-								'activate_plugins'			=> __( 'Administrator (default)', 'it-l10n-backupbuddy' ),
-								'moderate_comments'		=> __( 'Editor (moderate_comments)', 'it-l10n-backupbuddy' ),
-								'edit_published_posts'	=> __( 'Author (edit_published_posts)', 'it-l10n-backupbuddy' ),
-								'edit_posts'			=> __( 'Contributor (edit_posts)', 'it-l10n-backupbuddy' ),
-							),
+	'options'	=>		$roles_arr,
 	'tip'		=>		__('[Default: Administrator] - Allow other user levels to access BackupBuddy. Use extreme caution as users granted access will have FULL access to BackupBuddy and your backups, including remote destinations. This is a potential security hole if used improperly. Use caution when selecting any other user roles or giving users in such roles access. Not applicable to Multisite installations.', 'it-l10n-backupbuddy' ),
 	'after'		=>		' <span class="description">Use caution changing from "administrator".</span>',
 	'rules'		=>		'required',
@@ -185,6 +205,8 @@ $settings_form->add_setting( array(
 		'name'		=>		'title_files',
 		'title'		=>		__( 'File & Directory Defaults', 'it-l10n-backupbuddy' ),
 	) );
+
+
 require_once( pb_backupbuddy::plugin_path() . '/views/settings/_files.php' );
 
 
@@ -213,6 +235,7 @@ if ( count( (array)$process_result['errors'] ) == 0 ) {
 $settings_form->set_value( 'importbuddy_pass_hash', $importbuddy_pass_dummy_text );
 
 /* END CONFIGURING PLUGIN SETTINGS FORM */
+
 
 
 $settings_form->display_settings( 'Save General Settings' );

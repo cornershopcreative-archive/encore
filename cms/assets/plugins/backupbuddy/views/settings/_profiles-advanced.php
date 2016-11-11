@@ -52,11 +52,10 @@ if ( $profile_array['type'] != 'defaults' ) {
 	$settings_form->add_setting( array(
 		'type'		=>		'radio',
 		'name'		=>		'profiles#' . $profile_id . '#integrity_check',
-		'options'	=>		array( '-1' => 'Use global default', '0' => 'Disable check', '1' => 'Enable check' ),
+		'options'	=>		array( '-1' => 'Use global default', '0' => 'Disable check (' . __( 'Disable if directed by support', 'it-l10n-backupbuddy' ) . ')', '1' => 'Enable check' ),
 		'title'		=>		__('Perform integrity check on backup files', 'it-l10n-backupbuddy' ),
-		'tip'		=>		__('[Default: enabled] - By default each backup file is checked for integrity and completion the first time it is viewed on the Backup page.  On some server configurations this may cause memory problems as the integrity checking process is intensive.  If you are experiencing out of memory errors on the Backup file listing, you can uncheck this to disable this feature.', 'it-l10n-backupbuddy' ),
+		'tip'		=>		__('[Default: enabled] - WARNING: USE WITH CAUTION! By default each backup file is checked for integrity and completion the first time it is viewed on the Backup page.  On some server configurations this may cause memory problems as the integrity checking process is intensive.  This may also be useful if the backup page will not load.', 'it-l10n-backupbuddy' ),
 		'css'		=>		'',
-		//'after'		=>		'<br><span class="description"> ' . __( 'Disable if unable to view backup listing.', 'it-l10n-backupbuddy' ) . '</span>',
 		'rules'		=>		'required',
 		'orientation' =>	'vertical',
 	) );

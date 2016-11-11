@@ -16,13 +16,12 @@ if ($mbstring_func_overload & 2 == 2) {
     throw new \Exception("The Dropbox SDK doesn't work when mbstring.func_overload is set to overload the standard string functions (value = ".var_export($mbstring_func_overload, true).").  Library: \"" . __FILE__ . "\".");
 }
 
-/*
 if (strlen((string) PHP_INT_MAX) < 19) {
     // Looks like we're running on a 32-bit build of PHP.  This could cause problems because some of the numbers
     // we use (file sizes, quota, etc) can be larger than 32-bit ints can handle.
-    throw new \Exception("The Dropbox SDK uses 64-bit integers, but it looks like we're running on a version of PHP that doesn't support 64-bit integers (PHP_INT_MAX=" . ((string) PHP_INT_MAX) . ").  Library: \"" . __FILE__ . "\"");
+    //throw new \Exception("The Dropbox SDK uses 64-bit integers, but it looks like we're running on a version of PHP that doesn't support 64-bit integers (PHP_INT_MAX=" . ((string) PHP_INT_MAX) . ").  Library: \"" . __FILE__ . "\"");
+    \pb_backupbuddy::status( 'warnings', 'Using the Dropbox (v2) destination on a non-64-bit system. Large files will not be supported. PHP_INT_MAX=`' . PHP_INT_MAX . '`.' );
 }
-*/
 
 /**
  * @internal
@@ -85,12 +84,12 @@ final class RequestUtil
         $curl->set(CURLOPT_CONNECTTIMEOUT, 10);
 
         // If the transfer speed is below 1kB/sec for 10 sec, abort.
-        //$curl->set(CURLOPT_LOW_SPEED_LIMIT, 1024);
-        //$curl->set(CURLOPT_LOW_SPEED_TIME, 10);
+        $curl->set(CURLOPT_LOW_SPEED_LIMIT, 1024);
+        $curl->set(CURLOPT_LOW_SPEED_TIME, 10);
 
         //$curl->set(CURLOPT_VERBOSE, true);  // For debugging.
         // TODO: Figure out how to encode clientIdentifier (urlencode?)
-        $curl->addHeader("User-Agent: ".$clientIdentifier." Dropbox-PHP-SDK");
+        $curl->addHeader("User-Agent: ".$clientIdentifier." Dropbox-PHP-SDK/".SdkVersion::VERSION);
 
         return $curl;
     }
@@ -232,7 +231,7 @@ final class RequestUtil
      */
     static function parseResponseJson($responseBody)
     {
-        $obj = json_decode($responseBody, TRUE, 10);
+        $obj = json_decode($responseBody, true, 10);
         if ($obj === null) {
             throw new Exception_BadResponse("Got bad JSON from server: $responseBody");
         }
@@ -253,6 +252,7 @@ final class RequestUtil
         if ($sc === 401) return new Exception_InvalidAccessToken($message);
         if ($sc === 500 || $sc === 502) return new Exception_ServerError($message);
         if ($sc === 503) return new Exception_RetryLater($message);
+        if ($sc === 507) return new Exception_OverQuota($message);
 
         return new Exception_BadResponseCode("Unexpected $message", $sc);
     }

@@ -1382,6 +1382,11 @@ if ( !class_exists( "pluginbuddy_zipbuddy" ) ) {
 		
 		// Recursively delete a directory and all content within.
 		function delete_directory_recursive( $directory ) {
+			if ( '' == $directory ) {
+				error_log( 'BackupBuddy Error #473843b: Halted empty directory deletion.' );
+				return false;
+			}
+			
 			$directory = preg_replace( '|[/\\\\]+$|', '', $directory );
 			
 			$files = glob( $directory . '/*', GLOB_MARK );

@@ -155,6 +155,7 @@ class backupbuddy_restore {
 			$zipbuddy = new pluginbuddy_zipbuddy( dirname( $this->_state['archive'] ) );
 			pb_backupbuddy::status( 'details', 'Zipbuddy loaded.' );
 		}
+		$zip_dir_prefix = str_replace( '.zip', '', basename( $this->_state['archive'] ) ) . '/wp-content/uploads/backupbuddy_temp/' . $this->_state['serial'];
 		
 		// Find DAT file.
 		pb_backupbuddy::status( 'details', 'Calculating possible DAT file locations.' );
@@ -163,8 +164,14 @@ class backupbuddy_restore {
 		if ( isset( $metaInfo['dat_path'] ) ) {
 			$possibleDatLocations[] = $metaInfo['dat_path'][1]; // DAT file location encoded in meta info. Should always be valid.
 		}
+		
+		
+		// Possible DAT file locations.
 		$possibleDatLocations[] = 'wp-content/uploads/backupbuddy_temp/' . $this->_state['serial'] . '/backupbuddy_dat.php'; // Full backup.
 		$possibleDatLocations[] = 'backupbuddy_dat.php'; // DB backup. (look for this second in case user left an old dat file in root).
+		$possibleDatLocations[] = $zip_dir_prefix . '/backupbuddy_dat.php'; // Full backup but inside a subdirectory. Common if user re-zipped the directory after unzipping.
+		
+		
 		pb_backupbuddy::status( 'details', 'Possible DAT file locations: `' . implode( ';', $possibleDatLocations ) . '`.' );
 		$possibleDatLocations = array_unique( $possibleDatLocations );
 		if ( true === $skipUnzip ) { // Only look for DAT file in filesystem. Zip should be pre-extracted, eg by the user manually.
@@ -197,6 +204,10 @@ class backupbuddy_restore {
 		}
 		pb_backupbuddy::status( 'details', 'Confirmed DAT file location: `' . $detectedDatLocation . '`.' );
 		$this->_state['datLocation'] = $detectedDatLocation;
+		
+		if ( $zip_dir_prefix == substr( $this->_state['datLocation'], 0, strlen( $zip_dir_prefix ) ) ) {
+			return $this->_error( 'Error #483943894: DAT file was detected but in an invalid location. It appears to be contained within a subdirectory matching the zip filename. If you unzipped then re-zipped this could have caused the contents to be contained in a subdirectory instead of the root as expected. To avoid this zip the files and NOT the directory containing the files.' );
+		}
 		
 		unset( $metaInfo ); // No longer need anything from the meta information.
 		
@@ -363,6 +374,7 @@ class backupbuddy_restore {
 			$this->_state['restoreFileRoot'] . 'wp-content/uploads/backupbuddy_temp/' . $this->_state['serial'] . '/',	// Full backup >= v2.0.
 			$this->_state['tempPath'],																					// Determined from detecting DAT file. Should always be the location really... As of v4.1.
 			$this->_state['restoreFileRoot'],																			// Database backup < v2.0.
+			ABSPATH . 'wp-content/uploads/backupbuddy_temp/' . $this->_state['serial'] . '/',												// Manually extracted backup.
 		);
 		$foundSQL = false;
 		
@@ -401,7 +413,7 @@ class backupbuddy_restore {
 		} // End foreach().
 		unset( $possible_sql_file_paths );
 		
-		if ( false !== $this->_state['restoreFiles'] ) {
+		if ( false !== $this->_state['restoreDatabase'] ) {
 			if ( count( $this->_state['databaseSettings']['sqlFiles'] ) == 0 ) {
 				pb_backupbuddy::status( 'error', 'Unable to find db_1.sql or other expected database file in the extracted files in the expected location. Make sure you did not rename your backup ZIP file. You may manually restore your SQL file if you can find it via phpmyadmin or similar tool then on Step 1 of ImportBuddy select the advanced option to skip database import. This will allow you to proceed.' );
 				return false;
@@ -996,8 +1008,9 @@ class backupbuddy_restore {
 	 *	@return		string					Escaped string.
 	 */
 	function _preg_escape_back($string) {
-		// Replace $ with \$ and \ with \\
+		// Replace $ with \$, \ with \\, and ' with \'
 		$string = preg_replace('#(?<!\\\\)(\\$|\\\\)#', '\\\\$1', $string);
+		$string = str_replace( "'", "\'", $string );
 		return $string;
 	} // End _preg_escape_back().
 	
@@ -1058,7 +1071,7 @@ class backupbuddy_restore {
 						if ( $match == $new_content_url ) { // Ignore new WP_CONTENT_URL define that was updated.
 							continue;
 						}
-						$trouble[] = 'A URL found in one or more locations in wp-config.php was not migrated as it was either not recognized or in an unrecognized location in the file: "' . htmlentities( $match ) . '".';
+						$trouble[] = 'A URL found in one or more locations in wp-config.php was not migrated as it was either not recognized or in an unrecognized location in the file: "' . htmlentities( $match ) . '" (this may not be a problem!).';
 					}
 
 					if ( false !== stristr( $config_contents, 'COOKIE_DOMAIN' ) ) { // Found cookie domain.

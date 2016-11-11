@@ -21,6 +21,10 @@ $settings_form->add_setting( array(
 	'rules'		=>		'int',
 ) );
 
+// Instructions on overriding HTML email template.
+$custom_email_template = '<div style="margin-top: 10px; margin-left: 65px;">
+							<a href="javascript:void(0);" onClick="alert(\'To customize the HTML email template copy the default template located at `/' . str_replace( ABSPATH, '', pb_backupbuddy::plugin_path() ) . '/views/backupbuddy-email-template.php` into the theme directory at `/' . str_replace( ABSPATH, '', get_theme_root() ) . '/backupbuddy-email-template.php' . '`. You may then edit this new file to your liking. Its existance will override the default template.\');">' . __( 'Want to customize the HTML email template?', 'it-l10n-backupbuddy' ) . '</a>
+						</div>';
 
 $settings_form->add_setting( array(
 	'type'		=>		'text',
@@ -28,7 +32,7 @@ $settings_form->add_setting( array(
 	'title'		=>		__('Error notification recipient(s)', 'it-l10n-backupbuddy' ),
 	'tip'		=>		__('Email address to send notifications to upon encountering any errors or problems. Use commas to separate multiple email addresses.', 'it-l10n-backupbuddy' ),
 	'css'		=>		'width: 250px;',
-	'after'		=>		' <a href="" class="pb_backupbuddy_customize_email_error" style="text-decoration: none;">Customize Email</a> | <a href="" id="pb_backupbuddy_email_error_test" style="text-decoration: none;" title="Send a test email to the listed email address(es) to test email sending functionality.">Test</a> &nbsp;&nbsp;&nbsp; <span id="emailErrorNotifyHiddenAlert" style="display: none;"><span class="pb_label">Tip</span> ' . __( 'This is highly suggested to be notified of backup failure.', 'it-l10n-backupbuddy' ) . '</span>',
+	'after'		=>		' <a href="" class="pb_backupbuddy_customize_email_error" style="text-decoration: none;">Customize Email</a> | <a href="" id="pb_backupbuddy_email_error_test" style="text-decoration: none;" title="Send a test email to the listed email address(es) to test email sending functionality.">Test</a> &nbsp;&nbsp;&nbsp; <span id="emailErrorNotifyHiddenAlert" style="display: none;"><span class="pb_label">Tip</span> ' . __( 'This is highly suggested to be notified of backup failure.', 'it-l10n-backupbuddy' ) . '</span> <span class="description">Blank for default: ' . get_option('admin_email') . '</span>',
 ) );
 $settings_form->add_setting( array(
 	'type'		=>		'text',
@@ -50,7 +54,7 @@ $settings_form->add_setting( array(
 	'before'	=>		'<span style="display: inline-block; width: 65px; float: left;">' . __('Body', 'it-l10n-backupbuddy' ) . ':</span>',
 	'after'		=>		'<div style="margin-left: 65px; width: 360px;" class="description">
 							Variables: {site_url} {home_url} {backupbuddy_version} {current_datetime} {message}
-						</div>',
+						</div>' . $custom_email_template,
 ) );
 
 
@@ -82,7 +86,7 @@ $settings_form->add_setting( array(
 	'before'	=>		'<span style="display: inline-block; width: 65px; float: left;">' . __('Body', 'it-l10n-backupbuddy' ) . ':</span>',
 	'after'		=>		'<div style="margin-left: 65px; width: 360px;" class="description">
 							Variables: {site_url} {home_url} {backupbuddy_version} {current_datetime} {message}
-						</div>',
+						</div>' . $custom_email_template,
 ) );
 
 
@@ -115,7 +119,7 @@ $settings_form->add_setting( array(
 	'after'		=>		'<div style="margin-left: 65px; width: 360px;" class="description">
 							Variables: {site_url} {home_url} {backupbuddy_version} {current_datetime} {message}
 							{download_link} {backup_size} {backup_type} {backup_file} {backup_serial}
-						</div>',
+						</div>' . $custom_email_template,
 ) );
 
 
@@ -148,7 +152,7 @@ $settings_form->add_setting( array(
 	'after'		=>		'<div style="margin-left: 65px; width: 360px;" class="description">
 							Variables: {site_url} {home_url} {backupbuddy_version} {current_datetime} {message}
 							{backup_size} {backup_file} {backup_serial}
-						</div>',
+						</div>' . $custom_email_template,
 ) );
 
 

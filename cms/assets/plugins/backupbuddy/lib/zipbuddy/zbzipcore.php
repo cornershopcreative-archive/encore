@@ -693,6 +693,10 @@ if ( !class_exists( "pluginbuddy_zbzipcore" ) ) {
 		 *
 		 */
 		protected function delete_directory_recursive( $directory ) {
+			if ( '' == $directory ) {
+				error_log( 'BackupBuddy Error #473843c: Halted empty directory deletion.' );
+				return false;
+			}
 
 			// Remove any trailing directory separator so we know where we are
 			$directory = rtrim( $directory, self::DIRECTORY_SEPARATORS );

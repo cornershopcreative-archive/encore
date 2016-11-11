@@ -1,4 +1,7 @@
 <?php
+if ( class_exists( 'backupbuddy_constants' ) ) {
+	return;
+}
 class backupbuddy_constants {
 	
 	// General
@@ -23,6 +26,7 @@ class backupbuddy_constants {
 	// Live
 	const MINIMUM_TIME_BETWEEN_ACTIVITY_AND_PERIODIC_CRON_RUN = 1800; // [30min] Minimum amount of time to allow between the last_activity state key and restarting the periodic process via cron.
 	const TIMED_OUT_PROCESS_RESUME_WIGGLE_ROOM = 60; // The number of seconds added to the backupbuddy_core::detectLikelyHighestExecutionTime() after which we MAY restart the periodic process assuming it timed out. This happens in live_stats.php AJAX if a user is on the Live page and also is used for the fileoptions lock ignoring value.
+	const DAYS_BEFORE_RUNNING_TROUBLESHOOTING_TEST = 3; // After this many days with no snapshot run the troubleshooting script to possibly pop up alert of issues on live page.
 	
 	// Cron
 	const DEFAULT_CRON_PRIORITY = 5; // Default cron priority for registering via add_action().
@@ -42,6 +46,9 @@ class backupbuddy_constants {
 		'/wp-content/backup-db/', // Don't backup backups of other plugins.
 		'/wp-snapshots/', // Don't backup backups of other plugins.
 		'/wp-content/ai1wm-backups/', // All in One WordPress Migration backups. Don't backup backups of other plugins.
+		'/wp-content/plugins/wordfence/tmp/', // Temporary wordfence data.
+		'/wp-content/cache/supercache/', // WP Super Cache temp data.
+		'/error_log', // Can be very large; server-specific and unlikely to need.
 	);
 	
 	// Remote Sends

@@ -110,7 +110,7 @@ function wp_print_styles( $name ) {
 	if ( $pb_styles[$name]['printed'] === false ) {
 		$pb_styles[$name]['printed'] = true;
 		
-		echo '<link rel="stylesheet" type="text/css" href="' . $pb_styles[$name]['file'] . '?ver=' . $pb_styles[$name]['version'] . '">';
+		echo '<link rel="stylesheet" type="text/css" href="' . $pb_styles[$name]['file'] . '?ver=' . md5( $pb_styles[$name]['version'] ) . '">';
 	}
 }
 
@@ -129,7 +129,7 @@ function wp_print_scripts( $name ) {
 	if ( $pb_scripts[$name]['printed'] === false ) {
 		$pb_scripts[$name]['printed'] = true;
 		
-		echo '<script src="' . $pb_scripts[$name]['file'] . '?ver=' . $pb_scripts[$name]['version'] . '" type="text/javascript"></script>';
+		echo '<script src="' . $pb_scripts[$name]['file'] . '?ver=' . md5( $pb_scripts[$name]['version'] ) . '" type="text/javascript"></script>';
 	}
 }
 
@@ -639,4 +639,8 @@ function did_action( $action ) {
 	if ( 'template_redirect' == $action ) {
 		return true;
 	}
+}
+
+function _doing_it_wrong( $function, $message, $version ) {
+	return;
 }

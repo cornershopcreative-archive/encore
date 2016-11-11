@@ -77,7 +77,10 @@ class pb_backupbuddy_fileoptions {
 			$this->_live = true;
 		}
 		
+		$before_memory = memory_get_usage() / 1048576;
 		$this->load( $ignore_lock, $create_file );
+		$after_memory = memory_get_usage() / 1048576;
+		pb_backupbuddy::status( 'details', 'Fileoptions load using ' . round( $after_memory - $before_memory, 2 ) . ' MB of memory.' );
 		
 	} // End __construct().
 	
@@ -196,7 +199,6 @@ class pb_backupbuddy_fileoptions {
 				return false;
 			}
 		}
-		
 		
 		// BackupBuddy Stash Live mode. (one array entry per line for performance/memory usage).
 		if ( true === $this->_live ) {

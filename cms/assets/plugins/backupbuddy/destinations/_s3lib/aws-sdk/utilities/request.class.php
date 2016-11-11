@@ -64,7 +64,8 @@ class CFRequest extends RequestCore
 		$this->set_useragent(CFRUNTIME_USERAGENT);
 		$this->credentials = $credentials;
 		$this->cacert_location = ($this->credentials['certificate_authority'] ? $this->credentials['certificate_authority'] : false);
-
+		pb_backupbuddy::status( 'details', 'Defined cacert location: `' . $this->cacert_location . '`.' );
+		
 		if (strpos(parse_url($url, PHP_URL_HOST), 'dynamodb') === 0)
 			{
 				$this->use_gzip_enconding = false;

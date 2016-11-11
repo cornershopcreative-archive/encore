@@ -53,7 +53,7 @@ echo '</div>';
 
 
 
-<table class="widefat">
+<table class="widefat striped">
 	<thead>
 		<tr class="thead">
 			<?php
@@ -139,7 +139,7 @@ echo '</div>';
 			
 			
 			// OUTPUT TABLE ROW.
-			echo '<tr class="entry-row alternate"';
+			echo '<tr class="entry-row"';
 			if ( $excluded === true ) {
 				echo ' style="background: #fcc9c9;"';
 			}

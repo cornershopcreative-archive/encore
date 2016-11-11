@@ -31,65 +31,6 @@ if ( ( '' != $form['password'] ) && ( $form['password'] == $form['password_confi
 }
 
 
-/***** BEGIN STASH v1 SETUP *****/
-
-
-// Note: If existing Stash exists with this username then use that instead of making a new stash2 destination.
-if ( 'stash' == pb_backupbuddy::_POST( 'destination' ) ) {
-	if ( ( '' == pb_backupbuddy::_POST( 'stash_username' ) ) || ( '' == pb_backupbuddy::_POST( 'stash_password' ) ) ) { // A field is blank.
-		$errors[] = 'You must enter your iThemes username & password to log in to the remote destination BackupBuddy Stash (v1).';
-	} else { // Username and password provided.
-		
-		$itxapi_username = strtolower( pb_backupbuddy::_POST( 'stash_username' ) );
-		
-		// See if this user already exists.
-		foreach( pb_backupbuddy::$options['remote_destinations'] as $destination_index => $destination ) { // Loop through ending with the last created destination of this type.
-			if ( 'stash' == $destination['type'] ) {
-				if ( $itxapi_username == $destination['itxapi_username'] ) { // Existing destination match.
-					$destination_id = $destination_index;
-				}
-			}
-		}
-		
-		if ( ! isset( $destination_id ) ) { // Did not already find the same Stash destination.
-			require_once( pb_backupbuddy::plugin_path() . '/destinations/stash/lib/class.itx_helper.php' );
-			require_once( pb_backupbuddy::plugin_path() . '/destinations/stash/init.php' );
-			
-			$itxapi_username = strtolower( pb_backupbuddy::_POST( 'stash_username' ) );
-			$itxapi_password = ITXAPI_Helper::get_password_hash( $itxapi_username, pb_backupbuddy::_POST( 'stash_password' ) ); // Generates hash for use as password for API.
-			
-			$account_info = pb_backupbuddy_destination_stash::get_quota(
-				array(
-					'itxapi_username' => $itxapi_username,
-					'itxapi_password' => $itxapi_password,
-				),
-				true // bypass caching.
-			);
-			
-			if ( false === $account_info ) { // Bad credentials.
-				global $pb_backupbuddy_destination_errors;
-				$errors[] = 'Unable to authenticate with Stash. Check your iThemes login credentials and try again. Details: `' . implode( ', ', $pb_backupbuddy_destination_errors ) . '`.';
-			} else {
-				if ( count( pb_backupbuddy::$options['remote_destinations'] ) > 0 ) {
-					$nextDestKey = max( array_keys( pb_backupbuddy::$options['remote_destinations'] ) ) + 1;
-				} else { // no destinations yet. first index.
-					$nextDestKey = 0;
-				}
-				
-				pb_backupbuddy::$options['remote_destinations'][ $nextDestKey ] = pb_backupbuddy_destination_stash::$default_settings;
-				pb_backupbuddy::$options['remote_destinations'][ $nextDestKey ]['itxapi_username'] = pb_backupbuddy::_POST( 'stash_username' );
-				pb_backupbuddy::$options['remote_destinations'][ $nextDestKey ]['itxapi_password'] = $itxapi_password; // Hashed password.
-				pb_backupbuddy::$options['remote_destinations'][ $nextDestKey ]['title'] = 'My Stash (v1)';
-				pb_backupbuddy::save();
-				$destination_id = $nextDestKey;
-			} // end if good credentials.
-		} // end if no destination id already set.
-		
-	} // end if user and pass set.
-} // end stash setup.
-
-
-/***** END STASH v1 SETUP *****/
 
 
 /***** BEGIN STASH v2 SETUP *****/

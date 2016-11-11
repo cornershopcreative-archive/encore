@@ -5571,7 +5571,7 @@ msgid ""
 msgstr ""
 "[Exemple: m0nM0t2pa55e] - Mot de passe requis pour lancer le script dimport/"
 "export ImportBuddy. Cela permet de prevenir les accès non autorises lorsque "
-"vous utilisez cet outil. Vous devez utiliser votre mot de passe WordPress "
+"vous utilisez cet outil. Vous devez utiliser votre mot de NOT passe WordPress (do NOT use WordPress password) "
 "ici."
 
 #: views/settings/_general.php:66

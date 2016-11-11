@@ -30,10 +30,13 @@ final class Curl
         // don't respect these settings.  Run "examples/test-ssl.php" to run some basic
         // SSL tests to see how well your PHP implementation behaves.
 
-        // Force SSL and use our own certificate list.
+        // Use our own certificate list.
         $this->set(CURLOPT_SSL_VERIFYPEER, true);   // Enforce certificate validation
         $this->set(CURLOPT_SSL_VERIFYHOST, 2);      // Enforce hostname validation
-        $this->set(CURLOPT_SSLVERSION, 1);          // Enforce SSL v3. -- EDIT Nov 19, 2014: Disabled v3 support forcing TLS as per new Dropbox API change.
+
+        // Force the use of TLS (SSL v2 and v3 are not secure).
+        // TODO: Use "CURL_SSLVERSION_TLSv1" instead of "1" once we can rely on PHP 5.5+.
+        $this->set(CURLOPT_SSLVERSION, 1);
 
         // Limit the set of ciphersuites used.
         global $sslCiphersuiteList;
@@ -41,11 +44,12 @@ final class Curl
             $this->set(CURLOPT_SSL_CIPHER_LIST, $sslCiphersuiteList);
         }
 
+        list($rootCertsFilePath, $rootCertsFolderPath) = RootCertificates::getPaths();
         // Certificate file.
-        $this->set(CURLOPT_CAINFO, __DIR__.'/certs/trusted-certs.crt');
+        $this->set(CURLOPT_CAINFO, $rootCertsFilePath);
         // Certificate folder.  If not specified, some PHP installations will use
         // the system default, even when CURLOPT_CAINFO is specified.
-        $this->set(CURLOPT_CAPATH, __DIR__.'/certs/');
+        $this->set(CURLOPT_CAPATH, $rootCertsFolderPath);
 
         // Limit vulnerability surface area.  Supported in cURL 7.19.4+
         if (defined('CURLOPT_PROTOCOLS')) $this->set(CURLOPT_PROTOCOLS, CURLPROTO_HTTPS);
@@ -63,6 +67,7 @@ final class Curl
     function exec()
     {
         $this->set(CURLOPT_HTTPHEADER, $this->headers);
+
         $body = curl_exec($this->handle);
         if ($body === false) {
             throw new Exception_NetworkIO("Error executing HTTP request: " . curl_error($this->handle));

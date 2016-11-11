@@ -776,6 +776,12 @@ class pb_backupbuddy_destinations {
 		}
 		
 		// Change some ordering.
+		$stash3_destination = array();
+		if ( isset( $destination_list['stash3'] ) ) {
+			$stash3_destination = array( 'stash3' => $destination_list['stash3'] );
+			unset( $destination_list['stash3'] );
+		}
+		
 		$stash2_destination = array();
 		if ( isset( $destination_list['stash2'] ) ) {
 			$stash2_destination = array( 'stash2' => $destination_list['stash2'] );
@@ -794,6 +800,12 @@ class pb_backupbuddy_destinations {
 			unset( $destination_list['site'] );
 		}
 		
+		$s33_destination = array();
+		if ( isset( $destination_list['s33'] ) ) {
+			$s33_destination = array( 's33' => $destination_list['s33'] );
+			unset( $destination_list['s33'] );
+		}
+		
 		$s32_destination = array();
 		if ( isset( $destination_list['s32'] ) ) {
 			$s32_destination = array( 's32' => $destination_list['s32'] );
@@ -806,7 +818,7 @@ class pb_backupbuddy_destinations {
 			unset( $destination_list['s3'] );
 		}
 		
-		$destination_list = array_merge( $stash2_destination, $stash_destination, $deploy_destination, $s32_destination, $s3_destination, $destination_list );
+		$destination_list = array_merge( $stash3_destination, $stash2_destination, $stash_destination, $deploy_destination, $s33_destination, $s32_destination, $s3_destination, $destination_list );
 		
 		
 		return $destination_list;

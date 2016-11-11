@@ -4,7 +4,7 @@
  *	Plugin Name: BackupBuddy
  *	Plugin URI: http://ithemes.com/purchase/backupbuddy/
  *	Description: The most complete WordPress solution for Backup, Restoration, Migration, and Deployment. Backs up a customizable selection of files, settings, and content for a complete snapshot of your site. Restore, migrate, or deploy your site to a new host or new domain with complete ease-of-mind. Stash Live feature allows for real-time live backups into the cloud.
- *	Version: 7.1.0.2
+ *	Version: 7.2.1.0
  *	Author: iThemes
  *	Author URI: http://ithemes.com/
  *	iThemes Package: backupbuddy
@@ -27,8 +27,9 @@
  *		
  *		Dustin Bolton (creation, everything), Chris Jean (early zip), Josh Benham (misc code, support, testing),
  *		Skyler Moore (ftp, misc code, support, testing), Jeremy Trask (xzip, misc code, support),
- *		Ronald Huereca (early multisite), Dustin Akers (support, testing), Bradford Ulrich (UI, graphics),
- *		Glenn Ansley (misc code, support), Thomas Oliver (support), Ty Carlson (Stash UI, graphics).
+ *		Ronald Huereca (early multisite), Dustin Akers (support, testing), Daniel Harzheim (testing, settings form
+ *		verification, PB framework contributions), Bradford Ulrich (UI, graphics), Glenn Ansley (misc code, support),
+ *		Thomas Oliver (support), Ty Carlson (Stash UI, graphics).
  *
  */
 
@@ -42,7 +43,6 @@ $pluginbuddy_settings = array(
 												'importbuddy_pass_hash'				=>		'',					// ImportBuddy password hash.
 												'importbuddy_pass_length'			=>		0,					// Length of the ImportBuddy password before it was hashed.
 												'backup_reminders'					=>		1,					// Remind to backup after post, pre-upgrade, etc.
-												//'dashboard_stats'					=>		1,					// Stats box in dashboard.
 												'edits_since_last'					=>		0,					// Number of post/page edits since the last backup began.
 												'last_backup_start'					=>		0,					// Timestamp of when last backup started.
 												'last_backup_finish'				=>		0,					// Timestamp of when the last backup finished.
@@ -152,6 +152,7 @@ $pluginbuddy_settings = array(
 												'use_internal_cron'					=>		'0',				// When 1, we will try to use our own cron system to work around cron caching issues.
 												'php_runtime_test_minimum_interval'	=>		'604800',			// How often to perform the automated test via the housekeeping function. This must elapse before automated test will run. Zero (0) to disable.
 												'php_memory_test_minimum_interval'	=>		'604800',			// How often to perform the automated test via the housekeeping function. This must elapse before automated test will run. Zero (0) to disable.
+												'cron_request_timeout_override'		=>		'',					// Overrides cron loopback timeout time. 0 for no override. Useful if server too slow to respond in WP's default 0.01sec to get cron working.
 												'profiles'							=>		array(
 																								0 => array(
 																													'type'							=>		'defaults',
@@ -161,7 +162,8 @@ $pluginbuddy_settings = array(
 																													'integrity_check'				=>		'1',						// Zip file integrity check on the backup listing.
 																													'mysqldump_additional_includes'	=>		'',
 																													'mysqldump_additional_excludes'	=>		'',
-																													'excludes'						=>		''
+																													'excludes'						=>		'',
+																													'custom_root'					=>		'', // Overrides default custom root of ABSPATH with a hard-coded path. Currently only available with FILES backup type.
 																												),
 																								1 => array(
 																													'type'		=>	'db',
@@ -231,7 +233,6 @@ $pluginbuddy_settings = array(
 											),
 				'wp_minimum'		=>		'3.5.0',
 				'php_minimum'		=>		'5.2',
-				
 				'modules'			=>		array(
 												'filesystem'	=>		true,
 												'format'		=>		true,
@@ -252,7 +253,6 @@ require_once( dirname( __FILE__ ) . '/_compat.php' );
 require( dirname( __FILE__ ) . '/pluginbuddy/_pluginbuddy.php' );
 
 
-
 // Updater & Licensing System - Aug 23, 2013.
 function ithemes_backupbuddy_updater_register( $updater ) { 
 	$updater->register( 'backupbuddy', __FILE__ );
@@ -262,4 +262,3 @@ $updater = dirname( __FILE__ ) . '/lib/updater/load.php';
 if ( file_exists( $updater ) ) {
 	require( $updater );
 }
-?>

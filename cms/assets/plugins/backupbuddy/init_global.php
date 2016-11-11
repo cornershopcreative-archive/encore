@@ -160,13 +160,13 @@ function backupbuddy_jetpack_security_report() {
 add_action( 'jetpack_security_report', 'backupbuddy_jetpack_security_report' );
 
 
-/*
-add_filter( 'cron_request', 'backupbuddy_spoof_cron_agent' );
-function backupbuddy_spoof_cron_agent( $cron ) {
-	$cron['args']['user-agent'] = 'Mozilla';
-	return $cron;
+if ( isset( pb_backupbuddy::$options['cron_request_timeout_override'] ) && ( '' != pb_backupbuddy::$options['cron_request_timeout_override'] ) && ( pb_backupbuddy::$options['cron_request_timeout_override'] > 0 ) ) {
+	add_filter( 'cron_request', 'backupbuddy_cron_request_adjust' );
+	function backupbuddy_cron_request_adjust( $cron ) {
+		$cron['args']['timeout'] = pb_backupbuddy::$options['cron_request_timeout_override'];
+		return $cron;
+	}
 }
-*/
 
 
 
@@ -199,41 +199,3 @@ function backupbuddy_register_sync_verbs( $api ) {
 	}
 }
 add_action( 'ithemes_sync_register_verbs', 'backupbuddy_register_sync_verbs' );
-
-// Sync notices.
-function backupbuddy_sync_add_notices( $arguments, $urgent = false ) {
-	require_once( pb_backupbuddy::plugin_path() . '/classes/core.php' );
-	
-	$notifications = backupbuddy_core::getNotifications();
-	foreach( $notifications as &$notification ) {
-		// Skip if in the inapplicable mode.
-		if ( ( false === $urgent ) && ( true === $notification['urgent'] ) ) { // If NOT seeking urgents, skip urgents.
-			continue;
-		}
-		if ( ( true === $urgent ) && ( false === $notification['urgent'] ) ) { // If seeking urgents, skip non-urgents.
-			continue;
-		}
-		if ( true === $notification['syncSent'] ) { // Only send once.
-			continue;
-		}
-		
-		$notification['syncSent'] = true;
-		$notification['data']['datestamp'] = date( 'Y-m-d', $notification['time'] ); // Added v6.3.3.10.
-		
-		// Send notice.
-		if ( false === $urgent ) {
-			ithemes_sync_add_notice( 'backupbuddy', $notification['slug'], $notification['title'], $notification['message'], $notification['data'] );
-		} elseif ( true === $urgent ) {
-			ithemes_sync_send_urgent_notice( 'backupbuddy', $notification['slug'], $notification['title'], $notification['message'], $notification['data'] );
-		}
-	}
-	backupbuddy_core::replaceNotifications( $notifications ); // Save with syncSent updates for all notifications.
-	return true;
-}
-function backupbuddy_sync_send_urgent_notice( $arguments ) {
-	return backupbuddy_sync_add_notices( $arguments, $urgent = true );
-}
-add_action( 'ithemes_sync_add_notices', 'backupbuddy_sync_add_notices' );
-//add_action( 'init', 'backupbuddy_sync_send_urgent_notice' );
-
-

@@ -40,7 +40,7 @@ class pb_backupbuddy_cpanel {
 	 *	@param		
 	 *	@return		true|array		Boolean true on success, else an array of errors.
 	 */
-	public static function create_db( $cpanel_user, $cpanel_password, $cpanel_host, $db_name, $db_user, $db_userpass, $cpanel_port = '2082' ) {
+	public static function create_db( $cpanel_user, $cpanel_password, $cpanel_host, $db_name, $db_user, $db_userpass, $cpanel_port = '2082', $cpanel_protocol = 'http://' ) {
 		$cpanel_skin = "x3";
 		$errors = array();
 		
@@ -48,7 +48,7 @@ class pb_backupbuddy_cpanel {
 		
 		// Calculate base URL.
 // 		$base_url = "http://{$cpanel_user}:{$cpanel_password}@{$cpanel_host}:{$cpanel_port}/frontend/{$cpanel_skin}";
-		$base_url = "http://{$cpanel_user}:{$cpanel_password}@{$cpanel_host}:{$cpanel_port}/execute/Mysql";
+		$base_url = "{cpanel_protocol}{$cpanel_user}:{$cpanel_password}@{$cpanel_host}:{$cpanel_port}/execute/Mysql";
 		
 		// Generate create database URL.
 // 		$create_database_url = $base_url . "/sql/addb.html?db={$db_name}";
@@ -65,7 +65,7 @@ class pb_backupbuddy_cpanel {
 				$errors[] = 'Unable to connect to host `' . $cpanel_host . '` on port `' . $cpanel_port . '`. Verify the cPanel domain/URL and make sure the server is able to initiate outgoing http connections on port ' . $cpanel_port . '. Some hosts block this.';
 				return $errors;
 			}
-			$errors[] = 'Caught exception: ' . $e->getMessage();
+			$errors[] = 'Caught exception: ' . $e->getMessage() . '. Full URL: ' . $create_database_url;
 			return $errors;
 		}
 		

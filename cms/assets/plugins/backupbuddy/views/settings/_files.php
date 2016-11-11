@@ -24,8 +24,8 @@ if ( isset( pb_backupbuddy::$options['profiles'][$profile] ) ) {
 		/* Begin Directory / File Selector */
 		jQuery(document).on( 'click', '.pb_backupbuddy_filetree_exclude', function(){
 			text = jQuery(this).parent().parent().find( 'a' ).attr( 'rel' );
-			if ( ( text == 'wp-config.php' ) || ( text == '/wp-content/' ) || ( text == '/wp-content/uploads/' ) || ( text == '<?php echo '/' . str_replace( ABSPATH, '', backupbuddy_core::getBackupDirectory() ); ?>' ) || ( text == '<?php echo '/' . str_replace( ABSPATH, '', backupbuddy_core::getTempDirectory() ); ?>' ) ) {
-				alert( "<?php _e('You cannot exclude /wp-content/, the uploads directory, or BackupBuddy directories which will be automatically excluded.  However, you may exclude subdirectories within these. BackupBuddy directories such as backupbuddy_backups are automatically excluded and cannot be added to exclusion list.', 'it-l10n-backupbuddy' );?>" );
+			if ( ( text == '/wp-config.php' ) || ( text == '/backupbuddy_dat.php' ) || ( text == '/wp-content/' ) || ( text == '/wp-content/uploads/' ) || ( text == '<?php echo '/' . str_replace( ABSPATH, '', backupbuddy_core::getBackupDirectory() ); ?>' ) || ( text == '<?php echo '/' . str_replace( ABSPATH, '', backupbuddy_core::getTempDirectory() ); ?>' ) ) {
+				alert( "<?php _e('You cannot exclude the selected file or directory.  However, you may exclude subdirectories within many directories restricted from exclusion. BackupBuddy directories such as backupbuddy_backups are automatically excluded, preventing backing up backups, and cannot be added to exclusion list.', 'it-l10n-backupbuddy' );?>" );
 			} else {
 				jQuery('#pb_backupbuddy_excludes').val( text + "\n" + jQuery('#pb_backupbuddy_excludes').val() );
 			}
@@ -74,5 +74,18 @@ $settings_form->add_setting( array(
 	'after'		=>		'<span class="description">' . __( 'One file or directory exclusion per line.', 'it-l10n-backupbuddy' ) . '</span>',
 ) );
 
+
+if ( 'files' == $profile_array['type'] ) {
+	$settings_form->add_setting( array(
+		'type'		=>		'text',
+		'name'		=>		'profiles#' . $profile_id . '#custom_root',
+		'title'		=>		__('Custom backup root path (BETA)', 'it-l10n-backupbuddy' ),
+		'tip'		=>		__('[Default: blank] - If set then data will be backed up starting at the specified directory. !!!File and directory exclusions are not supported when using a custom root!!! Include trailing slash. If blank the WordPress reported ABSPATH value will be used (WordPress installation root).' ),
+		'rules'		=>		'',
+		'css'		=>		'width: 100%;',
+		'before'		=>		'<span style="white-space: nowrap;">',
+		'after'		=>		'<br><font color="red">' . __( 'NOTE: File exclusions not supported for custom root profiles.', 'lion' ) . '</font>',
+	) );
+}
 
 

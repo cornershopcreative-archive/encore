@@ -29,12 +29,18 @@ $settings_form->add_setting( array(
 	'rules'		=>		'required|string[0-250]',
 ) );
 
+$key_found = '';
+$upload_dir = wp_upload_dir();
+if ( file_exists( $upload_dir['basedir'] . '/backupbuddy-sftp-key-' . pb_backupbuddy::$options['log_serial'] . '.txt' ) ) {
+	$key_found = ' (Key file found! Password setting, if set, will be used to unlock key file.)';
+}
 $settings_form->add_setting( array(
 	'type'		=>		'password',
 	'name'		=>		'password',
 	'title'		=>		__( 'Password', 'it-l10n-backupbuddy' ),
-	'tip'		=>		__( '[Example: 1234xyz] - Password to use when connecting to the FTP server.', 'it-l10n-backupbuddy' ),
-	'rules'		=>		'required|string[0-250]',
+	'tip'		=>		__( '[Example: 1234xyz] - Password to use when connecting to the FTP server. If using sFTP key file then this setting is for unlocking a password-protected key file.', 'it-l10n-backupbuddy' ),
+	'rules'		=>		'string[0-250]',
+	'after'		=>		'<br>sFTP key file? Place at: /' . str_replace( ABSPATH, '', $upload_dir['basedir'] ) . '/backupbuddy-sftp-key-' . pb_backupbuddy::$options['log_serial'] . '.txt' . $key_found,
 ) );
 
 $settings_form->add_setting( array(

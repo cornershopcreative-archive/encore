@@ -21,18 +21,18 @@ pb_backupbuddy::load_style( 'filetree.css' );
 				multiFolder: false,
 				script: '<?php echo pb_backupbuddy::ajax_url( 'exclude_tree' ); ?>'
 			},
-			function(file) {
-				if ( ( file == 'wp-config.php' ) ) {
-					alert( "<?php _e('You cannot exclude wp-config.php.', 'it-l10n-backupbuddy' );?>" );
+			function(text) {
+				if ( ( text == '/wp-config.php' ) || ( text == '/backupbuddy_dat.php' ) || ( text == '/wp-content/' ) || ( text == '/wp-content/uploads/' ) || ( text == '<?php echo '/' . str_replace( ABSPATH, '', backupbuddy_core::getBackupDirectory() ); ?>' ) || ( text == '<?php echo '/' . str_replace( ABSPATH, '', backupbuddy_core::getTempDirectory() ); ?>' ) ) {
+					alert( "<?php _e('You cannot exclude the selected text or directory.  However, you may exclude subdirectories within many directories restricted from exclusion. BackupBuddy directories such as backupbuddy_backups are automatically excluded, preventing backing up backups, and cannot be added to exclusion list.', 'it-l10n-backupbuddy' );?>" );
 				} else {
-					jQuery( '#pb_backupbuddy_profiles__<?php echo $profile_id; ?>__excludes' ).val( file + "\n" + jQuery( '#pb_backupbuddy_profiles__<?php echo $profile_id; ?>__excludes' ).val() );
+					jQuery( '#pb_backupbuddy_profiles__<?php echo $profile_id; ?>__excludes' ).val( text + "\n" + jQuery( '#pb_backupbuddy_profiles__<?php echo $profile_id; ?>__excludes' ).val() );
 				}
 			},
-			function(directory) {
-				if ( ( directory == '/wp-content/' ) || ( directory == '/wp-content/uploads/' ) || ( directory == '<?php echo '/' . str_replace( ABSPATH, '', backupbuddy_core::getBackupDirectory() ); ?>' ) || ( directory == '<?php echo '/' . str_replace( ABSPATH, '', backupbuddy_core::getTempDirectory() ); ?>' ) ) {
-					alert( "<?php _e('You cannot exclude /wp-content/, /wp-content/uploads/, or BackupBuddy directories.  However, you may exclude subdirectories within these. BackupBuddy directories such as backupbuddy_backups are automatically excluded and cannot be added to exclusion list.', 'it-l10n-backupbuddy' );?>" );
+			function(text) {
+				if ( ( text == 'wp-config.php' ) || ( text == 'backupbuddy_dat.php' ) || ( text == '/wp-content/' ) || ( text == '/wp-content/uploads/' ) || ( text == '<?php echo '/' . str_replace( ABSPATH, '', backupbuddy_core::getBackupDirectory() ); ?>' ) || ( text == '<?php echo '/' . str_replace( ABSPATH, '', backupbuddy_core::getTempDirectory() ); ?>' ) ) {
+					alert( "<?php _e('You cannot exclude the selected file or directory.  However, you may exclude subdirectories within many directories restricted from exclusion. BackupBuddy directories such as backupbuddy_backups are automatically excluded, preventing backing up backups, and cannot be added to exclusion list.', 'it-l10n-backupbuddy' );?>" );
 				} else {
-					jQuery( '#pb_backupbuddy_profiles__<?php echo $profile_id; ?>__excludes' ).val( directory + "\n" + jQuery( '#pb_backupbuddy_profiles__<?php echo $profile_id; ?>__excludes' ).val() );
+					jQuery( '#pb_backupbuddy_profiles__<?php echo $profile_id; ?>__excludes' ).val( text + "\n" + jQuery( '#pb_backupbuddy_profiles__<?php echo $profile_id; ?>__excludes' ).val() );
 				}
 			}
 		);
@@ -41,7 +41,7 @@ pb_backupbuddy::load_style( 'filetree.css' );
 </script>
 
 <style type="text/css">
-	/* Core Styles - USED BY DIRECTORY EXCLUDER */
+	/* Core Styles - USED BY text EXCLUDER */
 	.jqueryFileTree LI.directory { background: url('<?php echo pb_backupbuddy::plugin_url(); ?>/images/filetree/directory.png') 6px 6px no-repeat; }
 	.jqueryFileTree LI.expanded { background: url('<?php echo pb_backupbuddy::plugin_url(); ?>/images/filetree/folder_open.png') 6px 6px no-repeat; }
 	.jqueryFileTree LI.file { background: url('<?php echo pb_backupbuddy::plugin_url(); ?>/images/filetree/file.png') 6px 6px no-repeat; }

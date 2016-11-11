@@ -53,38 +53,6 @@ if ( !isset( pb_backupbuddy::$options['remote_destinations'][$destination_id] ) 
 	die( 'Error #833383: Invalid destination ID `' . htmlentities( $destination_id ) . '`.' );
 }
 
-// For Stash we will check the quota prior to initiating send.
-if ( pb_backupbuddy::$options['remote_destinations'][$destination_id]['type'] == 'stash' ) {
-	// Pass off to destination handler.
-	require_once( pb_backupbuddy::plugin_path() . '/destinations/bootstrap.php' );
-	$send_result = pb_backupbuddy_destinations::get_info( 'stash' ); // Used to kick the Stash destination into life.
-	$stash_quota = pb_backupbuddy_destination_stash::get_quota( pb_backupbuddy::$options['remote_destinations'][$destination_id], true );
-	
-	if ( isset( $stash_quota['error'] ) ) {
-		echo  ' Error accessing Stash account. Send aborted. Details: `' . implode( ' - ', $stash_quota['error'] ) . '`.';
-		die();
-	}
-	
-	if ( $backup_file != '' ) {
-		$backup_file_size = filesize( $backup_file );
-	} else {
-		$backup_file_size = 50000;
-	}
-	if ( ( $backup_file_size + $stash_quota['quota_used'] ) > $stash_quota['quota_total'] ) {
-		echo "You do not have enough Stash storage space to send this file. Please upgrade your Stash storage or delete files to make space.\n\n";
-		
-		echo 'Attempting to send file of size ' . pb_backupbuddy::$format->file_size( $backup_file_size ) . ' but you only have ' . $stash_quota['quota_available_nice'] . ' available. ';
-		echo 'Currently using ' . $stash_quota['quota_used_nice'] . ' of ' . $stash_quota['quota_total_nice'] . ' (' . $stash_quota['quota_used_percent'] . '%).';
-		die();
-	} else {
-		if ( isset( $stash_quota['quota_warning'] ) && ( $stash_quota['quota_warning'] != '' ) ) {
-			echo '1Warning: ' . $stash_quota['quota_warning'] . "\n\n";
-			$success_output = true;
-		}
-	}
-	
-} // end if Stash.
-
 pb_backupbuddy::status( 'details', 'Scheduling cron to send to this remote destination...' );
 $schedule_result = backupbuddy_core::schedule_single_event( time(), 'remote_send', array( $destination_id, $backup_file, pb_backupbuddy::_POST( 'trigger' ), $send_importbuddy, $delete_after ) );
 if ( $schedule_result === FALSE ) {

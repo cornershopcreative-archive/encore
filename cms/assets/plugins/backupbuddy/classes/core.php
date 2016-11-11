@@ -114,6 +114,7 @@ class backupbuddy_core {
 		}
 		$serial = $dashpos + 1;
 		$serial = substr( $file, $serial, ( strlen( $file ) - $serial - 4 ) );
+		$serial = trim( $serial ); // Trim any potential whitespace.
 		
 		return $serial;
 		
@@ -310,22 +311,32 @@ class backupbuddy_core {
 	 *	@return		null
 	 */
 	public static function mail_error( $message, $override_recipient = '', $attachments = array() ) {
+		require_once( pb_backupbuddy::plugin_path() . '/classes/constants.php' );
 		
 		if ( !isset( pb_backupbuddy::$options ) ) {
 			pb_backupbuddy::load();
 		}
 		
-		if ( ( time() - pb_backupbuddy::$options['last_error_email_time'] ) < backupbuddy_constants::MIMIMUM_TIME_BETWEEN_ERROR_EMAILS ) {
+		// If there is an error due to a problem with the plugin settings then load defaults temporarily.
+		if ( ( ! is_array( pb_backupbuddy::$options ) ) || ( ! isset( pb_backupbuddy::$options['data_version'] ) ) ) {
+			$settings_copy = pb_backupbuddy::settings( 'default_options' );
+		} else {
+			$settings_copy = pb_backupbuddy::$options;
+		}
+		
+		
+		
+		if ( ( time() - $settings_copy['last_error_email_time'] ) < backupbuddy_constants::MIMIMUM_TIME_BETWEEN_ERROR_EMAILS ) {
 			pb_backupbuddy::status( 'warning', 'Warning #4389484: Tried to send error email too fast. Skipping send. Message: `' . $message . '`.' );
 			return true;
 		}
 		
 		// Track last sent time to prevent flood.
-		pb_backupbuddy::$options['last_error_email_time'] = time();
+		$settings_copy['last_error_email_time'] = time();
 		pb_backupbuddy::save();
 		
-		$subject = pb_backupbuddy::$options['email_notify_error_subject'];
-		$body = pb_backupbuddy::$options['email_notify_error_body'];
+		$subject = $settings_copy['email_notify_error_subject'];
+		$body = $settings_copy['email_notify_error_body'];
 
 		$replacements = array(
 			'{site_url}' => site_url(),
@@ -346,20 +357,31 @@ class backupbuddy_core {
 		$replacements['{body}'] = $body;
 
 		// Customize the final body based on our HTML template
-		$body = file_get_contents( dirname( dirname( __FILE__ ) ) . '/views/email-template.php' );
+		if ( @file_exists( get_theme_root() . '/backupbuddy-email-template.php' ) ) {
+			$body = file_get_contents( get_theme_root() . '/backupbuddy-email-template.php' );
+		} else {
+			$body = file_get_contents( dirname( dirname( __FILE__ ) ) . '/views/backupbuddy-email-template.php' );
+		}
+		
 		foreach( $replacements as $replace_key => $replacement ) {
 			$body = str_replace( $replace_key,$replacement, $body );
 		}
 
-		$email = pb_backupbuddy::$options['email_notify_error'];
+		$email = $settings_copy['email_notify_error'];
 		if ( $override_recipient != '' ) {
 			$email = $override_recipient;
 			pb_backupbuddy::status( 'details', 'Overriding email recipient to: `' . $override_recipient . '`.' );
 		}
+		
+		// Default to admin_email if not configured anywhere else.
+		if ( '' == $email ) {
+			$email = get_option('admin_email');
+		}
+		
 		if ( ! empty( $email ) ) {
 			pb_backupbuddy::status( 'details', 'Sending email error notification with subject `' . $subject . '` to recipient(s): `' . $email . '`.' );
-			if ( pb_backupbuddy::$options['email_return'] != '' ) {
-				$email_return = pb_backupbuddy::$options['email_return'];
+			if ( $settings_copy['email_return'] != '' ) {
+				$email_return = $settings_copy['email_return'];
 			} else {
 				$email_return = get_option('admin_email');
 			}
@@ -373,7 +395,7 @@ class backupbuddy_core {
 				pb_backupbuddy::status( 'error', 'Warning #3289239: wp_mail() unavailable. Inside WordPress?' );
 			}
 		} else {
-			pb_backupbuddy::status( 'warning', 'No email addresses are set to receive error notifications on the Settings page. Setting a notification email is suggested.' );
+			pb_backupbuddy::status( 'warning', 'No email addresses are set to receive error notifications on the Settings page AND get_option("admin_email") not set. Setting a notification email is suggested.' );
 		}
 		
 	} // End mail_error().
@@ -473,7 +495,12 @@ class backupbuddy_core {
 		$replacements['{body}'] = $body;
 
 		// Customize the final body based on our HTML template
-		$body = file_get_contents( dirname( dirname( __FILE__ ) ) . '/views/email-template.php' );
+		if ( @file_exists( get_theme_root() . '/backupbuddy-email-template.php' ) ) {
+			$body = file_get_contents( get_theme_root() . '/backupbuddy-email-template.php' );
+		} else {
+			$body = file_get_contents( dirname( dirname( __FILE__ ) ) . '/views/backupbuddy-email-template.php' );
+		}
+		
 		foreach( $replacements as $replace_key => $replacement ) {
 			$body = str_replace( $replace_key,$replacement, $body );
 		}
@@ -691,62 +718,17 @@ class backupbuddy_core {
 			$destination_settings = &pb_backupbuddy::$options['remote_destinations'][$destination_id];
 		}
 		
-		
-		// For Stash we will check the quota prior to initiating send.
-		if ( pb_backupbuddy::$options['remote_destinations'][$destination_id]['type'] == 'stash' ) {
-			// Pass off to destination handler.
-			require_once( pb_backupbuddy::plugin_path() . '/destinations/bootstrap.php' );
-			$send_result = pb_backupbuddy_destinations::get_info( 'stash' ); // Used to kick the Stash destination into life.
-			$stash_quota = pb_backupbuddy_destination_stash::get_quota( pb_backupbuddy::$options['remote_destinations'][$destination_id], true );
-			
-			if ( $file != '' ) {
-				$backup_file_size = filesize( $file );
-			} else {
-				$backup_file_size = 50000;
-			}
-			if ( ( $backup_file_size + $stash_quota['quota_used'] ) > $stash_quota['quota_total'] ) {
-				$message = '';
-				$message .= "You do not have enough Stash storage space to send this file. Please upgrade your Stash storage at http://ithemes.com/member/panel/stash.php or delete files to make space.\n\n";
-				
-				$message .= 'Attempting to send file of size ' . pb_backupbuddy::$format->file_size( $backup_file_size ) . ' but you only have ' . $stash_quota['quota_available_nice'] . ' available. ';
-				$message .= 'Currently using ' . $stash_quota['quota_used_nice'] . ' of ' . $stash_quota['quota_total_nice'] . ' (' . $stash_quota['quota_used_percent'] . '%).';
-				
-				pb_backupbuddy::status( 'error', $message );
-				backupbuddy_core::mail_error( $message );
-				
-				$fileoptions['status'] = 'Failure. Insufficient destination space.';
-				$fileoptions_obj->save();
-				
-				return false;
-			} else {
-				if ( isset( $stash_quota['quota_warning'] ) && ( $stash_quota['quota_warning'] != '' ) ) {
-					
-					// We log warning of usage but dont send error email.
-					$message = '';
-					$message .= 'WARNING: ' . $stash_quota['quota_warning'] . "\n\nPlease upgrade your Stash storage at http://ithemes.com/member/panel/stash.php or delete files to make space.\n\n";
-					$message .= 'Currently using ' . $stash_quota['quota_used_nice'] . ' of ' . $stash_quota['quota_total_nice'] . ' (' . $stash_quota['quota_used_percent'] . '%).';
-					
-					pb_backupbuddy::status( 'details', $message );
-					//backupbuddy_core::mail_error( $message );
-					
-				}
-			}
-			
-		} // end if stash.
-		
-		/*
 		if ( $send_importbuddy === true ) {
 			pb_backupbuddy::status( 'details', 'Generating temporary importbuddy.php file for remote send.' );
 			pb_backupbuddy::anti_directory_browsing( backupbuddy_core::getTempDirectory(), $die = false );
 			$importbuddy_temp = backupbuddy_core::getTempDirectory() . 'importbuddy.php'; // Full path & filename to temporary importbuddy
 			self::importbuddy( $importbuddy_temp ); // Create temporary importbuddy.
 			pb_backupbuddy::status( 'details', 'Generated temporary importbuddy.' );
-			$files[] = $importbuddy_temp; // Add importbuddy file to the list of files to send.
+			$importbuddy_file = $importbuddy_temp; // Add importbuddy file to the list of files to send.
 			$send_importbuddy = true; // Track to delete after finished.
 		} else {
 			pb_backupbuddy::status( 'details', 'Not sending importbuddy.' );
 		}
-		*/
 		
 		
 		// Clear fileoptions so other stuff can access it if needed.
@@ -761,6 +743,13 @@ class backupbuddy_core {
 		pb_backupbuddy::status( 'details', 'Calling destination send() function.' );
 		$send_result = pb_backupbuddy_destinations::send( $destination_settings, $file, $identifier, $delete_after );
 		pb_backupbuddy::status( 'details', 'Finished destination send() function.' );
+
+		if ( ! empty( $send_importbuddy ) && is_readable( $importbuddy_file ) ) {
+			pb_backupbuddy::status( 'details', 'Calling destination send() function for importbuddy.php.' );
+			$send_result = pb_backupbuddy_destinations::send( $destination_settings, $importbuddy_file, $identifier, $delete_after );
+			pb_backupbuddy::status( 'details', 'Finished destination send() function for importbuddy.php.' );
+
+		}
 		
 		self::kick_db(); // Kick the database to make sure it didn't go away, preventing options saving.
 		
@@ -1191,11 +1180,6 @@ class backupbuddy_core {
 			'destinations/stash2/class.itcred.php'				=>		'importbuddy/lib/stash2/class.itcred.php',
 			'destinations/stash2/class-phpass.php'				=>		'importbuddy/lib/stash2/class-phpass.php',
 			'destinations/_s3lib/aws-sdk/lib/requestcore'		=>		'importbuddy/lib/requestcore',
-			
-			// TODO: REMOVE as of v7.0:
-			'destinations/stash/lib/class.itx_helper.php'		=>		'importbuddy/classes/class.itx_helper.php',
-			
-
 		);
 
 		pb_backupbuddy::status( 'details', 'Loading each file into memory for writing master importbuddy file.' );
@@ -1294,16 +1278,16 @@ class backupbuddy_core {
 			return 'Amazon S3';
 		} elseif ( $type == 's32' ) {
 			return 'Amazon S3 v2';
+		} elseif ( $type == 's33' ) {
+			return 'Amazon S3 v3';
 		} elseif ( $type == 'ftp' ) {
 			return 'FTP';
-		} elseif ( $type == 'stash' ) {
-			return 'BackupBuddy Stash';
 		} elseif ( $type == 'stash2' ) {
 			return 'BackupBuddy Stash v2';
+		} elseif ( $type == 'stash3' ) {
+			return 'BackupBuddy Stash v3';
 		} elseif ( $type == 'sftp' ) {
 			return 'sFTP';
-		} elseif ( $type == 'dropbox' ) {
-			return 'Dropbox';
 		} elseif ( $type == 'dropbox2' ) {
 			return 'Dropbox v2';
 		} elseif ( $type == 'gdrive' ) {
@@ -1424,7 +1408,7 @@ class backupbuddy_core {
 				'message'	=>	'WARNING: BackupBuddy Multisite functionality is EXPERIMENTAL and NOT officially supported. Multiple issues are known. Usage of it is at your own risk and should not be relied upon. Standalone WordPress sites are suggested. You may use the "Export" feature to export your subsites into standalone WordPress sites. To enable experimental BackupBuddy Multisite functionality you must add the following line to your wp-config.php file: <b>define( \'PB_BACKUPBUDDY_MULTISITE_EXPERIMENT\', true );</b>'
 			);
 		} // end network-activated multisite.
-
+		
 		// LOOPBACKS TEST.
 		if ( ( $loopback_response = self::loopback_test() ) === true ) {
 			$success = true;
@@ -1443,7 +1427,26 @@ class backupbuddy_core {
 			'success'	=>	$success,
 			'message'	=>	$message,
 		);
-
+		
+		// CRONBACKS TEST.
+		if ( ( $cronback_response = self::cronback_test() ) === true ) {
+			$success = true;
+			$message = '';
+		} else { // failed
+			$success = false;
+			if ( defined( 'ALTERNATE_WP_CRON' ) && ( ALTERNATE_WP_CRON == true ) ) {
+				$message = __('Running in Alternate WordPress Cron mode. HTTP cronback Connections are not enabled on this server but you have overridden this in the wp-config.php file (this is a good thing).', 'it-l10n-backupbuddy' ) . ' <a href="http://ithemes.com/codex/page/BackupBuddy:_Frequent_Support_Issues#HTTP_cronback_Connections_Disabled" target="_blank">' . __('Additional Information Here', 'it-l10n-backupbuddy' ) . '</a>.';
+			} else {
+				$message = __('HTTP loopback connections are not enabled to the wp-cron.php on this server or are not functioning properly. You may encounter stalled, significantly delayed backups, or other difficulties. See details in the box below. This may be caused by a conflicting plugin such as a caching plugin.', 'it-l10n-backupbuddy' ) . ' <a href="http://ithemes.com/codex/page/BackupBuddy:_Frequent_Support_Issues#HTTP_Loopback_Connections_Disabled" target="_blank">' . __('Click for instructions on how to resolve this issue.', 'it-l10n-backupbuddy' ) . '</a>';
+				$message .= ' <b>Details:</b> <textarea style="height: 50px; width: 100%;">' . $cronback_response . '</textarea>';
+			}
+		}
+		$tests[] = array(
+			'test'		=>	'cronbacks',
+			'success'	=>	$success,
+			'message'	=>	$message,
+		);
+		
 		// POSSIBLE CACHING PLUGIN CONFLICT WARNING.
 		$success = true;
 		$message = '';
@@ -1629,7 +1632,8 @@ class backupbuddy_core {
 				'blocking' => true,
 				'headers' => array(),
 				'body' => null,
-				'cookies' => array()
+				'cookies' => array(),
+				'sslverify' => apply_filters( 'https_local_ssl_verify', false )
 			)
 		);
 		
@@ -2442,7 +2446,7 @@ class backupbuddy_core {
 		} else {
 			$detected_max_execution_time = 30;
 		}
-		if ( $detected_max_execution_time == '0' ) {
+		if ( $detected_max_execution_time <= 0 ) {
 			$detected_max_execution_time = 30;
 		}
 		
@@ -2457,11 +2461,19 @@ class backupbuddy_core {
 	
 	
 	
-	// Same as detectedMaxExecutionTime EXCEPT takes into account user overrided value in settings (if any).
-	public static function adjustedMaxExecutionTime() {
+	// Same as detectedMaxExecutionTime EXCEPT takes into account user overrided value in settings (if any)..
+	public static function adjustedMaxExecutionTime( $max = '' ) {
+		if ( '' == $max ) {
+			if ( ! isset( pb_backupbuddy::$options['max_execution_time'] ) ) {
+				$max = '30';
+			} else {
+				$max = pb_backupbuddy::$options['max_execution_time'];
+			}
+		}
+		
 		$detected = self::detectMaxExecutionTime();
-		if ( ( '' != pb_backupbuddy::$options['max_execution_time'] ) && ( is_numeric( pb_backupbuddy::$options['max_execution_time'] ) ) ) { // If set and a number, use user-specified runtime.
-			return pb_backupbuddy::$options['max_execution_time'];
+		if ( ( '' != $max ) && ( is_numeric( $max ) ) && ( $max > 0 ) ) { // If set and a number, use user-specified runtime.
+			return $max;
 		} else { // Nothing user-specified so user detected value.
 			return $detected;
 		}
@@ -2637,6 +2649,12 @@ class backupbuddy_core {
 		}
 		$archiveFile = backupbuddy_core::getBackupDirectory() . 'backup-' . $siteurl_stripped . '-' . $backupfile_datetime . '-' . $backupfile_profile . $type . '-' . $serial . '.zip';
 		
+		// Make dure we can make backup dir & it exists & is protected.
+		pb_backupbuddy::anti_directory_browsing( backupbuddy_core::getBackupDirectory(), $die = false );
+		if ( ! file_exists( backupbuddy_core::getBackupDirectory() ) ) {
+			pb_backupbuddy::status( 'error', 'Error #84893434: Backup storage directory `' . backupbuddy_core::getBackupDirectory() . '` does not exist and unable to create it. Check permissions. If using a custom path verify it is correct.' );
+		}
+		
 		pb_backupbuddy::status( 'details', 'Calculated archive file: `' . $archiveFile . '`.' );
 		return $archiveFile;
 	} // End calculateArchiveFilename().
@@ -2742,6 +2760,7 @@ class backupbuddy_core {
 		$notificationArray = self::getNotifications();
 		
 		// Add to current notifications.
+		do_action( 'backupbuddy_core_add_notification', $notification );
 		$notificationArray[] = $notification;
 		
 		// Only keep last X notifications to prevent buildup.
@@ -2947,10 +2966,14 @@ class backupbuddy_core {
 				pb_backupbuddy::status( 'details', 'wp-config.php found in normal location.' );
 			} else { // wp-config not in normal place.
 				pb_backupbuddy::status( 'message', 'wp-config.php not found in normal location; checking parent directory.' );
-				if ( @file_exists( dirname( ABSPATH ) . '/wp-config.php' ) ) { // Config in parent. Errors suppressed due to possible open_basedir restrictions.
+				if ( @file_exists( dirname( ABSPATH ) . '/wp-config.php' ) && ! @file_exists( dirname( ABSPATH ) . '/wp-settings.php' ) ) { // Config in parent. Errors suppressed due to possible open_basedir restrictions.
 					$wp_config_parent = true;
 				} else { // Found no wp-config.php anywhere.
-					pb_backupbuddy::status( 'error', 'Error #839348: wp-config.php not found in normal location (`' . ABSPATH . '`) nor parent directory (`' . dirname( ABSPATH ) . '`). Check that file exists and has proper read permissions. Check log above for more errors.' );
+					if ( ! @file_exists( dirname( ABSPATH ) . '/wp-settings.php' ) ) {
+						pb_backupbuddy::status( 'error', 'Error #839348: wp-config.php not found in normal location (`' . ABSPATH . '`) nor parent directory (`' . dirname( ABSPATH ) . '`). Check that file exists and has proper read permissions. Check log above for more errors.' );
+					} else {
+						pb_backupbuddy::status( 'error', 'Error #839348b: wp-config.php not found in normal location (`' . ABSPATH . '`) nor parent directory (`' . dirname( ABSPATH ) . '`) without wp-settings.php. Check that file exists and has proper read permissions. Check log above for more errors.' );
+					}
 				}
 			}
 		} else {
@@ -2974,8 +2997,10 @@ class backupbuddy_core {
 		$totalUsers = count_users();
 		$totalUsers = $totalUsers['total_users'];
 		
-		pb_backupbuddy::status( 'startSubFunction', json_encode( array( 'function' => 'post_count', 'title' => 'Found ' . $totalPosts . ' posts, ' . $totalPages . ' pages, and ' . $totalComments . ' comments.' ) ) );
-		pb_backupbuddy::status( 'startSubFunction', json_encode( array( 'function' => 'post_count', 'title' => 'Found ' . $totalUsers . ' user accounts.' ) ) );
+		if ( '' == $settings['custom_root'] ) {
+			pb_backupbuddy::status( 'startSubFunction', json_encode( array( 'function' => 'post_count', 'title' => 'Found ' . $totalPosts . ' posts, ' . $totalPages . ' pages, and ' . $totalComments . ' comments.' ) ) );
+			pb_backupbuddy::status( 'startSubFunction', json_encode( array( 'function' => 'post_count', 'title' => 'Found ' . $totalUsers . ' user accounts.' ) ) );
+		}
 		
 		$dat_content = array(
 			
@@ -3095,9 +3120,15 @@ class backupbuddy_core {
 		$start=ftell($fh);
 		fseek( $fh, -$maxfilesize, SEEK_END ); // Seek to middle from the end.
 		$start = fgets( $fh ); // Get start position.
+		$length = ( $size - $start );
 		
+		// Catch instances where fread length parameter was coming in less than 0.
+		if ( $length < 1 ) {
+			return false;
+		}
+
 		// Read in file from middle point.
-		$contents = fread( $fh, ( $size - $start ) );
+		$contents = fread( $fh, $length );
 		
 		// Find first newline & cut off everything before it so we make sure to start at a fresh line (no half lines as beginning).
 		$first_newline = strpos( $contents, "\n" );
@@ -3229,12 +3260,19 @@ class backupbuddy_core {
 		$loop_count = 0; 
 		$loops_per_second = false;
 		$total_loops = backupbuddy_constants::PHP_RUNTIME_TEST_MAX_TIME; // [default: 300 (sec) = 5min]
+		
+		// Store current error reporting level and temp set to 0
+		$reporting_level = error_reporting();
+		error_reporting( 0 );
+		
 		while( $loop_count <= $total_loops ) {
 			$loop_count++;
 			@ftruncate( $fso, 0 ); // Erase existing file contents.
 			$time_elapsed = round( microtime( true ) - pb_backupbuddy::$start_time, 2 ); 
 			if ( false === @fwrite( $fso, $time_elapsed ) ) { // Update time elapsed into file.
 				$total_loops = 0; 
+				// Reset original error_reporting level before exiting.
+				error_reporting( $reporting_level );
 				break; // Stop since writing failed.
 			}
 			
@@ -3259,6 +3297,9 @@ class backupbuddy_core {
 				while ( $counter++ < $loops_per_second ) {} 
 			}
 		} // end while.
+		
+		// Set error reporting back to original level, although the script is probably dead at this point.
+		error_reporting( $reporting_level );
 		pb_backupbuddy::status( 'details', 'End PHP runtime test loops.' );
 		
 		@fclose( $fso );
@@ -3314,6 +3355,10 @@ class backupbuddy_core {
 			}
 		}
 		
+		// Store current error reporting level and temp set to 0
+		$reporting_level = error_reporting();
+		error_reporting( 0 );
+		
 		// Once per second write to the file the number of seconds elapsed since the test began.
 		pb_backupbuddy::status( 'details', 'Start PHP memory test loops.' );
 		$loopCount = 0;
@@ -3323,18 +3368,18 @@ class backupbuddy_core {
 			$loopCount++;
 			if ( $loopCount > 1000 ) {
 				$loop = false;
+				error_reporting( $reporting_level ); // Set error reporting back to original level, although the script is probably dead at this point.
 				break;
 			}
 			
 			$buffer .= str_repeat( '-', 1048576 * $incrementMB );
-			
 			$usage = round( memory_get_usage() / 1048576, 2 );
-			
 			//error_log( 'usage:' + usage );
 			
 			@ftruncate( $fso, 0 ); // Erase existing file contents.
 			if ( false === @fwrite( $fso, $usage ) ) { // Update time elapsed into file.
 				$loop = false;
+				error_reporting( $reporting_level ); // Set error reporting back to original level, although the script is probably dead at this point.
 				break; // Stop since writing failed.
 			}
 		}
@@ -3343,6 +3388,7 @@ class backupbuddy_core {
 		
 		$buffer = '';
 		@fclose( $fso );
+		error_reporting( $reporting_level ); // Set error reporting back to original level, although the script is probably dead at this point.
 		
 	} // End php_memory_test().
 	
