@@ -35,19 +35,22 @@
 		<h3 class="callout-heading"> <?php echo $callout_title ?> </h3>
 	 
 		<?php echo $callout_text ?> 
-			
+
 
 			
-		<?php if (empty($callout_button_label)) {  }
-			 else { echo '<a style="margin-top: 20px" class="button button-white" href="' . $callout_button_url . '"> ' . $callout_button_label . '</a>' ;} ?>
-</div>
-			 <?php if (empty($callout_title_two)) {  }
-	else { echo '<div class="second_column '.$callout_color_two .'">' ;} ?> 
-
-				<h3 class="callout-heading"> <?php echo $callout_title_two ?> </h3>
-				<?php echo $callout_text_two ?>
-
-				<?php if (empty($callout_button_label_two)) {  }
-				 else { echo '<a style="margin-top: 20px" class="button button-white" href="' . $callout_button_url_two . '"> ' . $callout_button_label_two . '</a>' ;} ?>
+		<?php if (empty($callout_button_label)) { }
+			else { echo '<a style="margin-top: 20px" class="button button-white" href="' . $callout_button_url . '"> ' . $callout_button_label . '</a>' ;} ?>
 	</div>
-	</div>		
+
+	<?php if ( ( 'callout_two' === $callout_type ) ) : ?>
+		<?php echo '<div class="second_column '.$callout_color_two .'">'; ?>
+
+			<h3 class="callout-heading"> <?php echo $callout_title_two ?> </h3>
+			<?php echo $callout_text_two ?>
+
+			<?php if (empty($callout_button_label_two)) {  }
+				else { echo '<a style="margin-top: 20px" class="button button-white" href="' . $callout_button_url_two . '"> ' . $callout_button_label_two . '</a>' ;} ?>
+		</div>
+	<?php endif; ?>
+
+</div>
