@@ -39,6 +39,7 @@
 			<input name="country" type="hidden" value="US">
 			<input name="redirect_url" type="hidden" value="http:<?php echo acf_get_current_url() . "#thankyou" ?>">
 			<input id="_guid" name="_guid" type="hidden" value="">
+			<input name="custom-24" type="hidden" value="G2G Site Header Button">
 		</form>
 		<iframe id="bsd-target" width="0" class="totallyhidden" border="0" name="bsd-target"></iframe>
 	</aside>

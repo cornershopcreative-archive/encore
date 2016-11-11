@@ -25,6 +25,18 @@ a {
 	transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
 }
 
+.brightblue_background .button-white:hover {
+	color: $bright-blue !important;
+}
+
+.teal_background .button-white:hover {
+	color: $teal !important;
+}
+
+.orange_background .button-white:hover {
+	color: $gold !important;
+}
+
 /**
  * General text styles.
  */
