@@ -6,7 +6,7 @@
 			<p class="prose">Pledge with Generation to Generation below to continue to the organization’s website to take action.</p>
 		</header>
 
-		<form name="signup-opportunity" class="bsd-signup-2" action="https://generation.cp.bsd.net/page/signup/join-g2g" method="post" id="signup-opportunity" target="bsd-target-opportunity">
+		<form name="signup-opportunity" class="bsd-signup-2" action="https://generation.cp.bsd.net/page/signup/partner" method="post" id="signup-opportunity" target="bsd-target-opportunity">
 
 			<div class="row">
 				<div class="bsd-field-firstname half">
@@ -35,7 +35,7 @@
 		  <div class="row button-group" id="bsd-field-submit-btn">
 		    <div class="input"><input name="submit-btn" value="Count Me In" type="submit" class="button button-solid button-gold aligncenter"></div>
 		  </div>
-			<input name="custom-24" type="hidden" value="" id="partner">
+			<input name="custom-36" type="hidden" value="" id="partner">
 			<input name="country" type="hidden" value="US">
 			<input name="redirect_url" type="hidden" value="http:<?php echo acf_get_current_url() . "#thankyou" ?>">
 			<input id="_guid" name="_guid" type="hidden" value="">
