@@ -6,7 +6,7 @@
  */
 
 /** CHANGE THESE: Database connection information */
-define('DB_NAME',     'wp_g2g');
+define('DB_NAME',     'wp_beta_g2g');
 define('DB_USER',     'CVcloud');
 define('DB_PASSWORD', 'qCGixMOWQ8Y2UHbt');
 define('DB_HOST',     '5430469950a1ec1a42c7815d40e16ee21512cab3.rackspaceclouddb.com');
