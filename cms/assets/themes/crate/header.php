@@ -29,50 +29,56 @@
 
 	<header id="masthead" class="site-header" role="banner">
 		<div class="container">
-			<div class="site-branding">
-				<?php
-				if ( is_front_page() && is_home() ) : ?>
-					<h1 class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
-						<svg class="logo" viewBox="0 0 50 50">
-							<use xlink:href="#icon-logo"></use>
-						</svg>
-						<span class="screen-reader-text"><?php bloginfo( 'name' ); ?></span>
-					</a></h1>
-				<?php else : ?>
-					<p class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
-						<svg class="logo" viewBox="0 0 50 50">
-							<use xlink:href="#icon-logo"></use>
-						</svg>
-						<span class="screen-reader-text"><?php bloginfo( 'name' ); ?></span>
-					</a></p>
-				<?php
-				endif;
-				?>
-				<p class="powered-by">
-					<a href="http://encore.org/" target="_blank">
-						<svg class="logo" viewBox="0 0 106 30">
-							<use xlink:href="#icon-powered-by"></use>
-						</svg>
-						<span class="screen-reader-text"><?php esc_html_e( 'Powered by Encore.org', 'crate' ); ?></span>
-					</a>
-				</p>
-			</div><!-- .site-branding -->
+			<div class="site-header-main">
 
-			<div class="nav-toggle">
-				<a class="icon-menu" href="#site-navigation"><span class="screen-reader-text"><?php esc_html_e( 'Show navigation', 'crate' ); ?></span></a>
-			</div>
+				<div class="site-branding">
+					<?php
+					if ( is_front_page() && is_home() ) : ?>
+						<h1 class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
+							<svg class="logo" viewBox="0 0 50 50">
+								<use xlink:href="#icon-logo"></use>
+							</svg>
+							<span class="screen-reader-text"><?php bloginfo( 'name' ); ?></span>
+						</a></h1>
+					<?php else : ?>
+						<p class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
+							<svg class="logo" viewBox="0 0 50 50">
+								<use xlink:href="#icon-logo"></use>
+							</svg>
+							<span class="screen-reader-text"><?php bloginfo( 'name' ); ?></span>
+						</a></p>
+					<?php
+					endif;
+					?>
+					<p class="powered-by">
+						<a href="http://encore.org/" target="_blank">
+							<svg class="logo" viewBox="0 0 106 30">
+								<use xlink:href="#icon-powered-by"></use>
+							</svg>
+							<span class="screen-reader-text"><?php esc_html_e( 'Powered by Encore.org', 'crate' ); ?></span>
+						</a>
+					</p>
+				</div><!-- .site-branding -->
 
-			<nav id="site-navigation" class="nav-primary" role="navigation">
-				<?php wp_nav_menu( array(
-					'theme_location' => 'primary',
-					'menu_id' => 'primary-menu',
-					'menu_class' => 'menu menu-primary',
-					'container' => false,
-				) ); ?>
-			</nav><!-- #site-navigation -->
+				<div class="nav-toggle">
+					<a class="icon-menu" href="#site-navigation"><span class="screen-reader-text"><?php esc_html_e( 'Show navigation', 'crate' ); ?></span></a>
+				</div>
 
-			<div class="button-group button-group-expand nav-nag">
-				<a class="button button-solid button-bright-blue" href="#" data-featherlight="#signup-modal" data-featherlight-variant="modalform"><?php echo esc_html_e( 'Count Me In', 'crate' ); ?></a>
-			</div>
+				<nav id="site-navigation" class="nav-primary" role="navigation">
+					<?php wp_nav_menu( array(
+						'theme_location' => 'primary',
+						'menu_id' => 'primary-menu',
+						'menu_class' => 'menu menu-primary',
+						'container' => false,
+					) ); ?>
+				</nav><!-- #site-navigation -->
+
+			</div><!-- .site-header-main -->
+
+			<aside class="site-header-secondary">
+				<div class="button-group button-group-expand nav-nag">
+					<a class="button button-solid button-bright-blue" href="#" data-featherlight="#signup-modal" data-featherlight-variant="modalform"><?php echo esc_html_e( 'Count Me In', 'crate' ); ?></a>
+				</div>
+			</aside>
 		</div>
 	</header><!-- #masthead -->
