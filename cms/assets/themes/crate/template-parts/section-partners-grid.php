@@ -45,8 +45,9 @@
 				<article class="partners-grid-item">
 
 					<div class="logo-container">
-
+						<a href="<?php get_field( link_url ); ?>" target="_blank">
 						<img src="<?php the_post_thumbnail_url(); ?>" class="partner-logo">
+						</a>
 
 					</div>
 
@@ -54,7 +55,8 @@
 
 						<h3 class="partner-title">
 						<?php if (get_sub_field('button') == "hide") {
-							echo esc_html( get_the_title() );
+							
+							echo '<a href="'.get_field(link_url).'" target="_blank" >'.get_the_title().'</a>';
 						}
 						else
 						{} ?>
@@ -79,7 +81,7 @@ if(get_sub_field('button') == "show")
 }
 else
 {
-	echo '<a href="" target="_blank" class="overlay-link"></a>';
+	
 }
 ?>
 
