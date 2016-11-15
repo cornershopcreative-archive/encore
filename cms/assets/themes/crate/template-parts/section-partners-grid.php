@@ -31,14 +31,16 @@
 		$show_pager = get_sub_field( 'show_pager' );
 
 		// Set up custom query.
-		$story_query = crate_section_query( array(
+		$partner_query = crate_section_query( array(
 			'post_type' => 'partner',
+			'orderby' => 'post_title',
+			'order' => 'ASC',
 		) );
 
 		?>
 
 		<div class="content-section-grid container<?php echo ( $show_pager ? ' facetwp-template' : '' ); ?>">
-			<?php while ( $story_query->have_posts() ) : $story_query->the_post(); ?>
+			<?php while ( $partner_query->have_posts() ) : $partner_query->the_post(); ?>
 
 				<article class="partners-grid-item">
 

@@ -1,38 +1,111 @@
 .site-header {
-	padding: rem(10) 0;
 	position: relative;
-	z-index: 10; // Render on top of relatively-positioned hero elements.
+	z-index: 1000; // Render on top of relatively-positioned hero elements.
 	background: $white;
 	// We're using a 6px spread-radius instead of a 6px offset-y below, so that
 	// the left & right corners look better.
 	box-shadow: 0 0 9px 6px rgba(0, 0, 0, 0.15);
 
 	@include breakpoint( $tablet ) {
-		padding: rem(8) 0;
+		flex-wrap: nowrap;
 	}
 
 	@include breakpoint( $desktop ) {
 
 		.home & {
-			// Use alternate colors + wider padding for the homepage on desktop.
+			// Use alternate colors for the homepage on desktop.
 			box-shadow: none;
 			background-color: $deep-blue;
-			padding: rem(26) 0;
 		}
-	}
-
-	.container {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		// Make sure the .nav-nag button will wrap to a second line on mobile.
-		flex-wrap: wrap;
 	}
 
 	&.has-current-submenu { // This class is added in nav.js.
 		@include breakpoint( $desktop ) {
 			border-bottom: rem(60) solid $lime;
 		}
+	}
+
+	.container {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+
+		@include breakpoint( $tablet ) {
+			flex-wrap: nowrap;
+		}
+	}
+}
+
+.site-header-main,
+.site-header-secondary {
+	padding: rem(10) 0;
+	width: 100%; // Take up full width on mobile.
+
+	@include breakpoint( $tablet ) {
+		width: auto;
+		padding: rem(8) 0;
+	}
+
+	@include breakpoint( $desktop ) {
+
+		.home & {
+			padding: rem(26) 0;
+		}
+	}
+}
+
+.site-header-main {
+	display: flex;
+	// Stickify on mobile.
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	padding-left: $page-padding;
+	padding-right: $page-padding;
+	background: $white;
+
+	// Adjust positioning when the WP admin bar is present.
+	.admin-bar & {
+		top: rem(46);
+
+		@include breakpoint( $tablet ) {
+			// ...But not at screen sizes where the nav isn't sticky.
+			top: 0;
+		}
+	}
+
+	.has-sticky-nav & {
+		// When window isn't scrolled to the top, add a dropshadow.
+		box-shadow: 0 0 9px 6px rgba(0, 0, 0, 0.15);
+
+		// Since WP admin bar isn't sticky on mobile, we can stop leaving space for
+		// it once the user has scrolled down a bit.
+		.admin-bar & {
+			top: 0;
+		}
+
+		@include breakpoint( $tablet ) {
+			// ...But not at screen sizes where the nav isn't sticky.
+			box-shadow: none;
+		}
+	}
+
+	// Un-stickify above mobile widths.
+	@include breakpoint( $tablet ) {
+		flex-grow: 1;
+		position: relative;
+		background: transparent;
+	}
+}
+
+.site-header-secondary {
+	// Leave room for sticky main nav.
+	margin-top: rem(70); // Standard height of .site-header-main.
+
+	@include breakpoint( $tablet ) {
+		margin-top: 0;
 	}
 }
 
@@ -119,6 +192,7 @@
 	flex-grow: 1; // Take up available space, and align contents right.
 	display: flex;
 	justify-content: flex-end;
+	align-items: center;
 
 	@include breakpoint( $tablet ) {
 		// Here the nav-toggle is inline with .nav-nag, so make sure there's space
@@ -138,10 +212,12 @@
 .nav-primary {
 	position: absolute;
 	background: $white; // Solid background for dropdown/hamburger menu.
-	top: rem(70); // This is the height of the single-line menu.
+	top: 100%; // Anchor to the bottom of the menu.
 	right: 0;
 
 	@include breakpoint( $desktop ) {
+		flex-grow: 1;
+		justify-content: center;
 		background: transparent;
 	}
 
@@ -169,6 +245,19 @@
 	.subnav-is-open .sub-menu {
 		max-height: 1000px;
 		transition: max-height 0.2s ease-in;
+	}
+
+	&.is-open {
+		// Make sure the menu doesn't get taller than the height of the window.
+		max-height: 80vh;
+		// Allow scrolling if necessary.
+		overflow: auto;
+		// Use native, momentum-based scrolling on iOS.
+		-webkit-overflow-scrolling: touch;
+
+		@include breakpoint( $desktop ) {
+			overflow: visible; // But don't require scrolling on desktop, duh.
+		}
 	}
 
 	.menu {
@@ -321,7 +410,6 @@
 
 .nav-nag {
 	width: 100%;
-	margin-top: 1rem;
 
 	@include breakpoint( $tablet ) {
 		width: auto;
