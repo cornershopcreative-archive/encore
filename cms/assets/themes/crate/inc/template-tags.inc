@@ -244,7 +244,7 @@ function crate_section_links() {
 
 	?>
 
-	<div class="button-group">
+	<div class="button-group container">
 
 		<?php crate_item_link( array(
 			'class' => 'button button-gold button-solid',

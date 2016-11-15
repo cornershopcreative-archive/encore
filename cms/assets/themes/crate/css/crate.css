@@ -702,6 +702,8 @@ h6 {
 .button-group, .facetwp-pager {
   display: -ms-flexbox;
   display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
   -ms-flex-align: center;
       align-items: center;
   -ms-flex-pack: center;
@@ -711,8 +713,15 @@ h6 {
   .button-group .button, .facetwp-pager .button {
     display: -ms-flexbox;
     display: flex; }
-  .button-group > * ~ *, .facetwp-pager > * ~ * {
-    margin-left: 1rem; }
+  @media (max-width: 639px) {
+    .button-group > *, .facetwp-pager > * {
+      width: 100%; } }
+  @media (max-width: 639px) {
+    .button-group > * ~ *, .facetwp-pager > * ~ * {
+      margin-top: 1rem; } }
+  @media (min-width: 640px) {
+    .button-group > * ~ *, .facetwp-pager > * ~ * {
+      margin-left: 1rem; } }
   .button-group.button-group-expand > *, .button-group-expand.facetwp-pager > * {
     -ms-flex: 1 0 auto;
         flex: 1 0 auto; }

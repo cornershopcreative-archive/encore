@@ -117,6 +117,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	flex-wrap: wrap;
 
 	.button {
 		display: flex; // Fill container width (normally buttons are inline-flex).
@@ -124,8 +125,20 @@
 
 	> * {
 
+		// At small screen sizes, always stack buttons.
+		@include breakpoint( max-width ($tablet - 1px) ) {
+			width: 100%;
+		}
+
 		& ~ * {
-			margin-left: 1rem;
+
+			@include breakpoint( max-width ($tablet - 1px) ) {
+				margin-top: 1rem;
+			}
+
+			@include breakpoint( $tablet ) {
+				margin-left: 1rem;
+			}
 		}
 	}
 
