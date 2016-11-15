@@ -337,6 +337,9 @@ ul {
  * Define padding + bottom margins for a hero element involving a floated image that should overlap with the bottom edge of the container.
  */
 /**
+ * Use an inline SVG image as a background.
+ */
+/**
  * General link & transition styles.
  */
 a {
@@ -880,6 +883,16 @@ svg {
   width: 1203px;
   height: 318px;
   background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='1203px' height='318px' viewBox='40 120 1203 318' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Cg id='Group-3' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' transform='translate(471.000000, 120.000000)'%3E        %3Ccircle id='Oval-5-Copy-18' fill='%2300C7F5' transform='translate(732.000000, 40.000000) rotate(91.000000) translate(-732.000000, -40.000000) ' cx='732' cy='40' r='39'%3E%3C/circle%3E        %3Ccircle id='Oval-5-Copy-19' fill='%2300C7F5' transform='translate(674.500000, 155.500000) rotate(91.000000) translate(-674.500000, -155.500000) ' cx='674.5' cy='155.5' r='18.5'%3E%3C/circle%3E        %3Ccircle id='Oval-5-Copy-20' fill='%2300C7F5' transform='translate(646.000000, 19.000000) rotate(91.000000) translate(-646.000000, -19.000000) ' cx='646' cy='19' r='9'%3E%3C/circle%3E        %3Ccircle id='Oval-5-Copy-21' fill='%2300C7F5' transform='translate(338.000000, 116.000000) rotate(91.000000) translate(-338.000000, -116.000000) ' cx='338' cy='116' r='38'%3E%3C/circle%3E        %3Cellipse id='Oval-5-Copy-22' fill='%2300C7F5' transform='translate(40.000000, 89.000000) rotate(90.000000) translate(-40.000000, -89.000000) ' cx='40' cy='89' rx='40' ry='40'%3E%3C/ellipse%3E        %3Ccircle id='Oval-5-Copy-23' fill='%2301C7F5' transform='translate(153.460938, 241.679688) rotate(180.000000) translate(-153.460938, -241.679688) ' cx='153.460938' cy='241.679688' r='15.390625'%3E%3C/circle%3E        %3Ccircle id='Oval-5-Copy-24' fill='%2301C7F5' transform='translate(362.000000, 270.000000) rotate(180.000000) translate(-362.000000, -270.000000) ' cx='362' cy='270' r='19'%3E%3C/circle%3E        %3Ccircle id='Oval-5-Copy-25' fill='%2301C7F5' transform='translate(277.000000, 309.000000) rotate(180.000000) translate(-277.000000, -309.000000) ' cx='277' cy='309' r='9'%3E%3C/circle%3E    %3C/g%3E%3C/svg%3E"); }
+
+.icon-bubbles-4-white, .section-callout.bubbles_background, .bubbles_background .second_column {
+  width: 1455px;
+  height: 351px;
+  background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='1455px' height='351px' viewBox='-2 69 1455 351' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Cg opacity='0.35' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' transform='translate(1141.500000, 339.000000) scale(-1, 1) translate(-1141.500000, -339.000000) translate(1025.000000, 267.000000)'%3E        %3Cpath d='M233,9 C233,13.9708558 228.970359,18 224.00032,18 C219.029641,18 215,13.9708558 215,9 C215,4.02914416 219.029641,0 224.00032,0 C228.970359,0 233,4.02914416 233,9' fill='%23FFFFFF' transform='translate(224.000000, 9.000000) scale(-1, 1) translate(-224.000000, -9.000000) '%3E%3C/path%3E        %3Cpath d='M106,91 C106,120.270559 82.2710267,144 53.0010447,144 C23.7289733,144 0,120.270559 0,91 C0,61.729441 23.7289733,38 53.0010447,38 C82.2710267,38 106,61.729441 106,91' fill='%23FFFFFF' transform='translate(53.000000, 91.000000) scale(-1, 1) translate(-53.000000, -91.000000) '%3E%3C/path%3E    %3C/g%3E    %3Cellipse stroke='none' fill='%23FFFFFF' fill-rule='evenodd' opacity='0.35' cx='1394' cy='161' rx='59' ry='59'%3E%3C/ellipse%3E    %3Cpath d='M902,407.999763 C902,414.626929 896.627402,419.999527 890.000237,419.999527 C883.372598,419.999527 878,414.626929 878,407.999763 C878,401.372598 883.372598,396 890.000237,396 C896.627402,396 902,401.372598 902,407.999763' stroke='none' fill='%23FFFFFF' fill-rule='evenodd' opacity='0.35' transform='translate(890.000000, 407.999763) scale(-1, 1) translate(-890.000000, -407.999763) '%3E%3C/path%3E    %3Cpath d='M132.733,340.366 C132.733,354.375 121.376,365.732 107.367,365.732 C93.357,365.732 82,354.375 82,340.366 C82,326.357 93.357,315 107.367,315 C121.376,315 132.733,326.357 132.733,340.366' stroke='none' fill='%23FFFFFF' fill-rule='evenodd' opacity='0.35' transform='translate(107.366500, 340.366000) scale(-1, 1) translate(-107.366500, -340.366000) '%3E%3C/path%3E    %3Cg opacity='0.35' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' transform='translate(119.500000, 139.000000) scale(-1, -1) rotate(90.000000) translate(-119.500000, -139.000000) translate(50.500000, 19.500000)'%3E        %3Cg transform='translate(69.000000, 57.500000) scale(-1, -1) translate(-69.000000, -57.500000) ' fill='%23FFFFFF'%3E            %3Cpath d='M138,9 C138,13.9708558 133.970359,18 129.00032,18 C124.029641,18 120,13.9708558 120,9 C120,4.02914416 124.029641,2.84217094e-14 129.00032,2.84217094e-14 C133.970359,2.84217094e-14 138,4.02914416 138,9' transform='translate(129.000000, 9.000000) scale(-1, 1) translate(-129.000000, -9.000000) '%3E%3C/path%3E            %3Cpath d='M106,62 C106,91.270559 82.2710267,115 53.0010447,115 C23.7289733,115 0,91.270559 0,62 C0,32.729441 23.7289733,9 53.0010447,9 C82.2710267,9 106,32.729441 106,62' transform='translate(53.000000, 62.000000) scale(-1, 1) translate(-53.000000, -62.000000) '%3E%3C/path%3E        %3C/g%3E        %3Cpath d='M79,215 C79,228.255539 68.2555389,239 55,239 C41.7444611,239 31,228.255539 31,215 C31,201.744461 41.7444611,191 55,191 C68.2555389,191 79,201.744461 79,215' fill='%23FFFFFF'%3E%3C/path%3E    %3C/g%3E%3C/svg%3E"); }
+
+.icon-bubbles-5-lime, .section-callout-white.bubble_background {
+  width: 554px;
+  height: 363px;
+  background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='554px' height='363px' viewBox='0 2169 554 363' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' transform='translate(212.000000, 2423.500000) scale(-1, 1) translate(-212.000000, -2423.500000) translate(143.000000, 2366.000000)'%3E        %3Cpath d='M138,9 C138,13.9708558 133.970359,18 129.00032,18 C124.029641,18 120,13.9708558 120,9 C120,4.02914416 124.029641,0 129.00032,0 C133.970359,0 138,4.02914416 138,9' fill='%23AACC00' transform='translate(129.000000, 9.000000) scale(-1, 1) translate(-129.000000, -9.000000) '%3E%3C/path%3E        %3Cpath d='M106,62 C106,91.270559 82.2710267,115 53.0010447,115 C23.7289733,115 0,91.270559 0,62 C0,32.729441 23.7289733,9 53.0010447,9 C82.2710267,9 106,32.729441 106,62' fill='%23AACC00' transform='translate(53.000000, 62.000000) scale(-1, 1) translate(-53.000000, -62.000000) '%3E%3C/path%3E    %3C/g%3E    %3Cpath d='M50.733,2506.366 C50.733,2520.375 39.376,2531.732 25.367,2531.732 C11.357,2531.732 0,2520.375 0,2506.366 C0,2492.357 11.357,2481 25.367,2481 C39.376,2481 50.733,2492.357 50.733,2506.366' stroke='none' fill='%23AACC00' fill-rule='evenodd'%3E%3C/path%3E    %3Cpath d='M69,2291 C69,2307.01711 56.0171095,2320 40,2320 C23.9828905,2320 11,2307.01711 11,2291 C11,2274.98289 23.9828905,2262 40,2262 C56.0171095,2262 69,2274.98289 69,2291' stroke='none' fill='%23AACC00' fill-rule='evenodd'%3E%3C/path%3E    %3Cpath d='M553.733,2194.366 C553.733,2208.375 542.376,2219.732 528.367,2219.732 C514.357,2219.732 503,2208.375 503,2194.366 C503,2180.357 514.357,2169 528.367,2169 C542.376,2169 553.733,2180.357 553.733,2194.366' stroke='none' fill='%23AACC00' fill-rule='evenodd'%3E%3C/path%3E%3C/svg%3E"); }
 
 .icon-logo {
   width: 50px;
@@ -2284,6 +2297,12 @@ input[type='email'] {
   width: 100%;
   color: #000;
   font-family: Libre Baskerville; }
+  .section-callout-white.bubble_background {
+    width: auto;
+    height: auto;
+    background-position: center top;
+    background-position: left center;
+    background-repeat: no-repeat; }
 
 .section-callout-white p {
   margin-top: 20px;
@@ -2307,9 +2326,15 @@ input[type='email'] {
 .teal_background {
   background-color: #3dbf9a; }
 
-.section-callout .logo_background {
+.section-callout.logo_background .callout-content {
   background-image: url("/cms/assets/uploads/2016/10/Gen2Gen_FinalDesignReview-Copy.png");
   background-position: 10% -10%;
+  background-repeat: no-repeat; }
+
+.section-callout.bubbles_background {
+  width: auto;
+  height: auto;
+  background-position: center top;
   background-repeat: no-repeat; }
 
 .callout-heading {
@@ -2350,6 +2375,13 @@ input[type='email'] {
   padding: 50px !important;
   width: 50%;
   line-height: 28px; }
+  .bubbles_background .second_column {
+    width: auto;
+    width: 50%;
+    height: auto;
+    background-position: center top;
+    background-position: right center;
+    background-repeat: no-repeat; }
 
 .callout-content.callout_two {
   display: inline-block;

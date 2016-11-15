@@ -21,9 +21,9 @@
 				$callout_background_image = get_sub_field('background_image');
 		?>
 
-<?php echo '<div class="section-callout-white '.$callout_color .' ">' ;?>
+<?php echo '<div class="section-callout-white bubble_background '.$callout_color .' ">' ;?>
 
-	<div class="callout-content bubble_background">
+	<div class="callout-content">
 		<div class="caption-bubble">
 			<div class="callout-caption">
 			<?php if (empty($callout_caption)) {  }
