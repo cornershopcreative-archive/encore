@@ -13,18 +13,24 @@ module.exports = function( $ ) {
 
 	// Stickify the footer form.
 	var $sticky_placeholder = $( '<div />' ).insertBefore( '.footer-form' );
-	$form.addClass( 'is-sticky' );
 	$( window ).on( 'scroll', _.throttle( function() {
+		// Get the position of the top of the window.
+		var scrollTop = $( this ).scrollTop();
 		// Get the position of the bottom of the window.
-		var scrollBottom = $( this ).scrollTop() + $( this ).height() - $form.outerHeight();
-		// Compare it to the position of the sticky placeholder (which sits where
-		// the footer form would be if it wasn't sticky).
-		if ( scrollBottom >= $sticky_placeholder.offset().top ) {
-			$form.removeClass( 'is-sticky' );
-		} else {
+		var scrollBottom = scrollTop + $( this ).height() - $form.outerHeight();
+		// Make the footer form sticky if the user is scrolled more than 300px from
+		// the top of the page, and ISN'T scrolled far down enough to see the
+		// sticky placeholder (which sits where the footer form would be if it
+		// wasn't sticky).
+		if ( ( scrollTop > 300 ) && ( scrollBottom < $sticky_placeholder.offset().top ) ) {
 			$form.addClass( 'is-sticky' );
+		} else {
+			$form.removeClass( 'is-sticky' );
 		}
 	}, 50 ) );
+
+	// Trigger the scroll handler once to initialize sticky status.
+	$( window ).trigger( 'scroll' );
 
 	// Check localStorage to determine whether or not to hide the footer form.
 	if ( storage.getItem( 'footer_form_hidden' ) ) {
