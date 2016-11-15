@@ -75,7 +75,7 @@ if(get_sub_field('description') == "show")
 
 if(get_sub_field('button') == "show")
 {
-	echo '<center><a class="button button-solid button-gold" href="' . get_field( link_url ) . '" data-org-name="' . trim( esc_attr( get_the_title() ) . '">Get Involved</a></center>';
+	echo '<center><a class="button button-solid button-gold" href="' . get_field( link_url ) . '" data-org-name="' . trim( esc_attr( get_the_title() ) ) . '">Get Involved</a></center>';
 }
 else
 {
