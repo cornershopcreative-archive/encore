@@ -851,27 +851,6 @@
                                     "return_format": "value"
                                 }
                             ]
-                        },
-                        {
-                            "key": "field_5826124f26672",
-                            "label": "Autoplay rate",
-                            "name": "autoplay_rate",
-                            "type": "number",
-                            "instructions": "Enter the number of seconds that each slide should be displayed for before advancing to the next slide. Enter 0 to disable automatic slide switching.",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": 0,
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "seconds",
-                            "min": "",
-                            "max": "",
-                            "step": "0.5"
                         }
                     ],
                     "min": "",
@@ -1047,6 +1026,30 @@
                     "display": "block",
                     "sub_fields": [
                         {
+                            "key": "field_582b3f1ccf66d",
+                            "label": "Background Color",
+                            "name": "background_color",
+                            "type": "radio",
+                            "instructions": "",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "white": "White",
+                                "gray-background": "Gray"
+                            },
+                            "allow_null": 0,
+                            "other_choice": 0,
+                            "save_other_choice": 0,
+                            "default_value": "",
+                            "layout": "vertical",
+                            "return_format": "value"
+                        },
+                        {
                             "key": "field_580ab1188a715",
                             "label": "Title",
                             "name": "title",
@@ -1119,6 +1122,30 @@
                     "label": "News & Media",
                     "display": "block",
                     "sub_fields": [
+                        {
+                            "key": "field_582b3e88cf66c",
+                            "label": "Background Color",
+                            "name": "background_color",
+                            "type": "radio",
+                            "instructions": "",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "white": "White",
+                                "gray-background": "Gray"
+                            },
+                            "allow_null": 0,
+                            "other_choice": 0,
+                            "save_other_choice": 0,
+                            "default_value": "",
+                            "layout": "vertical",
+                            "return_format": "value"
+                        },
                         {
                             "key": "field_580fbcc099de0",
                             "label": "Title",
@@ -1979,6 +2006,54 @@
                     ],
                     "min": "",
                     "max": ""
+                },
+                {
+                    "key": "582b43567ffe0",
+                    "name": "social-slider",
+                    "label": "Social Slider",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_582b435f7ffe1",
+                            "label": "Title",
+                            "name": "title",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_582b43677ffe2",
+                            "label": "Shortcode",
+                            "name": "shortcode",
+                            "type": "text",
+                            "instructions": "Insert the shortcode provided from Flow Flow Social Stream into this text area",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
                 }
             ]
         }
@@ -2009,5 +2084,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1478890223
+    "modified": 1479230983
 }

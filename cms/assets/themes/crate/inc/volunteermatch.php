@@ -330,9 +330,13 @@ function get_vmatch_results( $query ) {
 
 	$api = new VolunteerMatchAPI();
 
+	// Set up some search defaults.
+	// 22 is the ID of the "Children & Youth" Cause Area
+	// Easiest way to lookup IDs is to visit http://www.volunteermatch.org/search
 	$query = wp_parse_args( $query, array(
 		'location'        => 'United States',
 		'sortCriteria'    => 'update',
+		'categoryIds'     => array(22),
 		'numberOfResults' => 18,
 		'keywords'        => array(),
 		'pageNumber'      => 1,
@@ -383,12 +387,12 @@ function format_vmatch_results( $results ) {
  * Converts $org data returned by API into useful image html
  */
 function _get_vmatch_org_image_html( $org ) {
-	
+
 	if ( empty( $org['imageUrl'] ) ) return '<div class="no-image"></div>';
-	
+
 	ob_start(); ?>
 		<a href="<?php echo esc_url( urldecode( $org['vmUrl'] ) ); ?>" target="_blank"><img src="<?php echo esc_url( urldecode( $org['imageUrl'] ) ); ?>" alt="Logo for <?php echo esc_attr( $org['name'] ) ; ?>"></a>
 	<?php
-		
+
 	return ob_get_clean();
 }

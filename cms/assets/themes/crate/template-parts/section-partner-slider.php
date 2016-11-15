@@ -4,7 +4,15 @@
  */
 ?>
 
-	<div class="content-section section-partner-slider">
+<?php
+
+	$slider_color = get_sub_field('background_color');
+
+?>
+
+
+	<?php echo '<div class="content-section section-partner-slider '.$slider_color.' ">' ;?>
+	
 		<?php if ( $title = get_sub_field( 'title' ) ): ?>
 			<h2 class="section-title"><?php echo wp_kses_post( wptexturize( $title ) ); ?></h2>
 		<?php endif; ?>

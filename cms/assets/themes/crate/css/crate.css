@@ -2680,6 +2680,12 @@ input[type='email'] {
       right: 1.25rem;
       font-size: 1rem; } }
 
+.orange-title {
+  padding-top: 50px;
+  padding-bottom: 50px;
+  background-color: #ff8b18;
+  color: #fff !important; }
+
 .modal {
   padding: 5px;
 
