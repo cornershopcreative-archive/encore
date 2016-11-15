@@ -10,7 +10,7 @@
 		flex-wrap: nowrap;
 	}
 
-	@include breakpoint( $desktop ) {
+	@include breakpoint( $full-menu ) {
 
 		.home & {
 			// Use alternate colors for the homepage on desktop.
@@ -20,7 +20,7 @@
 	}
 
 	&.has-current-submenu { // This class is added in nav.js.
-		@include breakpoint( $desktop ) {
+		@include breakpoint( $full-menu ) {
 			border-bottom: rem(60) solid $lime;
 		}
 	}
@@ -47,7 +47,7 @@
 		padding: rem(8) 0;
 	}
 
-	@include breakpoint( $desktop ) {
+	@include breakpoint( $full-menu ) {
 
 		.home & {
 			padding: rem(26) 0;
@@ -146,7 +146,7 @@
 
 			.home & {
 
-				@include breakpoint( $desktop ) {
+				@include breakpoint( $full-menu ) {
 					// Recolor SVG on dektop.
 					fill: $white;
 					color: $white;
@@ -162,7 +162,7 @@
 
 		.home & {
 
-			@include breakpoint( $desktop ) {
+			@include breakpoint( $full-menu ) {
 				// Pull left to overlap with .site-logo's bounding box.
 				margin-left: rem(-4);
 			}
@@ -173,13 +173,13 @@
 			height: auto;
 			color: $charcoal;
 
-			@include breakpoint( $desktop ) {
+			@include breakpoint( $full-menu ) {
 				width: rem(88);
 			}
 
 			.home & {
 
-				@include breakpoint( $desktop ) {
+				@include breakpoint( $full-menu ) {
 					// Recolor SVG on desktop.
 					color: $white;
 				}
@@ -200,7 +200,7 @@
 		margin: 0 1rem;
 	}
 
-	@include breakpoint( $desktop ) {
+	@include breakpoint( $full-menu ) {
 		display: none;
 	}
 
@@ -215,7 +215,7 @@
 	top: 100%; // Anchor to the bottom of the menu.
 	right: 0;
 
-	@include breakpoint( $desktop ) {
+	@include breakpoint( $full-menu ) {
 		flex-grow: 1;
 		justify-content: center;
 		background: transparent;
@@ -228,7 +228,7 @@
 		max-height: 0;
 		transition: max-height 0.2s ease-out;
 
-		@include breakpoint( $desktop ) {
+		@include breakpoint( $full-menu ) {
 			// Reset positioning.
 			position: static;
 			// Don't hide menus on desktop.
@@ -255,7 +255,7 @@
 		// Use native, momentum-based scrolling on iOS.
 		-webkit-overflow-scrolling: touch;
 
-		@include breakpoint( $desktop ) {
+		@include breakpoint( $full-menu ) {
 			overflow: visible; // But don't require scrolling on desktop, duh.
 		}
 	}
@@ -267,7 +267,7 @@
 		// (which have smaller fonts) have the same line-height.
 		line-height: 1em;
 
-		@include breakpoint( $desktop ) {
+		@include breakpoint( $full-menu ) {
 			font-size: rem(15);
 			line-height: 1.5;
 			padding: 0;
@@ -280,7 +280,7 @@
 		padding: rem(15) rem(40);
 		position: relative;
 
-		@include breakpoint( $desktop ) {
+		@include breakpoint( $full-menu ) {
 			display: flex;
 			padding: 0 rem(15);
 			align-items: center;
@@ -290,7 +290,7 @@
 			display: inline-block;
 			vertical-align: middle;
 
-			@include breakpoint( $desktop ) {
+			@include breakpoint( $full-menu ) {
 				text-transform: uppercase;
 
 				.home & {
@@ -307,7 +307,7 @@
 			margin-left: rem(20);
 			@extend .icon-submenu-open;
 
-			@include breakpoint( $desktop ) {
+			@include breakpoint( $full-menu ) {
 				display: none;
 			}
 		}
@@ -317,7 +317,7 @@
 		font-size: rem(18);
 		margin: 0 rem(-40);
 
-		@include breakpoint( $desktop ) {
+		@include breakpoint( $full-menu ) {
 			position: absolute;
 			top: rem(81); // 70px-tall menu minus 8px top padding, plus 19px submenu padding
 			max-height: none;
@@ -340,7 +340,7 @@
 				border-top: 1px solid $silver;
 			}
 
-			@include breakpoint( $desktop ) {
+			@include breakpoint( $full-menu ) {
 
 				&,
 				&:first-child {
@@ -375,7 +375,7 @@
 			&:after {
 				@extend .icon-submenu-pointer;
 
-				@include breakpoint( $desktop ) {
+				@include breakpoint( $full-menu ) {
 					content: '';
 					display: block;
 					position: absolute;
@@ -392,7 +392,7 @@
 
 		.sub-menu {
 
-			@include breakpoint( $desktop ) {
+			@include breakpoint( $full-menu ) {
 				display: flex;
 				justify-content: center;
 			}
