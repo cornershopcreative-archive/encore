@@ -23,7 +23,6 @@ function stashAPI( $settings, $action, $additionalParams = array() ) {
 		$params = array( 'token' => $settings['itxapi_token'] ); // itxapi_password is a HASH of user's password.
 	} else {
 		$error = 'BackupBuddy Error #793749436: No valid token (itxapi_token) or hashed password (itxapi_password) specified. This should not happen.';
-		self::_error( $error );
 		trigger_error( $error, E_USER_NOTICE );
 		return $error;
 	}

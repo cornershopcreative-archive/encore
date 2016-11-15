@@ -301,8 +301,23 @@ backupbuddy-get-liveStats
 		last_periodic_activity_ago - How long ago last periodic activity occurred in pretty format. Eg: 13 mins ago
 		last_file_audit_start - Timestamp last file audit began (float) Eg: 1450122091.27
 		last_file_audit_finish - Timestamp last file audit finished (float) Eg: 1450122103.65
-
-
+		daily_stats - Array of daily stats, NOT including LIVE real-time backups. The key of each item in the array is the date in the format year-month-day, with zero padding.
+			Array contents for each day:
+				d_t - Database; total number of tables (.sql files) sent.
+				d_s - Database; total size, in bytes, sent.
+				f_t - Files; total number of files sent (does NOT include database table count from above).
+				f_s - Files; total size, in bytes, sent (does NOT include database table sizes from above).
+			Example:
+				array(
+					[08-18-16] => Array
+						(
+							[d_t] => 24
+							[d_s] => 7766016
+							[f_t] => 1
+							[f_s] => 131533
+						)
+					)
+					
 backupbuddy-set-liveStatus
 	Description:
 		Pause/Resume BackupBuddy Stash Live status for continuous database and/or periodic scans (files).

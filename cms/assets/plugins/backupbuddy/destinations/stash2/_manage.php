@@ -238,7 +238,7 @@ if ( count( $backup_list ) == 0 ) {
 echo '<br style="clear: both;">';
 
 
-if ( 'live' == $destination['type'] ) {
+//if ( 'live' == $destination['type'] ) {
 ?>
 <script>
 	// Create Base64 Object
@@ -253,5 +253,5 @@ if ( 'live' == $destination['type'] ) {
 </script>
 <iframe id="stash_download_iframe" style="display: none;"></iframe>
 <?php
-}
+//}
 return;

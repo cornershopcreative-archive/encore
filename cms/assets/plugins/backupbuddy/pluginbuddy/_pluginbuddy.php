@@ -194,6 +194,12 @@ class pb_backupbuddy {
 			return self::$_settings[$type];
 		}
 		
+		if ( defined( 'PB_STANDALONE' ) && ( PB_STANDALONE === true ) ) {
+			if ( 'version' == $type ) {
+				return PB_BB_VERSION;
+			}
+		}
+		
 		// The variable does not exist so check to see if it can be extracted from the plugin's header.
 		//if ( self::blank( @self::$_settings['name'] ) ) {
 		if ( !isset( self::$_settings['name'] ) || ( self::$_settings['name'] == '' ) ) {
@@ -320,6 +326,43 @@ class pb_backupbuddy {
 	
 	
 	
+	public static function load_from_backup() {
+		//error_log( 'BackupBuddy settings missing/corrupt. Attempting to restore from settings backup (if exists).' );
+		$restore_fail_message = 'Error #84938943: Your BackupBuddy Settings were detected as missing or corrupt. BackupBuddy has attempted to load BackupBuddy settings from its settings backup file but failed. Verify your BackupBuddy settings are still intact and valid. This could have been caused by a database error or corruption.';
+		$restore_success_message = 'Warning #894384: Your BackupBuddy Settings were detected as missing or corrupt. BackupBuddy has restored your previous BackupBuddy settings from its settings backup file. Please verify your restored BackupBuddy settings look okay. This could have been caused by a database error or corruption.';
+		
+		require_once( pb_backupbuddy::plugin_path() . '/classes/core.php' );
+		$backup_dir = backupbuddy_core::getLogDirectory();
+		$existing_backups = glob( $backup_dir . 'settings_backup-*.php' );
+		if ( ( ! is_array( $existing_backups ) ) || ( count( $existing_backups ) < 1 ) ) { // No backups so just load defaults. May be a new install.
+			return false;
+		}
+		
+		if ( false === ( $settings = @file_get_contents( $existing_backups[0] ) ) ) {
+			backupbuddy_core::mail_error( $restore_fail_message . ' Details: Unable to open/read backup file that was found.' );
+			return false;
+		}
+		
+		// Skip first line.
+		$second_line_pos = strpos( $settings, "\n" ) + 1;
+		$settings = substr( $settings, $second_line_pos );
+		
+		// Decode back into an array.
+		$settings = unserialize( base64_decode( $settings ) );
+		
+		if ( is_array( $settings ) && ( isset( $settings['data_version'] ) ) ) { // Good restore.
+			//error_log( 'BackupBuddy settings restored.' );
+			return $settings;
+		} else { // Restore failed. Bad data!
+			error_log( 'BackupBuddy settings failed restore.' );
+			return false;
+		}
+		
+		
+		
+	} // End load_from_backup().
+	
+	
 	/*	self::load()
 	 *	
 	 *	Loads the plugin options array containing all user-configurable options, etc.
@@ -351,21 +394,31 @@ class pb_backupbuddy {
 			$options = array_merge( (array)self::settings( 'default_options' ), $options );
 			
 			pb_backupbuddy::$options = $options;
-			return;
+		} else { // Normal BB in WordPress.
+			
+			self::$options = self::_get_option( 'pb_' . self::settings( 'slug' ) );
+			//self::$options = ''; // Test damaged options.
+			
 		}
 		
-		self::$options = self::_get_option( 'pb_' . self::settings( 'slug' ) );
-		
 		// Merge defaults into temporary $options variable and save if it differs with the pre-merge options. Only retries this once.
-		if ( ( empty( self::$options ) ) && ( true === $retry_db ) ) {
+		if ( ( empty( self::$options ) || ( ! isset( self::$options['data_version'] ) ) ) && ( true === $retry_db ) ) { // If empty options or corrupt.
 			global $wpdb;
 			// If the database goes away in the middle of a query, wait 5 seconds and try again. Otherwise, we unintentionally overwrite the settings.
 			if ( ! empty( $wpdb->last_error ) && ( FALSE !== strpos( $wpdb->last_error, "SELECT option_value FROM `$wpdb->options` WHERE option_name = 'pb_backupbuddy'" ) ) ) {
 				sleep( 5 );
 				self::load( $retry_db = false );
 				return;
-			} else {
-				$options = (array)self::settings( 'default_options' );
+			} else { // Missing or corrupt options when loading. Either a new install or settings went missing.
+				
+				// Check for a settings backup and try to load it if were not in a standalone script
+				if ( ! defined( 'PB_STANDALONE' ) || PB_STANDALONE === false ) {
+					if ( false !== ( $restored_settings = self::load_from_backup() ) ) {
+						$options = $restored_settings;
+					} else { // Load defaults.
+						$options = (array)self::settings( 'default_options' );
+					}
+				}
 			}
 		} else {
 			$options = array_merge( (array)self::settings( 'default_options' ), (array)self::$options );
@@ -674,6 +727,10 @@ class pb_backupbuddy {
 		
 		if ( ! class_exists( 'backupbuddy_core' ) ) {
 			require_once( pb_backupbuddy::plugin_path() . '/classes/core.php' );
+		}
+		
+		if ( ! isset( self::$options['log_level'] ) ) { // If settings are corrupted default to no logging.
+			self::$options['log_level'] = 0;
 		}
 		
 		if ( ( self::$_status_serial != '' ) && ( $serials == '' ) ) {
@@ -1686,6 +1743,20 @@ class pb_backupbuddy {
 			return false;
 		}
 	} // End reset_defaults().
+	
+	
+	
+	/* xdebug()
+	 *
+	 * Logs caller to error_log() if xdebug available.
+	 *
+	 */
+	public static function xdebug() {
+		if ( ! function_exists( 'xdebug_call_file' ) ) {
+			return;
+		}
+		error_log( "Called @ " . xdebug_call_file() . ":" . xdebug_call_line() . " from " . xdebug_call_function() );
+	}
 	
 	
 	

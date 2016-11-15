@@ -51,23 +51,15 @@ pb_backupbuddy::load_style( 'quicksetup.css' );
 		}
 		
 		jQuery( '#pb_backupbuddy_quickstart_destination' ).change( function() {
-			if ( jQuery(this).val() == 'stash' ) { // Stash (v1).
-				jQuery( '.stash2-fields' ).slideUp();
-				jQuery( '.stash-fields' ).slideDown();
-				jQuery( '#pb_backupbuddy_quickstart_form .schedule' ).slideDown();
-				return; // Skip destination picker for Stash (v1).
-			} else if ( jQuery(this).val() == 'stash2' ) { // Stash (v2).
-				jQuery( '.stash-fields' ).slideUp();
+			if ( jQuery(this).val() == 'stash2' ) { // Stash (v2).
 				jQuery( '.stash2-fields' ).slideDown();
 				jQuery( '#pb_backupbuddy_quickstart_form .schedule' ).slideDown();
 				return; // Skip destination picker for Stash (v2).
 			} else if (  jQuery(this).val() == 'live' ) { // Stash Live (as of v7).
-				jQuery( '.stash-fields' ).slideUp();
 				jQuery( '.stash2-fields' ).slideUp();
 				jQuery( '#pb_backupbuddy_quickstart_form .schedule' ).slideUp();
 				return;
 			} else { // Other destination.
-				jQuery( '.stash-fields' ).slideUp();
 				jQuery( '.stash2-fields' ).slideUp();
 				jQuery( '#pb_backupbuddy_quickstart_form .schedule' ).slideDown();
 			}
@@ -258,12 +250,6 @@ pb_backupbuddy::load_style( 'quicksetup.css' );
 						
 						<?php
 						// For each v2 destination available remove its v1.
-						if ( isset( $destinations['stash2'] ) ) {
-							unset( $destinations['stash'] );
-						}
-						if ( isset( $destinations['dropbox2'] ) ) {
-							unset( $destinations['dropbox'] );
-						}
 						if ( isset( $destinations['s32'] ) ) {
 							unset( $destinations['s3'] );
 						}
@@ -271,12 +257,6 @@ pb_backupbuddy::load_style( 'quicksetup.css' );
 						$stash2support = false;
 						foreach( $destinations as $destinationSlug => $destination ) {
 							$checkHTML = '';
-							if ( 'stash' == $destinationSlug ) {
-								if ( ! isset( $destinations['stash2'] ) ) {
-									$destination['name'] .= ' - ' . __( 'Recommended', 'it-l10n-backupbuddy' );
-									$checkHTML = ' selected';
-								}
-							}
 							if ( 'stash2' == $destinationSlug ) {
 								$destination['name'] .= ' - ' . __( 'Recommended', 'it-l10n-backupbuddy' );
 								$stash2support = true;
@@ -289,7 +269,7 @@ pb_backupbuddy::load_style( 'quicksetup.css' );
 							if ( ( 'site' == $destinationSlug ) || ( 'live' == $destinationSlug ) ) { // Don't show Deployment or Live.
 								continue;
 							}
-							echo '<option value="' . $destinationSlug . '" ' . $checkHTML . '>' . str_replace( '(v2)', '', $destination['name'] ) . '</option>' . "\n";
+							echo '<option value="' . $destinationSlug . '" ' . $checkHTML . '>' . $destination['name'] . '</option>' . "\n";
 						}
 						unset( $destinations );
 						?>

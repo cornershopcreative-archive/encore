@@ -132,6 +132,7 @@ class pb_backupbuddy_destination_stash2 { // Change class name end to match dest
 	public static function test( $settings ) {
 		
 		$settings = self::_init( $settings );
+		
 		return pb_backupbuddy_destination_s32::test( $settings );
 		
 	} // End test().
@@ -147,7 +148,7 @@ class pb_backupbuddy_destination_stash2 { // Change class name end to match dest
 	 * @param	bool			$passthru_errors	When false, we will handle parsing errors here, returning a string error message. When true, pass back the entire array from the server.
 	 * @return	array|string						Array with response data on success. String with error message if something went wrong. Auto-logs all errors to status log.
 	 */
-	public static function stashAPI( $settings, $action, $additionalParams = array(), $blocking = true, $passthru_errors = false ) {
+	public static function stashAPI( $settings, $action, $additionalParams = array(), $blocking = true, $passthru_errors = false, $timeout = 15 ) {
 		
 		global $wp_version;
 		
@@ -161,23 +162,27 @@ class pb_backupbuddy_destination_stash2 { // Change class name end to match dest
 			'timestamp' => time()
 		);
 		
+		$params = array();
 		if ( isset( $settings['itxapi_password' ] ) ) { // Used on initital connection to  
-			$params = array( 'auth_token' => $settings['itxapi_password'] ); // itxapi_password is a HASH of user's password.
-		} elseif ( isset( $settings['itxapi_token' ] ) ) { // Used on initital connection to  
-			$params = array( 'token' => $settings['itxapi_token'] ); // itxapi_password is a HASH of user's password.
-		} else {
+			$params['auth_token'] = $settings['itxapi_password']; // itxapi_password is a HASH of user's password.
+		}
+		if ( isset( $settings['itxapi_token' ] ) ) { // Used on initital connection to  
+			$params['token'] = $settings['itxapi_token']; // itxapi_password is a HASH of user's password.
+		}
+		/*
 			$error = 'BackupBuddy Error #438923983: No valid token (itxapi_token) or hashed password (itxapi_password) specified. This should not happen.';
 			self::_error( $error );
 			trigger_error( $error, E_USER_NOTICE );
 			return $error;
 		}
-		
+		*/
+		//print_r( $params );
 		$params = array_merge( $params, $additionalParams );
 		
 		$post_url = self::API_URL . '/?' . http_build_query( $url_params, null, '&' );
 		$http_data = array(
 			'method' => 'POST',
-			'timeout' => 15,
+			'timeout' => $timeout,
 			'redirection' => 5,
 			'httpversion' => '1.0',
 			'blocking' => $blocking,
@@ -195,8 +200,8 @@ class pb_backupbuddy_destination_stash2 { // Change class name end to match dest
 		}
 		
 		if ( is_wp_error( $response ) ) {
-			$error = 'Error #3892774: `' . $response->get_error_message() . '`.';
-			self::_error( 'error', $error );
+			$error = 'Error #3892774: `' . $response->get_error_message() . '` connecting to `' . $post_url . '`.';
+			self::_error( $error );
 			
 			if ( 'live' == $settings['type'] ) {
 				//backupbuddy_core::addNotification( 'live_error', 'BackupBuddy Stash Live Error', $error );
@@ -258,10 +263,12 @@ class pb_backupbuddy_destination_stash2 { // Change class name end to match dest
 		echo "QUOTARESULTS:";
 		echo '<pre>';
 		print_r( $quota_data );
-		echo '</pre>';`
+		echo '</pre>';
 		*/
 		
+		
 		if ( ! is_array( $quota_data ) ) {
+			echo 'Error #8943978344: `' . $quota_data . '`.';
 			return false;
 		} else {
 			set_transient( 'pb_backupbuddy_stash2quota_' . $settings['itxapi_username'], $quota_data, $cache_time );
@@ -527,7 +534,7 @@ class pb_backupbuddy_destination_stash2 { // Change class name end to match dest
 		
 		$response = self::stashAPI( $settings, $stashAction = 'trim', $additionalParams );
 		if ( ! is_array( $response ) ) {
-			$error = 'Error #832973: Unable to trim Stash (v2) upload. Details: `' . print_r( $response, true ) . '`.';
+			$error = 'Error #83279768543973: Unable to trim Stash (v2) upload. Details: `' . print_r( $response, true ) . '`.';
 			self::_error( $error );
 			return false;
 		} else {

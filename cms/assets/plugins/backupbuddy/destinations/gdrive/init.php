@@ -271,7 +271,7 @@ class pb_backupbuddy_destination_gdrive {
 				$insertRequest = self::$_drive->files->insert( $driveFile );
 			} catch (Exception $e) {
 				pb_backupbuddy::alert( 'Error #3232783268336: initiating upload. Details: ' . $e->getMessage() );
-				backupbuddy::status( 'error', 'Error #3232783268336: initiating upload to Google Drive (v1). Details: ' . $e->getMessage() );
+				pb_backupbuddy::status( 'error', 'Error #3232783268336: initiating upload to Google Drive (v1). Details: ' . $e->getMessage() );
 				return false;
 			}
 			

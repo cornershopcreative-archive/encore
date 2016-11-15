@@ -1002,7 +1002,10 @@ if ( 'deploy' == pb_backupbuddy::_GET( 'backupbuddy_backup' ) ) {
 						
 						$thisDest = '';
 						$thisDest .= '<li class="bb_destination-item bb_destination-' . $destination_name . ' bb_destination-new-item ' . $disableClass . '">';
-						if ( 'stash2' == $destination_name ) {
+						if ( 's33' == $destination_name ) {
+							$thisDest .= '<div class="bb-ribbon"><span>New</span></div>';
+						}
+						if ( 'stash3' == $destination_name ) {
 							$thisDest .= '<div class="bb-ribbon"><span>New</span></div>';
 						}
 						$thisDest .= '<a href="javascript:void(0)" rel="' . $destination_name . '">';

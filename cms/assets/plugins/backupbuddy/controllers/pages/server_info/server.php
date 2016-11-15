@@ -93,7 +93,7 @@ include( '_server_tests.php' );
 
 
 
-<table class="widefat">
+<table class="widefat striped">
 	<thead>
 		<tr class="thead">
 			<th style="width: 15px;">&nbsp;</th>
@@ -121,7 +121,7 @@ include( '_server_tests.php' );
 	<tbody>
 		<?php
 		foreach( $tests as $parent_class_test ) {
-			echo '<tr class="entry-row alternate">';
+			echo '<tr class="entry-row">';
 			echo '	<td>' . pb_backupbuddy::tip( $parent_class_test['tip'], '', false ) . '</td>';
 			echo '	<td>' . $parent_class_test['title'] . '</td>';
 			echo '	<td>' . $parent_class_test['suggestion'] . '</td>';

@@ -220,6 +220,9 @@ class pb_backupbuddy_filesystem {
 			if ( 0 != $max_time ) { // Chunking enabled.
 				if ( ( time() - $start_time ) > $max_time ) { // Not enough time left.
 					if ( $i == $startAt ) { // Did not increase position.
+						if ( $max_time < 0 ) {
+							pb_backupbuddy::status( 'error', 'Error #834743745: Max time negative. This usually means the max PHP time for this server is exceptionally low. Check max PHP runtime to verify it is 30 seconds or more.' );
+						}
 						$error = 'Error #34848934: No progress was made during file scan. Halting to prevent looping repeatedly at beginning of deep scan. Elapsed: `' . ( time() - $start_time ) . '`. Max time: `' . $max_time . '`. startAt: `' . $startAt . '`. Items count: `' . count( $items ) . '`.';
 						pb_backupbuddy::status( 'error', $error );
 						return $error;

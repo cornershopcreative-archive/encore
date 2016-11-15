@@ -253,7 +253,7 @@
 		);
 		
 		jQuery( '.cpanel_user' ).change(function(){
-			jQuery( '.cpanel_user_mirror' ).html( jQuery( '#cpanel_user' ).val() + '_' );
+			jQuery( '.cpanel_user_mirror' ).html( jQuery( '#cpanel_user' ).val().substring(0,8) + '_' );
 		});
 		
 		jQuery( '.cpanel_createdb_create' ).click( function() {
@@ -549,7 +549,7 @@
 								<%= tip( '[Ex: mydomain.com] Enter the cPanel domain to complete the URL you go to to access cPanel.  For instance if your cPanel login is at http://mydomain.com:2082/ then your domain is mydomain.com.' ) %>
 							</td>
 							<td style="text-align: right;">
-								http://<input type="text" name="cpanel_url" id="cpanel_url" style="width: 186px;">:<input type="text" name="cpanel_port" id="cpanel_port" style="width: 62px;" value="2082">/
+								<input type="text" name="cpanel_protocol" id="cpanel_protocol" value="http://" style="width: 85px;"><input type="text" name="cpanel_url" id="cpanel_url" style="width: 186px;">:<input type="text" name="cpanel_port" id="cpanel_port" style="width: 62px;" value="2082">/
 							</td>
 						</tr>
 						<tr>

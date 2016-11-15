@@ -95,3 +95,7 @@
 .widefat .check-column {
 	padding: 15px 3px 15px;
 }
+
+.pb_backupbuddy_alert.error {
+	background-color: #ffcad3;
+}

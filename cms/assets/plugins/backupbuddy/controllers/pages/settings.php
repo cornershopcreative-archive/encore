@@ -106,17 +106,28 @@ if ( isset( $_POST['pb_backupbuddy_backup_directory'] ) ) {
 	}
 	$backup_directory = str_replace( '\\', '/', $backup_directory );
 	$backup_directory = rtrim( $backup_directory, '/\\' ) . '/'; // Enforce single trailing slash.
+	$prevent_backup_dir_change = false;
 	
-	if ( ! is_dir( $backup_directory ) ) {
-		if ( false === @mkdir( $backup_directory, 0755 ) ) {
-			pb_backupbuddy::alert( 'Error #4838594589: Selected backup directory does not exist and it could not be created. Verify the path is correct or manually create the directory and set proper permissions. Reset to default path.' );
-			$_POST['pb_backupbuddy_backup_directory'] = backupbuddy_core::getBackupDirectory(); // Set back to previous value (aka unchanged).
+	if ( ( '/' != substr( $backup_directory, 0, 1 ) ) && ( '\\\\' != substr( $backup_directory, 0, 2 ) ) && ( ':' != substr( $backup_directory, 1, 1 ) ) ) {
+		pb_backupbuddy::alert( 'Error #3893983: Invalid custom path format. Must be a valid Linux of Windows path beginning with either /, \\\\, or X: (where X is drive letter). Resetting back to prevoius setting.', true );
+		$prevent_backup_dir_change = true;
+		$_POST['pb_backupbuddy_backup_directory'] = backupbuddy_core::getBackupDirectory(); // Set back to previous value (aka unchanged).
+		if ( backupbuddy_core::getBackupDirectory() == backupbuddy_core::_getBackupDirectoryDefault() ) {
+			$_POST['pb_backupbuddy_backup_directory'] = '';
 		}
 	}
 	
-	if ( backupbuddy_core::getBackupDirectory() != $backup_directory ) { // Directory differs. Needs updated in post var. Give messages here as this value is going to end up being saved.
-		pb_backupbuddy::anti_directory_browsing( $backup_directory );
-		
+	if ( false === $prevent_backup_dir_change ) {
+		pb_backupbuddy::anti_directory_browsing( $backup_directory, $die = false );
+		if ( ! file_exists( $backup_directory ) ) {
+			error_log( 'APPLES' );
+			pb_backupbuddy::alert( 'Error #4838594589: Selected backup directory does not exist and it could not be created. Verify the path is correct or manually create the directory and set proper permissions. Reset to previous path.', true );
+			$_POST['pb_backupbuddy_backup_directory'] = backupbuddy_core::getBackupDirectory(); // Set back to previous value (aka unchanged).
+			$prevent_backup_dir_change = true;
+		}
+	}
+	
+	if ( ( backupbuddy_core::getBackupDirectory() != $backup_directory ) && ( $prevent_backup_dir_change !== true ) ) { // Directory differs. Needs updated in post var. Give messages here as this value is going to end up being saved.
 		$old_backup_dir = backupbuddy_core::getBackupDirectory();
 		$new_backup_dir = $backup_directory;
 		
@@ -128,7 +139,7 @@ if ( isset( $_POST['pb_backupbuddy_backup_directory'] ) ) {
 		}
 		foreach( $old_backups as $old_backup ) {
 			if ( false === rename( $old_backup, $new_backup_dir . basename( $old_backup ) ) ) {
-				pb_backupbuddy::alert( 'ERROR: Unable to move backup "' . basename( $old_backup ) . '" to new storage directory. Manually move it or delete it for security and to prevent it from being backed up within backups.' );
+				pb_backupbuddy::alert( 'ERROR: Unable to move backup "' . basename( $old_backup ) . '" to new storage directory. Manually move it or delete it for security and to prevent it from being backed up within backups.', true );
 			} else { // rename success.
 				$old_backups_moved++;
 				$serial = backupbuddy_core::get_serial_from_file( basename( $old_backup ) );

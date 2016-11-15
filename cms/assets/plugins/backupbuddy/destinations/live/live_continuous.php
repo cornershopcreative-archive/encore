@@ -233,14 +233,14 @@ class backupbuddy_live_continuous {
 			return;
 		}
 		self::dbqueue( 'users', 'ID', $user_id );
-		self::dbqueue( 'usermeta', 'ID', $user_id );
+		self::dbqueue( 'usermeta', 'user_id', $user_id );
 	}
 	
 	
 	
 	// Handle user meta changes.
-	public static function usermeta_action_handler( $umeta_id, $user_id, $meta_key, $meta_value='' ) {
-		self::dbqueue( 'usermeta', $umeta_id );
+	public static function handle_usermeta( $umeta_id, $user_id, $meta_key, $meta_value='' ) {
+		self::dbqueue( 'usermeta', 'umeta_id', $umeta_id );
 	}
 	
 	
@@ -508,8 +508,13 @@ class backupbuddy_live_continuous {
 	 *
 	 */
 	public static function _send_dbqueue() {
-		require_once( pb_backupbuddy::plugin_path() . '/destinations/stash2/init.php' );
-		$response = pb_backupbuddy_destination_stash2::stashAPI( pb_backupbuddy::$options['remote_destinations'][ backupbuddy_live::getLiveID() ], 'live-put', array( 'files' => self::$_dbqueue_rendered ) );
+		$settings = pb_backupbuddy::$options['remote_destinations'][ backupbuddy_live::getLiveID() ];
+		if ( ! isset( $settings['destination_version'] ) ) {
+			$settings['destination_version'] = '2';
+		}
+		
+		require_once( pb_backupbuddy::plugin_path() . '/destinations/stash' . $settings['destination_version'] . '/init.php' );
+		$response = call_user_func_array( array( 'pb_backupbuddy_destination_stash' . $settings['destination_version'], 'stashAPI' ), array( $settings, 'live-put', array( 'files' => self::$_dbqueue_rendered ) ) );
 		//error_log( 'Live db send response:' );
 		//error_log( print_r( $response, true ) );
 		
@@ -530,7 +535,7 @@ class backupbuddy_live_continuous {
 		
 		if ( count( $errors ) > 0 ) {
 			pb_backupbuddy::status( 'error', 'Error sending live continuous data. Error(s): `' . implode( ', ', $errors ) . '`.' );
-			backupbuddy_core::addNotification( 'live_continuous_error', 'BackupBuddy Stash Live Errors', implode( ', ', $errors ), $errors );
+			//backupbuddy_core::addNotification( 'live_continuous_error', 'BackupBuddy Stash Live Errors', implode( ', ', $errors ), $errors );
 		} else {
 			// Update last activity time.
 			backupbuddy_live::update_db_live_activity_time();

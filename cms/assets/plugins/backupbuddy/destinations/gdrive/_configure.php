@@ -33,20 +33,14 @@ if ( 'add' == $mode ) {
 		<ol>
 			<li><a href="https://console.developers.google.com/project?authuser=0" target="_blank" class="button secondary-button" style="vertical-align: 0;">Open Google API Console in a new window</a></li>
 			<li>In the new window select <span class="pb_label pb_label-subtle">Create Project</span> and name it something like "BackupBuddy" & <span class="pb_label pb_label-subtle">Create</span>. Wait for the next screen to display.</li>
-			<li>Once the project is created, look for the blue box and click <span class="pb_label pb_label-subtle">Enable and Manage APIs</span>.</li>
-			<li>Find and click the link for <span class="pb_label pb_label-subtle">Drive API</span> under the Google Apps APIs subheading. (Make sure you select Drive <b>API</b>, <i>not</i> Drive <b>SDK</b>).</li>
-			<li>On the next screen, click the blue <span class="pb_label pb_label-subtle">Enable API</span> button.</li>
+			<li>Under Google Apps APIs click the link for <span class="pb_label pb_label-subtle">Drive API</span>.</li>
+			<li>On the next screen, click the blue <span class="pb_label pb_label-subtle">Enable</span> button to enable its API.</li>
 			<li>From the left menu select <span class="pb_label pb_label-subtle">Credentials</span>.</li>
 			<li>Select the <span class="pb_label pb_label-subtle">Create Credentials</span> button then <span class="pb_label pb_label-subtle">OAuth client ID</span>.</li>
 			<li>Click the button to <span class="pb_label pb_label-subtle">Configure consent screen</span>.</li>
-			<li>On the next screen, type any name you would like into the <span class="pb_label pb_label-subtle">Product name shown to users</span> field and save the form. (nobody but you will ever see this for BackupBuddy).</li>
-
-			<li>Select Application type of <span class="pb_label pb_label-subtle">Other</span> and title it whatever you'd prefer. <em>Do NOT choose Web Application</em>.</li>
-			<!--
-			<li>Select your email address then for Product name enter something like "BackupBuddy" then <span class="pb_label pb_label-subtle">Save</span></li>
-			<li>Select Application type of <span class="pb_label pb_label-subtle">Installed application</span> & below it Installed type <span class="pb_label pb_label-subtle">Other</span> then select <span class="pb_label pb_label-subtle">Create Client ID</span></li>
-		-->
-			<li>Copy & paste the <span class="pb_label pb_label-subtle">Client ID</span> & <span class="pb_label pb_label-subtle">Client Secret</span> below.</li>
+			<li>On the next screen, type any name you would like into the <span class="pb_label pb_label-subtle">Product name shown to users</span> field and save the form. (nobody but you will ever see this information).</li>
+			<li>Select Application type of <span class="pb_label pb_label-subtle">Other</span> and title it whatever you'd prefer and select the Create button.</li>
+			<li>Copy & paste the <span class="pb_label pb_label-subtle">Client ID</span> & <span class="pb_label pb_label-subtle">Client Secret</span> below and select OK on the Google page.</li>
 		</ol>
 		
 		<br><br>

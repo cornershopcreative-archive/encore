@@ -57,7 +57,7 @@ if ( pb_backupbuddy::_GET( 'text' ) == 'true' ) {
 			word-break: break-all;
 		}
 	</style>
-	<table class="widefat backupbuddy_sizemap_table">
+	<table class="widefat striped backupbuddy_sizemap_table">
 		<thead>
 			<tr class="thead">
 				<?php

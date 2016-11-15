@@ -44,11 +44,13 @@ class pb_backupbuddy_destination_live {
 		'max_daily_failures'		=>		'50',		// Maximum number of files to allow to fail before halting further file sends.
 		'max_filelist_keys'			=>		'250',		// Maximum number of files to list from server via listObjects calls.
 		'send_snapshot_notification'=>		'1',		// Whether or not to send a snapshot notification for snapshot completions. Note: First email is always sent.
-		'show_admin_bar'			=>		'1',		// Whether or not to show stats in admin bar.
+		'show_admin_bar'			=>		'0',		// Whether or not to show stats in admin bar.
 		'no_new_snapshots_error_days' =>	'10',		// Sends error emails if no Snapshots 
 		'max_wait_on_transfers_time' =>		'5',		// Maximum minutes to wait for pending transfers to complete before falling back to Snapshotting.
 		'email'						=>		'',			// Email to send snapshot notifications to. If blank it will use iThemes Member Account email.
 		'max_delete_burst'			=>		'100',		// Max number of files per delete per burst. Eg number of files to pass into deleteFiles() function.
+		
+		'destination_version'		=>		'2', // Which Stash remote destination version to use. Launched with 2 (v2).
 		
 		/***** BEGIN ARCHIVE LIMITS *****/
 		'limit_db_daily'			=>		'5',
@@ -72,12 +74,14 @@ class pb_backupbuddy_destination_live {
 		'limit_themes_yearly'		=>		'0',
 		/***** END ARCHIVE LIMITS *****/
 		
-		// S32 settings
+		// S32/s33 settings
 		'ssl'						=>		'1',		// Whether or not to use SSL encryption for connecting.
 		'server_encryption'			=>		'AES256',	// Encryption (if any) to have the destination enact. Empty string for none.
-		'max_time'					=>		'',			// Default max time in seconds to allow a send to run for. Set to 0 for no time limit. Aka no chunking.
+		'max_time'					=>		'',			// Default max time in seconds to allow a send to run for. Set to 0 for no time limit. Aka no chunking. Blank to use auto-detected number. Adjusted number for use by Stash Live to be stored in _max_time instance var.
+		'_max_time'					=>		'30',		// Calculated and adjusted max time based on detected runtime and user settings. Instance var.
 		'max_burst'					=>		'10',		// Max size in mb of each burst within the same page load.
-		'use_packaged_cert'			=>		'0',		// When 1, use the packaged cacert.pem file included with the AWS SDK.
+		'use_server_cert'			=>		'0',		// When 1, use the packaged cacert.pem file included with the AWS SDK.
+		'disable_hostpeer_verficiation' =>	'0',		// Disables SSL host/peer verification.
 		'storage'					=>		'STANDARD',	// Whether to use standard or reduced redundancy storage. Allowed values: STANDARD, REDUCED_REDUNDANCY
 		
 		'_database_table'			=>		'',			// Table name if sending a database file.
@@ -110,7 +114,7 @@ class pb_backupbuddy_destination_live {
 		}
 		
 		$settings['stash_mode'] = '0';
-		$settings['live_mode'] = '1'; // Live is calling the s32 destination.
+		$settings['live_mode'] = '1'; // Live is calling the s32/s33 destination.
 		$settings['bucket'] = $response['bucket'];
 		$settings['credentials'] = $response['credentials'];
 		$settings['directory'] = $response['prefix'];
@@ -126,7 +130,7 @@ class pb_backupbuddy_destination_live {
 		}
 		
 		// Send file.
-		$result = pb_backupbuddy_destination_s32::send( $settings, $file, $send_id, $delete_after );
+		$result = call_user_func_array( array( 'pb_backupbuddy_destination_s3' . $settings['destination_version'], 'send' ), array( $settings, $file, $send_id, $delete_after ) );
 		
 		if ( true === $result ) {
 			require_once( pb_backupbuddy::plugin_path() . '/destinations/live/live_periodic.php' );
@@ -233,7 +237,7 @@ class pb_backupbuddy_destination_live {
 			$directory = $settings['directory'];
 		}
 		$settings['directory'] = $response['prefix'] . '/' . $directory;
-		return pb_backupbuddy_destination_s32::deleteFiles( $settings, $files );
+		return call_user_func_array( array( 'pb_backupbuddy_destination_s3' . $settings['destination_version'], 'deleteFiles' ), array( $settings, $files ) );
 		
 	} // End deleteFiles().
 	
@@ -253,7 +257,7 @@ class pb_backupbuddy_destination_live {
 			return false;
 		}
 		
-		$settings['stash_mode'] = '1'; // Stash is calling the s32 destination.
+		$settings['stash_mode'] = '1'; // Stash is calling the s32/s33 destination.
 		$settings['bucket'] = $response['bucket'];
 		$settings['credentials'] = $response['credentials'];
 		$prefix = $response['prefix'] . '/' . $prefix;
@@ -262,7 +266,7 @@ class pb_backupbuddy_destination_live {
 			$marker = $prefix . $marker;
 		}
 		
-		$files = pb_backupbuddy_destination_s32::listFiles( $settings, $prefix, $marker );
+		$files = call_user_func_array( array( 'pb_backupbuddy_destination_s3' . $settings['destination_version'], 'listFiles' ), array( $settings, $prefix, $marker ) );
 		if ( ! is_array( $files ) ) {
 			pb_backupbuddy::status( 'error', 'Erorr #43894394734: listFiles() did not return array. Details: `' . print_r( $files ) . '`.' );
 			return array();
@@ -308,15 +312,16 @@ class pb_backupbuddy_destination_live {
 		}
 		$settings['directory'] = $response['prefix'] . '/' . $directory;
 		
-		return pb_backupbuddy_destination_s32::getFileURL( $settings, $remoteFile, $expires );
+		return call_user_func_array( array( 'pb_backupbuddy_destination_s3' . $settings['destination_version'], 'getFileURL' ), array( $settings, $remoteFile, $expires ) );
 		
 	} // End getFileURL().
 	
 	
 	
-	public static function stashAPI( $settings, $action, $additionalParams = array(), $blocking = true, $passthru_errors = false ) {
-		require_once( pb_backupbuddy::plugin_path() . '/destinations/stash2/init.php' ); // For StashAPI.
-		return pb_backupbuddy_destination_stash2::stashAPI( $settings, $action, $additionalParams, $blocking, $passthru_errors );
+	public static function stashAPI( $settings, $action, $additionalParams = array(), $blocking = true, $passthru_errors = false, $timeout = 15 ) {
+		$settings = self::_formatSettings( $settings );
+		require_once( pb_backupbuddy::plugin_path() . '/destinations/stash' . $settings['destination_version'] . '/init.php' ); // For StashAPI.
+		return call_user_func_array( array( 'pb_backupbuddy_destination_stash' . $settings['destination_version'], 'stashAPI' ), array( $settings, $action, $additionalParams, $blocking, $passthru_errors ) );
 	} // End stashAPI().
 	
 	
@@ -367,10 +372,10 @@ class pb_backupbuddy_destination_live {
 	 *
 	 */
 	public static function _init( $settings ) {
-		
-		require_once( pb_backupbuddy::plugin_path() . '/destinations/s32/init.php' );
-		
 		$settings = self::_formatSettings( $settings );
+		
+		require_once( pb_backupbuddy::plugin_path() . '/destinations/s3' . $settings['destination_version'] . '/init.php' );
+		
 		return $settings;
 	
 	} // End _init().

@@ -2,6 +2,26 @@ All scheduled WordPress tasks (CRON jobs) are listed below. Use caution when man
 jobs as plugins, themes, or WordPress itself may expect these to remain in place. WordPress will recreate any mandatory
 internal CRON jobs automatically if they are removed.<br><br>
 <?php
+if ( is_numeric( get_option( '_transient_doing_cron' ) ) && ( get_option( '_transient_doing_cron' ) > 0 ) ) {
+	$last_cron_run = pb_backupbuddy::$format->time_ago( get_option( '_transient_doing_cron' ) ) . ' ago (' . round( get_option( '_transient_doing_cron' ) ) . ')';
+} else {
+	$last_cron_run = __( 'Not running (completed)', 'it-l10n-backupbuddy' );
+}
+
+echo '<center>' . __('Current Time', 'it-l10n-backupbuddy' ) . ': ' . pb_backupbuddy::$format->date( time() + ( get_option( 'gmt_offset' ) * 3600 ) ) . ' (' . time() . ')</center>';
+echo '<center>' . __('Currently running last cron', 'it-l10n-backupbuddy' ) . ': ' . $last_cron_run . '</center>';
+?>
+<div style="float: right; margin-bottom: 1px;">
+	<a style="background-color: #ffebc6; !important;" href="<?php echo pb_backupbuddy::page_url(); ?>&clear_cron=yes&tab=3" class="button secondary-button" onClick="if ( false === confirm( '<?php _e( 'Are you sure you want to clear all cron entries? WordPress will automatically regenerate crons but some 3rd party plugins may not.', 'it-l10n-backupbuddy' ); ?>' ) ) { return false; }"><?php _e('Delete All Cron Entries', 'it-l10n-backupbuddy' );?></a>
+</div>
+<?php
+
+if ( 'yes' == pb_backupbuddy::_GET( 'clear_cron' ) ) {
+	delete_option( 'cron' );
+	pb_backupbuddy::alert( __( 'All cron entries have been deleted.' ) );
+}
+
+
 $cron = get_option('cron');
 
 
@@ -98,8 +118,14 @@ pb_backupbuddy::$ui->list_table(
 		'hover_action_column_key'	=>	'0',
 	)
 );
-echo '<br><br>';
+?>
 
+<div style="float: right; margin-bottom: 1px;">
+	<a style="background-color: #ffebc6; !important;" href="<?php echo pb_backupbuddy::page_url(); ?>&clear_cron=yes&tab=3" class="button secondary-button" onClick="if ( false === confirm( '<?php _e( 'Are you sure you want to clear all cron entries? WordPress will automatically regenerate crons but some 3rd party plugins may not.', 'it-l10n-backupbuddy' ); ?>' ) ) { return false; }"><?php _e('Delete All Cron Entries', 'it-l10n-backupbuddy' );?></a>
+</div>
+
+<br><br><br><br>
+<?php
 
 // Display time intervals table.
 $pretty_intervals = array();
@@ -126,7 +152,6 @@ pb_backupbuddy::$ui->list_table(
 echo '<br><br>';
 
 
-echo '<center>' . __('Current Time', 'it-l10n-backupbuddy' ) . ': ' . pb_backupbuddy::$format->date( time() + ( get_option( 'gmt_offset' ) * 3600 ) ) . ' (' . time() . ')</center>';
 
 
 

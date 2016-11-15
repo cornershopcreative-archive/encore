@@ -38,6 +38,35 @@ class pb_backupbuddy_destination_sftp {
 	} // end _init().
 	
 	
+	public static function get_pass_or_key( $settings = array() ) {
+		$key = '';
+		$upload_dir = wp_upload_dir();
+		$key_file = $upload_dir['basedir'] . '/backupbuddy-sftp-key-' . pb_backupbuddy::$options['log_serial'] . '.txt';
+		if ( file_exists( $key_file ) ) {
+			if ( false === ( $key = file_get_contents( $key_file ) ) ) {
+				pb_backupbuddy::status( 'error', 'Error #4839493843: Unable to read key file contents from `' . $key_file . '`.' );
+				$key = '';
+			}
+		}
+		if ( '' !== $key ) { // Use key file.
+			pb_backupbuddy::status( 'details', 'Using key file `' . $key_file . '`.' );
+			$pass_or_key = $key;
+			require_once( pb_backupbuddy::plugin_path() . '/destinations/sftp/lib/phpseclib/Crypt/RSA.php' );
+			$crypt = new Crypt_RSA();
+			if ( '' != $settings['password'] ) {
+				$crypt->setPassword( $settings['password'] );
+			}
+			$pass_or_key = $crypt->loadKey( $key );
+			global $backupbuddy_sftp_using_key_file;
+			$backupbuddy_sftp_using_key_file = true;
+		} else { // Normal password.
+			pb_backupbuddy::status( 'details', 'Using password.' );
+			$pass_or_key = $settings['password'];
+		}
+		
+		return $pass_or_key;
+	}
+	
 	/*	send()
 	 *	
 	 *	Send one or more files.
@@ -66,9 +95,12 @@ class pb_backupbuddy_destination_sftp {
 			$server = $server_params[0];
 			$port = $server_params[1];
 		}
+		
+		$pass_or_key = self::get_pass_or_key( $settings );
+		
 		pb_backupbuddy::status( 'details', 'Connecting to sFTP server...' );
 		$sftp = new Net_SFTP( $server, $port );
-		if ( ! $sftp->login( $settings['username'], $settings['password'] ) ) {
+		if ( ! $sftp->login( $settings['username'], $pass_or_key ) ) {
 			pb_backupbuddy::status( 'error', 'Connection to sFTP server FAILED.' );
 			pb_backupbuddy::status( 'details', 'sFTP log (if available & enabled via full logging mode): `' . $sftp->getSFTPLog() . '`.' );
 			return false;
@@ -227,12 +259,21 @@ class pb_backupbuddy_destination_sftp {
 			$server = $server_params[0];
 			$port = $server_params[1];
 		}
+		
+		$pass_or_key = self::get_pass_or_key( $settings );
+		
 		pb_backupbuddy::status( 'details', 'Connecting to sFTP server...' );
 		$sftp = new Net_SFTP( $server, $port );
-		if ( ! $sftp->login( $settings['username'], $settings['password'] ) ) {
-			pb_backupbuddy::status( 'error', 'Connection to sFTP server FAILED.' );
+		if ( ! $sftp->login( $settings['username'], $pass_or_key ) ) {
+			global $backupbuddy_sftp_using_key_file;
+			$using_key = '';
+			if ( isset( $backupbuddy_sftp_using_key_file ) && ( true === $backupbuddy_sftp_using_key_file ) ) {
+				$using_key = ' (Note: Using key file.)';
+			}
+			
+			pb_backupbuddy::status( 'error', 'Connection to sFTP server FAILED.' . $using_key );
 			pb_backupbuddy::status( 'details', 'sFTP log (if available & enabled via full logging mode): `' . $sftp->getSFTPLog() . '`.' );
-			return __( 'Unable to connect to server using host, username, and password combination provided.', 'it-l10n-backupbuddy' );
+			return __( 'Unable to connect to server using host, username, and password combination provided.', 'it-l10n-backupbuddy' ) . $using_key;
 		} else {
 			pb_backupbuddy::status( 'details', 'Success connecting to sFTP server.' );
 		}

@@ -325,6 +325,9 @@ body {
 	overflow:scroll;
 	vertical-align: bottom;
 }
+.backup_select_text span::-webkit-scrollbar { 
+	display: none; 
+}
 
 .round-wrap {
 	margin: 1em 0;

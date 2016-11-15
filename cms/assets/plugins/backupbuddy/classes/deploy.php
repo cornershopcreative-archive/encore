@@ -71,7 +71,7 @@ class backupbuddy_deploy {
 		if ( isset( $this->_state['destinationSettings']['sha1'] ) ) {
 			$sha1 = $this->_state['destinationSettings']['sha1'];
 		}
-		if ( false === ( $this->_state['remoteInfo'] = backupbuddy_remote_api::remoteCall( $this->_state['destination'], 'getPreDeployInfo', array( 'sha1' => $sha1 ), $timeout = 30 ) ) ) {
+		if ( false === ( $this->_state['remoteInfo'] = backupbuddy_remote_api::remoteCall( $this->_state['destination'], 'getPreDeployInfo', array( 'sha1' => $sha1 ), $timeout = backupbuddy_core::adjustedMaxExecutionTime() ) ) ) {
 			return $this->_error( implode( ', ', backupbuddy_remote_api::getErrors() ) );
 		}
 		$this->_state['remoteInfo'] = $this->_state['remoteInfo']['data'];

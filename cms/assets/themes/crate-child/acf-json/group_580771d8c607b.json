@@ -851,6 +851,27 @@
                                     "return_format": "value"
                                 }
                             ]
+                        },
+                        {
+                            "key": "field_5826124f26672",
+                            "label": "Autoplay rate",
+                            "name": "autoplay_rate",
+                            "type": "number",
+                            "instructions": "Enter the number of seconds that each slide should be displayed for before advancing to the next slide. Enter 0 to disable automatic slide switching.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": 0,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "seconds",
+                            "min": "",
+                            "max": "",
+                            "step": "0.5"
                         }
                     ],
                     "min": "",
@@ -2084,5 +2105,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1479230373
+    "modified": 1479230380
 }

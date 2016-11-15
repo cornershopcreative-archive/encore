@@ -213,7 +213,7 @@ class pb_backupbuddy_ui {
 		// Display bulk actions (top).
 		bulk_actions( $settings );
 		
-		echo '<table class="widefat"';
+		echo '<table class="widefat striped"';
 		echo ' id="test">';
 		echo '		<thead>
 					<tr class="thead">';
@@ -243,7 +243,7 @@ class pb_backupbuddy_ui {
 		
 		// LOOP THROUGH EACH ROW.
 		foreach ( (array)$items as $item_id => $item ) {
-			echo '	<tr class="entry-row alternate" id="pb_rowitem-' . $item_id . '">';
+			echo '	<tr class="entry-row" id="pb_rowitem-' . $item_id . '">';
 			if ( count( $settings['bulk_actions'] ) > 0 ) {
 				echo'	<th scope="row" class="check-column"><input type="checkbox" name="items[]" class="entries" value="' . $item_id . '"></th>';
 			}

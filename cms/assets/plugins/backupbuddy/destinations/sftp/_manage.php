@@ -27,9 +27,12 @@ if ( pb_backupbuddy::_POST( 'bulk_action' ) == 'delete_backup' ) {
 		$server = $server_params[0];
 		$port = $server_params[1];
 	}
+	
+	$pass_or_key = pb_backupbuddy_destination_sftp::get_pass_or_key( $destination );
+	
 	pb_backupbuddy::status( 'details', 'Connecting to sFTP server...' );
 	$sftp = new Net_SFTP( $server, $port );
-	if ( ! $sftp->login( $destination['username'], $destination['password'] ) ) {
+	if ( ! $sftp->login( $destination['username'], $pass_or_key ) ) {
 		pb_backupbuddy::status( 'error', 'Connection to sFTP server FAILED.' );
 		return false;
 	} else {
@@ -75,9 +78,12 @@ if ( strstr( $server, ':' ) ) { // Handle custom sFTP port.
 	$server = $server_params[0];
 	$port = $server_params[1];
 }
+
+$pass_or_key = pb_backupbuddy_destination_sftp::get_pass_or_key( $destination );
+
 pb_backupbuddy::status( 'details', 'Connecting to sFTP server...' );
 $sftp = new Net_SFTP( $server, $port );
-if ( ! $sftp->login( $destination['username'], $destination['password'] ) ) {
+if ( ! $sftp->login( $destination['username'], $pass_or_key ) ) {
 	pb_backupbuddy::status( 'error', 'Connection to sFTP server FAILED.' );
 	return false;
 } else {

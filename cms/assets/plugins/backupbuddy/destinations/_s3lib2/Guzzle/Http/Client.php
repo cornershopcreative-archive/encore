@@ -144,6 +144,7 @@ class Client extends AbstractHasDispatcher implements ClientInterface
             unset($opts[CURLOPT_CAINFO]);
             $opts[CURLOPT_SSL_VERIFYPEER] = false;
             $opts[CURLOPT_SSL_VERIFYHOST] = 0;
+            \pb_backupbuddy::status( 'warning', 'Guzzle client set to not validate peer nor host! Use caution.' );
         } elseif ($verifyPeer !== true && $verifyPeer !== false && $verifyPeer !== 1 && $verifyPeer !== 0) {
             throw new InvalidArgumentException('verifyPeer must be 1, 0 or boolean');
         } elseif ($verifyHost !== 0 && $verifyHost !== 1 && $verifyHost !== 2) {
@@ -163,7 +164,12 @@ class Client extends AbstractHasDispatcher implements ClientInterface
                 );
             }
         }
-
+        
+        $cainfo = 'n/a';
+        if ( isset( $opts[CURLOPT_CAINFO] ) ) { $cainfo = $opts[CURLOPT_CAINFO]; }
+        $capath = 'n/a';
+        if ( isset( $opts[CURLOPT_CAPATH] ) ) { $capath = $opts[CURLOPT_CAPATH]; }
+        \pb_backupbuddy::status( 'details', 'Guzzle client cainfo: `' . $cainfo . '`. capath: `' . $capath . '`.' );
         $this->config->set(self::CURL_OPTIONS, $opts);
 
         return $this;
@@ -438,7 +444,6 @@ class Client extends AbstractHasDispatcher implements ClientInterface
     protected function initSsl()
     {
         $authority = $this->config[self::SSL_CERT_AUTHORITY];
-
         if ($authority === 'system') {
             return;
         }

@@ -22,11 +22,12 @@ class backupbuddy_live {
 		if ( ( FALSE === $bust_cache ) && ( FALSE !== ( $quota = get_transient( self::STASH_QUOTA_TRANSIENT_NAME ) ) ) ) {
 			return $quota;
 		} else {
-			require_once( pb_backupbuddy::plugin_path() . '/destinations/live/live_periodic.php' );
-			require_once( pb_backupbuddy::plugin_path() . '/destinations/stash2/init.php' );
+			$settings = backupbuddy_live_periodic::get_destination_settings();
 			
-			$destination_settings = backupbuddy_live_periodic::get_destination_settings();
-			$quota = pb_backupbuddy_destination_stash2::get_quota( $destination_settings );
+			require_once( pb_backupbuddy::plugin_path() . '/destinations/live/live_periodic.php' );
+			require_once( pb_backupbuddy::plugin_path() . '/destinations/stash' . $settings['destination_version'] . '/init.php' );
+			
+			$quota = call_user_func_array( array( 'pb_backupbuddy_destination_stash' . $settings['destination_version'], 'get_quota' ), array( $settings ) );
 			if ( false === $quota ) {
 				pb_backupbuddy::status( 'error', 'Error #3489348944: Could not get quota for Stash Live.' );
 			}
@@ -227,7 +228,7 @@ class backupbuddy_live {
 			'process_file_deletions' => __( 'Processing deleted files', 'it-l10n-backupbuddy' ),
 			'send_pending_files' => __( 'Sending new & modified files... This may take a while', 'it-l10n-backupbuddy' ),
 			'audit_remote_files' => __( 'Auditing backed up files for integrity', 'it-l10n-backupbuddy' ),
-			'run_remote_snapshot' => __( 'Creating snapshot', 'it-l10n-backupbuddy' ),
+			'run_remote_snapshot' => __( 'Creating snapshot (if due)', 'it-l10n-backupbuddy' ),
 			'wait_on_transfers' => __( 'Waiting for pending file transfers to finish', 'it-l10n-backupbuddy' ),
 		);
 		if ( isset( $functions[ $function ] ) ) {

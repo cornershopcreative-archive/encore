@@ -17,7 +17,6 @@ class Ithemes_Sync_Verb_Backupbuddy_Run_Backup extends Ithemes_Sync_Verb {
 	 */
 	public function run( $arguments ) {
 		$arguments = Ithemes_Sync_Functions::merge_defaults( $arguments, $this->default_arguments );
-		
 		$results = backupbuddy_api::runBackup( $arguments['profile'], 'iThemes Sync', $backupMode = '2' );
 		
 		if ( true !== $results ) {
@@ -33,7 +32,8 @@ class Ithemes_Sync_Verb_Backupbuddy_Run_Backup extends Ithemes_Sync_Verb {
 				'api' => '0',
 				'status' => 'ok',
 				'message' => 'Backup initiated successfully.',
-				'serial' => $serial,
+				//'serial' => $serial, //We don't get this...
+				'profile' => empty( pb_backupbuddy::$options['profiles'][$arguments['profile']] ) ? false : pb_backupbuddy::$options['profiles'][$arguments['profile']],
 			);
 			
 		}

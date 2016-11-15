@@ -14,7 +14,35 @@
 
 // Test if we are loading as standard or experimental - if experimental just drop through
 if ( 0 === strcmp( basename( dirname( __FILE__ ) ), 'zipbuddy' ) ) {
+	
+	// Legacy zip.
+	if ( isset( pb_backupbuddy::$options['alternative_zip_1'] ) && ( '1' == pb_backupbuddy::$options['alternative_zip_1'] ) ) {
 
+		pb_backupbuddy::$options['alternative_zip_1'] = 0;
+		pb_backupbuddy::$options['alternative_zip_2'] = 0;
+		pb_backupbuddy::save();
+
+	
+		/**
+		// User enabled experimental so look for it and load it is found, otherwise log
+		$legacy_zipbuddy = dirname( dirname( __FILE__ ) ) . '/zipbuddy/legacy.zipbuddy.php';
+		if ( @is_readable( $legacy_zipbuddy ) ) {
+			
+			pb_backupbuddy::status( 'details', 'Loading legacy zipbuddy.' );
+			require_once( $legacy_zipbuddy );
+			return;
+			
+		} else {
+			
+			pb_backupbuddy::status( 'details', sprintf( __('Legacy Zip System enabled but not found/readable at: %1$s','it-l10n-backupbuddy' ), $$legacy_zipbuddy ) );
+			
+		
+		}
+		*/
+	
+	}
+	
+	
 	// Currently loading as standard so determine if we need to load experimental
 	if ( isset( pb_backupbuddy::$options['alternative_zip_2'] ) && ( '1' == pb_backupbuddy::$options['alternative_zip_2'] ) ) {
 	

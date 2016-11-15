@@ -985,6 +985,18 @@ class pb_backupbuddy_mysqlbuddy {
 			}
 		}
 		
+		global $wpdb;
+		
+		// Turn off foreign key checks.
+		$results = $wpdb->query( 'SET FOREIGN_KEY_CHECKS=0;' );
+		if ( false === $results ) {
+			if ( empty( $wpdb->use_mysqli ) ) {
+				pb_backupbuddy::status( 'warning', 'Warning #8493844: ' . @mysql_error( $wpdb->dbh ) );
+			} else {
+				pb_backupbuddy::status( 'warning', 'Warning #8493844: ' . @mysqli_error() );
+			}
+		}
+		
 		// Loop through file line-by-line, executing the SQL as we go. Prefix will be changed line by line as needed.
 		$queryCount = 0;
 		$failedQueries = 0;
@@ -1025,6 +1037,17 @@ class pb_backupbuddy_mysqlbuddy {
 						return false;
 					}
 					@fclose( $fs );
+					
+					// Turn back on foreign key checks.
+					$results = $wpdb->query( 'SET FOREIGN_KEY_CHECKS=1;' );
+					if ( false === $results ) {
+						if ( empty( $wpdb->use_mysqli ) ) {
+							pb_backupbuddy::status( 'warning', 'Warning #39379792434: ' . @mysql_error( $wpdb->dbh ) );
+						} else {
+							pb_backupbuddy::status( 'warning', 'Warning #894774478549: ' . @mysqli_error() );
+						}
+					}
+					
 					return array( $fsPointer, $queryCount, $failedQueries, ( microtime( true ) - $this->time_start ) ); // filepointer location, number of queries done this pass, number of sql qeuries that failed, elapsed time during the import
 				} // End if.
 			}
@@ -1036,6 +1059,16 @@ class pb_backupbuddy_mysqlbuddy {
 			return FALSE;
 		}
 		fclose( $fs );
+		
+		// Turn back on foreign key checks.
+		$results = $wpdb->query( 'SET FOREIGN_KEY_CHECKS=1;' );
+		if ( false === $results ) {
+			if ( empty( $wpdb->use_mysqli ) ) {
+				pb_backupbuddy::status( 'warning', 'Warning #3434334: ' . @mysql_error( $wpdb->dbh ) );
+			} else {
+				pb_backupbuddy::status( 'warning', 'Warning #858558549: ' . @mysqli_error() );
+			}
+		}
 		
 		pb_backupbuddy::status( 'message', 'Import of SQL data in PHP mode complete.' );
 		pb_backupbuddy::status( 'message', 'Took ' . round( microtime( true ) - $this->time_start, 3 ) . ' seconds on ' . $queryCount . ' queries. ' );

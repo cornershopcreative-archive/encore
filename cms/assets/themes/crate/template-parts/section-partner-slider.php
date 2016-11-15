@@ -70,7 +70,7 @@
 						// After 6 items...
 						if ( $n_results > 6 ) :
 							// Reset the item count.
-							$n_results = 0;
+							$n_results = 1;
 							// Close the current .slider-item and open a new one.
 							?>
 				</div></div><!-- /.content-section-grid, /.slider-item -->

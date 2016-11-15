@@ -18,6 +18,12 @@ if ( !is_admin() ) { die( 'Access Denied.' ); }
 			bb_checkZipSystem();
 		});
 		
+		jQuery( 'input#pb_backupbuddy_profiles__0__integrity_check' ).change( function(){
+			if ( jQuery(this).is( ':checked' ) ) {
+				alert( "<?php _e( 'WARNING: Use with caution as this could result in BAD or incomplete backups going undetected, resulting in future data loss if you rely on these potentially bad backups. Without the integrity scan your backups cannot be guaranteed as valid and complete.', 'it-l10n-backupbuddy' ); ?>" );
+			}
+		});
+		
 		bb_checkZipSystem(); // Run first time.
 		
 	});
@@ -138,6 +144,15 @@ $settings_form->add_setting( array(
 	'tip'		=>		__( '[Default: disabled] - When enabled BackupBuddy will attempt to bypass the WordPress cron in favor of its own internal cron system. This is a partial workaround only. Example use case: A web host\'s caching is blocking the wp-cron from functioning.', 'it-l10n-backupbuddy' ),
 	'css'		=>		'',
 	'rules'		=>		'required',
+) );
+$settings_form->add_setting( array(
+	'type'		=>		'text',
+	'name'		=>		'cron_request_timeout_override',
+	'title'		=>		__('Cron loopback timeout override', 'it-l10n-backupbuddy' ),
+	'tip'		=>		__('[Default: *blank* (0.01sec)] - If set this will override WordPress\' cron loopback timeout of 0.01 seconds to a higher value. Some servers are unable to respond in such a short time resulting in cron failure. The lowest working value is recommended to prevent potential page-load slow-downs.', 'it-l10n-backupbuddy' ),
+	'css'		=>		'width: 50px;',
+	'after'		=>		' sec. <span class="description"> ' . __( 'Blank for WordPress default:', 'it-l10n-backupbuddy' ) . ' 0.01 sec</span>',
+	'rules'		=>		'number',
 ) );
 $settings_form->add_setting( array(
 	'type'		=>		'checkbox',
@@ -299,16 +314,18 @@ $settings_form->add_setting( array(
 	'after'		=>		'<span class="description"> ' . __('Use if exclusions are malfunctioning or for special purposes.', 'it-l10n-backupbuddy' ) . '</span>',
 	'rules'		=>		'required',
 ) );
-$settings_form->add_setting( array(
-	'type'		=>		'checkbox',
-	'name'		=>		'disable_https_local_ssl_verify',
-	'options'	=>		array( 'unchecked' => '0', 'checked' => '1' ),
-	'title'		=>		__( 'Disable local SSL certificate verification', 'it-l10n-backupbuddy' ),
-	'tip'		=>		__( '[Default: Disabled] When checked, WordPress will skip local https SSL verification.', 'it-l10n-backupbuddy' ) . '</span>',
-	'css'		=>		'',
-	'after'		=>		'<span class="description"> ' . __( 'Workaround if local SSL verification fails (ie. for loopback & local CA cert issues).', 'it-l10n-backupbuddy' ) . '</span>',
-	'rules'		=>		'required',
-) );
+if ( version_compare( $GLOBALS['wp_version'], '4.6', '<' ) ) {
+	$settings_form->add_setting( array(
+		'type'		=>		'checkbox',
+		'name'		=>		'disable_https_local_ssl_verify',
+		'options'	=>		array( 'unchecked' => '0', 'checked' => '1' ),
+		'title'		=>		__( 'Disable local SSL certificate verification', 'it-l10n-backupbuddy' ),
+		'tip'		=>		__( '[Default: Disabled] When checked, WordPress will skip local https SSL verification.', 'it-l10n-backupbuddy' ) . '</span>',
+		'css'		=>		'',
+		'after'		=>		'<span class="description"> ' . __( 'Workaround if local SSL verification fails (ie. for loopback & local CA cert issues).', 'it-l10n-backupbuddy' ) . '</span>',
+		'rules'		=>		'required',
+	) );
+}
 $settings_form->add_setting( array(
 	'type'		=>		'checkbox',
 	'name'		=>		'prevent_flush',
@@ -334,9 +351,9 @@ $settings_form->add_setting( array(
 	'name'		=>		'profiles#0#integrity_check',
 	'options'	=>		array( 'unchecked' => '0', 'checked' => '1' ),
 	'title'		=>		__('Perform integrity check on backup files', 'it-l10n-backupbuddy' ),
-	'tip'		=>		__('[Default: enabled] - By default each backup file is checked for integrity and completion the first time it is viewed on the Backup page.  On some server configurations this may cause memory problems as the integrity checking process is intensive.  If you are experiencing out of memory errors on the Backup file listing, you can uncheck this to disable this feature.', 'it-l10n-backupbuddy' ),
+	'tip'		=>		__('[Default: enabled] - WARNING: USE WITH CAUTION! By default each backup file is checked for integrity and completion the first time it is viewed on the Backup page.  On some server configurations this may cause memory problems as the integrity checking process is intensive.  This may also be useful if the backup page will not load.', 'it-l10n-backupbuddy' ),
 	'css'		=>		'',
-	'after'		=>		'<span class="description"> ' . __( 'Disable if the backup page will not load or backups hang on integrity check.', 'it-l10n-backupbuddy' ) . '</span>',
+	'after'		=>		'<span class="description"> ' . __( 'Uncheck if directed by support.', 'it-l10n-backupbuddy' ) . '</span>',
 	'rules'		=>		'required',
 ) );
 $settings_form->add_setting( array(

@@ -318,6 +318,7 @@ $destination_type = pb_backupbuddy::_GET( 'add' );
 				$best = '';
 				$normal = '';
 				$legacy = '';
+				
 				foreach( pb_backupbuddy_destinations::get_destinations_list( $showUnavailable = true ) as $destination_name => $destination ) {
 					// Hide Live from Remote Destinations page.
 					if ( 'live' == $destination['type'] ) {
@@ -331,7 +332,10 @@ $destination_type = pb_backupbuddy::_GET( 'add' );
 					
 					$thisDest = '';
 					$thisDest .= '<li class="bb_destination-item bb_destination-' . $destination_name . ' bb_destination-new-item ' . $disableClass . '">';
-					if ( 'stash2' == $destination_name ) {
+					if ( 's33' == $destination_name ) {
+						$thisDest .= '<div class="bb-ribbon"><span>New</span></div>';
+					}
+					if ( 'stash3' == $destination_name ) {
 						$thisDest .= '<div class="bb-ribbon"><span>New</span></div>';
 					}
 					$thisDest .= '<a href="javascript:void(0)" rel="' . $destination_name . '">';
@@ -371,8 +375,14 @@ $destination_type = pb_backupbuddy::_GET( 'add' );
 				echo '<h3>' . __( 'Normal', 'it-l10n-backupbuddy' ) . '</h3>' . $normal;
 				echo '<br><br><hr style="max-width: 1200px;"><br>';
 				echo '<h3>' . __( 'Legacy', 'it-l10n-backupbuddy' ) . '</h3>' . $legacy;
+				
+				echo '<br><br><hr style="max-width: 1200px;"><br>';
 				?>
 			</ul>
+			
+			<h3><?php _e( 'Discontinued', 'it-l10n-backupbuddy' ); ?></h3>
+			<br>
+			<span class="description"><?php _e( 'Stash (v1) and Dropbox (v1) destinations have been discontinued as these legacy APIs have been discontinued by their providers. Please use their newer respective versions instead.', 'it-l10n-backupbuddy' ); ?></span>
 		</div>
 	</div>
 	<div class="bb_destinations-adding"></div>

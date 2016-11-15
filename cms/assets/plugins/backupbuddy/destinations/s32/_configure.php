@@ -83,6 +83,7 @@ $settings_form->add_setting( array(
 	'title'		=>		__( 'Bucket region', 'it-l10n-backupbuddy' ),
 	'options'	=>		array(
 								's3.amazonaws.com'					=>		'us-east-1 &nbsp;|&nbsp; US East (US Standard)',
+								's3-accelerate.amazonaws.com'		=>		'Use S3 Transfer Acceleration (Enable for your bucket in your AWS console)',
 								's3-us-west-2.amazonaws.com'		=>		'us-west-2 &nbsp;|&nbsp; US West (Oregon)',
 								's3-us-west-1.amazonaws.com'		=>		'us-west-1 &nbsp;|&nbsp; US West (Northern California)',
 								's3-eu-central-1.amazonaws.com'		=>		'eu-central-1 &nbsp;|&nbsp; EU (Frankfurt)',
@@ -97,7 +98,7 @@ $settings_form->add_setting( array(
 								's3-website-us-gov-west-1.amazonaws.com'	=>		'US GovCloud (website)',
 								*/
 							),
-	'tip'		=>		__('[Default: US East aka US Standard] - Determines the region where your S3 bucket exists. This must be correct for BackupBuddy to access your bucket.', 'it-l10n-backupbuddy' ),
+	'tip'		=>		__('[Default: US East aka US Standard] - Determines the region where your S3 bucket exists. This must be correct for BackupBuddy to access your bucket. Select the S3 Transfer Acceleration option to potentially significantly increase speeds, especially when sending to a bucket outside your geographical location. You must enable this option per-bucket in your AWS Console. Amazon may charge for use of this feature.', 'it-l10n-backupbuddy' ),
 	'rules'		=>		'required',
 ) );
 
@@ -196,12 +197,23 @@ $settings_form->add_setting( array(
 ) );
 $settings_form->add_setting( array(
 	'type'		=>		'checkbox',
-	'name'		=>		'use_packaged_cert',
+	'name'		=>		'use_server_cert',
 	'options'	=>		array( 'unchecked' => '0', 'checked' => '1' ),
-	'title'		=>		__( 'Use included CA bundle', 'it-l10n-backupbuddy' ),
-	'tip'		=>		__( '[Default: disabled] - When enabled, BackupBuddy will use its own bundled SSL certificate bundle for connecting to the server. Use this if SSL fails due to SSL certificate issues with your server.', 'it-l10n-backupbuddy' ),
+	'title'		=>		__( 'Use system CA bundle', 'it-l10n-backupbuddy' ),
+	'tip'		=>		__( '[Default: disabled] - When enabled, BackupBuddy will use your web server\'s certificate bundle for connecting to the server instead of BackupBuddy bundle. Use this if SSL fails due to SSL certificate issues.', 'it-l10n-backupbuddy' ),
 	'css'		=>		'',
-	'after'		=>		'<span class="description"> ' . __('Use included certificate bundle.', 'it-l10n-backupbuddy' ) . '</span>',
+	'after'		=>		'<span class="description"> ' . __('Use webserver certificate bundle instead of BackupBuddy\'s.', 'it-l10n-backupbuddy' ) . '</span>',
+	'rules'		=>		'',
+	'row_class'	=>		'advanced-toggle',
+) );
+$settings_form->add_setting( array(
+	'type'		=>		'checkbox',
+	'name'		=>		'disable_hostpeer_verficiation',
+	'options'	=>		array( 'unchecked' => '0', 'checked' => '1' ),
+	'title'		=>		__( 'Disable SSL Verifications', 'it-l10n-backupbuddy' ),
+	'tip'		=>		__( '[Default: disabled] - When enabled, the SSL host and peer information will not be verified. While the connection will still be encrypted SSL\'s man-in-the-middle protection will be voided. Disable only if you understand and if directed by support to work around host issues.', 'it-l10n-backupbuddy' ),
+	'css'		=>		'',
+	'after'		=>		'<span class="description"> ' . __('Check only if directed by support. Use with caution.', 'it-l10n-backupbuddy' ) . '</span>',
 	'rules'		=>		'',
 	'row_class'	=>		'advanced-toggle',
 ) );

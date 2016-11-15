@@ -6,26 +6,27 @@ module.exports = function( $ ) {
 	// Find each slider section.
 	$( '.content-section-slider' ).each( function() {
 
-		// Get slides.
-		var $items = $( this ).find( '.slider-item' );
+		var $slider = $( this );
 
-		console.log( $items );
+		// Get slides.
+		var $items = $slider.find( '.slider-item' );
+
 		// Skip slider initialization for slider sections with only one slide.
 		if ( $items.length < 2 ) {
 			return;
 		}
 
 		// Initialize cycle2.
-		$( this ).find( '.slider-items' ).cycle( {
+		$slider.find( '.slider-items' ).cycle( {
 			fx: 'scrollHorz',
 			autoHeight: 'container',
 			// Note that autoHeight: 'container' and fx: 'scrollHorz' don't play all
 			// that well together, so we need a couple CSS opacity rules to make them
 			// look sane (see _src/scss/sections/_content-sections.scss).
-			timeout: 0, // No automatic animation.
+			timeout: $slider.data( 'timeout' ) || 0,
 			slides: '.slider-item',
-			prev: $( this ).find( '.slider-prev' ),
-			next: $( this ).find( '.slider-next' ),
+			prev: $slider.find( '.slider-prev' ),
+			next: $slider.find( '.slider-next' ),
 			// Wait until images are loaded to calculate container heights.
 			loader: 'wait'
 		} );

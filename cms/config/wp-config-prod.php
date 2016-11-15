@@ -6,10 +6,10 @@
  */
 
 /** CHANGE THESE: Database connection information */
-define('DB_NAME',     'ENTER_LIVE_DB_NAME_HERE');
-define('DB_USER',     'ENTER_LIVE_DB_USER_HERE');
-define('DB_PASSWORD', 'ENTER_LIVE_DB_PASSWORD_HERE');
-define('DB_HOST',     'ENTER_LIVE_DB_HOST_HERE_COULD_BE_LOCALHOST');
+define('DB_NAME',     'wp_g2g');
+define('DB_USER',     'CVcloud');
+define('DB_PASSWORD', 'qCGixMOWQ8Y2UHbt');
+define('DB_HOST',     '5430469950a1ec1a42c7815d40e16ee21512cab3.rackspaceclouddb.com');
 
 /**
 * For developers: WordPress debugging mode.
@@ -24,5 +24,5 @@ define('WP_DEBUG_DISPLAY', false);
 
 define('SCRIPT_DEBUG',     false);
 
-define('WP_CACHE',         false);
+define('WP_CACHE',         true);
 define('SAVEQUERIES',      false);

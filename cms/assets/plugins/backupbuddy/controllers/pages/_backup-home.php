@@ -33,6 +33,7 @@ if ( false !== ( $latestVersion = backupbuddy_core::determineLatestVersion() ) )
 jQuery(document).ready( function() {
 	jQuery('#screen-meta-links').append(
 		'<div id="backupbuddy-meta-link-wrap" class="hide-if-no-js screen-meta-toggle">' +
+		'<a href="javascript:void(0);" onClick="jQuery(\'.bb_show_preflight\').toggle();" class="show-settings"><?php _e( "Show Preflight Results", "it-l10n-backupbuddy" ); ?></a>' +
 			'<a href="" class="show-settings pb_backupbuddy_begintour"><?php _e( "Tour Page", "it-l10n-backupbuddy" ); ?></a>' +
 			'<a href="?page=pb_backupbuddy_backup&wizard=1" class="show-settings"><?php _e( "Quick Setup Wizard", "it-l10n-backupbuddy" ); ?></a>' +
 		'</div>'
@@ -88,6 +89,10 @@ foreach( $preflight_checks as $preflight_check ) {
 if ( count( $alert_message ) > 0 ) {
 	//pb_backupbuddy::alert( implode( '<hr style="border: 1px dashed #E6DB55; border-bottom: 0;">', $alert_message ) );
 }
+
+echo '<div class="bb_show_preflight" style="display: none;"><h3>Preflight Check Results</h3><pre>';
+print_r( $preflight_checks );
+echo '</pre></div>';
 
 
 echo '<!-- BB-listing backups -->';

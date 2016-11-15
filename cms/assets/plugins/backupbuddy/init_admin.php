@@ -29,6 +29,22 @@ function enqueue_dashboard_stylesheet($hook) {
 add_action( 'admin_enqueue_scripts', 'enqueue_dashboard_stylesheet' );
 
 
+// Set datepicker defaults for schedules page
+function pb_backupbuddy_set_scheduled_datepicker_default_format() {
+	$cs = get_current_screen();
+	if ( ! empty( $cs->base ) && $cs->base == 'backupbuddy_page_pb_backupbuddy_scheduling' ) {
+		?>
+		<script type="text/javascript">
+			jQuery(function($) {
+				$.datepicker.setDefaults({
+					'dateFormat':'m/d/yy'
+				});
+			});
+		</script>
+		<?php
+	}
+}
+add_action( 'admin_footer', 'pb_backupbuddy_set_scheduled_datepicker_default_format', 999 );
 
 
 // Load backupbuddy class with helper functions.
@@ -57,6 +73,9 @@ backupbuddy_core::verifyLiveCron();
 /********** ACTIONS (admin) **********/
 
 
+
+// Iterating edits since last updates widget
+pb_backupbuddy::add_action( array( 'save_post', 'iterate_edits_since_last' ), 10, 3 );
 
 // Set up reminders if enabled.
 if ( pb_backupbuddy::$options['backup_reminders'] == '1' ) {
@@ -212,7 +231,7 @@ function pb_backupbuddy_contextual_help( $contextual_help, $screen_id, $screen )
 
 /***** BEGIN STASH LIVE ADMIN BAR *****/
 function backupbuddy_live_admin_bar_menu( $wp_admin_bar ) {
-	if ( ! current_user_can( pb_backupbuddy::$options['role_access'] ) ) {
+	if ( ! current_user_can( pb_backupbuddy::$options['role_access'] ) || '1' === pb_backupbuddy::$options['hide_live'] ) {
 		return;
 	}
 	

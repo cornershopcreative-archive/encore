@@ -42,6 +42,7 @@ class backupbuddy_housekeeping {
 		self::check_high_security_mode( $die_on_fail );
 		self::remove_importbuddy_file();
 		self::remove_importbuddy_dir();
+		self::remove_dat_file_from_root();
 		self::remove_rollback_files();
 		
 		// Potential large file/dir cleanup. May bog down site.
@@ -52,6 +53,9 @@ class backupbuddy_housekeeping {
 		self::process_timed_out_backups();
 		self::process_timed_out_sends();
 		self::validate_bb_schedules_in_wp();
+		
+		// Backup settings to file to help prevent loss of settings due to database problems. pb_backupbuddy::load() will look for this file if default settings are faulty/missing.
+		self::backup_bb_settings();
 		
 		// More minor cleanup.
 		self::remove_temp_tables();
@@ -79,7 +83,10 @@ class backupbuddy_housekeeping {
 		
 		// If Live enabled, see if too long since the last Snapshot.
 		foreach( pb_backupbuddy::$options['remote_destinations'] as $destination ) { // Look for Live destination.
-			if ( ( 'live' == $destination['type'] ) && ( (int)$destination['no_new_snapshots_error_days'] > 0 ) ) { // Live destination and notifications are enabled.
+			if ( 'live' == $destination['type'] ) {
+				
+				
+				
 				require_once( pb_backupbuddy::plugin_path() . '/destinations/live/live_periodic.php' );
 				$state = backupbuddy_live_periodic::get_stats();
 				
@@ -87,23 +94,43 @@ class backupbuddy_housekeeping {
 					$time_since_last = time() - $state['stats']['last_db_snapshot'];
 					$days_since_last = round( $time_since_last / 60 / 60 / 24 );
 					
+					// Run troubleshooting test if no snapshot in X days.
+					if ( $days_since_last > backupbuddy_constants::DAYS_BEFORE_RUNNING_TROUBLESHOOTING_TEST ) {
+						if ( false === wp_next_scheduled( 'backupbuddy_cron', array( 'live_troubleshooting_check', array() ) ) ) { // if schedule does not exist...
+							backupbuddy_core::schedule_single_event( time(), 'live_troubleshooting_check', array() ); // Add schedule.
+						}
+					}
+					
 					if ( $days_since_last > (int)$destination['no_new_snapshots_error_days'] ) {
 						$message = 'Warning! BackupBuddy is configured to notify you if no new BackupBuddy Stash Live Snapshots have been made in `' . (int)$destination['no_new_snapshots_error_days'] . '` days. It has been `' . $days_since_last . '` days since your last Snapshot. There may be a problem with your site\'s Stash Live setup requiring your attention.';
 						pb_backupbuddy::status( 'warning', $message );
-						backupbuddy_core::mail_error( $message );
+						if ( (int)$destination['no_new_snapshots_error_days'] > 0 ) { // Live destination and notifications are enabled.
+							backupbuddy_core::mail_error( $message );
+						}
 					}
 				} elseif ( $state['stats']['first_activity'] > 0 ) { // Live was set up but never even made a first Snapshot. Activate if DOUBLE the no_new_snapshot_error_days is surpassed (to give time for first backup to fully upload).
 					$time_since_last = time() - $state['stats']['first_activity'];
 					$days_since_last = round( $time_since_last / 60 / 60 / 24 );
+					
+					// Run troubleshooting test if no snapshot in X days.
+					if ( $days_since_last > backupbuddy_constants::DAYS_BEFORE_RUNNING_TROUBLESHOOTING_TEST ) {
+						if ( false === wp_next_scheduled( 'backupbuddy_cron', array( 'live_troubleshooting_check', array() ) ) ) { // if schedule does not exist...
+							backupbuddy_core::schedule_single_event( time(), 'live_troubleshooting_check', array() ); // Add schedule.
+						}
+					}
+					
 					if ( $days_since_last > ( (int)$destination['no_new_snapshots_error_days'] * 2 ) ) {
 						$message = 'Warning! BackupBuddy is configured to notify you if no new BackupBuddy Stash Live Snapshots have been made in `' . (int)$destination['no_new_snapshots_error_days'] . '` days. It has been at least twice this (`' . $days_since_last . '` days) since you set up BackupBuddy Stash Live but the first Snapshot has not been made yet. There may be a problem with your site\'s Stash Live setup requiring your attention.';
 						pb_backupbuddy::status( 'warning', $message );
-						backupbuddy_core::mail_error( $message );
+						if ( (int)$destination['no_new_snapshots_error_days'] > 0 ) { // Live destination and notifications are enabled.
+							backupbuddy_core::mail_error( $message );
+						}
 					}
 				}
 				
 				return true; // Don't send any traditional notifications when Live enabled.
-			}
+				
+			} // end if live.
 		}
 		
 		// Alert user if no new backups FINISHED within X number of days if enabled. Max 1 email notification per 24 hours period.
@@ -244,7 +271,7 @@ class backupbuddy_housekeeping {
 	 *	
 	 *	@return		null
 	 */
-	public static function trim_remote_send_stats( $file_prefix = 'send-', $limit = '', $max_age = '' ) {
+	public static function trim_remote_send_stats( $file_prefix = 'send-', $limit = '', $max_age = '', $purge_log = false ) {
 		require_once( pb_backupbuddy::plugin_path() . '/classes/fileoptions.php' );
 		
 		pb_backupbuddy::status( 'details', 'Cleaning up remote send stats.' );
@@ -291,6 +318,7 @@ class backupbuddy_housekeeping {
 					unset( $send_fileoption_obj );
 					continue;
 				} else {
+					// Keep unfinished. Keep non-fails that are not too old.
 					if ( ( 0 == $send_fileoption_obj->options['finish_time'] ) || ( ( -1 != $send_fileoption_obj->options['finish_time'] ) && ( ( time() - $send_fileoption_obj->options['finish_time'] ) < backupbuddy_constants::CLEANUP_FINISHED_FILEOPTIONS_AGE_DELAY ) ) ) { // Still unfinished OR ( NOT Failed AND finished too recently to delete )
 						
 						// TODO: (maybe).. If 0==finish_time then check the filemtime of the fileoptions file. If no progress in a certain amount of time, consider timed out?
@@ -298,8 +326,8 @@ class backupbuddy_housekeeping {
 						unset( $send_fileoption_obj );
 						continue;
 					}
+					
 				}
-				unset( $send_fileoption_obj );
 				
 				// Made it here so must be finished or failed.
 				if ( false === @unlink( $send_fileoption ) ) {
@@ -307,6 +335,13 @@ class backupbuddy_housekeeping {
 				} else { // Deleted.
 					@unlink( str_replace( '.txt', '.lock', $send_fileoption ) ); // Remove lock file if exists.
 				}
+				
+				if ( true === $purge_log ) {
+					$log_file = backupbuddy_core::getLogDirectory() . 'status-remote_send-' . $send_fileoption_obj->options['sendID'] . '_' . pb_backupbuddy::$options['log_serial'] . '.txt';
+					@unlink( $log_file );
+				}
+				
+				unset( $send_fileoption_obj );
 			}
 		}
 		
@@ -591,6 +626,20 @@ class backupbuddy_housekeeping {
 	
 	
 	
+	public static function remove_dat_file_from_root() {
+		// Remove any copy of dat files in the site root.
+		pb_backupbuddy::status( 'details', 'Cleaning up dat file if it exists in site root.' );
+		if ( file_exists( ABSPATH . 'backupbuddy_dat.php') ) {
+			if ( unlink( ABSPATH . 'backupbuddy_dat.php' ) ) {
+				pb_backupbuddy::status( 'details', 'Unlinked backupbuddy_dat.php in root of site.' );
+			} else {
+				pb_backupbuddy::status( 'details', 'Unable to delete backupbuddy_dat.php in root of site. This file needs to be manually deleted' );
+			}
+		}
+	}
+
+
+
 	/* cleanup_temp_dir()
 	 *
 	 * Cleans out any old temp files. Called by periodic cleanup function and post_backup in backup.php.
@@ -673,8 +722,8 @@ class backupbuddy_housekeeping {
 				if ( count( $results ) > 0 ) {
 					foreach( $results as $result ) {
 						if ( false === $wpdb->query( "DROP TABLE `" . backupbuddy_core::dbEscape( $result['table_name'] ) . "`" ) ) {
-							return $this->_error( 'Error #372837683: Unable to copy over BackupBuddy settings from live site to incoming database in temp table. Details: `' . $wpdb->last_error . '`.' );
-							pb_backupbuddy::status( 'details', 'Error #83947944: Unable to drop temp rollback/deploy table `' . $result['table_name'] . '`. Details: `' . $wpdb->last_error . '`.' );
+							pb_backupbuddy::status( 'error', 'Error #372837683: Unable to copy over BackupBuddy settings from live site to incoming database in temp table. Details: `' . $wpdb->last_error . '`.' );
+							return false;
 						}
 					}
 				}
@@ -756,6 +805,63 @@ class backupbuddy_housekeeping {
 		} // end foreach.
 		
 	} // End validate_bb_schedules_in_wp().
+	
+	
+	
+	public static function backup_bb_settings() {
+		if ( empty( pb_backupbuddy::$options ) || ( ! isset( pb_backupbuddy::$options['data_version'] ) ) ) { // Don't backup missing/corrupt settings.
+			return false;
+		}
+		require_once( pb_backupbuddy::plugin_path() . '/classes/core.php' );
+		
+		// TODO: Added Aug 8, 2016. Remove this section after a while.
+		// Begin removal of botches storage location.
+		$existing_backups = glob( ABSPATH . 'settings_backup-*.php' );
+		if ( ! is_array( $existing_backups ) ) {
+			$existing_backups = array();
+		}
+		foreach( $existing_backups as $existing_backup ) {
+			@unlink( $existing_backup );
+		}
+		// End removal.
+		
+		$backup_dir = backupbuddy_core::getLogDirectory();
+		$existing_backups = glob( $backup_dir . 'settings_backup-*.php' );
+		if ( ! is_array( $existing_backups ) ) {
+			$existing_backups = array();
+		}
+		
+		// Make sure backup dir protected.
+		pb_backupbuddy::anti_directory_browsing( $backup_dir, $die = false );
+		
+		// If too many backups exist (should be max of 1), remove them all and just create a single one.
+		if ( count( $existing_backups ) > 1 ) {
+			foreach( $existing_backups as $i => $existing_backup ) {
+				if ( true === @unlink( $existing_backup ) ) {
+					unset( $existing_backups[ $i ] );
+				}
+			}
+		}
+		
+		// Calculate filename to backup into.
+		if ( count( $existing_backups ) >= 1 ) {
+			$backup_file = $backup_dir. basename( $existing_backups[0] ); // Use existing backup filename. If more than one just use the top one found.
+		} else {
+			$backup_file = $backup_dir . 'settings_backup-' . pb_backupbuddy::random_string( 32 ) . '.php'; // 32chars of randomness for security.
+		}
+		
+		if ( false === ( $file_handle = @fopen( $backup_file, 'w' ) ) ) {
+			return false;
+		}
+		if ( false === fwrite( $file_handle, "<?php die('Access Denied.'); // <!-- ?>\n" . base64_encode( serialize( pb_backupbuddy::$options ) ) ) ) {
+			return false;
+		} else {
+			pb_backupbuddy::status( 'details', 'BackupBuddy plugin options backed up.' );
+		}
+		@fclose( $file_handle );
+		
+		return true;
+	} // End backup_bb_settings().
 	
 	
 	
@@ -870,7 +976,9 @@ class backupbuddy_housekeeping {
 	
 	public static function s32_cancel_multipart_pieces() {
 		foreach( pb_backupbuddy::$options['remote_destinations'] as $destination ) {
-			if ( $destination['type'] != 's32' ) { continue; }
+			if ( ( $destination['type'] != 's32' ) && ( $destination['type'] != 's33' ) ) {
+				continue;
+			}
 			
 			pb_backupbuddy::status( 'details', 'Found S32 Multipart Chunking Destinations to cleanup.' );
 			require_once( pb_backupbuddy::plugin_path() . '/destinations/bootstrap.php' );

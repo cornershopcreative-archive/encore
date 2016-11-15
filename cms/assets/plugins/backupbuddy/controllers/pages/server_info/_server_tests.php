@@ -307,18 +307,20 @@ if ( ! defined( 'PB_IMPORTBUDDY' ) ) {
 
 // Maximum PHP Runtime (ACTUAL TESTED!)
 
-$bb_php_max_execution = backupbuddy_core::detectMaxExecutionTime() . ' ' . __( 'secs', 'it-l10n-backupbuddy' ); // Lesser of PHP reported and tested.
-if ( backupbuddy_core::adjustedMaxExecutionTime() != backupbuddy_core::detectMaxExecutionTime() ) { // Takes into account user override.
-	$bb_php_max_execution = '<strike>' . $bb_php_max_execution . '</strike> ' . __( 'Overridden in settings to:', 'it-l10n-backupbuddy' ) . ' ' . backupbuddy_core::adjustedMaxExecutionTime() .  ' ' . __( 'secs', 'it-l10n-backupbuddy' );
+$bb_php_max_execution        = backupbuddy_core::detectMaxExecutionTime(); // Lesser of PHP reported and tested. Float.
+$bb_php_max_execution_string = $bb_php_max_execution . ' ' . __( 'secs', 'it-l10n-backupbuddy' ); // String.
+
+if ( backupbuddy_core::adjustedMaxExecutionTime() != $bb_php_max_execution ) { // Takes into account user override.
+	$bb_php_max_execution_string = '<strike>' . $bb_php_max_execution_string . '</strike> ' . __( 'Overridden in settings to:', 'it-l10n-backupbuddy' ) . ' ' . backupbuddy_core::adjustedMaxExecutionTime() .  ' ' . __( 'secs', 'it-l10n-backupbuddy' );
 }
 if ( ! defined( 'PB_IMPORTBUDDY' ) ) {
 	$parent_class_test = array(
 					'title'			=>		'BackupBuddy PHP Max Execution Time',
 					'suggestion'	=>		'>= 30 seconds (30+ best)',
-					'value'			=>		$bb_php_max_execution,
-					'tip'			=>		__('This is the max execution time BackupBuddy is using for chunking. It is the lesser of the values of the reported PHP execution time and actual tested execution time. If the BackupBuddy "Max time per chunk" Advanced Setting is set then that value is used instead.', 'it-l10n-backupbuddy' ),
+					'value'			=>		$bb_php_max_execution_string,
+					'tip'			=>		esc_attr__('This is the max execution time BackupBuddy is using for chunking. It is the lesser of the values of the reported PHP execution time and actual tested execution time. If the BackupBuddy "Max time per chunk" Advanced Setting is set then that value is used instead.', 'it-l10n-backupbuddy' ),
 				);
-	if ( $bb_php_max_execution < 30 ) {
+	if ( $bb_php_max_execution < 28 ) { //  Has a little wiggle room.
 		$parent_class_test['status'] = 'FAIL';
 	} else {
 		$parent_class_test['status'] = 'OK';
@@ -333,17 +335,41 @@ $phpinfo_array = phpinfo_array( 4 );
 
 
 // MEMORY LIMIT
+
+function bb_return_bytes($val) {
+    $val = trim($val);
+    $last = strtolower($val[strlen($val)-1]);
+    switch($last) {
+        // The 'G' modifier is available since PHP 5.1.0
+        case 'g':
+            $val *= 1024;
+        case 'm':
+            $val *= 1024;
+        case 'k':
+            $val *= 1024;
+    }
+
+    return $val;
+}
+
 $mem_limits = array();
 if ( ! isset( $phpinfo_array['memory_limit'] ) ) {
 	$parent_class_val = 'unknown';
 } else {
+	global $bb_local_mem, $bb_master_mem;
+	$bb_local_mem = bb_return_bytes( $phpinfo_array['memory_limit'][0] ) / 1024 / 1024;
 	$mem_limits[] = $phpinfo_array['memory_limit'][0];
 	$parent_class_val = $phpinfo_array['memory_limit'][0];
 	if ( isset( $phpinfo_array['memory_limit'][1] ) ) {
+		$bb_master_mem = bb_return_bytes( $phpinfo_array['memory_limit'][1] ) / 1024 / 1024;
 		$mem_limits[] = $phpinfo_array['memory_limit'][1];
 		$parent_class_val .= ' (local) / ' . $phpinfo_array['memory_limit'][1]. ' (master)';
 	}
 }
+
+
+
+
 $parent_class_test = array(
 				'title'			=>		'Reported PHP Memory Limit',
 				'suggestion'	=>		'>= 256 MB',
@@ -387,10 +413,18 @@ if ( ! defined( 'PB_IMPORTBUDDY' ) ) {
 	} else {
 		$tested_memory_value = '<span class="description" id="pb_stats_run_php_memory_test">' . __( 'Pending...', 'it-l10n-backupbuddy' ) . '</span>';
 	}
+	global $bb_tested_mem, $bb_tested_mem_ago;
+	
 	$disabled = '';
 	if ( 0 == pb_backupbuddy::$options['php_memory_test_minimum_interval'] ) {
 		$disabled = '<span title="' . __( 'Disabled based on Advanced Settings.', 'it-l10n-backupbuddy' ) . '">' . __( 'Disabled', 'it-l10n-backupbuddy' ) . '</span>';
+		$bb_tested_mem = 0;
+		$bb_tested_mem_ago = -1;
+	} else {
+		$bb_tested_mem = pb_backupbuddy::$options['tested_php_memory'];
+		$bb_tested_mem_ago = time() - pb_backupbuddy::$options['last_tested_php_memory'];
 	}
+	
 	$parent_class_test = array(
 					'title'			=>		'Tested PHP Memory Limit',
 					'suggestion'	=>		'>= 256 MB',
@@ -692,11 +726,10 @@ if ( !defined( 'PB_IMPORTBUDDY' ) ) {
 		$status = 'WARNING';
 	}
 	global $backupbuddy_loopback_details;
-	$loopback_status .= ' <span title="' . htmlentities( $backupbuddy_loopback_details ) . '" style="font-style: italic;">Hover for details</span>';
 	$parent_class_test = array(
 					'title'			=>		'Http Loopbacks',
 					'suggestion'	=>		'enabled',
-					'value'			=>		$loopback_status,
+					'value'			=>		$loopback_status . '<br><textarea style="width: 100%; max-height: 200px;" disabled="disabled">' . $backupbuddy_loopback_details . '</textarea>',
 					'tip'			=>		__('Some servers do are not configured properly to allow WordPress to connect back to itself via the site URL (ie: http://your.com connects back to itself on the same server at http://your.com/ to trigger a simulated cron step). If this is the case you must either ask your hosting provider to fix this or enable WordPres Alternate Cron mode in your wp-config.php file.', 'it-l10n-backupbuddy' ),
 				);
 	$parent_class_test['status'] = __( $status, 'it-l10n-backupbuddy' );
@@ -713,11 +746,10 @@ if ( !defined( 'PB_IMPORTBUDDY' ) ) {
 		$status = 'WARNING';
 	}
 	global $backupbuddy_cronback_details;
-	$cronback_status .= ' <span title="' . htmlentities( $backupbuddy_cronback_details ) . '" style="font-style: italic;">Hover for details</span>';
 	$parent_class_test = array(
 					'title'			=>		'wp-cron.php Loopbacks',
 					'suggestion'	=>		'enabled',
-					'value'			=>		$cronback_status,
+					'value'			=>		$cronback_status . '<br><textarea style="width: 100%; max-height: 200px;" disabled="disabled">' . $backupbuddy_cronback_details . '</textarea>',
 					'tip'			=>		__('Some servers do are not configured properly to allow WordPress to connect back to itself via the site URL (ie: http://your.com connects back to itself on the same server at http://your.com/ to trigger a simulated cron step). If this is the case you must either ask your hosting provider to fix this or enable WordPres Alternate Cron mode in your wp-config.php file.', 'it-l10n-backupbuddy' ),
 				);
 	$parent_class_test['status'] = __( $status, 'it-l10n-backupbuddy' );
@@ -922,13 +954,18 @@ array_push( $tests, $parent_class_test );
 
 
 // PHP Bits
+$bits = ( PHP_INT_SIZE * 8 );
 $parent_class_test = array(
 				'title'			=>		'PHP Architecture',
 				'suggestion'	=>		'64-bit',
-				'value'			=>		( PHP_INT_SIZE * 8 ) . '-bit',
+				'value'			=>		$bits . '-bit',
 				'tip'			=>		__('Whether PHP is running in 32 or 64 bit mode. 64-bit is recommended over 32-bit. Note: This only determines PHP status NOT status of other server functionality such as filesystem, command line zip, etc.', 'it-l10n-backupbuddy' ),
 			);
-$parent_class_test['status'] = 'OK';
+if ( $bits < 60 ) {
+	$parent_class_test['status'] = 'WARNING';
+} else {
+	$parent_class_test['status'] = 'OK';
+}
 array_push( $tests, $parent_class_test );
 
 
@@ -1026,6 +1063,19 @@ array_push( $tests, $parent_class_test );
 
 
 
+// Is this possibly GoDaddy Managed WordPress Hosting?
+if ( defined( 'GD_SYSTEM_PLUGIN_DIR' ) || class_exists( '\\WPaaS\\Plugin' ) ) {
+	$parent_class_test = array(
+					'title'			=>		'GoDaddy Managed WordPress Hosting Detected',
+					'suggestion'		=>		'n/a',
+					'value'			=>		'Potentially Detected',
+					'tip'			=>		__('GoDaddy\'s Managed WordPress Hosting recently experienced problems resulting in the WordPress cron not working properly resulting in WordPress\' built-in scheduling and automation functionality malfunctioning. GoDaddy has addressed this issue for US-based customers and we believe it to be resolved for those hosted in the USA. Non-US customers should contact GoDaddy support. However, if you still experience issues and require a partial workaround go to BackupBuddy -> Settings page -> Advanced Settings / Troubleshooting tab -> Check the box Force internal cron -> Scroll down and Save the settings.  This may help you be able to make a manual traditional backup though it may be slow and is not guaranteed.', 'it-l10n-backupbuddy' ),
+				);
+	$parent_class_test['status'] = 'WARNING';
+	array_push( $tests, $parent_class_test );
+}
+
+
 // Active plugins list.
 if ( !defined( 'PB_IMPORTBUDDY' ) ) {
 	// Active Plugins
@@ -1041,7 +1091,7 @@ if ( !defined( 'PB_IMPORTBUDDY' ) ) {
 	$parent_class_test = array(
 					'title'			=>		'Active WordPress Plugins',
 					'suggestion'	=>		'n/a',
-					'value'			=>		'<textarea style="width: 100%; max-height: 200px;" disabled="disabled">' . implode( ', ', unserialize( $active_plugins ) ) . '</textarea>',
+					'value'			=>		'<textarea style="width: 100%; height: 70px;" readonly="true">' . implode( ', ', unserialize( $active_plugins ) ) . '</textarea>',
 					'tip'			=>		__( 'Plugins currently activated for this site. A warning does not guarentee problems with a plugin but indicates that a plugin is activated that at one point may have caused operational issues.  Plugin conflicts can be specific and may only occur under certain circumstances such as certain plugin versions, plugin configurations, and server settings.', 'it-l10n-backupbuddy' ),
 				);
 	if ( false === $success ) {

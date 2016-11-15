@@ -11,6 +11,7 @@ $cpanel_user = pb_backupbuddy::_POST( 'cpanel_user' );
 $cpanel_password = pb_backupbuddy::_POST( 'cpanel_pass' );
 $cpanel_host = pb_backupbuddy::_POST( 'cpanel_url' );
 $cpanel_port = pb_backupbuddy::_POST( 'cpanel_port' );
+$cpanel_protocol = pb_backupbuddy::_POST( 'cpanel_protocol' );
 $db_name = pb_backupbuddy::_POST( 'cpanel_dbname' );
 $db_user = pb_backupbuddy::_POST( 'cpanel_dbuser' );
 $db_pass = pb_backupbuddy::_POST( 'cpanel_dbpass' );
@@ -20,7 +21,7 @@ $requestcore_file = pb_backupbuddy::plugin_path() . '/lib/requestcore/requestcor
 require_once( $requestcore_file );
 
 require_once( pb_backupbuddy::plugin_path() . '/lib/cpanel/cpanel.php' );
-$create_db_result = pb_backupbuddy_cpanel::create_db( $cpanel_user, $cpanel_password, $cpanel_host, $db_name, $db_user, $db_pass, $cpanel_port );
+$create_db_result = pb_backupbuddy_cpanel::create_db( $cpanel_user, $cpanel_password, $cpanel_host, $db_name, $db_user, $db_pass, $cpanel_port, $cpanel_protocol );
 
 if ( $create_db_result === true ) {
 	echo 'Success! Created database, user, and assigned user to database.';

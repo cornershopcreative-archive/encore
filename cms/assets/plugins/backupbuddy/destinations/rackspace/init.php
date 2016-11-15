@@ -7,7 +7,7 @@ class pb_backupbuddy_destination_rackspace { // Change class name end to match d
 	public static $destination_info = array(
 		'name'			=>		'Rackspace Cloud Files',
 		'description'	=>		'Rackspace Cloud Files is an online cloud storage service (like Amazon S3) for storing files. <a href="http://www.rackspace.com/cloud/public/files/" target="_blank">Learn more here.</a>',
-		'category'		=>		'normal', // best, normal, legacy
+		'category'		=>		'legacy', // best, normal, legacy
 	);
 	
 	// Default settings. Should be public static for auto-merging.

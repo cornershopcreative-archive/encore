@@ -2,9 +2,11 @@
 if ( !is_admin() ) { die( 'Access Denied.' ); }
 
 // Display additional information for users on Windows systems.
+/*
 if ( stristr( PHP_OS, 'WIN' ) && ! stristr( PHP_OS, 'DARWIN' ) ) { // Show in WINdows but not darWIN.
 	pb_backupbuddy::disalert( 'windows_boost', __('Windows servers may be able to significantly boost performance, if the server allows executing .exe files (or can be configured to allow this file as an exception), by adding native Zip compatibility executable files <a href="http://ithemes.com/backupbuddy_files/backupbuddy_windows_unzip.zip">available for download here</a>. Instructions are provided within the readme.txt in the package.  This package prevents Windows from falling back to Zip compatiblity mode and works for both BackupBuddy and importbuddy.php. This is particularly useful for <a href="http://ithemes.com/codex/page/BackupBuddy:_Local_Development">local development on a Windows machine using a system like XAMPP</a>.', 'it-l10n-backupbuddy' ) );
 }
+*/
 ?>
 
 
