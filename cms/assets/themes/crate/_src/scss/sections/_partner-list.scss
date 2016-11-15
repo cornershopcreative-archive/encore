@@ -18,8 +18,13 @@
 			clear: both;
 		}
 
-		.button {
+		.button-group {
 			margin-top: rem(25);
+
+			// Left-align buttons when screen is wide enough for a two-column layout.
+			@include breakpoint( $tablet ) {
+				justify-content: flex-start;
+			}
 		}
 	}
 

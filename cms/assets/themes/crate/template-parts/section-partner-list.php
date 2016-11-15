@@ -39,12 +39,14 @@
 
 						<?php the_content(); ?>
 
-						<?php crate_post_item_link( array(
-							'class' => 'button button-gold button-solid',
-							'data-org-name' => trim( esc_attr( get_the_title() ) )
-						) ); ?>
-							<?php esc_html_e( 'Get Involved', 'crate' ); ?>
-						<?php crate_post_item_link_close(); ?>
+						<div class="button-group">
+								<?php crate_post_item_link( array(
+								'class' => 'button button-gold button-solid',
+								'data-org-name' => trim( esc_attr( get_the_title() ) )
+							) ); ?>
+								<?php esc_html_e( 'Get Involved', 'crate' ); ?>
+							<?php crate_post_item_link_close(); ?>
+						</div>
 
 					</div>
 

@@ -1943,8 +1943,12 @@ input[type='email'] {
   clear: both;
   content: ''; }
 
-.section-partner-list .list-item .button {
+.section-partner-list .list-item .button-group, .section-partner-list .list-item .facetwp-pager {
   margin-top: 1.5625rem; }
+  @media (min-width: 640px) {
+    .section-partner-list .list-item .button-group, .section-partner-list .list-item .facetwp-pager {
+      -ms-flex-pack: start;
+          justify-content: flex-start; } }
 
 @media (min-width: 640px) {
   .section-partner-list .entry-image {
