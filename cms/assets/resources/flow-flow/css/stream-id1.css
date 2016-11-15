@@ -73,7 +73,7 @@
 	text-shadow: -1px 0 rgb(255, 255, 255), 0 1px rgb(255, 255, 255), 1px 0 rgb(255, 255, 255), 0 -1px rgb(255, 255, 255);
 }
 #ff-stream-1  a, #ff-stream-1-slideshow  a{
-	color: rgb(233, 103, 1);
+	color: rgb(255, 139, 24);
 }
 
 #ff-stream-1 h4, #ff-stream-1-slideshow h4,
@@ -105,4 +105,31 @@
 min-height: 200px !important;
 font-family: 'Avenir Next' !important;
 padding-top: 0px !Important;
+}
+
+.ff-btn {
+background-color: #ff8b18 !important;
+display: -ms-inline-flexbox;
+display: inline-flex;
+-ms-flex-align: center;
+align-items: center;
+-ms-flex-pack: center;
+justify-content: center;
+padding: 0.625rem 2.625rem !important;
+min-height: 3.4375rem;
+border: 2px solid;
+border-radius: 1.75rem;
+text-align: center;
+text-decoration: none;
+text-transform: uppercase;
+font-weight: 700 !important;
+font-size: 0.9375rem;
+font-family: "Avenir Next";
+line-height: 1.5;
+cursor: pointer;
+}
+
+.ff-btn:hover {
+background-color: white !important;
+color: #ff8b18 !important;
 }
