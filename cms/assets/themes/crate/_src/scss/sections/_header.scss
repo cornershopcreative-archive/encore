@@ -403,7 +403,7 @@
 	.subnav-is-open {
 
 		.subnav-toggle {
-			@extend .icon-submenu-close;
+			transform: scaleY(-1);
 		}
 	}
 }
