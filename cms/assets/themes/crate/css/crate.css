@@ -1896,6 +1896,12 @@ input[type='email'] {
   .section-circle-grid .grid-item-heading ~ .grid-item-blurb {
     font-weight: 400; }
 
+.hero + .section-action-slider {
+  margin-top: 0; }
+  @media (min-width: 640px) {
+    .hero + .section-action-slider {
+      margin-top: 4rem; } }
+
 .section-action-slider .slider-controls {
   bottom: auto;
   padding-top: 44.89796%; }

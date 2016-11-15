@@ -1,5 +1,15 @@
 .section-action-slider {
 
+	.hero + & {
+		// If an action slider immediately follows a hero element, remove the gap
+		// between them.
+		margin-top: 0;
+
+		@include breakpoint( $tablet ) {
+			margin-top: 4rem;
+		}
+	}
+
 	.slider-controls {
 		bottom: auto;
 		padding-top: (440 / 980) * 100%; // Height/width of a slide image.
