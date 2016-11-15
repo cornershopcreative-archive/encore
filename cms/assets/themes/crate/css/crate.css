@@ -1578,9 +1578,17 @@ input[type='email'] {
     color: #0047c1; }
 
 .hero-video {
-  display: none; }
+  position: relative;
+  display: none;
+  padding-top: 60.9375%;
+  width: 80vw; }
   .hero-video iframe {
-    display: block; }
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%; }
 
 .play-button-link {
   position: relative;
