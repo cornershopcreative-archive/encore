@@ -38,8 +38,6 @@ endif;
 
 <div class="content-section section-volunteer-opportunities" data-page="1" data-location="<?php echo esc_attr( $location ); ?>"<?php crate_section_id_attr(); ?>>
 
-	<h2 class="section-title">Volunteer Opportunities</h2>
-
 	<div class="section-filters container">
 		<form class="filter-form" action="#">
 			<span class="flex-space"></span>
