@@ -56,6 +56,7 @@
 				<div class="credits">
 					<p>Designed by Ronik</p>
 					<p>Crafted by Cornershop Creative</p>
+					<p>Campaign photography taken by Ed Kashi & Woodwalk</p>
 				</div>
 			</div>
 		</div>

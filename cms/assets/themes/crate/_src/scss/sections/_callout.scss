@@ -33,7 +33,6 @@
 	width: 76%;
 	margin-left: 12%;
 	padding-top: 90px;
-	padding-bottom: 60px;
 	min-height: 357px !important;
 }
 
@@ -76,6 +75,7 @@
 	border-radius: 50%;
 	margin-left: 60px;
 	margin-right: 20px;
+	margin-top: -75px;
 }
 
 .callout_image {
@@ -158,8 +158,8 @@
   margin-top: -10.5em;
 }
 
-.callout-content + .section-partners-grid {
-	margin-top: -60px;
+.section-callout-white + .section-partners-grid {
+	margin-top: -50px;
 }
 
 @media screen and (max-width: 480px) {
