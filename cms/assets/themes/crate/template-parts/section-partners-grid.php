@@ -6,8 +6,8 @@
 
 	<div class="content-section section-partners-grid"<?php crate_section_id_attr(); ?>>
 <?php $link_url = get_field('link_url')?>
-		
-		<?php 
+
+		<?php
 
 				if(get_sub_field('background') == "silver")
 				{
@@ -17,7 +17,7 @@
 				{
 					echo '<div class="prose">';
 				}?>
-				
+
 		<?php if ( $title = get_sub_field( 'title' ) ): ?>
 			<h2 class="section-title"><?php echo wp_kses_post( wptexturize( $title ) ); ?></h2>
 		<?php endif; ?>
@@ -58,7 +58,7 @@
 						}
 						else
 						{} ?>
-						
+
 						</h3>
 
 
@@ -85,15 +85,15 @@ else
 
 
 
-				      
+
 
 					</div>
-					
-					
-					
 
-					
-					
+
+
+
+
+
 				</article>
 
 			<?php endwhile; ?>
@@ -108,3 +108,5 @@ else
 		<?php crate_section_links(); ?>
 
 	</div>
+
+<?php get_template_part( 'template-parts/modal', 'opportunity' ); ?>
