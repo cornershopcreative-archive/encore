@@ -1036,6 +1036,11 @@ input[type='email'] {
     background: transparent; }
     .facetwp-pager a.disabled {
       opacity: 0.2; }
+  .facetwp-pager .outer-page {
+    display: none; }
+    @media (min-width: 640px) {
+      .facetwp-pager .outer-page {
+        display: block; } }
   .facetwp-pager .page-number-link:hover {
     border-color: #00c7f5;
     color: #00c7f5; }

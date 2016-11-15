@@ -32,6 +32,15 @@
 		}
 	}
 
+	// Hide outermost page links on mobile, so the pager has fewer items.
+	.outer-page {
+		display: none;
+
+		@include breakpoint( $tablet ) {
+			display: block;
+		}
+	}
+
 	.page-number-link {
 
 		&:hover {

@@ -77,7 +77,17 @@ function crate_facetwp_pager_html( $output, $params ) {
 	}
 
 	for ( $i = $start_page; $i <= $end_page; $i++ ) {
-		$output .= '<a class="page-number-link facetwp-page' . ( $i === $page ? ' active' : '' ) . '" data-page="' . esc_attr( $i ) . '">' . esc_html( $i ) . '</a>';
+		$classes = array( 'page-number-link', 'facetwp-page' );
+		// Mark the current page as active.
+		if ( $i === $page ) {
+			$classes[] = 'active';
+		}
+		// Add a class that can be used to hide the outer pages (more than 1 page
+		// away from the current page) on mobile.
+		if ( $i < $page - 1 || $i > $page + 1 ) {
+			$classes[] = 'outer-page';
+		}
+		$output .= '<a class="' . esc_attr( join( ' ', $classes ) ) . '" data-page="' . esc_attr( $i ) . '">' . esc_html( $i ) . '</a>';
 	}
 
 	// Add a 'next page' link.
