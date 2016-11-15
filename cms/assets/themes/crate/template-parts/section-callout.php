@@ -21,7 +21,7 @@
 				$callout_background_image = get_sub_field('background_image');
 		?>
 
-<?php echo '<div class="section-callout '.$callout_color . ' ' . $callout_background_image . '">' ;?>
+<?php echo '<div class="section-callout '.$callout_color . ' ' . $callout_background_image . '"' . crate_section_id_attr() . '>' ;?>
 
 	<?php echo '<div class="callout-content '.$callout_type .'">' ;?>
 

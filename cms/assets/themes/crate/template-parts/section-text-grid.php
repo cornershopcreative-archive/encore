@@ -14,7 +14,7 @@
 
 ?>
 
-<?php echo '<div class="content-section '.$textgrid_color.' ">' ;?>
+<?php echo '<div class="content-section '.$textgrid_color.' "' . crate_get_section_id_attr() . '>' ;?>
 		<div style="color: black;">
 		<h2 class="section-title"><?php the_sub_field('heading'); ?></h3>
 		<div class="content-section-grid container text-grid">

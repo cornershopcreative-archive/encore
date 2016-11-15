@@ -7,7 +7,7 @@
 $autoplay_rate = intval( get_sub_field( 'autoplay_rate' ) ) * 1000;
 ?>
 
-	<div class="content-section section-action-slider">
+	<div class="content-section section-action-slider"<?php crate_section_id_attr(); ?>>
 		<div class="content-section-slider container-10 container-bleed" data-timeout="<?php echo esc_attr( $autoplay_rate ); ?>">
 			<div class="slider-controls">
 				<a href="#" class="slider-prev">

@@ -4,7 +4,7 @@
  */
 ?>
 
-	<div class="content-section section-partners-grid">
+	<div class="content-section section-partners-grid"<?php crate_section_id_attr(); ?>>
 <?php $link_url = get_field('link_url')?>
 		
 		<?php 

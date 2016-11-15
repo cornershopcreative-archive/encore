@@ -262,3 +262,23 @@ function crate_section_links() {
 
 	<?php
 }
+
+/**
+ * Return an ID attribute for a content section, if a 'section name' was
+ * provided.
+ */
+function crate_get_section_id_attr() {
+
+	if ( $section_name = get_sub_field( 'section_name' ) ) {
+		return ' id="' . esc_attr( sanitize_title( $section_name ) ) . '"';
+	}
+
+	return '';
+}
+
+/**
+ * Output an ID attribute for a content section.
+ */
+function crate_section_id_attr() {
+	echo crate_get_section_id_attr();
+}

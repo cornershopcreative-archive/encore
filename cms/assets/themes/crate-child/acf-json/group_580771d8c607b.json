@@ -26,6 +26,25 @@
                     "display": "block",
                     "sub_fields": [
                         {
+                            "key": "field_582b7788baabb",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "text",
+                            "instructions": "Enter a name to distinguish this section from others on this page. The name will not be displayed on the site frontend, but it will be converted to lower case with hyphens instead of spaces and used as the ID for the section, so that a section named \"Our Partners\" could be linked to with an anchor link like \"#our-partners\".",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
                             "key": "field_5807725f40980",
                             "label": "Content",
                             "name": "content",
@@ -53,6 +72,27 @@
                     "label": "Image Grid",
                     "display": "block",
                     "sub_fields": [
+                        {
+                            "key": "field_582b7cccbaabc",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
                         {
                             "key": "field_58174a9e89594",
                             "label": "Heading",
@@ -143,6 +183,27 @@
                     "label": "Circle Grid",
                     "display": "block",
                     "sub_fields": [
+                        {
+                            "key": "field_582b7cf2baabd",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
                         {
                             "key": "field_5808c7b6c1c36",
                             "label": "Items",
@@ -273,6 +334,27 @@
                     "label": "Colorful Callout",
                     "display": "block",
                     "sub_fields": [
+                        {
+                            "key": "field_582b7d0dbaabe",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
                         {
                             "key": "field_5809934a89d3b",
                             "label": "Callout Type",
@@ -589,6 +671,27 @@
                     "display": "block",
                     "sub_fields": [
                         {
+                            "key": "field_582b7d29baabf",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
+                        {
                             "key": "field_5813a2c2d31f8",
                             "label": "Title",
                             "name": "title",
@@ -713,6 +816,27 @@
                     "label": "Action Slider",
                     "display": "block",
                     "sub_fields": [
+                        {
+                            "key": "field_582b7d3bbaac0",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
                         {
                             "key": "field_58095bbd33a95",
                             "label": "Items",
@@ -862,6 +986,27 @@
                     "label": "Text Grid",
                     "display": "block",
                     "sub_fields": [
+                        {
+                            "key": "field_582b7d4bbaac1",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
                         {
                             "key": "field_581747f3f5e62",
                             "label": "Heading",
@@ -1026,6 +1171,27 @@
                     "display": "block",
                     "sub_fields": [
                         {
+                            "key": "field_582b7d5cbaac2",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
+                        {
                             "key": "field_582b3f1ccf66d",
                             "label": "Background Color",
                             "name": "background_color",
@@ -1122,6 +1288,27 @@
                     "label": "News & Media",
                     "display": "block",
                     "sub_fields": [
+                        {
+                            "key": "field_582b7d77baac3",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
                         {
                             "key": "field_582b3e88cf66c",
                             "label": "Background Color",
@@ -1332,6 +1519,27 @@
                     "display": "block",
                     "sub_fields": [
                         {
+                            "key": "field_582b7dcabaac4",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_580772174097f"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
+                        {
                             "key": "field_581129fc7486d",
                             "label": "Title",
                             "name": "title",
@@ -1447,6 +1655,27 @@
                     "display": "block",
                     "sub_fields": [
                         {
+                            "key": "field_582b7ddebaac5",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
+                        {
                             "key": "field_58174bbd9709b",
                             "label": "Items",
                             "name": "items",
@@ -1532,6 +1761,27 @@
                     "display": "block",
                     "sub_fields": [
                         {
+                            "key": "field_582b7defbaac6",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
+                        {
                             "key": "field_5824dfd7fd35e",
                             "label": "Location",
                             "name": "location",
@@ -1560,6 +1810,27 @@
                     "label": "Stories Grid",
                     "display": "block",
                     "sub_fields": [
+                        {
+                            "key": "field_582b7e03baac7",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
                         {
                             "key": "field_5809931289d39",
                             "label": "Title",
@@ -1770,6 +2041,27 @@
                     "label": "Partners Grid",
                     "display": "block",
                     "sub_fields": [
+                        {
+                            "key": "field_582b7e1dbaac8",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
                         {
                             "key": "field_5823f6340f074",
                             "label": "Show Header Background",
@@ -1985,6 +2277,27 @@
                     "display": "block",
                     "sub_fields": [
                         {
+                            "key": "field_582b7e31baac9",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
+                        {
                             "key": "field_5818a8309e90a",
                             "label": "Title",
                             "name": "title",
@@ -2013,6 +2326,27 @@
                     "label": "Social Slider",
                     "display": "block",
                     "sub_fields": [
+                        {
+                            "key": "field_582b7e3fbaaca",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
                         {
                             "key": "field_582b435f7ffe1",
                             "label": "Title",
@@ -2084,5 +2418,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1479230983
+    "modified": 1479247064
 }

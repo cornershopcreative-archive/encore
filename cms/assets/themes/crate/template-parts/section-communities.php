@@ -4,7 +4,7 @@
  */
 ?>
 
-	<div class="content-section section-communities">
+	<div class="content-section section-communities"<?php crate_section_id_attr(); ?>>
 
 		<?php if ( $title = get_sub_field( 'title' ) ): ?>
 			<h2 class="section-title"><?php echo wp_kses_post( wptexturize( $title ) ); ?></h2>

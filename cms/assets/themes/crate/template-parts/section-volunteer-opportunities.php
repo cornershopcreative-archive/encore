@@ -36,7 +36,7 @@ endif;
 
 ?>
 
-<div class="content-section section-volunteer-opportunities" data-page="1" data-location="<?php echo esc_attr( $location ); ?>">
+<div class="content-section section-volunteer-opportunities" data-page="1" data-location="<?php echo esc_attr( $location ); ?>"<?php crate_section_id_attr(); ?>>
 
 	<h2 class="section-title">Volunteer Opportunities</h2>
 

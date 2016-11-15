@@ -11,7 +11,7 @@
 ?>
 
 
-<div class="content-section">
+<div class="content-section"<?php crate_section_id_attr(); ?>>
 	<h2 class="section-title"><?php the_sub_field('heading'); ?></h2>
 		<div class="content-section-grid container text-grid">
 				<?php while ( have_rows( 'items' ) ) : the_row(); ?>

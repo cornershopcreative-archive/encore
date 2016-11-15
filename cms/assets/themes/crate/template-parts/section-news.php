@@ -11,7 +11,7 @@
 ?>
 
 
-	<?php echo '<div class="content-section section-news '.$newssection_color.' ">' ;?>
+	<?php echo '<div class="content-section section-news '.$newssection_color.' "' . crate_get_section_id_attr() . '>' ;?>
 
 		<?php if ( $title = get_sub_field( 'title' ) ): ?>
 			<h2 class="section-title"><?php echo wp_kses_post( wptexturize( $title ) ); ?></h2>
