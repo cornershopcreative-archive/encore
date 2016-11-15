@@ -1,3 +1,5 @@
+var _ = require( 'underscore' );
+
 module.exports = function( $ ) {
 
 	var $nav = $( '.nav-primary' ),
@@ -46,4 +48,14 @@ module.exports = function( $ ) {
 	if ( $nav.find( '.menu-item-has-children.current-menu-item, .current-menu-ancestor' ).length ) {
 		$( '.site-header' ).addClass( 'has-current-submenu' );
 	}
+
+	// Allow different styling for when the main nav is being sticky.
+	$( window ).on( 'scroll', _.throttle( function() {
+		console.log( $( this ).scrollTop() );
+		if ( $( this ).scrollTop() > 0 ) {
+			$( '.site-header' ).addClass( 'has-sticky-nav' );
+		} else {
+			$( '.site-header' ).removeClass( 'has-sticky-nav' );
+		}
+	}, 100 ) );
 };

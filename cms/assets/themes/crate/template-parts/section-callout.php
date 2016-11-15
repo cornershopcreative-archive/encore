@@ -21,9 +21,9 @@
 				$callout_background_image = get_sub_field('background_image');
 		?>
 
-<?php echo '<div class="section-callout '.$callout_color .' ">' ;?>
+<?php echo '<div class="section-callout '.$callout_color . ' ' . $callout_background_image . '">' ;?>
 
-	<?php echo '<div class="callout-content '.$callout_background_image .'  '.$callout_type .'">' ;?>
+	<?php echo '<div class="callout-content '.$callout_type .'">' ;?>
 
 		<?php if (empty($callout_image)) {  }
 			 else { echo '<img class="callout_circle" src="' . $callout_image . '"> ' ;} ?>

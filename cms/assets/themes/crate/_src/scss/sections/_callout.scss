@@ -19,8 +19,13 @@
 	width: 100%;
 	color: $black;
 	margin-bottom: 50px;
-	margin-top: 100px
+	margin-top: 100px;
+
+	&.bubble_background {
+		@include svg-bg( 'bubbles-5-lime' );
+		background-position: left center;
 	}
+}
 
 .section-callout-white p {
 	margin-top: 20px;
@@ -48,12 +53,17 @@
 	background-color: $teal;
 }
 
-.section-callout
+.section-callout {
 
-.logo_background {
-	background-image: url('/cms/assets/uploads/2016/10/Gen2Gen_FinalDesignReview-Copy.png');
-	background-repeat: no-repeat;
-	background-position: 10% -10%;
+	&.logo_background .callout-content {
+		background-image: url('/cms/assets/uploads/2016/10/Gen2Gen_FinalDesignReview-Copy.png');
+		background-repeat: no-repeat;
+		background-position: 10% -10%;
+	}
+
+	&.bubbles_background {
+		@include svg-bg( 'bubbles-4-white' );
+	}
 }
 
 .callout-heading {
@@ -100,6 +110,12 @@
 	padding: 10px;
 	line-height: 28px;
 	padding: 50px !important;
+
+	.bubbles_background & {
+		@include svg-bg( 'bubbles-4-white' );
+		background-position: right center;
+		width: 50%; // Otherwise width will be set to 'auto' by svg-bg()
+	}
 }
 
 .callout-content.callout_two {

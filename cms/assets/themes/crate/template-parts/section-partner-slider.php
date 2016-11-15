@@ -18,28 +18,12 @@
 		<?php endif; ?>
 		<?php
 
-		// Set up custom query vars.
-		$locations = get_sub_field( 'location' );
-		$topics = get_sub_field( 'topic' );
-		$partner_query_vars = array(
+		// Set up custom query.
+		$partner_query = crate_section_query( array(
 			'post_type' => 'partner',
-			'posts_per_page' => -1,
-			'tax_query' => array(),
-		);
-		if ( ! empty( $locations ) ) :
-			$partner_query_vars['tax_query']['location'] = array(
-				'taxonomy' => 'location',
-				'terms' => $locations,
-			);
-		endif;
-		if ( ! empty( $topics ) ) :
-			$partner_query_vars['tax_query']['topic'] = array(
-				'taxonomy' => 'topic',
-				'terms' => $topics,
-			);
-		endif;
-
-		$partners = new WP_Query( $partner_query_vars );
+			'orderby' => 'post_title',
+			'order' => 'ASC',
+		) );
 
 		?>
 		<div class="content-section-slider container-10">
@@ -62,7 +46,7 @@
 				$n_results = 0;
 				?>
 				<div class="slider-item"><div class="content-section-grid">
-					<?php while ( $partners->have_posts() ) : $partners->the_post();
+					<?php while ( $partner_query->have_posts() ) : $partner_query->the_post();
 
 						// Break up query results into groups of 6.
 						// Count items.

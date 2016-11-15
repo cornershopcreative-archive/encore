@@ -77,3 +77,14 @@ $color: null !global;
 		}
 	}
 }
+
+/**
+ * Use an inline SVG image as a background.
+ */
+@mixin svg-bg( $name ) {
+	@extend .icon-#{$name};
+	background-repeat: no-repeat;
+	background-position: center top;
+	width: auto;
+	height: auto;
+}
