@@ -45,7 +45,6 @@
 				<article class="partners-grid-item">
 
 					<?php $is_featured = has_term( 'featured-partners', 'topic' ); ?>
-					<?php error_log( $is_featured ? 'feat' : 'nah' ); ?>
 
 					<div class="logo-container">
 						<a href="<?php get_field( 'link_url' ); ?>" target="_blank"<?php if ( $is_featured ) echo ' class="modal-trigger"'; ?>>

@@ -312,8 +312,6 @@ function get_vmatch_basic_page( $data ) {
 		$query['keywords'] = split( ' ', $_GET['keywords'] );
 	}
 
-	error_log( print_r( $query, true ) );
-
 	// Get API results.
 	$results = get_vmatch_results( $query );
 
