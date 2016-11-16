@@ -1,13 +1,11 @@
 .section-callout {
-	display: -ms-flex;
-	display: -webkit-flex;
 	display: flex;
+	flex-wrap: wrap;
+	align-items: stretch;
 	color: $white;
 	margin-bottom: 50px;
 	margin-top: 100px
-	}
-
-
+}
 
 .section-callout > div:first-child {
 	margin-right: 20px;
@@ -106,7 +104,6 @@
 }
 
 .second_column {
-	width: 50%;
 	padding: 10px;
 	line-height: 28px;
 	padding: 50px !important;
@@ -114,17 +111,23 @@
 	.bubbles_background & {
 		@include svg-bg( 'bubbles-4-white' );
 		background-position: right center;
-		width: 50%; // Otherwise width will be set to 'auto' by svg-bg()
+	}
+}
+
+.section-callout {
+	.callout_two,
+	.second_column {
+		// Set a minimum width of 26rem per column (52 total), below which
+		// two-column callouts should collapse to two rows instead.
+		flex: 26rem 1 0;
 	}
 }
 
 .callout-content.callout_two {
 	padding: 50px !important;
-	width: 50%;
-	height: 100%;
+	width: auto;
 	margin: 0px;
 	display: inline-block;
-	height: 100%;	
 	line-height: 28px;
 }
 
