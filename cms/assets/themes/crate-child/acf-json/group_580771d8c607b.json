@@ -1550,7 +1550,7 @@
                                 "id": ""
                             },
                             "clone": [
-                                "field_580772174097f"
+                                "field_582b7788baabb"
                             ],
                             "display": "seamless",
                             "layout": "block",
@@ -2179,7 +2179,7 @@
                             "label": "Show Buttons",
                             "name": "button",
                             "type": "radio",
-                            "instructions": "Select \"Yes\" if using this to display featured partners",
+                            "instructions": "",
                             "required": 1,
                             "conditional_logic": 0,
                             "wrapper": {
@@ -2436,5 +2436,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1479319340
+    "modified": 1479323348
 }
