@@ -45,7 +45,7 @@
 				<article class="partners-grid-item">
 
 					<div class="logo-container">
-						<a href="<?php get_field( link_url ); ?>" target="_blank">
+						<?php echo '<a href="'.get_field(link_url).'" target="_blank" >' ?>
 						<img src="<?php the_post_thumbnail_url(); ?>" class="partner-logo">
 						</a>
 
