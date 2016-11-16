@@ -289,8 +289,8 @@
                                     "key": "field_5808e01450f42",
                                     "label": "Link URL",
                                     "name": "link_url",
-                                    "type": "url",
-                                    "instructions": "",
+                                    "type": "text",
+                                    "instructions": "Please enter full URL including http:\/\/ or https:\/\/. If you would like to button to send an email, please use the \"mailto:\" format.",
                                     "required": 0,
                                     "conditional_logic": 0,
                                     "wrapper": {
@@ -299,7 +299,10 @@
                                         "id": ""
                                     },
                                     "default_value": "",
-                                    "placeholder": ""
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "maxlength": ""
                                 },
                                 {
                                     "key": "field_5808e07d50f43",
@@ -604,8 +607,8 @@
                             "key": "field_5809946289d41",
                             "label": "Button URL for Second Column",
                             "name": "button_url_two",
-                            "type": "url",
-                            "instructions": "",
+                            "type": "text",
+                            "instructions": "Please enter full URL including http:\/\/ or https:\/\/. If you would like to button to send an email, please use the \"mailto:\" format.",
                             "required": 0,
                             "conditional_logic": [
                                 [
@@ -622,7 +625,10 @@
                                 "id": ""
                             },
                             "default_value": "",
-                            "placeholder": ""
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
                         },
                         {
                             "key": "field_5809950f89d42",
@@ -947,8 +953,8 @@
                                     "key": "field_58095cd033a99",
                                     "label": "Link URL",
                                     "name": "link_url",
-                                    "type": "url",
-                                    "instructions": "",
+                                    "type": "text",
+                                    "instructions": "Please enter full URL including http:\/\/ or https:\/\/. If you would like to button to send an email, please use the \"mailto:\" format.",
                                     "required": 0,
                                     "conditional_logic": 0,
                                     "wrapper": {
@@ -957,7 +963,10 @@
                                         "id": ""
                                     },
                                     "default_value": "",
-                                    "placeholder": ""
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "maxlength": ""
                                 },
                                 {
                                     "key": "field_58095ce633a9a",
@@ -1079,8 +1088,8 @@
                             "key": "field_58174805f5e63",
                             "label": "Button URL",
                             "name": "button_url",
-                            "type": "url",
-                            "instructions": "",
+                            "type": "text",
+                            "instructions": "Please enter full URL including http:\/\/ or https:\/\/. If you would like to button to send an email, please use the \"mailto:\" format.",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
@@ -1089,7 +1098,10 @@
                                 "id": ""
                             },
                             "default_value": "",
-                            "placeholder": ""
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
                         },
                         {
                             "key": "field_5817483cf5e65",
@@ -2424,5 +2436,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1479247064
+    "modified": 1479319340
 }
