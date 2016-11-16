@@ -52,20 +52,5 @@
 			<h2>Thank you for pledging!</h2>
 			<?php echo apply_filters( 'the_content', '[button-group][button style="facebook" href="#"]Share on Facebook[/button][button style="twitter" href="#"]Share on Twitter[/button][/button-group]'); ?>
 		</header>
-		<h4>Explore three ways to make a difference:</h4>
-		<footer>
-			<a href="#">
-				<h5>Go to Opportunities</h5>
-				<p>Find an organization to make a difference with.</p>
-			</a>
-			<a href="#">
-				<h5>DIY Initiatives</h5>
-				<p>Find your own way to get involved through our partner directory.</p>
-			</a>
-			<a href="#">
-				<h5>Learning Labs</h5>
-				<p>Get involved in your local community.</p>
-			</a>
-		</footer>
 	</aside>
 </div>
