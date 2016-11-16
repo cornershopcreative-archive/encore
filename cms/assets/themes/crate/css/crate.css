@@ -2484,10 +2484,12 @@ input[type='email'] {
       .section-volunteer-opportunities .grid-item-3 {
         width: 28.57143%; } }
   .section-volunteer-opportunities .no-image {
-    padding-top: 60%;
+    padding-top: 65%;
     width: 100%;
-    height: 0;
-    background-color: transparent; }
+    background: transparent url("../images/VolunteerMatch_logo.jpg") no-repeat center center/contain;
+    opacity: 0.2;
+    -webkit-filter: grayscale(100%);
+            filter: grayscale(100%); }
   .section-volunteer-opportunities .grid-item-heading {
     margin: 0.8rem 0;
     font-size: 1.3rem;
