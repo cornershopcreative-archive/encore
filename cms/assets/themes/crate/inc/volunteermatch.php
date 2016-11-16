@@ -371,7 +371,7 @@ function format_vmatch_results( $results ) {
 		$org = array(
 			'url'       => esc_url( urldecode( $org['vmUrl'] ) ),
 			'imagehtml' => _get_vmatch_org_image_html( $org ),
-			'name'      => esc_html( $org['name'] ),
+			'name'      => wp_kses( $org['name'] ),
 			'summary'   => wp_trim_words( wp_kses_post( $org['plaintextDescription'] ), 30 ),
 			'city'      => $org['location']['city'],
 			'region'    => $org['location']['region'],
