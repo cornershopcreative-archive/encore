@@ -97,7 +97,6 @@
 .callout_text {
 	width: 82% !important;
 	margin-left: 10%;
-	margin-top: -10px;
 	padding-bottom: 20px;
 	font-size: 24px;
 	letter-spacing: 0.2px;
@@ -176,6 +175,10 @@
 
 .section-callout-white + .section-partners-grid {
 	margin-top: -50px;
+}
+
+.section-circle-grid + .section-callout {
+	margin-top: -100px;
 }
 
 @media screen and (max-width: 480px) {
