@@ -304,7 +304,7 @@ function crate_trim_excerpt_characters( $trimmed, $raw_excerpt ) {
 
 	return $trimmed_soft;
 }
-add_filter( 'wp_trim_excerpt', 'crate_trim_excerpt_characters' );
+add_filter( 'wp_trim_excerpt', 'crate_trim_excerpt_characters', 10, 2 );
 
 //-----------------------------------------------------------------------------
 // "Text" tab

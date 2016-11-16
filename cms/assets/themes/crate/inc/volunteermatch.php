@@ -312,8 +312,6 @@ function get_vmatch_basic_page( $data ) {
 		$query['keywords'] = split( ' ', $_GET['keywords'] );
 	}
 
-	error_log( print_r( $query, true ) );
-
 	// Get API results.
 	$results = get_vmatch_results( $query );
 
@@ -373,7 +371,7 @@ function format_vmatch_results( $results ) {
 		$org = array(
 			'url'       => esc_url( urldecode( $org['vmUrl'] ) ),
 			'imagehtml' => _get_vmatch_org_image_html( $org ),
-			'name'      => esc_html( $org['name'] ),
+			'name'      => wp_kses( $org['name'] ),
 			'summary'   => wp_trim_words( wp_kses_post( $org['plaintextDescription'] ), 30 ),
 			'city'      => $org['location']['city'],
 			'region'    => $org['location']['region'],

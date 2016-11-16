@@ -40,10 +40,16 @@
 						<?php the_content(); ?>
 
 						<div class="button-group">
-								<?php crate_post_item_link( array(
-								'class' => 'button button-gold button-solid',
+							<?php
+							$link_classes = 'button button-gold button-solid';
+							if ( has_term( 'featured-partners', 'topic' ) ) :
+								$link_classes .= ' modal-trigger';
+							endif;
+							crate_post_item_link( array(
+								'class' => $link_classes,
 								'data-org-name' => trim( esc_attr( get_the_title() ) )
-							) ); ?>
+							) );
+							?>
 								<?php esc_html_e( 'Get Involved', 'crate' ); ?>
 							<?php crate_post_item_link_close(); ?>
 						</div>
