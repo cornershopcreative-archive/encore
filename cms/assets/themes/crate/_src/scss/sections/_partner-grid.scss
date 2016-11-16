@@ -1,4 +1,8 @@
 .partner-title {
+	text-align: center !important;
+}
+
+.partner-title a{
 	font-family: "Avenir Next";
 	font-weight: bold;
 	text-transform: uppercase;
@@ -6,9 +10,14 @@
 	color: $black;
 	letter-spacing: 0.08px;
 	line-height: 24px !important;
-	text-align: center;
+	align: center;
 	padding-top: 10px;
 	padding-bottom: 10px;
+	text-decoration: none !important;
+}
+
+.partner-title a:hover{
+	color: $lime;
 }
 
 

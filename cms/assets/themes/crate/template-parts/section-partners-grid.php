@@ -6,8 +6,8 @@
 
 	<div class="content-section section-partners-grid"<?php crate_section_id_attr(); ?>>
 <?php $link_url = get_field('link_url')?>
-		
-		<?php 
+
+		<?php
 
 				if(get_sub_field('background') == "silver")
 				{
@@ -17,7 +17,7 @@
 				{
 					echo '<div class="prose">';
 				}?>
-				
+
 		<?php if ( $title = get_sub_field( 'title' ) ): ?>
 			<h2 class="section-title"><?php echo wp_kses_post( wptexturize( $title ) ); ?></h2>
 		<?php endif; ?>
@@ -45,8 +45,9 @@
 				<article class="partners-grid-item">
 
 					<div class="logo-container">
-
+						<a href="<?php get_field( link_url ); ?>" target="_blank">
 						<img src="<?php the_post_thumbnail_url(); ?>" class="partner-logo">
+						</a>
 
 					</div>
 
@@ -54,11 +55,12 @@
 
 						<h3 class="partner-title">
 						<?php if (get_sub_field('button') == "hide") {
-							echo esc_html( get_the_title() );
+							
+							echo '<a href="'.get_field(link_url).'" target="_blank" >'.get_the_title().'</a>';
 						}
 						else
 						{} ?>
-						
+
 						</h3>
 
 
@@ -75,25 +77,25 @@ if(get_sub_field('description') == "show")
 
 if(get_sub_field('button') == "show")
 {
-	echo '<center><a class="button button-solid button-gold" href="' . get_field( link_url ) . '">Get Involved</a></center>';
+	echo '<center><a class="button button-solid button-gold" href="' . get_field( link_url ) . '" data-org-name="' . trim( esc_attr( get_the_title() ) ) . '">Get Involved</a></center>';
 }
 else
 {
-	echo '<a href="" target="_blank" class="overlay-link"></a>';
+	
 }
 ?>
 
 
 
-				      
+
 
 					</div>
-					
-					
-					
 
-					
-					
+
+
+
+
+
 				</article>
 
 			<?php endwhile; ?>
@@ -108,3 +110,5 @@ else
 		<?php crate_section_links(); ?>
 
 	</div>
+
+<?php get_template_part( 'template-parts/modal', 'opportunity' ); ?>
