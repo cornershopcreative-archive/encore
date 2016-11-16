@@ -348,12 +348,12 @@ a {
     color: #00c7f5; }
 
 .menu a,
-.sub-menu a, .facetwp-pager a, .entry-actions .back-link, .section-partner-slider .grid-item a, .section-news a, .section-stories-grid a {
+.sub-menu a, .facetwp-pager a, .entry-actions .back-link, .section-partner-slider .grid-item a, .section-news a, .section-stories-grid a, .partner-title a {
   color: #2d2d2d;
   text-decoration: none;
   font-weight: 700; }
   .menu a:hover,
-  .sub-menu a:hover, .facetwp-pager a:hover, .entry-actions .back-link:hover, .section-partner-slider .grid-item a:hover, .section-news a:hover, .section-stories-grid a:hover {
+  .sub-menu a:hover, .facetwp-pager a:hover, .entry-actions .back-link:hover, .section-partner-slider .grid-item a:hover, .section-news a:hover, .section-stories-grid a:hover, .partner-title a:hover {
     color: #aacc00; }
 
 button,
@@ -2563,23 +2563,13 @@ input[type='email'] {
     color: #fff; }
 
 .partner-title {
-  text-align: center !important; }
-
-.partner-title a {
   padding-top: 10px;
   padding-bottom: 10px;
-  color: #000;
-  text-decoration: none !important;
+  text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.08px;
-  font-weight: 700;
-  font-size: 16px !important;
-  font-family: "Avenir Next";
-  line-height: 24px !important;
-  align: center; }
-
-.partner-title a:hover {
-  color: #aacc00; }
+  font-size: 1rem;
+  line-height: 1.5rem; }
 
 .logo-container {
   display: -ms-flexbox;
