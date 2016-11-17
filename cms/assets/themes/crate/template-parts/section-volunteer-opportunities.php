@@ -17,31 +17,28 @@ if ( ! $opportunities ) :
 	return;
 endif;
 
-	/* each $org is an array with the following keys (see API call):
-		avgRating => float
-		categoryIds => array
-		created => string like 2016-10-28T07:58:32-0700
-		description => string
-		id => int
-		imageUrl => string
-		location => array( city, country, postalCode, region )
-		mission => string
-		name => string
-		numReviews => int
-		plaintextDescription => sting
-		type => string ("public")
-		url => string - often null!
-		vmUrl => string
-	*/
-
 ?>
 
 <div class="content-section section-volunteer-opportunities" data-page="1" data-location="<?php echo esc_attr( $location ); ?>"<?php crate_section_id_attr(); ?>>
 
 	<div class="section-filters container">
 		<form class="filter-form" action="#">
+
+			<h5>Search within</h5>
+
+			<select name="opportunities_radius" class="filter-radius">
+				<option value="5">5 miles</option>
+				<option value="10">10 miles</option>
+				<option value="25">25 miles</option>
+				<option value="50">50 miles</option>
+				<option value="100">100 miles</option>
+			</select>
+
+			<h5>of</h5>
+
+			<input type="search" name="opportunities_location" class="filter filter-location" value="" placeholder="<?php esc_attr_e( 'Location', 'crate' ); ?>" />
 			<span class="flex-space"></span>
-			<input type="search" name="search_opportunities" class="filter filter-search" value="" placeholder="<?php esc_attr_e( 'Search', 'crate' ); ?>" />
+			<input type="search" name="opportunities_terms" class="filter filter-search" value="" placeholder="<?php esc_attr_e( 'Keywords', 'crate' ); ?>" />
 		</form>
 	</div>
 

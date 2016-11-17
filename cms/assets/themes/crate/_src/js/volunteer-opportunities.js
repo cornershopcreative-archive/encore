@@ -8,13 +8,18 @@ var load_handler = function( is_reset ) {
 		var $container = $( this ).closest( '.content-section' ),
 			location = $container.data( 'location' ),
 			searchTerms = $container.find( '.filter-search' ).val(),
+			radius = $container.find( '.filter-radius' ).val(),
 			pageNum = ( is_reset ? 0 : $container.data( 'page' ) );
 
+		if ( $container.find( '.filter-location' ).val() ) {
+			location = $container.find( '.filter-location' ).val();
+		}
 		console.log( $container, location, searchTerms, pageNum );
 
 		$.get( '/wp-json/vmatch/v1/search/page/' + (++pageNum), {
 			location: location,
-			keywords: searchTerms
+			keywords: searchTerms,
+			radius: radius
 		}, function( data ) {
 
 			// Clear out existing entries, if appropriate.
@@ -43,6 +48,11 @@ var load_handler = function( is_reset ) {
 				rendered += Mustache.render(template, org );
 			});
 
+			// if we didn't get anything....
+			if ( data.resultsSize == 0 ) {
+				rendered = "<h4><br>Sorry, none found.<br><br></h4>";
+			}
+
 			// inject into DOM
 			$container.find('.content-section-grid').append( rendered );
 		});
@@ -57,4 +67,6 @@ module.exports = function( $ ) {
 	$('.section-volunteer-opportunities .filter-form').on( 'submit', load_handler( true ) );
 
 	$('.section-volunteer-opportunities a.more').on( 'click', load_handler() );
+
+	$('.section-volunteer-opportunities .filter-form *').on( 'change', load_handler( true ) );
 };

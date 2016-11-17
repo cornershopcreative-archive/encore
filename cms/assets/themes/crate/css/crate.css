@@ -1544,6 +1544,8 @@ input[type='email'] {
   .section-filters .flex-space {
     -ms-flex-positive: 1;
         flex-grow: 1; }
+  .section-filters h5 {
+    padding: 0.9375rem 1rem; }
   .section-filters .filter {
     padding: 0.9375rem 3.375rem 0.8125rem 1.4375rem;
     width: 100%;

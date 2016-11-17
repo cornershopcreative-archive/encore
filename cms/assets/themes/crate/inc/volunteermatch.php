@@ -306,10 +306,15 @@ function get_vmatch_basic_page( $data ) {
 
 	if ( isset( $_GET['location'] ) && ! empty( $_GET['location'] ) ) {
 		$query['location'] = $_GET['location'];
+		$query['sortCriteria'] = 'distance';
 	}
 
 	if ( isset( $_GET['keywords'] ) && ! empty( $_GET['keywords'] ) ) {
 		$query['keywords'] = split( ' ', $_GET['keywords'] );
+	}
+
+	if ( isset( $_GET['radius'] ) && ! empty( $_GET['radius'] ) && is_numeric( $_GET['radius'] ) ) {
+		$query['radius'] = (string) ( $_GET['radius'] / 0.6214 );	// convert miles to km, and stringify
 	}
 
 	// Get API results.
@@ -345,7 +350,7 @@ function get_vmatch_results( $query ) {
 	$cache_key = 'vmatch_result_' . md5( serialize( $query ) );
 
 	// If there's a cached result for this query, return it.
-	if ( get_transient( $cache_key ) ) return get_transient( $cache_key );
+	// if ( get_transient( $cache_key ) ) return get_transient( $cache_key );
 
 	// No cached result? Query the API.
 	$results = $api->searchOpportunities( $query, 'opp detail' );
@@ -373,7 +378,7 @@ function format_vmatch_results( $results ) {
 		$opp = array(
 			'url'       => esc_url( urldecode( $opp['vmUrl'] ) ),
 			'imagehtml' => _get_vmatch_opp_image_html( $opp ),
-			'name'      => wp_kses_post( $opp['title'] ),
+			'name'      => $opp['title'],	// dangerous but neccesarry
 			'summary'   => wp_trim_words( wp_kses_post( $opp['plaintextDescription'] ), 30 ),
 			'city'      => $opp['location']['city'],
 			'region'    => $opp['location']['region'],
