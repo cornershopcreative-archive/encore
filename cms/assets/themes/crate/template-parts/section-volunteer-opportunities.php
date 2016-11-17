@@ -10,10 +10,10 @@ $api_results = get_vmatch_results( array(
 	'location' => $location,
 ) );
 
-$organizations = $api_results['organizations'];
+$opportunities = $api_results['opportunities'];
 
 // If no results were found, bail.
-if ( ! $organizations ) :
+if ( ! $opportunities ) :
 	return;
 endif;
 
@@ -46,27 +46,27 @@ endif;
 	</div>
 
 	<div class="content-section-grid container">
-		<?php foreach ( $organizations as $org ): ?>
+		<?php foreach ( $opportunities as $opp ): ?>
 			<article class="grid-item grid-item-3">
 
 				<div class="entry-image">
-					<?php if ( ! empty( $org['imageUrl'] ) ) : ?>
-						<a href="<?php echo esc_url( urldecode( $org['vmUrl'] ) ); ?>" target="_blank"><img src="<?php echo esc_url( urldecode( $org['imageUrl'] ) ); ?>" alt="Logo for <?php echo esc_attr( $org['name'] ) ; ?>"></a>
+					<?php if ( ! empty( $opp['imageUrl'] ) ) : ?>
+						<a href="<?php echo esc_url( urldecode( $opp['vmUrl'] ) ); ?>" target="_blank"><img src="<?php echo esc_url( urldecode( $opp['imageUrl'] ) ); ?>" alt="Logo for <?php echo esc_attr( $opp['title'] ) ; ?>"></a>
 					<?php else : ?>
 						<div class="no-image"></div>
 					<?php endif; ?>
 				</div>
 
 				<h3 class="grid-item-heading">
-					<a href="<?php echo esc_url( urldecode( $org['vmUrl'] ) ); ?>" target="_blank"><?php echo wp_kses_post( $org['name'] ); ?></a>
+					<a href="<?php echo esc_url( urldecode( $opp['vmUrl'] ) ); ?>" target="_blank"><?php echo wp_kses_post( $opp['title'] ); ?></a>
 				</h3>
 
 				<div class="grid-item-blurb">
-					<p><?php echo wp_trim_words( wp_kses_post( $org['plaintextDescription'] ), 30 ); ?>&nbsp;<a href="<?php echo esc_url( urldecode( $org['vmUrl'] ) ); ?>" class="more" target="_blank">More</a></p>
+					<p><?php echo wp_trim_words( wp_kses_post( $opp['plaintextDescription'] ), 30 ); ?>&nbsp;<a href="<?php echo esc_url( urldecode( $opp['vmUrl'] ) ); ?>" class="more" target="_blank">More</a></p>
 				</div>
 
 				<div class="grid-item-meta">
-					<?php echo $org['location']['city'] ?>, <?php echo $org['location']['region'] ?>
+					<?php echo $opp['location']['city'] ?>, <?php echo $opp['location']['region'] ?>
 				</div>
 			</article>
 

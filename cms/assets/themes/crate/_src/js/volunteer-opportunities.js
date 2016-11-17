@@ -39,7 +39,7 @@ var load_handler = function( is_reset ) {
 			Mustache.parse(template);
 
 			// build out markup
-			$.each( data.organizations, function( index, org ) {
+			$.each( data.opportunities, function( index, org ) {
 				rendered += Mustache.render(template, org );
 			});
 
