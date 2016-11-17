@@ -58,7 +58,7 @@ endif;
 				</div>
 
 				<h3 class="grid-item-heading">
-					<a href="<?php echo esc_url( urldecode( $org['vmUrl'] ) ); ?>" target="_blank"><?php echo wp_kses( $org['name'] ); ?></a>
+					<a href="<?php echo esc_url( urldecode( $org['vmUrl'] ) ); ?>" target="_blank"><?php echo wp_kses_post( $org['name'] ); ?></a>
 				</h3>
 
 				<div class="grid-item-blurb">
