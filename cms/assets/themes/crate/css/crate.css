@@ -1545,7 +1545,7 @@ input[type='email'] {
     -ms-flex-positive: 1;
         flex-grow: 1; }
   .section-filters h5 {
-    padding: 0.9375rem 1rem; }
+    padding: 0.9375rem 0.8125rem; }
   .section-filters .filter {
     padding: 0.9375rem 3.375rem 0.8125rem 1.4375rem;
     width: 100%;
@@ -2464,6 +2464,45 @@ input[type='email'] {
   padding-top: 2rem;
   padding-bottom: 2rem;
   background-color: #e7e7e4; }
+  .section-volunteer-opportunities .filter-form {
+    display: block;
+    text-align: center; }
+    .section-volunteer-opportunities .filter-form > div {
+      display: -webkit-box;
+      display: -moz-box;
+      display: box;
+      display: -moz-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -moz-justify-content: center;
+      -ms-justify-content: center;
+      -o-justify-content: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      box-pack: center;
+      -ms-flex-pack: center; }
+      .section-volunteer-opportunities .filter-form > div > * {
+        display: inline-block; }
+      @media screen and (max-width: 500px) {
+        .section-volunteer-opportunities .filter-form > div {
+          -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+          -webkit-box-lines: multiple;
+          -moz-box-lines: multiple;
+          box-lines: multiple; } }
+    @media screen and (min-width: 900px) {
+      .section-volunteer-opportunities .filter-form {
+        display: -webkit-box;
+        display: -moz-box;
+        display: box;
+        display: -moz-flex;
+        display: -ms-flexbox;
+        display: flex;
+        text-align: left; }
+        .section-volunteer-opportunities .filter-form > div {
+          margin-bottom: 0; } }
+    .section-volunteer-opportunities .filter-form h5 {
+      white-space: nowrap; }
   .section-volunteer-opportunities .grid-item {
     position: relative;
     padding: 20px;

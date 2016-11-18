@@ -24,6 +24,7 @@ endif;
 	<div class="section-filters container">
 		<form class="filter-form" action="#">
 
+		<div>
 			<h5>Search within</h5>
 
 			<select name="opportunities_radius" class="filter-radius">
@@ -36,7 +37,9 @@ endif;
 
 			<h5>of</h5>
 
-			<input type="search" name="opportunities_location" class="filter filter-location" value="" placeholder="<?php esc_attr_e( 'Location', 'crate' ); ?>" />
+			<input type="search" name="opportunities_location" class="filter filter-location" value="" placeholder="<?php esc_attr_e( 'Zip Code', 'crate' ); ?>" />
+		</div>
+
 			<span class="flex-space"></span>
 			<input type="search" name="opportunities_terms" class="filter filter-search" value="" placeholder="<?php esc_attr_e( 'Keywords', 'crate' ); ?>" />
 		</form>

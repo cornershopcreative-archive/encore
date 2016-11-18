@@ -6,6 +6,42 @@
 
 	$grid-item-padding: 20px;
 
+	.filter-form {
+
+		display: block;
+		text-align: center;
+
+		& > div {
+
+			@include display(flex);
+			@include justify-content(center);
+			margin-bottom: 10px;
+
+			& > * {
+				display: inline-block;
+			}
+
+			@media screen and ( max-width: 500px ) {
+				@include flex-wrap(wrap);
+			}
+
+		}
+
+		@media screen and ( min-width: 900px ) {
+
+			@include display(flex);
+			text-align: left;
+
+			& > div {
+				margin-bottom: 0;
+			}
+		}
+
+		h5 {
+			white-space: nowrap;
+		}
+	}
+
 	.grid-item {
 		border: 1px solid $silver;
 		background-color: white;
