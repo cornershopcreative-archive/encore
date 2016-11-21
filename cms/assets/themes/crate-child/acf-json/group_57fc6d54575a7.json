@@ -22,8 +22,8 @@
             "key": "field_5825743bbd336",
             "label": "Sticky",
             "name": "sticky",
-            "type": "checkbox",
-            "instructions": "",
+            "type": "true_false",
+            "instructions": "Check to place this item at the top of lists wherever it appears.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -31,13 +31,8 @@
                 "class": "",
                 "id": ""
             },
-            "choices": {
-                "1": "Place this item at the top of lists wherever it appears"
-            },
-            "default_value": [],
-            "layout": "vertical",
-            "toggle": 0,
-            "return_format": "value"
+            "message": "",
+            "default_value": 0
         }
     ],
     "location": [
@@ -57,5 +52,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1478849629
+    "modified": 1479763313
 }
