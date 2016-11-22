@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Media Deduper
-Version: 1.1.0
+Version: 1.1.1
 Description: Save disk space and bring some order to the chaos of your media library by removing and preventing duplicate files.
 Plugin URI: https://cornershopcreative.com/
 Author: Cornershop Creative
@@ -462,6 +462,10 @@ class Media_Deduper {
 				if ( ! isset( $_GET['show_shared'] ) || 1 != $_GET['show_shared'] ) {
 					$this->get_shared_filename_ids();
 					$query_parameters['post__in'] = array_diff( $this->duplicate_ids, $this->shared_filename_ids );
+					if ( ! count( $query_parameters['post__in'] ) ) {
+						// We do this otherwise WP_Query's post__in gets an empty array and returns all posts
+						$query_parameters['post__in'] = array('0');
+					}
 				}
 
 				$wp_query = new WP_Query( $query_parameters );
