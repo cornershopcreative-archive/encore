@@ -341,7 +341,7 @@ function get_vmatch_results( $query ) {
 		'location'        => 'United States',
 		'sortCriteria'    => 'default',
 		'categoryIds'     => array(22),
-		'numberOfResults' => 18,
+		'numberOfResults' => 12,
 		'keywords'        => array(),
 		'greatFor'        => array('s'),
 		'pageNumber'      => 1,

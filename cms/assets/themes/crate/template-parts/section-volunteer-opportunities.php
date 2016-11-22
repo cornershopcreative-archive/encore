@@ -28,16 +28,17 @@ endif;
 			<h5>Search within</h5>
 
 			<select name="opportunities_radius" class="filter-radius">
+				<option value="1">1 mile</option>
 				<option value="5">5 miles</option>
 				<option value="10">10 miles</option>
-				<option value="25">25 miles</option>
-				<option value="50">50 miles</option>
-				<option value="100">100 miles</option>
+				<option value="20">20 miles</option>
+				<option value="60">60 miles</option>
+				<option value="city">City</option>
 			</select>
 
 			<h5>of</h5>
 
-			<input type="search" name="opportunities_location" class="filter filter-location" value="" placeholder="<?php esc_attr_e( 'Zip Code', 'crate' ); ?>" />
+			<input type="search" name="opportunities_location" class="filter filter-location" value="" placeholder="<?php esc_attr_e( 'Zip or City/State', 'crate' ); ?>" />
 		</div>
 
 			<span class="flex-space"></span>
@@ -47,7 +48,7 @@ endif;
 
 	<div class="content-section-grid container">
 		<?php foreach ( $opportunities as $opp ): ?>
-			<article class="grid-item grid-item-3">
+			<article class="grid-item grid-item-4">
 
 				<div class="entry-image">
 					<?php if ( ! empty( $opp['imageUrl'] ) ) : ?>

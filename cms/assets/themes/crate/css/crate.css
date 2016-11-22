@@ -2514,16 +2514,14 @@ input[type='email'] {
     margin: 0 auto;
     max-width: 240px;
     width: 100%; }
-  .section-volunteer-opportunities .grid-item-3 {
-    margin: 1.25rem auto; }
+  .section-volunteer-opportunities .grid-item-4 {
+    margin: 0.625rem auto; }
     @media (min-width: 640px) {
-      .section-volunteer-opportunities .grid-item-3 {
-        margin-right: 2.27273%;
-        margin-left: 2.27273%;
-        width: 31.81818%; } }
+      .section-volunteer-opportunities .grid-item-4 {
+        width: 32.20339%; } }
     @media (min-width: 1280px) {
-      .section-volunteer-opportunities .grid-item-3 {
-        width: 28.57143%; } }
+      .section-volunteer-opportunities .grid-item-4 {
+        width: 23.72881%; } }
   .section-volunteer-opportunities .no-image {
     padding-top: 65%;
     width: 100%;

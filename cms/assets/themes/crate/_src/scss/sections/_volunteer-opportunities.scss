@@ -58,22 +58,17 @@
 		max-width: 240px;
 	}
 
-	.grid-item-3 {
-		margin: rem(20) auto;
+	.grid-item-4 {
+		margin: rem(10) auto;
 
 		@include breakpoint( $tablet ) {
-			@include nested( 9 ) {
-				width: span( 3 );
-				margin-left: gutter();
-				margin-right: gutter();
-			}
+			width: span( 4 of 12 .25 );
 		}
 
 		@include breakpoint( $desktop ) {
-			@include nested( 10 ) {
-				width: span( 3 );
-			}
+			width: span( 3 of 12 .25 );
 		}
+
 	}
 
 	.no-image {
