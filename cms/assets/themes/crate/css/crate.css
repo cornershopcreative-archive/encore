@@ -2548,6 +2548,9 @@ input[type='email'] {
     text-transform: uppercase;
     font-weight: 700;
     font-size: 0.8rem; }
+  .section-volunteer-opportunities.virtual-only .location-filters,
+  .section-volunteer-opportunities.virtual-only .grid-item-meta {
+    display: none !important; }
 
 .gray-background {
   padding-top: 50px;

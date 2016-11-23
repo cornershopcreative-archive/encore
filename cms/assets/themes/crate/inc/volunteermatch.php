@@ -305,8 +305,16 @@ function get_vmatch_basic_page( $data ) {
 	);
 
 	if ( isset( $_GET['location'] ) && ! empty( $_GET['location'] ) ) {
-		$query['location'] = $_GET['location'];
-		$query['sortCriteria'] = 'distance';
+		// Special handling for Virtual...
+		if ( 'virtual' === strtolower( $_GET['location'] ) ) {
+			$query['virtual'] = true;
+			$query['sortCriteria'] = 'update';
+			$query['location'] = '';
+		// Otherwise, use provided location
+		} else {
+			$query['location'] = $_GET['location'];
+			$query['sortCriteria'] = 'distance';
+		}
 	}
 
 	if ( isset( $_GET['keywords'] ) && ! empty( $_GET['keywords'] ) ) {
@@ -379,7 +387,7 @@ function format_vmatch_results( $results ) {
 			'url'       => esc_url( urldecode( $opp['vmUrl'] ) ),
 			'imagehtml' => _get_vmatch_opp_image_html( $opp ),
 			'name'      => $opp['title'],	// dangerous but neccesarry
-			'summary'   => wp_trim_words( wp_kses_post( $opp['plaintextDescription'] ), 30 ),
+			'summary'   => wp_trim_words( stripslashes( wp_kses_post( $opp['plaintextDescription'] ) ), 30 ),
 			'city'      => $opp['location']['city'],
 			'region'    => $opp['location']['region'],
 		);

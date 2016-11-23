@@ -1804,7 +1804,7 @@
                             "label": "Location",
                             "name": "location",
                             "type": "text",
-                            "instructions": "Enter the name of a location (e.g. \"United States\" or \"Boston\" to limit results).",
+                            "instructions": "Enter the name of a location (e.g. \"United States\" or \"Boston\") to limit results. Use \"Virtual\" to hide search fields and only display online opportunities.",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
@@ -2436,5 +2436,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1479323348
+    "modified": 1479925359
 }
