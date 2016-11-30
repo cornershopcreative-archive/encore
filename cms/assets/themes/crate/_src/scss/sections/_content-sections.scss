@@ -63,7 +63,7 @@
 		}
 	}
 
-	@include breakpoint( $desktop ) {
+	@include breakpoint( $medium ) {
 
 		@include nested( 10 ) {
 			width: span(2);

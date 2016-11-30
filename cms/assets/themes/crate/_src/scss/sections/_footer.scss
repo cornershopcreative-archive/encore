@@ -26,7 +26,7 @@
 			@include span(3 of 10);
 		}
 
-		@include breakpoint( $full-menu ) {
+		@include breakpoint( $medium ) {
 			@include span(2 of 10);
 		}
 	}
@@ -43,7 +43,7 @@
 	}
 
 	.menu-footer-3 {
-		@include breakpoint( $full-menu ) {
+		@include breakpoint( $medium ) {
 			display: block;
 		}
 	}
