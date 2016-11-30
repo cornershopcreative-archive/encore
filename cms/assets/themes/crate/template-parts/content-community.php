@@ -14,7 +14,7 @@
 			</div>
 
 			<div class="hero-logo">
-				<?php echo wp_get_attachment_image( get_field( 'logo_light' ) ); ?>
+				<?php echo wp_get_attachment_image( get_field( 'logo_light' ), 'squre-md' ); ?>
 				<?php the_title( '<h1 class="entry-title screen-reader-text">', '</h1>' ); ?>
 			</div>
 
