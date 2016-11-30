@@ -107,4 +107,11 @@
 		text-align: right;
 	}
 
+	&.virtual-only {
+		.location-filters,
+		.grid-item-meta {
+			display: none !important;
+		}
+	}
+
 }
