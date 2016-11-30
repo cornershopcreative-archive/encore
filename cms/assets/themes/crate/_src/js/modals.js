@@ -11,10 +11,14 @@ module.exports = function( $ ) {
 
 	// When the BSD form is submitted to the iframe, toggle lightboxes
 	$('#signup-generic').on('submit', function() {
-		$.featherlight.current().close();
-		$.featherlight( $('#signup-modal-thanks') );
+
 		// Remember that the user has filled out a signup form.
 		storage.signup_form_completed = '1';
+		// Save the data that the user submitted for later use.
+		storage.signup_form_data = $( this ).serializeJSON();
+
+		$.featherlight.current().close();
+		$.featherlight( $('#signup-modal-thanks') );
 	});
 
 	var opportunityUrl = "";
@@ -36,6 +40,11 @@ module.exports = function( $ ) {
 	// When the opportunity form is submitted to the iframe, toggle lightboxes
 	$('#signup-opportunity').on('submit', function() {
 
+		// Remember that the user has filled out a signup form.
+		storage.signup_form_completed = '1';
+		// Save the data that the user submitted for later use.
+		storage.signup_form_data = $( this ).serializeJSON();
+
 		$('#signup-modal-opportunity-thanks #continue-button').attr( 'href', opportunityUrl );
 		var countdown = 5;
 		$('.countdown').html('in 5 seconds');
@@ -55,9 +64,6 @@ module.exports = function( $ ) {
 				window.location = opportunityUrl;
 			}
 		}, 1000);
-
-		// Remember that the user has filled out a signup form.
-		storage.signup_form_completed = '1';
 	});
 
 };

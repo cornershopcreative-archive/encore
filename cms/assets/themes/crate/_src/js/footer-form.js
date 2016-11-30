@@ -51,6 +51,8 @@ module.exports = function( $ ) {
 		// property will be used to check whether or not to display the signup
 		// modal when a user clicks a featured partner link.
 		storage.signup_form_completed = '1';
+		// Save the data that the user submitted for later use.
+		storage.signup_form_data = $( this ).serializeJSON();
 		// Hide the form on future pageviews (but leave it to the user to dismiss
 		// the thank-you message).
 		storage.footer_form_hidden = '1';
