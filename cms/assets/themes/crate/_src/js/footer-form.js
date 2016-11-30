@@ -1,11 +1,6 @@
 // Load underscore.js.
 var _ = require( 'underscore' );
-
-// Get local storage object, or fall back on a dummy storage object if this
-// is an old browser.
-var storage = window.localStorage || {
-	getItem: function() { return false; }
-};
+var storage = require( 'localstorage.js' );
 
 module.exports = function( $ ) {
 
@@ -33,7 +28,7 @@ module.exports = function( $ ) {
 	$( window ).trigger( 'scroll' );
 
 	// Check localStorage to determine whether or not to hide the footer form.
-	if ( storage.getItem( 'footer_form_hidden' ) ) {
+	if ( storage.getItem( 'footer_form_hidden' ) || storage.getItem( 'signup_form_completed' ) ) {
 		$( '.footer-form' ).addClass( 'is-hidden' );
 	}
 
@@ -52,6 +47,10 @@ module.exports = function( $ ) {
 		console.log( 'submit' );
 		// Show the thank-you message.
 		$form.addClass( 'is-submitted' );
+		// Remember that the user has filled out a signup form. This localStorage
+		// property will be used to check whether or not to display the signup
+		// modal when a user clicks a featured partner link.
+		storage.signup_form_completed = '1';
 		// Hide the form on future pageviews (but leave it to the user to dismiss
 		// the thank-you message).
 		storage.footer_form_hidden = '1';
