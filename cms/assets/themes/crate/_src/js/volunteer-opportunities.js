@@ -24,12 +24,12 @@ var load_handler = function( is_reset ) {
 
 			// Clear out existing entries, if appropriate.
 			if ( is_reset ) {
-				var resultHeader = '<h4>' + data.resultsSize + ' results found.</h4>';
+				var resultHeader = '<h4>' + data.resultsSize + ' opportunities found.</h4>';
 				// if we didn't get anything....
 				if ( data.resultsSize == 0 ) {
-					resultHeader = "<h4><br>Sorry, none found.<br><br></h4>";
+					resultHeader = "<h4><br>Sorry, no opportunities found.<br><br></h4>";
 				} else if ( data.resultsSize == 1 ) {
-					resultHeader = '<h4>' + data.resultsSize + ' result found.</h4>';
+					resultHeader = '<h4>' + data.resultsSize + ' opportunity found.</h4>';
 				}
 
 				$container.find( '.content-section-grid' ).html( resultHeader );
