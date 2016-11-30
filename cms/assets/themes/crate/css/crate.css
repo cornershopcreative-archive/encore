@@ -2509,6 +2509,9 @@ input[type='email'] {
           margin-bottom: 0; } }
     .section-volunteer-opportunities .filter-form h5 {
       white-space: nowrap; }
+  .section-volunteer-opportunities .content-section-grid > h4 {
+    width: 100%;
+    text-align: center; }
   .section-volunteer-opportunities .grid-item {
     position: relative;
     padding: 20px;

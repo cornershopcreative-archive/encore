@@ -42,6 +42,11 @@
 		}
 	}
 
+	.content-section-grid > h4 {
+		width: 100%;
+		text-align: center;
+	}
+
 	.grid-item {
 		border: 1px solid $silver;
 		background-color: white;
