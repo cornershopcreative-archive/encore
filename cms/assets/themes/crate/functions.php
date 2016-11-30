@@ -48,6 +48,7 @@ function crate_setup() {
 	add_image_size( 'square-lg', 1000, 1000, true ); // gallery image cropped
 	add_image_size( 'square-md', 500, 500, true ); // Larger grid items (Stories, maybe others later).
 	add_image_size( 'square-sm', 250, 250, true ); // Circle Grid section item.
+	add_image_size( 'slider-item-2x', 1960, 880, true ); // Action Slider section item (@2x).
 	add_image_size( 'slider-item', 980, 440, true ); // Action Slider section item.
 
 	// This theme uses wp_nav_menu() in one location.
@@ -73,6 +74,14 @@ function crate_setup() {
 endif;
 add_action( 'after_setup_theme', 'crate_setup' );
 
+/**
+ * Allow extra-large images to be included in the srcset + sizes attributes
+ * that WP generates for wp_get_attachment_image(), etc.
+ */
+function crate_max_srcset_image_width( $width, $size_array ) {
+	return 2600; // WP's default is 1600 px.
+}
+add_filter( 'max_srcset_image_width', 'crate_max_srcset_image_width', 10, 2 );
 
 /**
  * Include other functions
