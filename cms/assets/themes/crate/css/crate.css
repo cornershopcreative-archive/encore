@@ -2839,4 +2839,19 @@ input[type='email'] {
       #signup-modal-opportunity-thanks header .facetwp-pager > .button {
         margin: 10px 1em; } }
 
+.search-listings a {
+  text-decoration: none !important; }
+
+.search-listings h2 {
+  font-size: 2rem; }
+
+.search-listings article {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #d8d8d8; }
+
+.search-listings nav {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem; }
+
 /*# sourceMappingURL=maps/crate.css.map */
