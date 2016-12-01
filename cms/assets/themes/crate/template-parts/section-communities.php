@@ -24,7 +24,7 @@
 			<?php while ( $communities->have_posts() ) : $communities->the_post(); ?>
 				<div class="grid-item grid-item-2">
 					<a href="<?php echo esc_url( get_permalink() ); ?>">
-						<?php echo wp_get_attachment_image( get_field( 'logo' ) ); ?>
+						<?php echo wp_get_attachment_image( get_field( 'logo' ), 'square-md' ); ?>
 					</a>
 					<div class="grid-item-blurb">
 						<?php the_excerpt(); ?>

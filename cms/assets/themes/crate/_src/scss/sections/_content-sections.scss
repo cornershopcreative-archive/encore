@@ -63,7 +63,7 @@
 		}
 	}
 
-	@include breakpoint( $desktop ) {
+	@include breakpoint( $medium ) {
 
 		@include nested( 10 ) {
 			width: span(2);
@@ -218,6 +218,10 @@
 		flex-grow: 1;
 	}
 
+	h5 {
+		padding: rem(15) rem(13);
+	}
+
 	.filter {
 		border: 0;
 		border-radius: rem(7);
@@ -231,7 +235,6 @@
 		width: 100%;
 		background-repeat: no-repeat;
 		background-position: right rem(20) center;
-
 		@include breakpoint( $tablet ) {
 			max-width: rem(280px);
 		}

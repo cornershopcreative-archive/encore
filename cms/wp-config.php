@@ -18,6 +18,7 @@ $configs = array(
 	'cshp.co'                         => 'demo',
 	'beta.generationtogeneration.org' => 'beta',
 	'generationtogeneration.org'      => 'prod',
+	'web01.encore.org.novalocal'      => 'prod',
 	'default'                         => 'demo'
 );
 if ( isset( $dev_site ) && !isset( $configs[ $dev_site ] ) ) {

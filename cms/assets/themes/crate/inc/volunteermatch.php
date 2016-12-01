@@ -305,11 +305,24 @@ function get_vmatch_basic_page( $data ) {
 	);
 
 	if ( isset( $_GET['location'] ) && ! empty( $_GET['location'] ) ) {
-		$query['location'] = $_GET['location'];
+		// Special handling for Virtual...
+		if ( 'virtual' === strtolower( $_GET['location'] ) ) {
+			$query['virtual'] = true;
+			$query['sortCriteria'] = 'update';
+			$query['location'] = '';
+		// Otherwise, use provided location
+		} else {
+			$query['location'] = $_GET['location'];
+			$query['sortCriteria'] = 'distance';
+		}
 	}
 
 	if ( isset( $_GET['keywords'] ) && ! empty( $_GET['keywords'] ) ) {
 		$query['keywords'] = split( ' ', $_GET['keywords'] );
+	}
+
+	if ( isset( $_GET['radius'] ) && ! empty( $_GET['radius'] ) && is_numeric( $_GET['radius'] ) ) {
+		$query['radius'] = (string) ( $_GET['radius'] / 0.6214 );	// convert miles to km, and stringify
 	}
 
 	// Get API results.
@@ -330,27 +343,29 @@ function get_vmatch_results( $query ) {
 
 	// Set up some search defaults.
 	// 22 is the ID of the "Children & Youth" Cause Area
+	// greatFor = 's' (great for 55+), 't' (great for teens), 'g' (great for groups), 'k' (great for kids)
 	// Easiest way to lookup IDs is to visit http://www.volunteermatch.org/search
 	$query = wp_parse_args( $query, array(
 		'location'        => 'United States',
-		'sortCriteria'    => 'update',
+		'sortCriteria'    => 'default',
 		'categoryIds'     => array(22),
-		'numberOfResults' => 18,
+		'numberOfResults' => 12,
 		'keywords'        => array(),
+		'greatFor'        => array('s'),
 		'pageNumber'      => 1,
 	) );
 
 	$cache_key = 'vmatch_result_' . md5( serialize( $query ) );
 
 	// If there's a cached result for this query, return it.
-	if ( get_transient( $cache_key ) ) return get_transient( $cache_key );
+	// if ( get_transient( $cache_key ) ) return get_transient( $cache_key );
 
 	// No cached result? Query the API.
-	$results = $api->searchOrganizations( $query, 'org detail' );
+	$results = $api->searchOpportunities( $query, 'opp detail' );
 
 	// We can't do anything if VolunteerMatchAPI didn't give us anything useful
-	if ( ! isset( $results['organizations'] ) ) {
-		return array('page' => $query['pageNumber']);
+	if ( ! isset( $results['opportunities'] ) ) {
+		return array( 'page' => $query['pageNumber'] );
 	}
 
 	// Cache results, unless this is a keyword search (saving every keyword
@@ -367,14 +382,14 @@ function get_vmatch_results( $query ) {
  */
 function format_vmatch_results( $results ) {
 
-	foreach ( $results['organizations'] as &$org ) {
-		$org = array(
-			'url'       => esc_url( urldecode( $org['vmUrl'] ) ),
-			'imagehtml' => _get_vmatch_org_image_html( $org ),
-			'name'      => wp_kses( $org['name'] ),
-			'summary'   => wp_trim_words( wp_kses_post( $org['plaintextDescription'] ), 30 ),
-			'city'      => $org['location']['city'],
-			'region'    => $org['location']['region'],
+	foreach ( $results['opportunities'] as &$opp ) {
+		$opp = array(
+			'url'       => esc_url( urldecode( $opp['vmUrl'] ) ),
+			'imagehtml' => _get_vmatch_opp_image_html( $opp ),
+			'name'      => $opp['title'],	// dangerous but neccesarry
+			'summary'   => wp_trim_words( stripslashes( wp_kses_post( $opp['plaintextDescription'] ) ), 30 ),
+			'city'      => $opp['location']['city'],
+			'region'    => $opp['location']['region'],
 		);
 	}
 
@@ -384,12 +399,12 @@ function format_vmatch_results( $results ) {
 /**
  * Converts $org data returned by API into useful image html
  */
-function _get_vmatch_org_image_html( $org ) {
+function _get_vmatch_opp_image_html( $opp ) {
 
-	if ( empty( $org['imageUrl'] ) ) return '<div class="no-image"></div>';
+	if ( empty( $opp['imageUrl'] ) ) return '<div class="no-image"></div>';
 
 	ob_start(); ?>
-		<a href="<?php echo esc_url( urldecode( $org['vmUrl'] ) ); ?>" target="_blank"><img src="<?php echo esc_url( urldecode( $org['imageUrl'] ) ); ?>" alt="Logo for <?php echo esc_attr( $org['name'] ) ; ?>"></a>
+		<a href="<?php echo esc_url( urldecode( $opp['vmUrl'] ) ); ?>" target="_blank"><img src="<?php echo esc_url( urldecode( $opp['imageUrl'] ) ); ?>" alt="Logo for <?php echo esc_attr( $opp['title'] ) ; ?>"></a>
 	<?php
 
 	return ob_get_clean();

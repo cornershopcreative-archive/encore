@@ -8,18 +8,31 @@ var load_handler = function( is_reset ) {
 		var $container = $( this ).closest( '.content-section' ),
 			location = $container.data( 'location' ),
 			searchTerms = $container.find( '.filter-search' ).val(),
+			radius = $container.find( '.filter-radius' ).val(),
 			pageNum = ( is_reset ? 0 : $container.data( 'page' ) );
 
+		if ( $container.find( '.filter-location' ).val() ) {
+			location = $container.find( '.filter-location' ).val();
+		}
 		console.log( $container, location, searchTerms, pageNum );
 
 		$.get( '/wp-json/vmatch/v1/search/page/' + (++pageNum), {
 			location: location,
-			keywords: searchTerms
+			keywords: searchTerms,
+			radius: radius
 		}, function( data ) {
 
 			// Clear out existing entries, if appropriate.
 			if ( is_reset ) {
-				$container.find( '.content-section-grid' ).html( '' );
+				var resultHeader = '<h4>' + data.resultsSize + ' opportunities found.</h4>';
+				// if we didn't get anything....
+				if ( data.resultsSize == 0 ) {
+					resultHeader = "<h4><br>Sorry, no opportunities found.<br><br></h4>";
+				} else if ( data.resultsSize == 1 ) {
+					resultHeader = '<h4>' + data.resultsSize + ' opportunity found.</h4>';
+				}
+
+				$container.find( '.content-section-grid' ).html( resultHeader );
 			}
 
 			// Set or reset page number.
@@ -39,7 +52,7 @@ var load_handler = function( is_reset ) {
 			Mustache.parse(template);
 
 			// build out markup
-			$.each( data.organizations, function( index, org ) {
+			$.each( data.opportunities, function( index, org ) {
 				rendered += Mustache.render(template, org );
 			});
 
@@ -57,4 +70,6 @@ module.exports = function( $ ) {
 	$('.section-volunteer-opportunities .filter-form').on( 'submit', load_handler( true ) );
 
 	$('.section-volunteer-opportunities a.more').on( 'click', load_handler() );
+
+	$('.section-volunteer-opportunities .filter-form *').on( 'change', load_handler( true ) );
 };

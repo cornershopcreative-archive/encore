@@ -6,6 +6,47 @@
 
 	$grid-item-padding: 20px;
 
+	.filter-form {
+
+		display: block;
+		text-align: center;
+
+		& > div {
+
+			@include display(flex);
+			@include justify-content(center);
+			margin-bottom: 10px;
+
+			& > * {
+				display: inline-block;
+			}
+
+			@media screen and ( max-width: 500px ) {
+				@include flex-wrap(wrap);
+			}
+
+		}
+
+		@media screen and ( min-width: 900px ) {
+
+			@include display(flex);
+			text-align: left;
+
+			& > div {
+				margin-bottom: 0;
+			}
+		}
+
+		h5 {
+			white-space: nowrap;
+		}
+	}
+
+	.content-section-grid > h4 {
+		width: 100%;
+		text-align: center;
+	}
+
 	.grid-item {
 		border: 1px solid $silver;
 		background-color: white;
@@ -22,22 +63,17 @@
 		max-width: 240px;
 	}
 
-	.grid-item-3 {
-		margin: rem(20) auto;
+	.grid-item-4 {
+		margin: rem(10) auto;
 
 		@include breakpoint( $tablet ) {
-			@include nested( 9 ) {
-				width: span( 3 );
-				margin-left: gutter();
-				margin-right: gutter();
-			}
+			width: span( 4 of 12 .25 );
 		}
 
 		@include breakpoint( $desktop ) {
-			@include nested( 10 ) {
-				width: span( 3 );
-			}
+			width: span( 3 of 12 .25 );
 		}
+
 	}
 
 	.no-image {
@@ -74,6 +110,13 @@
 		bottom: $grid-item-padding;
 		right: $grid-item-padding;
 		text-align: right;
+	}
+
+	&.virtual-only {
+		.location-filters,
+		.grid-item-meta {
+			display: none !important;
+		}
 	}
 
 }

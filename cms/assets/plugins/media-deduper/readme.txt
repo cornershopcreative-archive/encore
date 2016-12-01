@@ -3,7 +3,7 @@ Contributors: drywallbmb
 Tags: media, attachments, admin, upload
 Requires at least: 3.6
 Tested up to: 4.6.1
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,9 @@ The git repository should be publicly available at https://bitbucket.org/corners
 
 
 == Changelog ==
+= 1.1.1 =
+* Fixing a bug that would list all media as duplicates if all duplicates share a media file
+
 = 1.1.0 =
 * Implemented a check to differentiate posts that are duplicates because they actually share a single media file, and updated the UI to allow for controlling the display of these posts.
 * Fixed a notice-level error for undefined $_GET variable

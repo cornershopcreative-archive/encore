@@ -202,7 +202,7 @@ ul {
 
 /**
  * Featherlight – ultra slim jQuery lightbox
- * Version 1.5.0 - http://noelboss.github.io/featherlight/
+ * Version 1.6.1 - http://noelboss.github.io/featherlight/
  *
  * Copyright 2016, Noël Raoul Bossart (http://www.noelboss.com)
  * MIT Licensed.
@@ -267,7 +267,9 @@ ul {
     top: 0;
     right: 0;
     z-index: 9999;
+    padding: 0;
     width: 25px;
+    border: none;
     background: #fff;
     /* Set the background in case it overlaps the content */
     background: rgba(255, 255, 255, 0.3);
@@ -278,6 +280,10 @@ ul {
     line-height: 25px;
     /* styling */
     cursor: pointer; }
+  /* See http://stackoverflow.com/questions/16077341/how-to-reset-all-default-styles-of-the-html5-button-element */
+  .featherlight .featherlight-close-icon::-moz-focus-inner {
+    padding: 0;
+    border: 0; }
   .featherlight .featherlight-image {
     /* styling */
     width: 100%; }
@@ -1114,11 +1120,11 @@ input[type='email'] {
     .site-header {
       -ms-flex-wrap: nowrap;
           flex-wrap: nowrap; } }
-  @media (min-width: 1100px) {
+  @media (min-width: 1105px) {
     .home .site-header {
       background-color: #0047c1;
       box-shadow: none; } }
-  @media (min-width: 1100px) {
+  @media (min-width: 1105px) {
     .site-header.has-current-submenu {
       border-bottom: 3.75rem solid #aacc00; } }
   .site-header .container, .site-header .container-10, .site-header .container-8, .site-header .container-6 {
@@ -1144,7 +1150,7 @@ input[type='email'] {
     .site-header-secondary {
       padding: 0.5rem 0;
       width: auto; } }
-  @media (min-width: 1100px) {
+  @media (min-width: 1105px) {
     .home .site-header-main, .home
     .site-header-secondary {
       padding: 1.625rem 0; } }
@@ -1210,23 +1216,23 @@ input[type='email'] {
       .site-branding .site-title .logo {
         width: 3.4375rem;
         height: auto; } }
-    @media (min-width: 1100px) {
+    @media (min-width: 1105px) {
       .home .site-branding .site-title .logo {
         margin-bottom: -14.0625rem;
         width: 15.625rem;
         color: #fff;
         fill: #fff; } }
-  @media (min-width: 1100px) {
+  @media (min-width: 1105px) {
     .home .site-branding .powered-by {
       margin-left: -0.25rem; } }
   .site-branding .powered-by .logo {
     width: 6.625rem;
     height: auto;
     color: #2d2d2d; }
-    @media (min-width: 1100px) {
+    @media (min-width: 1105px) {
       .site-branding .powered-by .logo {
         width: 5.5rem; } }
-    @media (min-width: 1100px) {
+    @media (min-width: 1105px) {
       .home .site-branding .powered-by .logo {
         color: #fff; } }
 
@@ -1242,7 +1248,7 @@ input[type='email'] {
   @media (min-width: 640px) {
     .nav-toggle {
       margin: 0 1rem; } }
-  @media (min-width: 1100px) {
+  @media (min-width: 1105px) {
     .nav-toggle {
       display: none; } }
   .nav-toggle a {
@@ -1253,7 +1259,7 @@ input[type='email'] {
   top: 100%;
   right: 0;
   background: #fff; }
-  @media (min-width: 1100px) {
+  @media (min-width: 1105px) {
     .nav-primary {
       -ms-flex-positive: 1;
           flex-grow: 1;
@@ -1265,7 +1271,7 @@ input[type='email'] {
     overflow: hidden;
     max-height: 0;
     transition: max-height 0.2s ease-out; }
-    @media (min-width: 1100px) {
+    @media (min-width: 1105px) {
       .nav-primary,
       .nav-primary .sub-menu {
         position: static;
@@ -1285,14 +1291,14 @@ input[type='email'] {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     max-height: 80vh; }
-    @media (min-width: 1100px) {
+    @media (min-width: 1105px) {
       .nav-primary.is-open {
         overflow: visible; } }
   .nav-primary .menu {
     padding: 0.9375rem 0;
     font-size: 1.875rem;
     line-height: 1em; }
-    @media (min-width: 1100px) {
+    @media (min-width: 1105px) {
       .nav-primary .menu {
         display: -ms-flexbox;
         display: flex;
@@ -1302,7 +1308,7 @@ input[type='email'] {
   .nav-primary .menu-item {
     position: relative;
     padding: 0.9375rem 2.5rem; }
-    @media (min-width: 1100px) {
+    @media (min-width: 1105px) {
       .nav-primary .menu-item {
         display: -ms-flexbox;
         display: flex;
@@ -1312,7 +1318,7 @@ input[type='email'] {
     .nav-primary .menu-item a {
       display: inline-block;
       vertical-align: middle; }
-      @media (min-width: 1100px) {
+      @media (min-width: 1105px) {
         .nav-primary .menu-item a {
           text-transform: uppercase; }
           .home .nav-primary .menu-item a {
@@ -1321,13 +1327,13 @@ input[type='email'] {
               color: #00c7f5; } }
     .nav-primary .menu-item .subnav-toggle {
       margin-left: 1.25rem; }
-      @media (min-width: 1100px) {
+      @media (min-width: 1105px) {
         .nav-primary .menu-item .subnav-toggle {
           display: none; } }
   .nav-primary .sub-menu {
     margin: 0 -2.5rem;
     font-size: 1.125rem; }
-    @media (min-width: 1100px) {
+    @media (min-width: 1105px) {
       .nav-primary .sub-menu {
         position: absolute;
         top: 5.0625rem;
@@ -1343,7 +1349,7 @@ input[type='email'] {
       .nav-primary .sub-menu .menu-item:first-child {
         margin-top: 1.25rem;
         border-top: 1px solid #d8d8d8; }
-      @media (min-width: 1100px) {
+      @media (min-width: 1105px) {
         .nav-primary .sub-menu .menu-item, .nav-primary .sub-menu .menu-item:first-child {
           margin: 0;
           border: 0; }
@@ -1357,7 +1363,7 @@ input[type='email'] {
         .nav-primary .sub-menu .menu-item.current-menu-item a,
         .nav-primary .sub-menu .menu-item.current-menu-ancestor a {
           opacity: 1.0; } }
-  @media (min-width: 1100px) {
+  @media (min-width: 1105px) {
     .nav-primary .current-menu-item.menu-item-has-children:after,
     .nav-primary .current-menu-ancestor.menu-item-has-children:after {
       position: absolute;
@@ -1369,7 +1375,7 @@ input[type='email'] {
   .nav-primary .current-menu-item > a,
   .nav-primary .current-menu-ancestor > a {
     color: #aacc00; }
-  @media (min-width: 1100px) {
+  @media (min-width: 1105px) {
     .nav-primary .current-menu-item .sub-menu,
     .nav-primary .current-menu-ancestor .sub-menu {
       display: -ms-flexbox;
@@ -1434,7 +1440,7 @@ input[type='email'] {
       margin-right: 6.12245%;
       margin-left: 6.12245%;
       width: 28.57143%; } }
-  @media (min-width: 1280px) {
+  @media (min-width: 1105px) {
     .grid-item-3 {
       width: 18.36735%; } }
 
@@ -1544,6 +1550,8 @@ input[type='email'] {
   .section-filters .flex-space {
     -ms-flex-positive: 1;
         flex-grow: 1; }
+  .section-filters h5 {
+    padding: 0.9375rem 0.8125rem; }
   .section-filters .filter {
     padding: 0.9375rem 3.375rem 0.8125rem 1.4375rem;
     width: 100%;
@@ -2208,7 +2216,7 @@ input[type='email'] {
         margin: 0;
         margin-right: 2.04082%;
         width: 28.57143%; } }
-    @media (min-width: 1100px) {
+    @media (min-width: 1105px) {
       .site-footer .menu {
         float: left;
         margin-right: 2.04082%;
@@ -2219,7 +2227,7 @@ input[type='email'] {
   @media (min-width: 640px) {
     .site-footer .menu-footer-2 {
       display: block; } }
-  @media (min-width: 1100px) {
+  @media (min-width: 1105px) {
     .site-footer .menu-footer-3 {
       display: block; } }
   .site-footer .menu-item {
@@ -2462,6 +2470,48 @@ input[type='email'] {
   padding-top: 2rem;
   padding-bottom: 2rem;
   background-color: #e7e7e4; }
+  .section-volunteer-opportunities .filter-form {
+    display: block;
+    text-align: center; }
+    .section-volunteer-opportunities .filter-form > div {
+      display: -webkit-box;
+      display: -moz-box;
+      display: box;
+      display: -moz-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -moz-justify-content: center;
+      -ms-justify-content: center;
+      -o-justify-content: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      box-pack: center;
+      -ms-flex-pack: center; }
+      .section-volunteer-opportunities .filter-form > div > * {
+        display: inline-block; }
+      @media screen and (max-width: 500px) {
+        .section-volunteer-opportunities .filter-form > div {
+          -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+          -webkit-box-lines: multiple;
+          -moz-box-lines: multiple;
+          box-lines: multiple; } }
+    @media screen and (min-width: 900px) {
+      .section-volunteer-opportunities .filter-form {
+        display: -webkit-box;
+        display: -moz-box;
+        display: box;
+        display: -moz-flex;
+        display: -ms-flexbox;
+        display: flex;
+        text-align: left; }
+        .section-volunteer-opportunities .filter-form > div {
+          margin-bottom: 0; } }
+    .section-volunteer-opportunities .filter-form h5 {
+      white-space: nowrap; }
+  .section-volunteer-opportunities .content-section-grid > h4 {
+    width: 100%;
+    text-align: center; }
   .section-volunteer-opportunities .grid-item {
     position: relative;
     padding: 20px;
@@ -2473,16 +2523,14 @@ input[type='email'] {
     margin: 0 auto;
     max-width: 240px;
     width: 100%; }
-  .section-volunteer-opportunities .grid-item-3 {
-    margin: 1.25rem auto; }
+  .section-volunteer-opportunities .grid-item-4 {
+    margin: 0.625rem auto; }
     @media (min-width: 640px) {
-      .section-volunteer-opportunities .grid-item-3 {
-        margin-right: 2.27273%;
-        margin-left: 2.27273%;
-        width: 31.81818%; } }
+      .section-volunteer-opportunities .grid-item-4 {
+        width: 32.20339%; } }
     @media (min-width: 1280px) {
-      .section-volunteer-opportunities .grid-item-3 {
-        width: 28.57143%; } }
+      .section-volunteer-opportunities .grid-item-4 {
+        width: 23.72881%; } }
   .section-volunteer-opportunities .no-image {
     padding-top: 65%;
     width: 100%;
@@ -2509,6 +2557,9 @@ input[type='email'] {
     text-transform: uppercase;
     font-weight: 700;
     font-size: 0.8rem; }
+  .section-volunteer-opportunities.virtual-only .location-filters,
+  .section-volunteer-opportunities.virtual-only .grid-item-meta {
+    display: none !important; }
 
 .gray-background {
   padding-top: 50px;

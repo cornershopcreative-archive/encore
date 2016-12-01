@@ -1,6 +1,12 @@
 'use strict';
 
-var $ = require('jQuery');
+var jQuery = require('jQuery');
+
+var serializeObject = require( 'jquery-serialize-object' );
+// Extend jQuery object with functions from jquery-serialize-object (this
+// doesn't happen automatically, for some reason)
+jQuery.fn.serializeObject = serializeObject.FormSerializer.serializeObject;
+jQuery.fn.serializeJSON = serializeObject.FormSerializer.serializeJSON;
 
 var nav = require( 'nav' );
 jQuery( nav );

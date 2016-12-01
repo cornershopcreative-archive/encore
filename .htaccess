@@ -30,9 +30,7 @@
 	ModPagespeedEnableFilters remove_comments
 </IfModule>
 # END manual performance tweaks
-
 Options All -Indexes
-
 # BEGIN Cornershop
 # VCS lockdown
 #  Deny access to version control content
@@ -54,7 +52,6 @@ Options All -Indexes
 	</IfModule>
 </IfModule>
 # END Cornershop
-
 # BEGIN Block WordPress xmlrpc.php requests
 <Files cms/xmlrpc.php>
 	order deny,allow
@@ -62,14 +59,26 @@ Options All -Indexes
 	# allow from 123.456.789.101
 </Files>
 # END xmlrpc blocking
-
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
-	RewriteEngine On
-	RewriteBase /
-	RewriteRule ^index\.php$ - [L]
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule . /index.php [L]
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
 </IfModule>
 # END WordPress
+
+# Created by Redirection
+# Thu, 17 Nov 2016 20:45:21 +0000
+# Redirection 2.4.5 - http://urbangiraffe.com/plugins/redirection/
+
+<IfModule mod_rewrite.c>
+RewriteRule ^/boston/$ http://generationtogeneration.org/communities/boston/ [R=301,L]
+RewriteRule ^/la/$ http://generationtogeneration.org/communities/la/ [R=301,L]
+RewriteRule ^/san-jose/$ http://generationtogeneration.org/communities/san-jose/ [R=301,L]
+RewriteRule ^/seattle/$ http://generationtogeneration.org/communities/seattle/ [R=301,L]
+</IfModule>
+
+# End of Redirection

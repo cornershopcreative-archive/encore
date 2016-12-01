@@ -31,17 +31,9 @@
 			'post_type' => 'news',
 			'posts_per_page' => $posts_per_page,
 			'meta_query' => array(
-				// Add both 'exists' and 'not exists' conditions for 'sticky' status,
-				// so we can use it for ordering without affecting which posts are
-				// returned by the query.
-				'relation' => 'OR',
 				'sticky' => array(
 					'key' => 'sticky',
 					'compare' => 'EXISTS',
-				),
-				'not_sticky' => array(
-					'key' => 'sticky',
-					'compare' => 'NOT EXISTS',
 				),
 			),
 			'orderby' => array(
