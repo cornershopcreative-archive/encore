@@ -47,7 +47,7 @@
 					<?php $is_featured = has_term( 'featured-partners', 'topic' ); ?>
 
 					<div class="logo-container">
-						<a href="<?php echo get_field(link_url); ?>" target="_blank"<?php if ( $is_featured ) echo ' class="modal-trigger"'; ?>>
+						<a href="<?php echo get_field( 'link_url' ); ?>" target="_blank"<?php if ( $is_featured ) echo ' class="modal-trigger"'; ?>>
 						<img src="<?php the_post_thumbnail_url(); ?>" class="partner-logo">
 						</a>
 
@@ -58,7 +58,7 @@
 						<h3 class="partner-title">
 						<?php if (get_sub_field('button') == "hide") {
 							
-							echo '<a href="'.get_field(link_url).'"' . (  $is_featured ? ' class="modal-trigger"' : '' ) . ' target="_blank" >'.get_the_title().'</a>';
+							echo '<a href="'.get_field( 'link_url' ).'"' . (  $is_featured ? ' class="modal-trigger"' : '' ) . ' target="_blank" >'.get_the_title().'</a>';
 						}
 						else
 						{} ?>
