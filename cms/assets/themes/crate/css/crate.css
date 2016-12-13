@@ -202,7 +202,7 @@ ul {
 
 /**
  * Featherlight – ultra slim jQuery lightbox
- * Version 1.6.1 - http://noelboss.github.io/featherlight/
+ * Version 1.5.0 - http://noelboss.github.io/featherlight/
  *
  * Copyright 2016, Noël Raoul Bossart (http://www.noelboss.com)
  * MIT Licensed.
@@ -267,9 +267,7 @@ ul {
     top: 0;
     right: 0;
     z-index: 9999;
-    padding: 0;
     width: 25px;
-    border: none;
     background: #fff;
     /* Set the background in case it overlaps the content */
     background: rgba(255, 255, 255, 0.3);
@@ -280,10 +278,6 @@ ul {
     line-height: 25px;
     /* styling */
     cursor: pointer; }
-  /* See http://stackoverflow.com/questions/16077341/how-to-reset-all-default-styles-of-the-html5-button-element */
-  .featherlight .featherlight-close-icon::-moz-focus-inner {
-    padding: 0;
-    border: 0; }
   .featherlight .featherlight-image {
     /* styling */
     width: 100%; }
@@ -2867,6 +2861,9 @@ input[type='email'] {
     background: rgba(0, 57, 154, 0.9); }
   .featherlight .featherlight-content {
     border-radius: 3px; }
+
+.modalform.featherlight .featherlight-close-icon {
+  border: none; }
 
 @media (min-width: 640px) {
   .modalform.featherlight .featherlight-close-icon {
