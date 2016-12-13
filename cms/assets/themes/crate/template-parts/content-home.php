@@ -17,8 +17,13 @@
 			<?php if ( has_post_thumbnail() ) : ?>
 				<div class="hero-image">
 
-					<?php if ( $video_embed = get_field( 'video' ) ) : ?>
-						<a href="#<?php echo esc_attr( $post->post_name . '-video' ); ?>" class="hero-video-link play-button-link">
+					<?php
+					// Get the URL for the featured video, if there is one.
+					$video_url = crate_get_oembed_autoplay_url( get_field( 'video' ) );
+					?>
+
+					<?php if ( $video_url ) : ?>
+						<a href="<?php echo esc_url( $video_url ); ?>" class="hero-video-link play-button-link">
 					<?php endif; ?>
 
 							<?php the_post_thumbnail( 'square-md' ); ?>
@@ -27,24 +32,20 @@
 								<div class="hero-callout-text">
 									<p>
 
-									<?php if ( $video_embed ) : ?>
-										<a href="#<?php echo esc_attr( $post->post_name . '-video' ); ?>" class="hero-video-link">
+									<?php if ( $video_url ) : ?>
+										<a href="<?php echo esc_url( $video_url ); ?>" class="hero-video-link">
 									<?php endif; ?>
 
 										<?php echo wp_kses_post( wptexturize( $hero_callout_text ) ); ?></p>
-									<?php if ( $video_embed ) : ?>
+									<?php if ( $video_url ) : ?>
 										</a>
 									<?php endif; ?>
 
 									</div>
 								<?php endif; ?>
 
-					<?php if ( $video_embed ) : ?>
-
+					<?php if ( $video_url ) : ?>
 						</a><!-- /.hero-video-link -->
-						<div class="hero-video" id="<?php echo esc_attr( $post->post_name . '-video' ); ?>">
-							<?php echo $video_embed; ?>
-						</div>
 					<?php endif; ?>
 
 				</div>

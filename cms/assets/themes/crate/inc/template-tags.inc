@@ -282,3 +282,19 @@ function crate_get_section_id_attr() {
 function crate_section_id_attr() {
 	echo crate_get_section_id_attr();
 }
+
+/**
+ * Given oembed <iframe> markup, return a URL with autoplay enabled.
+ *
+ * Note that autoplay will *probably* only work for YouTube videos.
+ */
+function crate_get_oembed_autoplay_url( $html ) {
+
+	// Pull iframe src url.
+	if ( preg_match( '/src="([^"]*)"/', $html, $matches ) ) {
+		// Add ?autoplay=1 to src url.
+		return add_query_arg( 'autoplay', 1, $matches[1] );
+	}
+
+	return false;
+}

@@ -6,7 +6,10 @@ module.exports = function( $ ) {
 	$.featherlight.defaults.closeIcon = "&#9587;";
 
 	$( '.hero-video-link' ).each( function() {
-		$( this ).featherlight();
+		$( this ).featherlight( {
+			iframe: $( this ).attr( 'href' ),
+			variant: 'video',
+		} );
 	} );
 
 	// When the BSD form is submitted to the iframe, toggle lightboxes

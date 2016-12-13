@@ -1605,19 +1605,6 @@ input[type='email'] {
   .hero-text .button-white:hover {
     color: #0047c1; }
 
-.hero-video {
-  position: relative;
-  display: none;
-  padding-top: 60.9375%;
-  width: 80vw; }
-  .hero-video iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: block;
-    width: 100%;
-    height: 100%; }
-
 .play-button-link {
   position: relative;
   display: block; }
@@ -2892,6 +2879,21 @@ input[type='email'] {
       #signup-modal-opportunity-thanks header .button-group > .button,
       #signup-modal-opportunity-thanks header .facetwp-pager > .button {
         margin: 10px 1em; } }
+
+.video.featherlight .featherlight-content {
+  position: relative;
+  width: 80vw; }
+  .video.featherlight .featherlight-content:before {
+    display: block;
+    padding-top: 60.9375%;
+    content: ''; }
+  .video.featherlight .featherlight-content iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%; }
 
 .search-listings a {
   text-decoration: none !important; }
