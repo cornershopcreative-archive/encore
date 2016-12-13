@@ -14,7 +14,6 @@ var load_handler = function( is_reset ) {
 		if ( $container.find( '.filter-location' ).val() ) {
 			location = $container.find( '.filter-location' ).val();
 		}
-		console.log( $container, location, searchTerms, pageNum );
 
 		$.get( '/wp-json/vmatch/v1/search/page/' + (++pageNum), {
 			location: location,

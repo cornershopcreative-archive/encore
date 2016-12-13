@@ -51,7 +51,6 @@ module.exports = function( $ ) {
 
 	// Allow different styling for when the main nav is being sticky.
 	$( window ).on( 'scroll', _.throttle( function() {
-		console.log( $( this ).scrollTop() );
 		if ( $( this ).scrollTop() > 0 ) {
 			$( '.site-header' ).addClass( 'has-sticky-nav' );
 		} else {

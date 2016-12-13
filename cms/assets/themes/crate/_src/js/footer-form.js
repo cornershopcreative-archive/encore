@@ -42,9 +42,7 @@ module.exports = function( $ ) {
 
 	// When the footer form is submitted, display a thank you message, hide the
 	// form, and remember to keep it hidden.
-	console.log( $form.find( 'form' ) );
 	$form.find( 'form' ).on( 'submit', function() {
-		console.log( 'submit' );
 		// Show the thank-you message.
 		$form.addClass( 'is-submitted' );
 		// Remember that the user has filled out a signup form. This localStorage
