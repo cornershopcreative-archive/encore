@@ -106,6 +106,9 @@
 }
 
 .modalform.featherlight {
+	.featherlight-close-icon {
+		border: none;
+	}
 	@include breakpoint( $tablet ) {
 		.featherlight-close-icon {
 			font-size: 20px;

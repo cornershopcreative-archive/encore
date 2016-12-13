@@ -2868,6 +2868,9 @@ input[type='email'] {
   .featherlight .featherlight-content {
     border-radius: 3px; }
 
+.modalform.featherlight .featherlight-close-icon {
+  border: none; }
+
 @media (min-width: 640px) {
   .modalform.featherlight .featherlight-close-icon {
     top: 20px;

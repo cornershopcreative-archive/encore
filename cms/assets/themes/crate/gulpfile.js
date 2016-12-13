@@ -59,7 +59,7 @@ var paths = {
 		dest: '_src/scss/general'
 	},
 	styles: {
-		src: ['_src/scss/**/*.{sass,scss}', '!*safe_save*']
+		src: ['_src/scss/**/*.{sass,scss}', '!*safe_save*'],
 		dest: 'css'
 	},
 	scripts: {
