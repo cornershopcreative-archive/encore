@@ -1,0 +1,115 @@
+{
+    "key": "group_58541d13aefeb",
+    "title": "Lightbox Settings",
+    "fields": [
+        {
+            "key": "field_555ca8052ed11",
+            "label": "Display Lightbox On",
+            "name": "coverlay_visibility",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "home": "Homepage",
+                "all": "All Pages",
+                "none": "Nowhere"
+            },
+            "default_value": [],
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": "",
+            "return_format": "value"
+        },
+        {
+            "key": "field_555ca9682ed13",
+            "label": "Trigger",
+            "name": "coverlay_trigger",
+            "type": "select",
+            "instructions": "When does the lightbox appear?",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "immediate": "Immediately on page load",
+                "delay": "N seconds after load (specify)",
+                "scroll": "After page is scrolled N pixels (specify)",
+                "scroll-half": "After page is scrolled halfway",
+                "minutes": "After N minutes spent on site this visit (specify)",
+                "pages": "Once N pages have been visited in last 90 days (specify)"
+            },
+            "default_value": [
+                "immediate"
+            ],
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": "",
+            "return_format": "value"
+        },
+        {
+            "key": "field_555caca92ed16",
+            "label": "Trigger amount",
+            "name": "coverlay_trigger_amount",
+            "type": "number",
+            "instructions": "Specify the precise quantity\/time\/amount\/number for the above",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_555ca9682ed13",
+                        "operator": "!=",
+                        "value": "immediate"
+                    },
+                    {
+                        "field": "field_555ca9682ed13",
+                        "operator": "!=",
+                        "value": "scroll-half"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "min": "",
+            "max": "",
+            "step": 1
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "crate-site-options"
+            }
+        ]
+    ],
+    "menu_order": 1,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "description": "",
+    "modified": 1481923755
+}

@@ -13,7 +13,7 @@ module.exports = function( $ ) {
 	} );
 
 	// When the BSD form is submitted to the iframe, toggle lightboxes
-	$('#signup-generic').on('submit', function() {
+	$('#signup-generic, #signup-auto-lightbox').on('submit', function() {
 
 		// Remember that the user has filled out a signup form.
 		storage.signup_form_completed = '1';

@@ -25,3 +25,6 @@ jQuery( volunteer_pager );
 
 var footer_form = require( 'footer-form' );
 jQuery( footer_form );
+
+var auto_lightbox = require( 'auto-lightbox' );
+jQuery( auto_lightbox );

@@ -156,3 +156,93 @@
 		}
 	}
 }
+
+// Lightbox CTA with huge text + fancy layout.
+.cta-huge {
+	font-size: rem(28);
+	font-family: $serif;
+	text-align: center;
+	color: $deep-blue;
+
+	@include breakpoint( $tablet ) {
+		font-size: rem(45);
+	}
+
+	@include breakpoint( $medium ) {
+		text-align: right;
+		width: rem(800);
+		background: url('../images/cta-huge-bg-2.jpg') no-repeat center center transparent;
+		background-size: contain;
+	}
+
+	.logo {
+		width: rem(114);
+		margin: 0 auto;
+		color: $bright-blue;
+		fill: $deep-blue;
+
+		@include breakpoint( $medium ) {
+			float: left;
+		}
+	}
+
+	form {
+		max-width: 470px;
+
+		@include breakpoint( $medium ) {
+			margin-right: 0;
+			margin-left: auto;
+		}
+	}
+
+	p {
+		margin: rem(16) 0;
+
+		@include breakpoint( max-width ($medium - 1px) ) {
+			// Ignore <br> tags on mobile.
+			br {
+				display: none;
+			}
+		}
+	}
+
+	strong {
+		font-family: $sans;
+		text-transform: uppercase;
+	}
+
+	.field {
+		display: block;
+		width: rem(200);
+		margin: rem(6) auto;
+		vertical-align: bottom;
+
+		@include breakpoint( $tablet ) {
+			display: inline-block;
+			margin: rem(3);
+		}
+
+		%text-input {
+			display: block;
+		}
+	}
+
+	%text-input {
+		font-size: rem(16);
+		font-family: $sans;
+		padding: 1em;
+		color: $black;
+
+		&::placeholder {
+			font-weight: bold;
+		}
+	}
+
+	.button-group {
+		// Push button over slightly so that it *looks* centered relative to
+		// left-aligned input fields.
+		@include breakpoint( $medium ) {
+			margin-left: rem(58);
+		}
+	}
+}
