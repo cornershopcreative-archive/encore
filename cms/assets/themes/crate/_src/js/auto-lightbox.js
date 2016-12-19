@@ -15,8 +15,6 @@ module.exports = function( $ ) {
 		amount  : 1,
 	}, options );
 
-	console.log( settings );
-
 	// do nothing if it's disabled...
 	if ( 'none' === settings.context ) return;
 
