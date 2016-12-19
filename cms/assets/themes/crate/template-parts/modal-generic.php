@@ -1,38 +1,35 @@
 <div class="totallyhidden">
-	<aside id="signup-modal" class="modal">
+	<aside id="signup-modal" class="modal cta-huge">
 		<header>
-			<div class="icon-logo"></div>
-			<h2>You are uniquely valuable.</h2>
-			<p class="prose">Sign up below to learn more about how you can offer your knowledge and experience to younger generations this fall.</p>
+			<svg class="logo" viewBox="0 0 50 50">
+				<use xlink:href="#icon-logo"></use>
+			</svg>
 		</header>
 
 		<form name="signup" class="bsd-signup-2" action="https://generation.cp.bsd.net/page/signup/join-g2g" method="post" id="signup-generic" target="bsd-target">
 
-			<div class="row">
-				<div class="bsd-field-firstname half">
-					<label class="field">First Name <span class="required">(required)</span></label>
-					<input name="firstname" type="text" required placeholder="First name">
-				</div>
-				<div class="bsd-field-lastname half">
-					<label class="field">Last Name <span class="required">(required)</span></label>
-					<input name="lastname" type="text" required placeholder="Last name">
-				</div>
-			</div>
+			<p>
+				I,
+				<span class="field">
+					<input name="firstname" type="text" required placeholder="First Name">
+				</span><span class="field">
+					<input name="lastname" type="text" required placeholder="Last Name">
+				</span>
+				pledge to create a <strong>better future</strong><br>
+				for <strong>future generations</strong>
+			</p>
 
-			<div class="row">
-				<div class="bsd-field-firstname wide">
-					<label class="field">Email address <span class="required">(required)</span></label>
-					<input name="email" type="email" required placeholder="Email address">
-				</div>
-				<div class="bsd-field-lastname narrow">
-					<label class="field">Zipcode <span class="required">(required)</span></label>
-					<input name="zip" type="text" required placeholder="Zipcode">
-				</div>
-			</div>
+			<p>
+				<span class="field">
+					<input name="email" type="email" required placeholder="Email Address">
+				</span><span class="field">
+					<input name="zip" type="text" required placeholder="Zip Code">
+				</span>
+			</p>
 
 			<div style="display: none"><label for="best-contact-time">Please leave this field blank:</label> <input id="best-contact-time" name="best-contact-time" type="text"></div>
 
-		  <div class="row button-group" id="bsd-field-submit-btn">
+			<div class="button-group" id="bsd-field-submit-btn">
 		    <div class="input"><input name="submit-btn" value="Count Me In" type="submit" class="button button-solid button-gold aligncenter"></div>
 		  </div>
 
