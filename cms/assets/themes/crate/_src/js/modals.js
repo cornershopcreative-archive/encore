@@ -5,7 +5,7 @@ module.exports = function( $ ) {
 
 	$.featherlight.defaults.closeIcon = "&#9587;";
 
-	$( '.hero-video-link' ).each( function() {
+	$( '.lightbox-embed-link' ).each( function() {
 		$( this ).featherlight( {
 			iframe: $( this ).attr( 'href' ),
 			variant: 'video',

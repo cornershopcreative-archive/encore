@@ -34,7 +34,7 @@
 
 						<?php echo get_the_post_thumbnail( null, 'square-md' ); ?>
 
-						<div class="entry-quote">
+						<div class="entry-preview">
 							<?php the_field( 'quote' ); ?>
 						</div>
 

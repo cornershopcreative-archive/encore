@@ -41,30 +41,6 @@
             "ui": 1
         },
         {
-            "key": "field_57f7c92167a96",
-            "label": "Default Featured Image",
-            "name": "default_post_thumbnail_id",
-            "type": "image",
-            "instructions": "If set, this image will be displayed as the featured image for any posts that don't have their own custom featured images.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "return_format": "id",
-            "preview_size": "thumbnail",
-            "library": "all",
-            "min_width": "",
-            "min_height": "",
-            "min_size": "",
-            "max_width": "",
-            "max_height": "",
-            "max_size": "",
-            "mime_types": ""
-        },
-        {
             "key": "field_57fc43235c0d0",
             "label": "Excerpt Settings",
             "name": "",
@@ -508,5 +484,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1478193619
+    "modified": 1483481118
 }
