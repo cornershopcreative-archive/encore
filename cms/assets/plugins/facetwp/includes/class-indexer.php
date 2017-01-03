@@ -253,12 +253,20 @@ class FacetWP_Indexer
                     'variation_id'          => 0,
                 );
 
+                $defaults = apply_filters( 'facetwp_indexer_post_facet_defaults', $defaults, array(
+                    'facet' => $facet
+                ) );
+
                 // Set flag for custom facet indexing
                 $this->is_overridden = true;
 
-                // Support custom facet indexing
-                if ( apply_filters( 'facetwp_indexer_post_facet', false,
-                    array( 'defaults' => $defaults, 'facet' => $facet ) ) ) {
+                // Bypass default indexing
+                $bypass = apply_filters( 'facetwp_indexer_post_facet', false, array(
+                    'defaults'  => $defaults,
+                    'facet'     => $facet
+                ) );
+
+                if ( $bypass ) {
                     continue;
                 }
 
@@ -267,7 +275,8 @@ class FacetWP_Indexer
                 // Get rows to insert
                 $rows = $this->get_row_data( $defaults );
                 $rows = apply_filters( 'facetwp_indexer_row_data', $rows, array(
-                    'defaults' => $defaults, 'facet' => $facet
+                    'defaults'  => $defaults,
+                    'facet'     => $facet
                 ) );
 
                 foreach ( $rows as $row ) {
