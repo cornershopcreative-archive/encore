@@ -30,14 +30,8 @@
 			'facetwp' => $show_pager, // Allow filtering/pagination via FWP.
 			'post_type' => 'news',
 			'posts_per_page' => $posts_per_page,
-			'meta_query' => array(
-				'sticky' => array(
-					'key' => 'sticky',
-					'compare' => 'EXISTS',
-				),
-			),
 			'orderby' => array(
-				'sticky' => 'DESC',
+				'sticky' => 'DESC', // Meta query will be added by crate_pre_get_posts() (see inc/query.php).
 				'post_date' => 'DESC',
 			),
 			'tax_query' => array(),
