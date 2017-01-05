@@ -20,7 +20,7 @@
 			?>
 
 			<?php if ( $video_url ) : ?>
-				<a href="<?php echo esc_url( $video_url ); ?>" class="hero-video-link play-button-link">
+				<a href="<?php echo esc_url( $video_url ); ?>" class="lightbox-embed-link play-button-link">
 			<?php endif; ?>
 
 			<picture class="hero-image">
@@ -33,7 +33,7 @@
 			</picture>
 
 			<?php if ( $video_url ) : ?>
-				</a><!-- /.hero-video-link -->
+				</a><!-- /.lightbox-embed-link -->
 			<?php endif; ?>
 
 		<?php endif; ?>

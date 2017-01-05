@@ -45,7 +45,7 @@ function crate_post_types() {
 		'show_in_nav_menus'   => true,
 		'show_in_admin_bar'   => true,
 		'menu_position'       => 5,
-		'menu_icon'           => 'dashicons-money',
+		'menu_icon'           => 'dashicons-groups',
 		'rewrite'             => array( 'slug' => 'partners' ),
 		'can_export'          => true,
 		'has_archive'         => true,
@@ -90,7 +90,7 @@ function crate_post_types() {
 		'show_in_nav_menus'   => true,
 		'show_in_admin_bar'   => true,
 		'menu_position'       => 5,
-		'menu_icon'           => 'dashicons-money',
+		'menu_icon'           => 'dashicons-format-aside',
 		'rewrite'             => array( 'slug' => 'news' ),
 		'can_export'          => true,
 		'has_archive'         => true,
@@ -135,7 +135,7 @@ function crate_post_types() {
 		'show_in_nav_menus'   => true,
 		'show_in_admin_bar'   => true,
 		'menu_position'       => 5,
-		'menu_icon'           => 'dashicons-money',
+		'menu_icon'           => 'dashicons-id-alt',
 		'rewrite'             => array( 'slug' => 'stories' ),
 		'can_export'          => true,
 		'has_archive'         => false,
@@ -190,6 +190,48 @@ function crate_post_types() {
 	);
 
 	register_post_type( 'community', $args );
+
+	// DIY Opportunities
+	// Plural: DIY Opportunities
+	// Singular: DIY Opportunity
+	// URL: /opportunities/
+	$labels = array(
+		'name'                => _x( 'DIY Opportunities', 'Post Type General Name', 'crate' ),
+		'singular_name'       => _x( 'DIY Opportunity', 'Post Type Singular Name', 'crate' ),
+		'menu_name'           => __( 'Opportunities', 'crate' ),
+		'all_items'           => __( 'All DIY Opportunities', 'crate' ),
+		'view_item'           => __( 'View Opportunity', 'crate' ),
+		'add_new_item'        => __( 'Add New DIY Opportunity', 'crate' ),
+		'add_new'             => __( 'Add New DIY Opportunity', 'crate' ),
+		'edit_item'           => __( 'Edit Opportunity', 'crate' ),
+		'update_item'         => __( 'Update Opportunity', 'crate' ),
+		'search_items'        => __( 'Search DIY Opportunities', 'crate' ),
+		'not_found'           => __( 'No DIY Opportunities found', 'crate' ),
+		'not_found_in_trash'  => __( 'No DIY Opportunities found in trash', 'crate' ),
+	);
+
+	$args = array(
+		'label'               => __( 'Opportunity', 'crate' ),
+		'description'         => __( 'DIY Opportunity', 'crate' ),
+		'labels'              => $labels,
+		'supports'            => array( 'title', 'thumbnail' ),
+		'taxonomies'          => array(),
+		'hierarchical'        => true,
+		'public'              => true,
+		'show_ui'             => true,
+		'show_in_menu'        => true,
+		'show_in_nav_menus'   => true,
+		'show_in_admin_bar'   => true,
+		'menu_position'       => 5,
+		'menu_icon'           => 'dashicons-lightbulb',
+		'rewrite'             => false,
+		'can_export'          => true,
+		'has_archive'         => false,
+		'publicly_queryable'  => false,
+		'capability_type'     => 'post',
+	);
+
+	register_post_type( 'opportunity', $args );
 }
 
 add_action( 'init', 'crate_post_types', 0 );
@@ -199,7 +241,7 @@ add_action( 'init', 'crate_post_types', 0 );
 function crate_taxonomies() {
 	register_taxonomy(
 		'location',	// taxonomy machine name
-		array( 'post', 'partner', 'news', 'story' ),		// post types supported, can be array('post', 'page' ... )
+		array( 'post', 'partner', 'news', 'story', 'opportunity' ),		// post types supported, can be array('post', 'page' ... )
 		array(					// labels. See http://codex.wordpress.org/Function_Reference/register_taxonomy for full details
 			'label' => __( 'Locations', 'crate' ),
 			'rewrite' => array( 'slug' => 'location' ),
@@ -210,7 +252,7 @@ function crate_taxonomies() {
 	// for pre-existing cpts and taxonomies that just need to be linked, use register_taxonomy_for_object_type( $taxonomy, $object_type );
 	register_taxonomy(
 		'topic',	// taxonomy machine name
-		array( 'post', 'partner', 'news', 'story' ),		// post types supported, can be array('post', 'page' ... )
+		array( 'post', 'partner', 'news', 'story', 'opportunity' ),		// post types supported, can be array('post', 'page' ... )
 		array(					// labels. See http://codex.wordpress.org/Function_Reference/register_taxonomy for full details
 			'label' => __( 'Topics', 'crate' ),
 			'rewrite' => array( 'slug' => 'topic' ),
