@@ -1577,6 +1577,30 @@
                             "maxlength": ""
                         },
                         {
+                            "key": "field_586dc3072ed05",
+                            "label": "Display Facets for Filtering",
+                            "name": "filtering",
+                            "type": "radio",
+                            "instructions": "Please note that only one section per page may have filtering enabled.",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "no": "No",
+                                "yes": "Yes"
+                            },
+                            "allow_null": 0,
+                            "other_choice": 0,
+                            "save_other_choice": 0,
+                            "default_value": "",
+                            "layout": "vertical",
+                            "return_format": "value"
+                        },
+                        {
                             "key": "field_581129fc7486e",
                             "label": "Filter by Location",
                             "name": "location",
@@ -1890,6 +1914,30 @@
                             "_clone": "field_581a933d34b7a"
                         },
                         {
+                            "key": "field_586dc2b02ed04",
+                            "label": "Display Facets for Filtering",
+                            "name": "filtering",
+                            "type": "radio",
+                            "instructions": "Please note that only one section per page may have filtering enabled.",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "no": "No",
+                                "yes": "Yes"
+                            },
+                            "allow_null": 0,
+                            "other_choice": 0,
+                            "save_other_choice": 0,
+                            "default_value": "",
+                            "layout": "vertical",
+                            "return_format": "value"
+                        },
+                        {
                             "key": "field_581759a294a04",
                             "label": "Filter by Location",
                             "name": "location",
@@ -2054,161 +2102,6 @@
                     "max": ""
                 },
                 {
-                    "key": "586bee3a7ce59",
-                    "name": "diy-grid",
-                    "label": "DIY Opportunities Grid",
-                    "display": "block",
-                    "sub_fields": [
-                        {
-                            "key": "field_586bee3a7ce5a",
-                            "label": "Section Name",
-                            "name": "section_name",
-                            "type": "clone",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "clone": [
-                                "field_582b7788baabb"
-                            ],
-                            "display": "seamless",
-                            "layout": "block",
-                            "prefix_label": 0,
-                            "prefix_name": 0
-                        },
-                        {
-                            "key": "field_586bee3a7ce5b",
-                            "label": "Title",
-                            "name": "title",
-                            "type": "text",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "maxlength": ""
-                        },
-                        {
-                            "key": "field_586bee3a7ce5c",
-                            "label": "Subtitle",
-                            "name": "subtitle",
-                            "type": "text",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "maxlength": ""
-                        },
-                        {
-                            "key": "field_586bee3a7ce5d",
-                            "label": "Filter by Location",
-                            "name": "location",
-                            "type": "taxonomy",
-                            "instructions": "Leave all checkboxes unchecked to show all locations.",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "50",
-                                "class": "",
-                                "id": ""
-                            },
-                            "taxonomy": "location",
-                            "field_type": "checkbox",
-                            "allow_null": 0,
-                            "add_term": 0,
-                            "save_terms": 0,
-                            "load_terms": 0,
-                            "return_format": "id",
-                            "multiple": 0
-                        },
-                        {
-                            "key": "field_586bee3a7ce5e",
-                            "label": "Filter by Topic",
-                            "name": "topic",
-                            "type": "taxonomy",
-                            "instructions": "Leave all checkboxes unchecked to show all topics.",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "50",
-                                "class": "",
-                                "id": ""
-                            },
-                            "taxonomy": "topic",
-                            "field_type": "checkbox",
-                            "allow_null": 0,
-                            "add_term": 0,
-                            "save_terms": 0,
-                            "load_terms": 0,
-                            "return_format": "id",
-                            "multiple": 0
-                        },
-                        {
-                            "key": "field_586bee3a7ce5f",
-                            "label": "Items per page",
-                            "name": "items_per_page",
-                            "type": "number",
-                            "instructions": "Enter 0 to show all available items.",
-                            "required": 1,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "50",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": 5,
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "min": 0,
-                            "max": "",
-                            "step": ""
-                        },
-                        {
-                            "key": "field_586bee3a7ce60",
-                            "label": "Pagination",
-                            "name": "show_pager",
-                            "type": "checkbox",
-                            "instructions": "Leave this unchecked to disallow paging (only the number of items set under \"Items per page\" will be displayed).",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "50",
-                                "class": "",
-                                "id": ""
-                            },
-                            "choices": {
-                                "1": "Show pagination controls"
-                            },
-                            "default_value": [],
-                            "layout": "vertical",
-                            "toggle": 0,
-                            "return_format": "value"
-                        }
-                    ],
-                    "min": "",
-                    "max": ""
-                },
-                {
                     "key": "581b4d0137b33",
                     "name": "partners-grid",
                     "label": "Partners Grid",
@@ -2345,6 +2238,30 @@
                             "choices": {
                                 "hide": "No",
                                 "show": "Yes"
+                            },
+                            "allow_null": 0,
+                            "other_choice": 0,
+                            "save_other_choice": 0,
+                            "default_value": "",
+                            "layout": "vertical",
+                            "return_format": "value"
+                        },
+                        {
+                            "key": "field_586dc2542ed03",
+                            "label": "Display Facets for Filtering",
+                            "name": "filtering",
+                            "type": "radio",
+                            "instructions": "Please note that only one section per page may have filtering enabled.",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "no": "No",
+                                "yes": "Yes"
                             },
                             "allow_null": 0,
                             "other_choice": 0,
@@ -2700,4 +2617,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1483471375
+    "modified": 1483589184
+}
