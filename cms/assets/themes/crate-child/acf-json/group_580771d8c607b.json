@@ -2409,12 +2409,12 @@
                 },
                 {
                     "key": "585b558949aea",
-                    "name": "photo_gallery",
+                    "name": "photo-gallery",
                     "label": "Photo Gallery",
                     "display": "block",
                     "sub_fields": [
                         {
-                            "key": "field_585b559d49aeb",
+                            "key": "field_586bdde94ecc4",
                             "label": "Items",
                             "name": "items",
                             "type": "repeater",
@@ -2427,13 +2427,13 @@
                                 "id": ""
                             },
                             "collapsed": "",
-                            "min": 1,
+                            "min": "",
                             "max": "",
                             "layout": "block",
                             "button_label": "Add Row",
                             "sub_fields": [
                                 {
-                                    "key": "field_585b55b649aec",
+                                    "key": "field_586bddfb4ecc5",
                                     "label": "Image",
                                     "name": "image",
                                     "type": "image",
@@ -2457,9 +2457,9 @@
                                     "mime_types": ""
                                 },
                                 {
-                                    "key": "field_585c0cdebad04",
-                                    "label": "Photo Credit",
-                                    "name": "photo_credit",
+                                    "key": "field_586bde514ecc6",
+                                    "label": "Image Credit",
+                                    "name": "image-credit",
                                     "type": "text",
                                     "instructions": "",
                                     "required": 0,
@@ -2476,9 +2476,25 @@
                                     "maxlength": ""
                                 },
                                 {
-                                    "key": "field_585c0d08bad05",
-                                    "label": "Caption",
-                                    "name": "caption",
+                                    "key": "field_586bde694ecc7",
+                                    "label": "Image Credit URL",
+                                    "name": "image-credit-url",
+                                    "type": "url",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "placeholder": ""
+                                },
+                                {
+                                    "key": "field_586bde714ecc8",
+                                    "label": "Image Caption",
+                                    "name": "image-caption",
                                     "type": "text",
                                     "instructions": "",
                                     "required": 0,
@@ -2529,5 +2545,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1482427674
+    "modified": 1483467906
 }
