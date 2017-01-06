@@ -2,6 +2,11 @@
  * Styles for FacetWP elements.
  */
 
+.facetwp-facet {
+	width: 33%
+	float: left
+}
+
 .facetwp-pager {
 	@extend .button-group;
 	font-size: rem(21);

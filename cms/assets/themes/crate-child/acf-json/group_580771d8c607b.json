@@ -2040,8 +2040,7 @@
                             "placeholder": "",
                             "prepend": "",
                             "append": "",
-                            "maxlength": "",
-                            "_clone": "field_581a92bc34b78"
+                            "maxlength": ""
                         },
                         {
                             "key": "field_580aa1ec0eccc",
@@ -2617,5 +2616,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1483589184
+    "modified": 1483647747
 }
