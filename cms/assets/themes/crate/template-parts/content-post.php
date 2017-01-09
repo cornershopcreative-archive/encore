@@ -11,7 +11,7 @@
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-	<header class="entry-header hero hero-float">
+	<header class="entry-header hero hero-float hero-float-left">
 		<div class="container-10">
 
 			<div class="hero-image">
