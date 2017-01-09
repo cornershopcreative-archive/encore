@@ -202,7 +202,7 @@ ul {
 
 /**
  * Featherlight – ultra slim jQuery lightbox
- * Version 1.6.1 - http://noelboss.github.io/featherlight/
+ * Version 1.5.0 - http://noelboss.github.io/featherlight/
  *
  * Copyright 2016, Noël Raoul Bossart (http://www.noelboss.com)
  * MIT Licensed.
@@ -267,9 +267,7 @@ ul {
     top: 0;
     right: 0;
     z-index: 9999;
-    padding: 0;
     width: 25px;
-    border: none;
     background: #fff;
     /* Set the background in case it overlaps the content */
     background: rgba(255, 255, 255, 0.3);
@@ -280,10 +278,6 @@ ul {
     line-height: 25px;
     /* styling */
     cursor: pointer; }
-  /* See http://stackoverflow.com/questions/16077341/how-to-reset-all-default-styles-of-the-html5-button-element */
-  .featherlight .featherlight-close-icon::-moz-focus-inner {
-    padding: 0;
-    border: 0; }
   .featherlight .featherlight-image {
     /* styling */
     width: 100%; }
@@ -1048,6 +1042,47 @@ input[type='email'] {
 /**
  * Styles for FacetWP elements.
  */
+.facetwp-facet {
+  float: left;
+  margin-top: -20px; }
+
+.facetwp-type-dropdown {
+  width: 25%; }
+
+.facetwp-type-search {
+  width: 50%; }
+
+.facetwp-dropdown {
+  margin-left: 10%;
+  padding: 5px;
+  /* If you add too much padding here, the options won't show in IE */
+  width: 80%;
+  height: 45px;
+  border: 1px solid #d8d8d8;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 5px 5px 5px #d8d8d8;
+  font-size: 14px; }
+
+.facetwp-search {
+  margin-left: 45% !important;
+  padding: 5px !important;
+  width: 50% !important;
+  height: 45px !important;
+  box-shadow: 5px 5px 5px #d8d8d8; }
+
+@media (max-width: 500px) {
+  .facetwp-facet {
+    float: none !important; }
+  .facetwp-type-dropdown {
+    width: 100%; }
+  .facetwp-type-search {
+    width: 100%; }
+  .facetwp-search {
+    float: none !important;
+    margin-left: 10% !important;
+    width: 80% !important; } }
+
 .facetwp-pager {
   text-align: center;
   font-size: 1.3125rem;
@@ -2453,7 +2488,7 @@ input[type='email'] {
 
 .section-callout .callout_two,
 .section-callout .second_column {
-  -ms-flex: 26rem 1 0;
+  -ms-flex: 26rem 1 0px;
       flex: 26rem 1 0; }
 
 .callout-content.callout_two {
@@ -2803,6 +2838,9 @@ input[type='email'] {
   background-color: #ff8b18;
   color: #fff !important; }
 
+/**
+ * Styles for Photo Gallery sections.
+ */
 .modal {
   padding: 5px;
 
