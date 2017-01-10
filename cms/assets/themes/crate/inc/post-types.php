@@ -278,13 +278,6 @@ function remove_tags() {
 		unset( $wp_taxonomies[ $tax ] ); }
 }
 
-add_action( 'init', 'remove_categories' );
-function remove_categories() {
-	global $wp_taxonomies;
-	$tax = 'category'; // this may be wrong, I never remember the names on the defaults
-	if ( taxonomy_exists( $tax ) ) {
-		unset( $wp_taxonomies[ $tax ] ); }
-}
 
 /**
  * Use the link_url field for News Item permalinks.
