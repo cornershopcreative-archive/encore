@@ -30,7 +30,8 @@
 
 	<footer class="entry-actions entry-actions-before container-8">
 
-		<?php crate_back_link(); ?>
+		<a href="/blog" class="back-link">Back to Posts</a>
+
 
 		<div class="share-buttons">
 			<h2>Share</h2>
