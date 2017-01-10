@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="360px" height="481px" viewBox="0 0 360 481" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-829.000000, -1916.000000)" fill="#ABCA28">
+            <g transform="translate(829.000000, 1916.000000)">
+                <g transform="translate(-22.000000, -23.000000)">
+                    <ellipse transform="translate(356.930362, 40.000000) rotate(90.000000) translate(-356.930362, -40.000000) " cx="356.930362" cy="40" rx="39.1086351" ry="39"></ellipse>
+                    <ellipse transform="translate(89.186630, 78.000000) rotate(90.000000) translate(-89.186630, -78.000000) " cx="89.1866295" cy="78" rx="9.02506964" ry="9"></ellipse>
+                    <ellipse transform="translate(89.558757, 454.371094) rotate(180.000000) translate(-89.558757, -454.371094) " cx="89.558757" cy="454.371094" rx="11.4027681" ry="11.3710938"></ellipse>
+                    <ellipse transform="translate(19.994429, 488.000000) rotate(180.000000) translate(-19.994429, -488.000000) " cx="19.994429" cy="488" rx="19.0529248" ry="19"></ellipse>
+                    <ellipse transform="translate(251.637883, 27.000000) rotate(180.000000) translate(-251.637883, -27.000000) " cx="251.637883" cy="27" rx="19.0529248" ry="19"></ellipse>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

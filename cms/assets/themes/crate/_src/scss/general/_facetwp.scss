@@ -2,6 +2,61 @@
  * Styles for FacetWP elements.
  */
 
+.facetwp-facet {
+	float: left;
+	margin-top: -20px;
+}
+
+.facetwp-type-dropdown {
+	width: 25%;
+}
+
+.facetwp-type-search {
+	width: 50%;
+}
+
+.facetwp-dropdown {
+   background: white;
+   border: 1px solid $silver;
+   border-radius: 5px;
+   font-size: 14px;
+   height: 45px;
+   padding: 5px; /* If you add too much padding here, the options won't show in IE */
+   width: 80%;
+   margin-left: 10%;
+   box-shadow: 5px 5px 5px $silver;
+}
+
+.facetwp-search {
+	width: 50% !important;
+	margin-left: 45% !important;
+	height: 45px !important;
+	padding: 5px !important;
+	box-shadow: 5px 5px 5px $silver;
+
+	}
+
+@media (max-width: 500px) { 
+
+	.facetwp-facet {
+	float: none !important;
+	}
+
+	.facetwp-type-dropdown {
+	width: 100%;
+	}
+
+	.facetwp-type-search {
+	width: 100%;
+	}
+
+	.facetwp-search {
+	width: 80% !important;
+	float: none !important;
+	margin-left: 10% !important;
+	}
+}
+
 .facetwp-pager {
 	@extend .button-group;
 	font-size: rem(21);

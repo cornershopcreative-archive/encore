@@ -25,7 +25,7 @@ if ( isset( $dev_site ) && !isset( $configs[ $dev_site ] ) ) {
 	$configs[ $dev_site ] = 'demo';
 }
 
-
+define( 'FACETWP_DEBUG', true );
 
 
 // ** YOU SHOULDN'T NEED TO CHANGE ANYTHING BELOW THIS LINE, EVER ** //

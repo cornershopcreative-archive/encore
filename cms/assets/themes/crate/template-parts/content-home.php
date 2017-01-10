@@ -23,7 +23,7 @@
 					?>
 
 					<?php if ( $video_url ) : ?>
-						<a href="<?php echo esc_url( $video_url ); ?>" class="hero-video-link play-button-link">
+						<a href="<?php echo esc_url( $video_url ); ?>" class="lightbox-embed-link play-button-link">
 					<?php endif; ?>
 
 							<?php the_post_thumbnail( 'square-md' ); ?>
@@ -33,7 +33,7 @@
 									<p>
 
 									<?php if ( $video_url ) : ?>
-										<a href="<?php echo esc_url( $video_url ); ?>" class="hero-video-link">
+										<a href="<?php echo esc_url( $video_url ); ?>" class="lightbox-embed-link">
 									<?php endif; ?>
 
 										<?php echo wp_kses_post( wptexturize( $hero_callout_text ) ); ?></p>
@@ -45,7 +45,7 @@
 								<?php endif; ?>
 
 					<?php if ( $video_url ) : ?>
-						</a><!-- /.hero-video-link -->
+						</a><!-- /.lightbox-embed-link -->
 					<?php endif; ?>
 
 				</div>

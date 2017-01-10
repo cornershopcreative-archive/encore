@@ -11,7 +11,7 @@
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-	<header class="entry-header hero hero-float">
+	<header class="entry-header hero hero-float hero-float-left">
 		<div class="container-10">
 
 			<div class="hero-image">
@@ -30,7 +30,8 @@
 
 	<footer class="entry-actions entry-actions-before container-8">
 
-		<?php crate_back_link(); ?>
+		<a href="/blog" class="back-link">Back to Posts</a>
+
 
 		<div class="share-buttons">
 			<h2>Share</h2>

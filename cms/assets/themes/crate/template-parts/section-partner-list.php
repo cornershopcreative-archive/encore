@@ -12,6 +12,7 @@
 		<?php
 
 		$show_pager = get_sub_field( 'show_pager' );
+		$show_facet = get_sub_field( 'filtering' );
 
 		// Set up custom query.
 		$partner_query = crate_section_query( array(
@@ -21,8 +22,13 @@
 		) );
 
 		?>
+<?php if (get_sub_field('filtering') == "yes"): ?>
+				<?php echo facetwp_display( 'facet', 'topics' ); ?>
+				<?php echo facetwp_display( 'facet', 'locatio' ); ?>
+				<?php echo facetwp_display( 'facet', 'search' ); ?>
+		<?php endif; ?>
 
-		<div class="content-section-list container<?php echo ( $show_pager ? ' facetwp-template' : '' ); ?>">
+		<div class="content-section-list container<?php echo ( $show_pager || $show_facet ? ' facetwp-template' : '' ); ?>">
 			<?php while ( $partner_query->have_posts() ) : $partner_query->the_post(); ?>
 
 				<article class="list-item">
