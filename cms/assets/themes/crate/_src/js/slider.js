@@ -1,5 +1,6 @@
 var $ = require( 'jQuery' );
 var cycle2 = require( 'jquery-cycle2' );
+require( 'jquery-cycle2/build/plugin/jquery.cycle2.carousel.min.js' );
 
 module.exports = function( $ ) {
 
