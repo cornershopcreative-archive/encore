@@ -71,6 +71,25 @@
 	}
 }
 
+.grid-item-3b {
+	margin: rem(30) auto;
+
+	@include breakpoint( $tablet ) {
+
+		@include nested( 12 ) {
+			width: span(3) !important;
+			margin-left: ( span(0) / 2 ) + gutter();
+			margin-right: ( span(0) / 2 ) + gutter();
+		}
+	}
+
+	@include breakpoint( $medium ) {
+
+		@include nested( 10 ) {
+			width: span(2);
+		}
+	}
+}
 
 .grid-item-4 {
 	margin: 0 0 20px 0;

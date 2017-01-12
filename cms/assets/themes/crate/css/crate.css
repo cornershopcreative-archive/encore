@@ -1484,6 +1484,17 @@ input[type='email'] {
     .grid-item-3 {
       width: 18.36735%; } }
 
+.grid-item-3b {
+  margin: 1.875rem auto; }
+  @media (min-width: 640px) {
+    .grid-item-3b {
+      margin-right: 0.84746%;
+      margin-left: 0.84746%;
+      width: 23.72881% !important; } }
+  @media (min-width: 1105px) {
+    .grid-item-3b {
+      width: 18.36735%; } }
+
 .grid-item-4 {
   margin: 0 0 20px 0; }
   @media (min-width: 640px) {
@@ -2841,6 +2852,10 @@ input[type='email'] {
 /**
  * Styles for Photo Gallery sections.
  */
+.slider-photo {
+  margin-right: 10px;
+  margin-left: 10px; }
+
 .modal {
   padding: 5px;
 
