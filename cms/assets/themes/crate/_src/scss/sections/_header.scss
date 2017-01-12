@@ -209,6 +209,32 @@
 	}
 }
 
+.site-header-search {
+	position: relative;
+	width: rem(55);
+	height: rem(55);
+	display: none;
+
+	@include breakpoint( $medium ) {
+		display: block;
+	}
+
+	.home & {
+
+		.search-toggle {
+			color: $white;
+		}
+
+		.collapsible-search.is-open .search-toggle {
+			color: #ccc;
+		}
+
+		input[type="search"] {
+			border-color: $white;
+		}
+	}
+}
+
 .nav-primary {
 	position: absolute;
 	background: $white; // Solid background for dropdown/hamburger menu.
@@ -257,6 +283,16 @@
 
 		@include breakpoint( $medium ) {
 			overflow: visible; // But don't require scrolling on desktop, duh.
+		}
+	}
+
+	.search-form {
+		margin: rem(30) rem(40) 0; // Match padding of menu + menu items.
+
+		@include breakpoint( $medium ) {
+			// Hide the search form in the menu, because at this breakpoint, the
+			// collapsible search form should be visible.
+			display: none;
 		}
 	}
 

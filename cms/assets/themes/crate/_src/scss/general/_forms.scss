@@ -50,3 +50,92 @@ input[type='email'] {
 	margin-bottom: -24px;
 	color: #8d8f90;
 }
+
+// General styles for search forms.
+.search-form {
+	position: relative;
+
+	// Magnifying glass icon.
+	&:before {
+		content: '';
+		display: block;
+		position: absolute;
+		top: rem(17);
+		left: rem(17);
+		@extend .icon-search;
+		// Ignore clicks -- let them fall through to the form input.
+		pointer-events: none;
+	}
+
+	label {
+		// Fill available width. This lets us set width: 100% on the search input.
+		display: block;
+	}
+
+	input[type="search"] {
+		width: 100%;
+		border: 2px solid #ccc;
+		background: $white;
+		color: $charcoal;
+		font-size: rem(18);
+		line-height: rem(29);
+		padding: rem(11) rem(11) rem(11) rem(50);
+		border-radius: rem(55);
+
+		&::placeholder {
+			opacity: 1.0;
+			color: $charcoal;
+		}
+	}
+
+	input[type="submit"] {
+		display: none;
+	}
+}
+
+.collapsible-search {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: rem(55);
+	height: rem(55);
+	overflow: hidden;
+	transition: width 0.4s ease;
+
+	.search-toggle {
+		display: block;
+		position: absolute;
+		z-index: 3;
+		// Match .search-form::before.
+		width: rem(21);
+		height: rem(21);
+		top: rem(17);
+		left: rem(17);
+		// Black while collapsed, gray when expanded.
+		color: $charcoal;
+		transition: color 0.4s ease;
+	}
+
+	.search-form {
+		opacity: 0;
+		transition: opacity 0.4s ease;
+
+		&:before {
+			// Hide the search icon -- the search toggle will appear in its place.
+			content: none;
+			display: none;
+		}
+	}
+
+	&.is-open {
+		width: rem(260);
+
+		.search-toggle {
+			color: #ccc;
+		}
+
+		.search-form {
+			opacity: 1.0;
+		}
+	}
+}

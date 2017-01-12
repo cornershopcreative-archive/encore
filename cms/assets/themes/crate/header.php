@@ -65,6 +65,7 @@
 				</div>
 
 				<nav id="site-navigation" class="nav-primary" role="navigation">
+					<?php get_search_form(); ?>
 					<?php wp_nav_menu( array(
 						'theme_location' => 'primary',
 						'menu_id' => 'primary-menu',
@@ -78,6 +79,18 @@
 			<aside class="site-header-secondary">
 				<div class="button-group button-group-expand nav-nag">
 					<a class="button button-solid button-bright-blue" href="#" data-featherlight="#signup-modal" data-featherlight-variant="modalform"><?php echo esc_html_e( 'Count Me In', 'crate' ); ?></a>
+				</div>
+			</aside>
+
+			<aside class="site-header-search">
+				<div class="collapsible-search">
+					<a class="search-toggle" href="#">
+						<svg class="logo" viewBox="0 0 20 20">
+							<use xlink:href="#icon-search-currentcolor"></use>
+						</svg>
+						<span class="screen-reader-text"><?php esc_html_e( 'Search', 'crate' ); ?></span>
+					</a>
+					<?php get_search_form(); ?>
 				</div>
 			</aside>
 		</div>
