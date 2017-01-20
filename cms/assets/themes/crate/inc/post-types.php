@@ -30,6 +30,7 @@ function crate_post_types() {
 		'search_items'        => __( 'Search the Partners', 'text_domain' ),
 		'not_found'           => __( 'No Partners found', 'text_domain' ),
 		'not_found_in_trash'  => __( 'No Partners found in trash', 'text_domain' ),
+		
 	);
 
 	$args = array(
@@ -37,7 +38,7 @@ function crate_post_types() {
 		'description'         => __( 'Partner', 'text_domain' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail' ),
-		'taxonomies'          => array(),
+		'taxonomies' 		  => array('post_tag','category'),
 		'hierarchical'        => false,
 		'public'              => true,
 		'show_ui'             => true,
@@ -82,7 +83,7 @@ function crate_post_types() {
 		'description'         => __( 'News', 'text_domain' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail' ),
-		'taxonomies'          => array(),
+		'taxonomies' => array('post_tag','category'),
 		'hierarchical'        => false,
 		'public'              => true,
 		'show_ui'             => true,
@@ -127,7 +128,7 @@ function crate_post_types() {
 		'description'         => __( 'Story', 'text_domain' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail' ),
-		'taxonomies'          => array(),
+		'taxonomies' 	      => array('post_tag','category'),
 		'hierarchical'        => false,
 		'public'              => true,
 		'show_ui'             => true,
@@ -172,7 +173,7 @@ function crate_post_types() {
 		'description'         => __( 'Learning Lab Community', 'crate' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail' ),
-		'taxonomies'          => array(),
+		'taxonomies'          => array('post_tag','category'),
 		'hierarchical'        => true,
 		'public'              => true,
 		'show_ui'             => true,
@@ -215,7 +216,7 @@ function crate_post_types() {
 		'description'         => __( 'DIY Opportunity', 'crate' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', 'thumbnail' ),
-		'taxonomies'          => array(),
+		'taxonomies'          => array('post_tag','category'),
 		'hierarchical'        => true,
 		'public'              => true,
 		'show_ui'             => true,
@@ -240,6 +241,16 @@ add_action( 'init', 'crate_post_types', 0 );
 
 function crate_taxonomies() {
 	register_taxonomy(
+		'location',	// taxonomy machine name
+		array( 'post', 'partner', 'news', 'story', 'opportunity' ),		// post types supported, can be array('post', 'page' ... )
+		array(					// labels. See http://codex.wordpress.org/Function_Reference/register_taxonomy for full details
+			'label' => __( 'Locations', 'crate' ),
+			'rewrite' => array( 'slug' => 'location' ),
+			'hierarchical' => true,
+		)
+	);
+	
+		register_taxonomy(
 		'location',	// taxonomy machine name
 		array( 'post', 'partner', 'news', 'story', 'opportunity' ),		// post types supported, can be array('post', 'page' ... )
 		array(					// labels. See http://codex.wordpress.org/Function_Reference/register_taxonomy for full details
