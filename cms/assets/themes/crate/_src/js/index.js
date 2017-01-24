@@ -31,3 +31,6 @@ jQuery( auto_lightbox );
 
 var header_search_form = require( 'header-search-form' );
 jQuery( header_search_form );
+
+var dropdown_sections = require( 'dropdown-sections' );
+jQuery( dropdown_sections );

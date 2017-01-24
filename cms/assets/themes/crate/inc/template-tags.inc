@@ -264,13 +264,21 @@ function crate_section_links() {
 }
 
 /**
+ * Return a string suitable for use as the ID for a content section, if a
+ * 'section name' was provided.
+ */
+function crate_get_section_id() {
+	return sanitize_title( get_sub_field( 'section_name' ) );
+}
+
+/**
  * Return an ID attribute for a content section, if a 'section name' was
  * provided.
  */
 function crate_get_section_id_attr() {
 
-	if ( $section_name = get_sub_field( 'section_name' ) ) {
-		return ' id="' . esc_attr( sanitize_title( $section_name ) ) . '"';
+	if ( $section_name = crate_get_section_id() ) {
+		return ' id="' . esc_attr( $section_name ) . '"';
 	}
 
 	return '';

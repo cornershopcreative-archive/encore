@@ -202,7 +202,7 @@ ul {
 
 /**
  * Featherlight – ultra slim jQuery lightbox
- * Version 1.5.0 - http://noelboss.github.io/featherlight/
+ * Version 1.6.1 - http://noelboss.github.io/featherlight/
  *
  * Copyright 2016, Noël Raoul Bossart (http://www.noelboss.com)
  * MIT Licensed.
@@ -267,7 +267,9 @@ ul {
     top: 0;
     right: 0;
     z-index: 9999;
+    padding: 0;
     width: 25px;
+    border: none;
     background: #fff;
     /* Set the background in case it overlaps the content */
     background: rgba(255, 255, 255, 0.3);
@@ -278,6 +280,10 @@ ul {
     line-height: 25px;
     /* styling */
     cursor: pointer; }
+  /* See http://stackoverflow.com/questions/16077341/how-to-reset-all-default-styles-of-the-html5-button-element */
+  .featherlight .featherlight-close-icon::-moz-focus-inner {
+    padding: 0;
+    border: 0; }
   .featherlight .featherlight-image {
     /* styling */
     width: 100%; }
@@ -907,6 +913,11 @@ svg {
   width: 360px;
   height: 481px;
   background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='360px' height='481px' viewBox='0 0 360 481' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E        %3Cg transform='translate(-829.000000, -1916.000000)' fill='%23ABCA28'%3E            %3Cg transform='translate(829.000000, 1916.000000)'%3E                %3Cg transform='translate(-22.000000, -23.000000)'%3E                    %3Cellipse transform='translate(356.930362, 40.000000) rotate(90.000000) translate(-356.930362, -40.000000) ' cx='356.930362' cy='40' rx='39.1086351' ry='39'%3E%3C/ellipse%3E                    %3Cellipse transform='translate(89.186630, 78.000000) rotate(90.000000) translate(-89.186630, -78.000000) ' cx='89.1866295' cy='78' rx='9.02506964' ry='9'%3E%3C/ellipse%3E                    %3Cellipse transform='translate(89.558757, 454.371094) rotate(180.000000) translate(-89.558757, -454.371094) ' cx='89.558757' cy='454.371094' rx='11.4027681' ry='11.3710938'%3E%3C/ellipse%3E                    %3Cellipse transform='translate(19.994429, 488.000000) rotate(180.000000) translate(-19.994429, -488.000000) ' cx='19.994429' cy='488' rx='19.0529248' ry='19'%3E%3C/ellipse%3E                    %3Cellipse transform='translate(251.637883, 27.000000) rotate(180.000000) translate(-251.637883, -27.000000) ' cx='251.637883' cy='27' rx='19.0529248' ry='19'%3E%3C/ellipse%3E                %3C/g%3E            %3C/g%3E        %3C/g%3E    %3C/g%3E%3C/svg%3E"); }
+
+.icon-dropdown-arrow, .section-dropdown-menu .current-option:after {
+  width: 25px;
+  height: 14px;
+  background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='25px' height='14px' viewBox='0 0 25 14' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E        %3Cg transform='translate(-747.000000, -1187.000000)' fill='%232D2D2D'%3E            %3Cg transform='translate(410.000000, 1072.000000)'%3E                %3Cpath d='M349.498667,129 C349.099032,129 348.699397,128.847029 348.394755,128.54341 L337.457963,117.65559 C336.847346,117.047688 336.847346,116.063829 337.457963,115.455927 C338.068581,114.848024 339.056835,114.848024 339.667453,115.455927 L349.5,125.244744 L359.332547,115.455927 C359.943165,114.848024 360.931419,114.848024 361.542037,115.455927 C362.152654,116.063829 362.152654,117.047688 361.542037,117.65559 L350.605245,128.54341 C350.300603,128.847029 349.900968,129 349.501333,129 L349.498667,129 Z'%3E%3C/path%3E            %3C/g%3E        %3C/g%3E    %3C/g%3E%3C/svg%3E"); }
 
 .icon-logo {
   width: 50px;
@@ -2590,7 +2601,7 @@ input[type='email'] {
 
 .section-callout .callout_two,
 .section-callout .second_column {
-  -ms-flex: 26rem 1 0px;
+  -ms-flex: 26rem 1 0;
       flex: 26rem 1 0; }
 
 .callout-content.callout_two {
@@ -2946,6 +2957,80 @@ input[type='email'] {
 .slider-photo {
   margin-right: 10px;
   margin-left: 10px; }
+
+/**
+ * Styles for dropdown sections.
+ */
+.section-dropdown {
+  position: relative;
+  padding-top: 15rem; }
+
+.section-dropdown-label,
+.section-dropdown-menu {
+  display: block;
+  margin: 0 auto;
+  max-width: 31.25rem;
+  text-align: center; }
+
+.section-dropdown-label {
+  font-weight: 700;
+  font-size: 1.5rem; }
+
+.section-dropdown-menu-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0; }
+
+.section-dropdown-menu {
+  overflow: hidden;
+  margin: 1.875rem auto;
+  border-radius: 7px;
+  background-color: #fff;
+  box-shadow: 4px 6px 9px 0 rgba(0, 0, 0, 0.15);
+  font-weight: 700;
+  font-size: 2.25rem; }
+  .section-dropdown-menu .option,
+  .section-dropdown-menu .current-option {
+    display: block;
+    padding: 0.625rem 2.125rem; }
+  .section-dropdown-menu .current-option {
+    cursor: pointer; }
+    .section-dropdown-menu .current-option:after {
+      position: relative;
+      bottom: 3px;
+      display: inline-block;
+      margin-left: 1.5625rem;
+      content: '';
+      vertical-align: baseline; }
+  .section-dropdown-menu.is-open .current-option:after {
+    -ms-transform: scaleY(-1);
+        transform: scaleY(-1); }
+  .section-dropdown-menu .current-option {
+    padding: 2.125rem 2.125rem; }
+
+.section-dropdown-options {
+  margin: 0;
+  padding: 0;
+  max-height: 0;
+  transition: max-height 0.3s ease-out; }
+  .section-dropdown-menu.is-open .section-dropdown-options {
+    overflow: auto;
+    max-height: 100vh;
+    transition: max-height 0.3s ease-in; }
+  .section-dropdown-options .option {
+    color: #2d2d2d;
+    text-decoration: none; }
+    .section-dropdown-options .option:hover {
+      background-color: #0047c1;
+      color: #fff; }
+
+.section-dropdown-set {
+  display: none; }
+  .section-dropdown-set.is-active {
+    display: block; }
+  .section-dropdown-set .content-section:first-of-type {
+    margin-top: 0; }
 
 .modal {
   padding: 5px;

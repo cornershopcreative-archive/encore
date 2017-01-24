@@ -221,7 +221,7 @@
                             "min": 1,
                             "max": "",
                             "layout": "block",
-                            "button_label": "Add Row",
+                            "button_label": "Add Item",
                             "sub_fields": [
                                 {
                                     "key": "field_5808c7d5c1c37",
@@ -1801,7 +1801,6 @@
                             "return_format": "value"
                         }
                     ],
-
                     "min": "",
                     "max": ""
                 },
@@ -2600,8 +2599,27 @@
                     "display": "block",
                     "sub_fields": [
                         {
+                            "key": "field_5887ccddebe0b",
+                            "label": "Dropdown Label",
+                            "name": "dropdown_label",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "Select an issue area to explore:",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
                             "key": "field_587c530ae774b",
-                            "label": "Dropdown Section",
+                            "label": "Dropdown Options",
                             "name": "dropdown-options",
                             "type": "repeater",
                             "instructions": "",
@@ -2615,8 +2633,8 @@
                             "collapsed": "",
                             "min": "",
                             "max": "",
-                            "layout": "table",
-                            "button_label": "Add Row",
+                            "layout": "block",
+                            "button_label": "Add Option",
                             "sub_fields": [
                                 {
                                     "key": "field_587c54970746e",
@@ -2650,7 +2668,7 @@
                                         "class": "",
                                         "id": ""
                                     },
-                                    "button_label": "Add Row",
+                                    "button_label": "Add Section",
                                     "min": "",
                                     "max": "",
                                     "layouts": [
@@ -2741,11 +2759,11 @@
                                                         "class": "",
                                                         "id": ""
                                                     },
-                                                    "collapsed": "field_5808c7d5c1c37",
+                                                    "collapsed": "field_58811b5bd219c",
                                                     "min": 1,
                                                     "max": "",
                                                     "layout": "block",
-                                                    "button_label": "Add Row",
+                                                    "button_label": "Add Item",
                                                     "sub_fields": [
                                                         {
                                                             "key": "field_58811b5bd219c",
@@ -2810,7 +2828,7 @@
                                                             "new_lines": "wpautop"
                                                         },
                                                         {
-                                                            "key": "field_5808e01450f42",
+                                                            "key": "field_5887cb566fd11",
                                                             "label": "Link URL",
                                                             "name": "link_url",
                                                             "type": "text",
@@ -3413,5 +3431,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1484862636
+    "modified": 1485295321
 }
