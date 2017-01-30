@@ -1,0 +1,105 @@
+/**
+ * Styles for dropdown sections.
+ */
+
+.section-dropdown {
+	padding-top: rem(240);
+	position: relative;
+}
+
+.section-dropdown-label,
+.section-dropdown-menu {
+	display: block;
+	margin: 0 auto;
+	max-width: rem(500);
+	text-align: center;
+}
+
+.section-dropdown-label {
+	font-size: rem(24);
+	font-weight: bold;
+}
+
+.section-dropdown-menu-container {
+	// Don't move other page content when the menu opens or closes (the menu will
+	// only occupy the space made by .section-dropdown's top padding).
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+}
+
+.section-dropdown-menu {
+	overflow: hidden; // Don't let options' backgrounds overlap rounded corners.
+	margin: rem(30) auto;
+	font-size: rem(36);
+	font-weight: bold;
+	background-color: $white;
+	box-shadow: 4px 6px 9px 0 rgba(0,0,0,0.15);
+	border-radius: 7px;
+
+	.option,
+	.current-option {
+		display: block;
+		padding: rem(10) rem(34);
+	}
+
+	.current-option {
+		cursor: pointer;
+
+		&:after {
+			@extend .icon-dropdown-arrow;
+			display: inline-block;
+			content: '';
+			margin-left: rem(25);
+			vertical-align: baseline;
+			position: relative;
+			bottom: 3px;
+		}
+	}
+
+	&.is-open .current-option:after {
+		transform: scaleY(-1.0);
+	}
+
+	.current-option {
+		padding: rem(34) rem(34);
+	}
+}
+
+.section-dropdown-options {
+	padding: 0;
+	margin: 0;
+	max-height: 0;
+	transition: max-height 0.3s ease-out;
+
+	.section-dropdown-menu.is-open & {
+		max-height: 100vh;
+		overflow: auto;
+		transition: max-height 0.3s ease-in;
+	}
+
+	.option {
+		color: $charcoal;
+		text-decoration: none;
+
+		&:hover {
+			color: $white;
+			background-color: $deep-blue;
+		}
+	}
+}
+
+.section-dropdown-set {
+	display: none;
+
+	&.is-active {
+		display: block;
+	}
+
+	.content-section:first-of-type {
+		// Remove top margin from first section in each set, since the dropdown
+		// section has a large top padding.
+		margin-top: 0;
+	}
+}
