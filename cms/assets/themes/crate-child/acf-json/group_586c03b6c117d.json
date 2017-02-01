@@ -107,7 +107,7 @@
             "key": "field_586c04f2d6c8b",
             "label": "Description Text",
             "name": "description",
-            "type": "textarea",
+            "type": "wysiwyg",
             "instructions": "This text will be visible when the user rolls over this item \u2013 or, If this is a Text-Only item, this text will always be visible.",
             "required": 0,
             "conditional_logic": 0,
@@ -117,10 +117,9 @@
                 "id": ""
             },
             "default_value": "",
-            "placeholder": "",
-            "maxlength": "",
-            "rows": 3,
-            "new_lines": "wpautop"
+            "tabs": "all",
+            "toolbar": "basic",
+            "media_upload": 1
         },
         {
             "key": "field_586c052cd6c8c",
@@ -167,5 +166,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1483476450
+    "modified": 1485989578
 }
