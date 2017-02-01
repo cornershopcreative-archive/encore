@@ -20,10 +20,16 @@
 		<div class="content-section-grid container text-grid">
 				<?php while ( have_rows( 'grid-items' ) ) : the_row(); ?>
 					<div class="text-grid-item grid-item-3">
-					<h3 class="grid-item-name"><?php the_sub_field('name'); ?></h3>
-					<span class="grid-item-title">
-						<?php the_sub_field('title'); ?>
-					</span>
+					<?php if ( $url = get_sub_field( 'url' ) ) : ?>
+						<a href="<?php echo esc_url( $url ); ?>" class="remove-underline">
+					<?php endif; ?>
+						<h3 class="grid-item-name"><?php the_sub_field('name'); ?></h3>
+						<span class="grid-item-title">
+							<?php the_sub_field('title'); ?>
+						</span>
+					<?php if ( $url ) : ?>
+						</a>
+					<?php endif; ?>
 					</div>
 				<?php endwhile; ?>
 		</div>
