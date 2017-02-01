@@ -35,6 +35,7 @@ function crate_button_shortcode( $args = array(), $content ) {
 			'solid',
 			'facebook',
 			'twitter',
+			'email',
 		), true ) ) {
 			$classes[] = 'button-' . $style;
 		}

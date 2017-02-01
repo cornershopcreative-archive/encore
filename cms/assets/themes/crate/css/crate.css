@@ -579,6 +579,17 @@ h6 {
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale; }
+  .button.button-email:before {
+    display: inline-block;
+    margin-right: 0.8125rem;
+    content: "";
+    font: 400 normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    font-size: 1.375rem;
+    line-height: 1;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; }
   .button.button-badge {
     padding: 0.75rem 0;
     width: 3.125rem;
@@ -3178,8 +3189,11 @@ input[type='email'] {
 #signup-modal-thanks header .button-group, #signup-modal-thanks header .facetwp-pager,
 #signup-modal-opportunity-thanks header .button-group,
 #signup-modal-opportunity-thanks header .facetwp-pager {
-  margin-top: 2em;
-  margin-bottom: 5em; }
+  margin: 2em 0; }
+  #signup-modal-thanks header .button-group:last-of-type, #signup-modal-thanks header .facetwp-pager:last-of-type,
+  #signup-modal-opportunity-thanks header .button-group:last-of-type,
+  #signup-modal-opportunity-thanks header .facetwp-pager:last-of-type {
+    margin-bottom: 5em; }
   @media (max-width: 640px) {
     #signup-modal-thanks header .button-group, #signup-modal-thanks header .facetwp-pager,
     #signup-modal-opportunity-thanks header .button-group,

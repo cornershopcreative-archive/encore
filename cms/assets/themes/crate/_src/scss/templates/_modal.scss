@@ -121,11 +121,17 @@
 
 #signup-modal-thanks,
 #signup-modal-opportunity-thanks, {
+
 	header .button-group {
-		margin-top: 2em;
-		margin-bottom: 5em;
+		margin: 2em 0;
+
+		&:last-of-type {
+			margin-bottom: 5em;
+		}
+
 		@include breakpoint( max-width $tablet ) {
 			display: block;
+
 			& > .button {
 				margin: 10px 1em;
 			}

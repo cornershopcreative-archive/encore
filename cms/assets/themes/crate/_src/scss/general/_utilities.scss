@@ -67,6 +67,16 @@
 		}
 	}
 
+	&.button-email {
+		&:before {
+			@include fa-icon;
+			content: $fa-var-envelope;
+			font-size: rem(22);
+			line-height: 1;
+			margin-right: rem(13);
+		}
+	}
+
 	&.button-badge {
 		// On small screens, badge buttons are 50px by 50px.
 		padding: rem(12) 0;
