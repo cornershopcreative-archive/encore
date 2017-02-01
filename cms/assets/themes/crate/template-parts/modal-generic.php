@@ -46,7 +46,8 @@
 	<aside id="signup-modal-thanks" class="modal">
 		<header>
 			<div class="icon-logo"></div>
-			<h2>Thank you for pledging!</h2>
+			<h2>Thank you!</h2>
+			<p>Invite your friends to help even more young people thrive.</p>
 			<?php echo apply_filters( 'the_content', '[button-group][button style="facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3A//generationtogeneration.org/%3Futm_source=share%26utm_medium=facebook" target="_blank"]Share on Facebook[/button][button style="twitter" href="https://twitter.com/intent/tweet?text=I%20just%20joined%20%23Gen2Gen%20--%20mobilizing%20adults%2050%2B%20to%20help%20young%20people%20thrive%21%20Learn%20more%20and%20get%20involved%20at%20http://generationtogeneration.org/%3Futm_source=share%26utm_medium=twitter&source=webclient" target="_blank"]Share on Twitter[/button][/button-group][button-group][button style="email" color="gold" href="mailto:?&subject=Pass it on, from Generation to Generation&body=I%20just%20joined%20%23Gen2Gen%20-%20a%20new%20campaign%20to%20mobilize%20adults%2050%20and%20over%20to%20help%20young%20people%20thrive!%20%0A%0ALearn%20more%20and%20get%20involved%20at%20http://generationtogeneration.org/%3Futm_source=share%26utm_medium=email" target="_blank"]Email To a Friend[/button][/button-group]'); ?>
 		</header>
 	</aside>
