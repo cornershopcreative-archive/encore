@@ -62,13 +62,17 @@
 
 		&:hover {
 
-			a {
+			.entry-title a {
 				color: $lime;
 			}
 
 			.entry-preview {
 				height: 100%;
 				color: $white;
+
+				a:not(.button) {
+					@include underline-shadow( $white, $lime );
+				}
 			}
 		}
 
@@ -76,11 +80,15 @@
 
 			.entry-preview {
 				background-color: $gold;
+
+				a:not(.button) {
+					@include underline-shadow( $white, $gold );
+				}
 			}
 
 			&:hover {
 
-				a {
+				.entry-title a {
 					color: $gold;
 				}
 			}
@@ -107,6 +115,10 @@
 
 			.entry-text {
 				position: relative; // Render over ::before background element.
+
+				a {
+					@include underline-shadow( $charcoal, $white, $lime );
+				}
 			}
 		}
 	}
@@ -145,13 +157,17 @@
 		font-weight: bold;
 		transition: height 0.2s ease, padding 0.2s ease, color 0.2s ease;
 
+		a {
+			// Render over the overlay-link, so links are clickable.
+			position: relative;
+			z-index: 2;
+		}
+
 		.button-group {
 			justify-content: flex-start;
 		}
 
 		.button {
-			position: relative;
-			z-index: 2; // Render over the overlay-link, so button is clickable.
 			color: $lime; // Match entry-preview background color.
 
 			&:hover {

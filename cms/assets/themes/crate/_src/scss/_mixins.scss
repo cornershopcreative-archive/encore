@@ -88,3 +88,22 @@ $color: null !global;
 	width: auto;
 	height: auto;
 }
+
+/**
+ * Add a pretty-ish, shadow-based underline to links.
+ *
+ * :hover styles will only be added if a third argument is provided.
+ */
+@mixin underline-shadow( $color-main, $color-background, $color-hover: none ) {
+	color: $color-main;
+	box-shadow: inset 0 -3px $color-background, inset 0 -4px rgba( $color-main, 0.6 );
+	text-shadow: 0 1px $color-background, 1px 0 $color-background, -1px 0 $color-background;
+
+	@if none != $color-hover {
+
+		&:hover {
+			color: $color-hover;
+			box-shadow: inset 0 -3px $color-background, inset 0 -4px rgba( $color-hover, 0.6 );
+		}
+	}
+}
