@@ -52,3 +52,14 @@
 		</header>
 	</aside>
 </div>
+
+<div class="totallyhidden">
+	<aside id="share-modal-thanks" class="modal">
+		<header>
+			<div class="icon-logo"></div>
+			<h2>Thank you for passing it on!</h2>
+			<p>&hellip; from the team at #Gen2Gen</p>
+			<div class="button-group"><a class="button button-gold button-close" href="#">Back to Generation to Generation</a></div>
+		</header>
+	</aside>
+</div>

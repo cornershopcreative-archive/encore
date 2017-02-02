@@ -27,6 +27,21 @@ module.exports = function( $ ) {
 		trackInteraction( 'submit', 'generic' );
 	});
 
+	// When the user clicks a 'share' button in a thank-you modal, follow the
+	// link (whose target is probably _blank) but close the 'thank you for
+	// signing up' modal and open the 'thank you for sharing' modal.
+	$('#signup-modal-thanks .button, #opportunity-modal-thanks .button').on('click', function() {
+		$.featherlight.current().close();
+		$.featherlight( $('#share-modal-thanks') );
+	} );
+
+	// When the user clicks the 'back to Gen2Gen' button in the 'thank you for
+	// sharing' modal, just close the modal window.
+	$('#share-modal-thanks .button-close').on('click', function( e ) {
+		e.preventDefault();
+		$.featherlight.current().close();
+	} );
+
 	var opportunityUrl = "";
 
 	$('.section-partner-list .modal-trigger, .partners-grid-item .modal-trigger').on('click', function() {
@@ -91,12 +106,14 @@ module.exports = function( $ ) {
 	});
 
 	// Track when modals are closed via user action
-	$(document).on('click', '.featherlight-close-icon', function() {
+	$(document).on('click', '.featherlight-close-icon, #share-modal-thanks .button-close', function() {
 		var modalType = 'generic';
 		if ( $(this).siblings('#signup-modal-opportunity').length ) {
 			modalType = $('input#partner').val();
 		} else if ( $(this).siblings('#signup-modal-thanks').length ) {
 			modalType = 'thanks';
+		} else if ( $(this).siblings('#share-modal-thanks').length ) {
+			modalType = 'share-thanks';
 		}
 		trackInteraction( 'close', modalType );
 	});

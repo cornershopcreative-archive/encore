@@ -3188,20 +3188,28 @@ input[type='email'] {
 
 #signup-modal-thanks header .button-group, #signup-modal-thanks header .facetwp-pager,
 #signup-modal-opportunity-thanks header .button-group,
-#signup-modal-opportunity-thanks header .facetwp-pager {
+#signup-modal-opportunity-thanks header .facetwp-pager,
+#share-modal-thanks header .button-group,
+#share-modal-thanks header .facetwp-pager {
   margin: 2em 0; }
   #signup-modal-thanks header .button-group:last-of-type, #signup-modal-thanks header .facetwp-pager:last-of-type,
   #signup-modal-opportunity-thanks header .button-group:last-of-type,
-  #signup-modal-opportunity-thanks header .facetwp-pager:last-of-type {
+  #signup-modal-opportunity-thanks header .facetwp-pager:last-of-type,
+  #share-modal-thanks header .button-group:last-of-type,
+  #share-modal-thanks header .facetwp-pager:last-of-type {
     margin-bottom: 5em; }
   @media (max-width: 640px) {
     #signup-modal-thanks header .button-group, #signup-modal-thanks header .facetwp-pager,
     #signup-modal-opportunity-thanks header .button-group,
-    #signup-modal-opportunity-thanks header .facetwp-pager {
+    #signup-modal-opportunity-thanks header .facetwp-pager,
+    #share-modal-thanks header .button-group,
+    #share-modal-thanks header .facetwp-pager {
       display: block; }
       #signup-modal-thanks header .button-group > .button, #signup-modal-thanks header .facetwp-pager > .button,
       #signup-modal-opportunity-thanks header .button-group > .button,
-      #signup-modal-opportunity-thanks header .facetwp-pager > .button {
+      #signup-modal-opportunity-thanks header .facetwp-pager > .button,
+      #share-modal-thanks header .button-group > .button,
+      #share-modal-thanks header .facetwp-pager > .button {
         margin: 10px 1em; } }
 
 .video.featherlight .featherlight-content {
