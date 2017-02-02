@@ -39,8 +39,7 @@
 			margin: 0;
 		}
 
-		.entry-title,
-		.entry-text {
+		.entry-title {
 			font-size: rem(18);
 			line-height: rem(32);
 			font-weight: 800;
@@ -48,6 +47,7 @@
 
 		.entry-text {
 			font-size: rem(21);
+			line-height: rem(32);
 		}
 
 		.entry-summary {
@@ -154,7 +154,6 @@
 		justify-content: center;
 		background: $lime;
 		color: transparent; // Hide text until hovered.
-		font-weight: bold;
 		transition: height 0.2s ease, padding 0.2s ease, color 0.2s ease;
 
 		a {

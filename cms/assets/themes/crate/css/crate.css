@@ -2253,13 +2253,13 @@ input[type='email'] {
   .section-tile-grid .grid-item .entry-title,
   .section-tile-grid .grid-item p {
     margin: 0; }
-  .section-tile-grid .grid-item .entry-title,
-  .section-tile-grid .grid-item .entry-text {
+  .section-tile-grid .grid-item .entry-title {
     font-weight: 800;
     font-size: 1.125rem;
     line-height: 2rem; }
   .section-tile-grid .grid-item .entry-text {
-    font-size: 1.3125rem; }
+    font-size: 1.3125rem;
+    line-height: 2rem; }
   .section-tile-grid .grid-item .entry-summary {
     display: -ms-flexbox;
     display: flex;
@@ -2338,7 +2338,6 @@ input[type='email'] {
   height: 0;
   background: #aacc00;
   color: transparent;
-  font-weight: 700;
   transition: height 0.2s ease, padding 0.2s ease, color 0.2s ease; }
   .section-tile-grid .entry-preview a {
     position: relative;
