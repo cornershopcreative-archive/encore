@@ -1061,14 +1061,19 @@ form .row > div {
 
 input[type='text'],
 input[type='password'],
-input[type='email'] {
+input[type='email'],
+input[type='search'] {
   padding: 22px 20px 18px;
   width: 100%;
   border: 1px solid #ccc;
-  border-radius: 3px; }
+  border-radius: 3px;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none; }
   .label-inside ~ input[type='text'], .label-inside ~
   input[type='password'], .label-inside ~
-  input[type='email'] {
+  input[type='email'], .label-inside ~
+  input[type='search'] {
     display: block;
     padding: 28px 16px 10px; }
 
@@ -2992,7 +2997,8 @@ input[type='email'] {
           flex-grow: 0; }
   .footer-form input[type='text'], .footer-form
   input[type='password'], .footer-form
-  input[type='email'] {
+  input[type='email'], .footer-form
+  input[type='search'] {
     border-color: #fff;
     color: #0047c1; }
   .footer-form .button {
@@ -3323,30 +3329,36 @@ input[type='email'] {
         margin: 0.1875rem; } }
     .cta-huge .field input[type='text'], .cta-huge .field
     input[type='password'], .cta-huge .field
-    input[type='email'] {
+    input[type='email'], .cta-huge .field
+    input[type='search'] {
       display: block; }
   .cta-huge input[type='text'], .cta-huge
   input[type='password'], .cta-huge
-  input[type='email'] {
+  input[type='email'], .cta-huge
+  input[type='search'] {
     padding: 1em;
     color: #000;
     font-size: 1rem;
     font-family: "Avenir Next"; }
     .cta-huge input[type='text']::-webkit-input-placeholder, .cta-huge
     input[type='password']::-webkit-input-placeholder, .cta-huge
-    input[type='email']::-webkit-input-placeholder {
+    input[type='email']::-webkit-input-placeholder, .cta-huge
+    input[type='search']::-webkit-input-placeholder {
       font-weight: 700; }
     .cta-huge input[type='text']::-moz-placeholder, .cta-huge
     input[type='password']::-moz-placeholder, .cta-huge
-    input[type='email']::-moz-placeholder {
+    input[type='email']::-moz-placeholder, .cta-huge
+    input[type='search']::-moz-placeholder {
       font-weight: 700; }
     .cta-huge input[type='text']:-ms-input-placeholder, .cta-huge
     input[type='password']:-ms-input-placeholder, .cta-huge
-    input[type='email']:-ms-input-placeholder {
+    input[type='email']:-ms-input-placeholder, .cta-huge
+    input[type='search']:-ms-input-placeholder {
       font-weight: 700; }
     .cta-huge input[type='text']::placeholder, .cta-huge
     input[type='password']::placeholder, .cta-huge
-    input[type='email']::placeholder {
+    input[type='email']::placeholder, .cta-huge
+    input[type='search']::placeholder {
       font-weight: 700; }
   @media (min-width: 1145px) {
     .cta-huge .button-group, .cta-huge .facetwp-pager {
