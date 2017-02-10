@@ -2,7 +2,8 @@ var _ = require( 'underscore' );
 
 module.exports = function( $ ) {
 
-	var $nav = $( '.nav-primary' ),
+	var $header = $( '.site-header' ),
+	    $nav = $( '.nav-primary' ),
 	    $nav_toggle = $( '.nav-toggle a' );
 
 	// Handle clicks for opening/closing the main menu.
@@ -41,20 +42,49 @@ module.exports = function( $ ) {
 		} );
 	} );
 
-	// Add a class to the nav element if it contains a submenu that should be
-	// shown on desktop (i.e. a current menu item with children, or a current
-	// menu item's ancestor). This allows us to style this type of menu
-	// specifically.
-	if ( $nav.find( '.menu-item-has-children.current-menu-item, .current-menu-ancestor' ).length ) {
-		$( '.site-header' ).addClass( 'has-current-submenu' );
-	}
+	// Determine whether the active menu item has, or is a member of, a submenu
+	// that should be visible on desktop.
+	var has_active_submenu = ( $nav.find( '.menu-item-has-children.current-menu-item, .current-menu-ancestor' ).length > 0 );
+
+	// Restore the 'has-current-submenu' class if the current menu item has a
+	// submenu that should be visible.
+	var reset_submenu = function() {
+		if ( has_active_submenu ) {
+			$header.addClass( 'has-current-submenu' );
+		} else {
+			$header.removeClass( 'has-current-submenu' );
+		}
+	};
+
+	// Initialize submenu visibility state.
+	reset_submenu();
+
+	// If user hovers over a top-level item that has a submenu, then open the
+	// submenu. Otherwise, close it.
+	$nav.find( '.menu > .menu-item' ).on( 'mouseenter', function( e ) {
+		if ( $( this ).is( '.menu-item-has-children' ) ) {
+			$header.addClass( 'has-current-submenu' );
+		} else {
+			$header.removeClass( 'has-current-submenu' );
+		}
+	} );
+
+	// If the user's mouse exits the main menu, reset submenu visibility to its
+	// original state.
+	$nav.find( '.menu' ).on( 'mouseleave', reset_submenu );
+
+	// Add CSS transitions *after* above has been processed, to prevent initial
+	// transition on page load
+	setTimeout( function() {
+		$header.addClass( 'is-animated' );
+	}, 0 );
 
 	// Allow different styling for when the main nav is being sticky.
 	$( window ).on( 'scroll', _.throttle( function() {
 		if ( $( this ).scrollTop() > 0 ) {
-			$( '.site-header' ).addClass( 'has-sticky-nav' );
+			$header.addClass( 'has-sticky-nav' );
 		} else {
-			$( '.site-header' ).removeClass( 'has-sticky-nav' );
+			$header.removeClass( 'has-sticky-nav' );
 		}
 	}, 100 ) );
 };

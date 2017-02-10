@@ -351,6 +351,12 @@ ul {
  * :hover styles will only be added if a third argument is provided.
  */
 /**
+ * Prevent horizontal scrolling where it doesn't make sense.
+ */
+.site {
+  overflow: hidden; }
+
+/**
  * General link & transition styles.
  */
 a {
@@ -980,8 +986,12 @@ svg {
   height: 11px;
   background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='17px' height='11px' viewBox='143 13 17 11' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Cpolyline id='Rectangle-2-Copy-18' stroke='%23CCCCCC' stroke-width='2' fill='none' points='144 14.53 151.214405 21.7444054 158.428811 14.53'%3E%3C/polyline%3E%3C/svg%3E"); }
 
-.icon-submenu-pointer, .nav-primary .current-menu-item.menu-item-has-children:after,
-.nav-primary .current-menu-ancestor.menu-item-has-children:after {
+.icon-submenu-pointer-white, .home .nav-primary .sub-menu:before {
+  width: 25px;
+  height: 26px;
+  background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='25px' height='26px' viewBox='740 59 25 26' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Crect id='Rectangle-4' stroke='none' fill='%23ffffff' fill-rule='evenodd' transform='translate(752.020815, 72.020815) rotate(45.000000) translate(-752.020815, -72.020815) ' x='743.520815' y='63.5208153' width='17' height='17'%3E%3C/rect%3E%3C/svg%3E"); }
+
+.icon-submenu-pointer, .nav-primary .sub-menu:before {
   width: 25px;
   height: 26px;
   background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='25px' height='26px' viewBox='740 59 25 26' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E    %3Crect id='Rectangle-4' stroke='none' fill='%23AACC00' fill-rule='evenodd' transform='translate(752.020815, 72.020815) rotate(45.000000) translate(-752.020815, -72.020815) ' x='743.520815' y='63.5208153' width='17' height='17'%3E%3C/rect%3E%3C/svg%3E"); }
@@ -1252,8 +1262,11 @@ input[type='email'] {
 .site-header {
   position: relative;
   z-index: 1000;
+  border-bottom: 0 solid #aacc00;
   background: #fff;
   box-shadow: 0 0 9px 6px rgba(0, 0, 0, 0.15); }
+  .site-header.is-animated {
+    transition: border 0.3s ease; }
   @media (min-width: 640px) {
     .site-header {
       -ms-flex-wrap: nowrap;
@@ -1264,7 +1277,9 @@ input[type='email'] {
       box-shadow: none; } }
   @media (min-width: 1145px) {
     .site-header.has-current-submenu {
-      border-bottom: 3.75rem solid #aacc00; } }
+      border-bottom: 3.75rem solid #aacc00; }
+      .home .site-header.has-current-submenu {
+        border-bottom: 0; } }
   .site-header .container, .site-header .container-10, .site-header .container-8, .site-header .container-6 {
     display: -ms-flexbox;
     display: flex;
@@ -1281,6 +1296,9 @@ input[type='email'] {
 
 .site-header-main,
 .site-header-secondary {
+  -ms-flex-item-align: stretch;
+      -ms-grid-row-align: stretch;
+      align-self: stretch;
   padding: 0.625rem 0;
   width: 100%; }
   @media (min-width: 640px) {
@@ -1422,8 +1440,10 @@ input[type='email'] {
   .nav-primary,
   .nav-primary .sub-menu {
     overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.2s ease-out; }
+    max-height: 0; }
+    .site-header.is-animated .nav-primary, .site-header.is-animated
+    .nav-primary .sub-menu {
+      transition: max-height 0.2s ease-out; }
     @media (min-width: 1145px) {
       .nav-primary,
       .nav-primary .sub-menu {
@@ -1472,7 +1492,8 @@ input[type='email'] {
         display: flex;
         -ms-flex-align: center;
             align-items: center;
-        padding: 0 0.9375rem; } }
+        margin: 0 0 -0.5rem;
+        padding: 0 0.9375rem 0.5rem; } }
     .nav-primary .menu-item a {
       display: inline-block;
       vertical-align: middle; }
@@ -1494,52 +1515,81 @@ input[type='email'] {
     @media (min-width: 1145px) {
       .nav-primary .sub-menu {
         position: absolute;
-        top: 5.0625rem;
-        left: -25vw;
-        display: none;
+        top: 100%;
+        left: -75vw;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-pack: center;
+            justify-content: center;
         margin-left: 50%;
         max-height: none;
-        width: 50vw;
-        background: #aacc00;
-        font-size: 0.9375rem; } }
+        width: 150vw;
+        font-size: 0.9375rem;
+        opacity: 0;
+        pointer-events: none; }
+        .site-header.is-animated .nav-primary .sub-menu {
+          transition: opacity 0.3s ease; } }
+    @media (min-width: 1145px) {
+      .nav-primary .sub-menu:before {
+        position: absolute;
+        top: -0.8125rem;
+        left: -13px;
+        display: block;
+        margin-left: 50%;
+        content: '';
+        pointer-events: none; } }
     .nav-primary .sub-menu .menu-item {
       border-bottom: 1px solid #d8d8d8; }
       .nav-primary .sub-menu .menu-item:first-child {
         margin-top: 1.25rem;
         border-top: 1px solid #d8d8d8; }
       @media (min-width: 1145px) {
-        .nav-primary .sub-menu .menu-item, .nav-primary .sub-menu .menu-item:first-child {
-          margin: 0;
-          border: 0; }
-        .nav-primary .sub-menu .menu-item a {
-          color: #fff;
-          text-transform: none;
-          opacity: 0.4; }
-          .nav-primary .sub-menu .menu-item a:hover {
+        .nav-primary .sub-menu .menu-item {
+          padding-top: 1.125rem;
+          padding-bottom: 1.125rem; }
+          .nav-primary .sub-menu .menu-item, .nav-primary .sub-menu .menu-item:first-child {
+            margin: 0;
+            border: 0; }
+          .nav-primary .sub-menu .menu-item:first-child {
+            padding-left: 1.875rem;
+            border-radius: 1.875rem 0 0 1.875rem; }
+          .nav-primary .sub-menu .menu-item:last-child {
+            padding-right: 1.875rem;
+            border-radius: 0 1.875rem 1.875rem 0; }
+          .nav-primary .sub-menu .menu-item a {
             color: #fff;
-            opacity: 1.0; }
-        .nav-primary .sub-menu .menu-item.current-menu-item a,
-        .nav-primary .sub-menu .menu-item.current-menu-ancestor a {
-          opacity: 1.0; } }
+            text-transform: none; }
+            .nav-primary .sub-menu .menu-item a:hover {
+              color: #fff; }
+          .home .nav-primary .sub-menu .menu-item {
+            background: #fff; }
+            .home .nav-primary .sub-menu .menu-item a {
+              color: #2d2d2d; } }
   @media (min-width: 1145px) {
-    .nav-primary .current-menu-item.menu-item-has-children:after,
-    .nav-primary .current-menu-ancestor.menu-item-has-children:after {
-      position: absolute;
-      bottom: -1.3125rem;
-      left: -13px;
-      display: block;
-      margin-left: 50%;
-      content: ''; } }
-  .nav-primary .current-menu-item > a,
-  .nav-primary .current-menu-ancestor > a {
+    .nav-primary .sub-menu a {
+      opacity: 0.4; }
+    .nav-primary .menu-item:hover .sub-menu a {
+      opacity: 0.6; }
+    .nav-primary .menu-item .sub-menu a:hover {
+      opacity: 1.0; }
+    .nav-primary .sub-menu:not(:hover) .current-menu-item a,
+    .nav-primary .sub-menu:not(:hover) .current-menu-ancestor a {
+      opacity: 1.0; } }
+  .nav-primary .menu:not(:hover) > .current-menu-item > a,
+  .nav-primary .menu:not(:hover) > .current-menu-ancestor > a,
+  .nav-primary .menu > .menu-item:hover > a {
     color: #aacc00; }
+    @media (min-width: 1145px) {
+      .home .nav-primary .menu:not(:hover) > .current-menu-item > a, .home
+      .nav-primary .menu:not(:hover) > .current-menu-ancestor > a, .home
+      .nav-primary .menu > .menu-item:hover > a {
+        color: #fff; } }
   @media (min-width: 1145px) {
-    .nav-primary .current-menu-item .sub-menu,
-    .nav-primary .current-menu-ancestor .sub-menu {
-      display: -ms-flexbox;
-      display: flex;
-      -ms-flex-pack: center;
-          justify-content: center; } }
+    .nav-primary .menu:not(:hover) > .current-menu-item.menu-item-has-children .sub-menu,
+    .nav-primary .menu:not(:hover) > .current-menu-ancestor.menu-item-has-children .sub-menu,
+    .nav-primary .menu > .menu-item:hover.menu-item-has-children .sub-menu {
+      opacity: 1.0;
+      pointer-events: auto; } }
   .nav-primary .subnav-is-open .subnav-toggle {
     -ms-transform: scaleY(-1);
         transform: scaleY(-1); }

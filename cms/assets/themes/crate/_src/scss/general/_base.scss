@@ -1,4 +1,11 @@
 /**
+ * Prevent horizontal scrolling where it doesn't make sense.
+ */
+.site {
+	overflow: hidden;
+}
+
+/**
  * General link & transition styles.
  */
 a {

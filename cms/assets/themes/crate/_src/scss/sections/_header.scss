@@ -5,6 +5,11 @@
 	// We're using a 6px spread-radius instead of a 6px offset-y below, so that
 	// the left & right corners look better.
 	box-shadow: 0 0 9px 6px rgba(0, 0, 0, 0.15);
+	border-bottom: 0 solid $lime;
+
+	&.is-animated {
+		transition: border 0.3s ease;
+	}
 
 	@include breakpoint( $tablet ) {
 		flex-wrap: nowrap;
@@ -19,9 +24,17 @@
 		}
 	}
 
-	&.has-current-submenu { // This class is added in nav.js.
+	// Note: this class is added in nav.js.
+	&.has-current-submenu {
 		@include breakpoint( $medium ) {
+			// This provides the green band background for submenus.
 			border-bottom: rem(60) solid $lime;
+
+			// The homepage doesn't need a colored band for submenus (it'll use a
+			// 'word balloon' style instead).
+			.home & {
+				border-bottom: 0;
+			}
 		}
 	}
 
@@ -41,6 +54,7 @@
 .site-header-secondary {
 	padding: rem(10) 0;
 	width: 100%; // Take up full width on mobile.
+	align-self: stretch; // Take up full vertical space.
 
 	@include breakpoint( $tablet ) {
 		width: auto;
@@ -252,7 +266,10 @@
 		// Hide menus and submenus by reducing their height.
 		overflow: hidden;
 		max-height: 0;
-		transition: max-height 0.2s ease-out;
+
+		.site-header.is-animated & {
+			transition: max-height 0.2s ease-out;
+		}
 
 		@include breakpoint( $medium ) {
 			// Reset positioning.
@@ -318,7 +335,10 @@
 
 		@include breakpoint( $medium ) {
 			display: flex;
-			padding: 0 rem(15);
+			padding: 0 rem(15) rem(8);
+			// Pull down to bottom edge of .site-header, so there's no gap between
+			// a top-level item and its absolutely-positioned .sub-menu.
+			margin: 0 0 rem(-8);
 			align-items: center;
 		}
 
@@ -354,18 +374,47 @@
 		margin: 0 rem(-40);
 
 		@include breakpoint( $medium ) {
+			display: flex;
+			// Align submenu top with bottom of parent menu item.
 			position: absolute;
-			top: rem(81); // 70px-tall menu minus 8px top padding, plus 19px submenu padding
-			max-height: none;
+			top: 100%;
+			max-height: none; // Override 'collapse' style set at lower breakpoints.
 			font-size: rem(15);
-			background: $lime;
 			// Center horizontally.
-			left: -25vw;
+			left: -75vw;
 			margin-left: 50%;
-			width: 50vw;
-			// Hide. Only .current-menu-item .sub-menu and
-			// .current-menu-ancestor .sub-menu should be visible.
-			display: none;
+			width: 150vw;
+			justify-content: center;
+			// Hide by default. Only .current-menu-item .sub-menu, .menu-item:hover
+			// .sub-menu, and .current-menu-ancestor .sub-menu should be visible.
+			opacity: 0;
+			// Disable mouse clicks on hidden submenus.
+			pointer-events: none;
+
+			.site-header.is-animated & {
+				transition: opacity 0.3s ease; // uhh
+			}
+		}
+
+		// Submenu pointers.
+		&:before {
+			@extend .icon-submenu-pointer;
+
+			// Use a white pointer on the homepage.
+			.home & {
+				@extend .icon-submenu-pointer-white;
+			}
+
+			@include breakpoint( $medium ) {
+				content: '';
+				display: block;
+				position: absolute;
+				top: rem(-13); // - 1/2 * 26px image height
+				left: -13px;
+				margin-left: 50%;
+				// Disable mouse clicks on submenu triangles.
+				pointer-events: none;
+			}
 		}
 
 		.menu-item {
@@ -377,6 +426,8 @@
 			}
 
 			@include breakpoint( $medium ) {
+				padding-top: rem(18);
+				padding-bottom: rem(18);
 
 				&,
 				&:first-child {
@@ -384,57 +435,88 @@
 					border: 0;
 				}
 
+				// Add padding and border-radius to end elemeents (mainly for homepage).
+				&:first-child {
+					padding-left: rem(30);
+					border-radius: rem(30) 0 0 rem(30);
+				}
+				&:last-child {
+					padding-right: rem(30);
+					border-radius: 0 rem(30) rem(30) 0;
+				}
+
 				a {
 					color: $white;
 					text-transform: none;
-					opacity: 0.4;
 
 					&:hover {
 						color: $white;
-						opacity: 1.0;
 					}
 				}
 
-				&.current-menu-item a,
-				&.current-menu-ancestor a {
-					opacity: 1.0;
+				// Use alternate colors on homepage.
+				.home & {
+					background: $white;
+
+					a {
+						color: $charcoal;
+					}
 				}
 			}
 		}
 	}
 
-	.current-menu-item,
-	.current-menu-ancestor {
+	// Screen back submenu items that aren't either (a) the currently active
+	// item, if the user is not hovering over the menu or (b) the currently
+	// hovered item.
+	@include breakpoint( $medium ) {
 
-		&.menu-item-has-children {
-
-			&:after {
-				@extend .icon-submenu-pointer;
-
-				@include breakpoint( $medium ) {
-					content: '';
-					display: block;
-					position: absolute;
-					bottom: rem(-21); // - ( 8px menu padding + 1/2( 26px image height ))
-					left: -13px;
-					margin-left: 50%;
-				}
-			}
+		.sub-menu a {
+			opacity: 0.4;
 		}
+
+		.menu-item:hover .sub-menu a {
+			opacity: 0.6;
+		}
+
+		.menu-item .sub-menu a:hover {
+			opacity: 1.0;
+		}
+
+		.sub-menu:not(:hover) .current-menu-item a,
+		.sub-menu:not(:hover) .current-menu-ancestor a {
+			opacity: 1.0;
+		}
+	}
+
+	// Set colors and show submenus for active and/or hovered items.
+	.menu:not(:hover) > .current-menu-item,
+	.menu:not(:hover) > .current-menu-ancestor,
+	.menu > .menu-item:hover {
 
 		> a {
 			color: $lime;
+
+			.home & {
+
+				@include breakpoint( $medium ) {
+					color: $white;
+				}
+			}
 		}
 
-		.sub-menu {
+		&.menu-item-has-children {
 
 			@include breakpoint( $medium ) {
-				display: flex;
-				justify-content: center;
+
+				.sub-menu {
+					opacity: 1.0;
+					// *Enable* mouse clicks on visible submenus.
+					pointer-events: auto;
+				}
 			}
 		}
 	}
-
 
 	.subnav-is-open {
 
