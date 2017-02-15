@@ -34,7 +34,9 @@
 		<div class="content-section-grid container<?php echo ( $show_pager || $show_facet ? ' facetwp-template' : '' ); ?>">
 			<?php while ( $story_query->have_posts() ) : $story_query->the_post(); ?>
 
-				<article class="grid-item grid-item-3<?php if ( get_field( 'bright_spot' ) ) echo ' bright-spot'; ?>">
+				<?php $is_bright_spot = !! get_field( 'bright_spot' ); ?>
+
+				<article class="grid-item grid-item-3<?php if ( $is_bright_spot ) echo ' bright-spot'; ?>">
 
 					<div class="entry-thumbnail">
 
@@ -43,6 +45,12 @@
 						<div class="entry-preview">
 							<?php the_field( 'quote' ); ?>
 						</div>
+
+						<?php if ( $is_bright_spot ) : ?>
+							<div class="entry-tag">
+								<?php esc_html_e( 'Partner Spotlight' ); ?>
+							</div>
+						<?php endif; ?>
 
 					</div>
 

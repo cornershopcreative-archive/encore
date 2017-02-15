@@ -74,6 +74,11 @@
 					@include underline-shadow( $white, $lime );
 				}
 			}
+
+			.entry-tag {
+				// Hide on hover (.entry-preview does the opposite).
+				color: transparent;
+			}
 		}
 
 		&.bright-spot {
@@ -172,6 +177,25 @@
 			&:hover {
 				color: $white;
 			}
+		}
+	}
+
+	.entry-tag {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		line-height: 1.4;
+		text-align: center;
+		color: $white;
+		text-transform: uppercase;
+		font-weight: bold;
+		transition: color 0.2s ease;
+
+		&:before,
+		&:after {
+			content: '—';
+			margin: 0 0.4em;
 		}
 	}
 

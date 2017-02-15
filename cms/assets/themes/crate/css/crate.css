@@ -1499,9 +1499,7 @@ input[type='search'] {
         .nav-primary .menu-item a {
           text-transform: uppercase; }
           .home .nav-primary .menu-item a {
-            color: #fff; }
-            .home .nav-primary .menu-item a:hover {
-              color: #00c7f5; } }
+            color: #fff; } }
     .nav-primary .menu-item .subnav-toggle {
       margin-left: 1.25rem; }
       @media (min-width: 1145px) {
@@ -1541,6 +1539,17 @@ input[type='search'] {
             text-transform: none; }
             .nav-primary .sub-menu .menu-item a:hover {
               color: #aacc00; } }
+  .nav-primary .menu:not(:hover) > .current-menu-item > a,
+  .nav-primary .menu:not(:hover) > .current-menu-ancestor > a,
+  .nav-primary .menu > .menu-item:hover > a {
+    color: #aacc00; }
+    @media (min-width: 1145px) {
+      .home .nav-primary .menu:not(:hover) > .current-menu-item > a, .home
+      .nav-primary .menu:not(:hover) > .current-menu-ancestor > a, .home
+      .nav-primary .menu > .menu-item:hover > a {
+        color: #00c7f5; } }
+  .home .nav-primary .menu:not(:hover) > .current-menu-item > a {
+    color: #fff; }
   .nav-primary .subnav-is-open .subnav-toggle {
     -ms-transform: scaleY(-1);
         transform: scaleY(-1); }
@@ -2280,6 +2289,8 @@ input[type='search'] {
       box-shadow: inset 0 -3px #aacc00, inset 0 -4px rgba(255, 255, 255, 0.6);
       color: #fff;
       text-shadow: 0 1px #aacc00, 1px 0 #aacc00, -1px 0 #aacc00; }
+  .section-tile-grid .grid-item:hover .entry-tag {
+    color: transparent; }
   .section-tile-grid .grid-item.bright-spot .entry-preview {
     background-color: #ff8b18; }
     .section-tile-grid .grid-item.bright-spot .entry-preview a:not(.button) {
@@ -2350,6 +2361,21 @@ input[type='search'] {
     color: #aacc00; }
     .section-tile-grid .entry-preview .button:hover {
       color: #fff; }
+
+.section-tile-grid .entry-tag {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 1.4;
+  transition: color 0.2s ease; }
+  .section-tile-grid .entry-tag:before, .section-tile-grid .entry-tag:after {
+    margin: 0 0.4em;
+    content: '—'; }
 
 .section-tile-grid .entry-preview,
 .section-tile-grid .entry-text {
