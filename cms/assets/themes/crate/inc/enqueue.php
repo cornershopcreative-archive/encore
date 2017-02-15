@@ -13,8 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) { die( 'Direct access not allowed' ); }
 function crate_enqueue() {
 
   if ( ! is_admin() ) {
-		wp_enqueue_style( 'crate_style', get_template_directory_uri() . '/css/crate.css', array(), '4.4.6' );
-		wp_enqueue_script( 'crate', get_template_directory_uri() . '/js/crate.js', array('jquery'), '4.4.7', true );
+		wp_enqueue_style( 'crate_style', get_template_directory_uri() . '/css/crate.css', array(), '4.4.8' );
+		wp_enqueue_script( 'crate', get_template_directory_uri() . '/js/crate.js', array('jquery'), '4.4.8', true );
 
 		// put the AJAX endpoint URL into theme.ajaxurl
 		wp_localize_script( 'crate', 'crate', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
