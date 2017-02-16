@@ -8,10 +8,14 @@
 	.hero + & {
 		// If an partners ticker immediately follows a hero element, reduce the
 		// space between them.
-		margin-top: 2rem;
+		margin-top: 3rem;
 
 		@include breakpoint( $tablet ) {
-			margin-top: -2rem;
+			margin-top: -3rem;
+		}
+
+		@include breakpoint( $desktop ) {
+			margin-top: -4rem;
 		}
 	}
 

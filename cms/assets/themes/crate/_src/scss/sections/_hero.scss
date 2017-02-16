@@ -103,12 +103,9 @@
 		position: relative;
 
 		@include breakpoint( $tablet ) {
-
-			@include nested( 10 ) {
-				// This hero section's layout does use the global column widths, more
-				// or less, but they're all shuffled around.
-				width: span(5); // Don't include gutter margin.
-			}
+			width: 50vh;
+			min-width: rem(300);
+			margin-left: rem(30);
 		}
 
 		img {
@@ -142,6 +139,11 @@
 .hero-float-left {
 
 	.hero-image {
+
+		@include breakpoint( $tablet ) {
+			margin-left: 0;
+			margin-right: rem(30);
+		}
 
 		> a,
 		> img {
@@ -206,6 +208,8 @@
 }
 
 .home .hero {
+	padding-top: 5vh;
+	padding-bottom: 5vh;
 
 	.container {
 		justify-content: space-between;
@@ -224,8 +228,8 @@
 		}
 
 		@include breakpoint( $medium ) {
-			// Pull up into .hero's 60px padding.
-			margin-top: rem(-50);
+			// Pull up into .hero's 5vh padding.
+			margin-top: -4vh;
 		}
 
 		@include breakpoint( $desktop ) {
