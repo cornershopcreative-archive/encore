@@ -150,23 +150,12 @@
 					// Recolor SVG on dektop.
 					fill: $white;
 					color: $white;
-					// Change size and re-align using negative margins.
-					width: rem(250);
-					margin-bottom: rem(25 - 250);
 				}
 			}
 		}
 	}
 
 	.powered-by {
-
-		.home & {
-
-			@include breakpoint( $medium ) {
-				// Pull left to overlap with .site-logo's bounding box.
-				margin-left: rem(-4);
-			}
-		}
 
 		.logo {
 			width: rem(106);
@@ -219,19 +208,9 @@
 		display: block;
 	}
 
+	// Hide on homepage.
 	.home & {
-
-		.search-toggle {
-			color: $white;
-		}
-
-		.collapsible-search.is-open .search-toggle {
-			color: #ccc;
-		}
-
-		input[type="search"] {
-			border-color: $white;
-		}
+		display: none;
 	}
 }
 
