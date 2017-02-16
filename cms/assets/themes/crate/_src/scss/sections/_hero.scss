@@ -100,7 +100,6 @@
 	}
 
 	.hero-image {
-		position: relative;
 
 		@include breakpoint( $tablet ) {
 
@@ -143,10 +142,8 @@
 
 	.hero-image {
 
-		> a,
-		> img {
+		img {
 			width: 75%; // 360px / 480px-wide container (at desktop widths / in mockups).
-			margin: 0 auto;
 		}
 	}
 
@@ -161,7 +158,8 @@
 		flex-direction: row-reverse;
 	}
 
-	.hero-logo {
+	.hero-logo,
+	.hero-text-bubble {
 		// These percentages come from the mobile mockups, where the hero section
 		// (not including page padding) is 345px wide.
 		margin: percentage(-40/345) percentage(105/345) 0 rem(16);
@@ -205,49 +203,114 @@
 	@include hero-float-margins( rem(110) );
 }
 
-.home .hero {
+// Extra-bubbly hero layout for homepage.
+.hero-with-text-bubbles {
 
 	.container {
-		justify-content: space-between;
+		// Top-align items (don't stretch).
 		align-items: flex-start;
+		// Serve as offset parent for .hero-callout-text.
+		position: relative;
+
+		@include breakpoint( $desktop ) {
+			// Bottom-align items.
+			align-items: flex-end;
+		}
 	}
 
 	.hero-image {
-		display: flex;
-		align-items: center;
-		// Keep .hero to a reasonable height by limiting the size of the image.
-		max-width: rem(460);
 
-		@include breakpoint( max-width $tablet ) {
-			// Add space between the image and the manifesto text.
-			margin: rem(10) auto rem(30);
+		@include breakpoint( $tablet ) {
+			// Don't push .hero-text-bubble away.
+			margin-left: 0;
+		}
+	}
+
+	// Additional, short hero text (only on homepage for now).
+	.hero-callout-text {
+		// Hide on mobile.
+		display: none;
+
+		@include breakpoint( $tablet ) {
+			display: block;
+			padding: rem(10) rem(24);
+			background: $lime;
+			color: $white;
+			font-weight: bold;
+			align-self: flex-end;
+			position: absolute;
+			// Pull up to overlap with image.
+			bottom: rem(-60); // 60 = .hero padding.
+			margin-bottom: rem(-24);
+			right: span(-1 of 10 wide);
 		}
 
-		@include breakpoint( $medium ) {
-			// Pull up into .hero's 60px padding.
-			margin-top: rem(-50);
+		a {
+			color: $white;
+			text-decoration: none;
+		}
+	}
+
+	// Main hero text bubble.
+	.hero-text-bubble {
+		border-radius: 50%;
+		background-color: $bright-blue;
+		position: relative;
+		flex-grow: 1;
+		max-width: rem(240);
+		margin-top: rem(-63);
+
+		@include breakpoint( $tablet ) {
+			margin: 0 auto;
+			max-width: rem(330);
 		}
 
 		@include breakpoint( $desktop ) {
-			// Remove negative margins added by hero-float-margins() on homepage.
-			margin-bottom: 0;
+			margin-right: span(1 of 10);
+			margin-bottom: rem(-60 - 135); // Negative container padding minus desired edge overlap.
 		}
 
-		// Add a logo that overlaps the main image.
-		.logo-surround {
-			width: 100%;
-			margin-right: -100%;
-			color: $white;
-			fill: $white;
-			pointer-events: none;
+		// Fit to 1:1 aspect ratio.
+		&:before {
+			display: block;
+			content: '';
+			padding: 100% 0 0;
 		}
 	}
 
 	.hero-text {
-		padding-left: rem(24);
-		padding-right: rem(24);
-		background: $white;
-		color: $charcoal;
-		box-shadow: 0 10px 16px rgba($black, 0.2);
+		// Fill space made available by 1:1 aspect ratio of .hero-text-bubble.
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		padding: rem(24);
+		// Vertically center contents.
+		display: flex;
+		align-items: center;
+		text-align: center;
+		font-size: rem(21);
+		// Keep line-height narrow on extra-small phones.
+		line-height: 1.2;
+		font-weight: bold;
+
+		@include breakpoint( 375px ) {
+			// Use a more generous line-height on iPhone 6 and up.
+			line-height: 1.5;
+		}
+
+		@include breakpoint( $tablet ) {
+			font-size: rem(24);
+			padding: rem(40);
+		}
 	}
+
+	@include breakpoint( $desktop ) {
+		// margin-bottom: rem(80 + 135); // Desired margin minus .hero-text's edge overlap.
+	}
+
+	// Adding this at the bottom so it takes precedence over above rules.
+	@include hero-float-margins( rem(135), rem(80), $tablet );
 }
