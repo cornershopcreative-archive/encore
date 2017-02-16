@@ -585,6 +585,17 @@ h6 {
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale; }
+  .button.button-linkedin:before {
+    display: inline-block;
+    margin-right: 0.8125rem;
+    content: "";
+    font: 400 normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    font-size: 1.375rem;
+    line-height: 1;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; }
   .button.button-email:before {
     display: inline-block;
     margin-right: 0.8125rem;
@@ -600,15 +611,17 @@ h6 {
     padding: 0.75rem 0;
     width: 3.125rem;
     border-radius: 50%;
-    font-size: 1.375rem; }
+    font-size: 0; }
     @media (min-width: 640px) {
       .button.button-badge {
         padding: 0.875rem 0;
-        width: 3.75rem;
-        font-size: 1.75rem; } }
+        width: 3.75rem; } }
     .button.button-badge:before {
       margin-right: 0;
-      font-size: 1em; }
+      font-size: 1.375rem; }
+      @media (min-width: 640px) {
+        .button.button-badge:before {
+          font-size: 1.75rem; } }
   .button.button-gold {
     border-color: #ff8b18;
     background-color: transparent;
@@ -672,6 +685,13 @@ h6 {
     .button.button-twitter:hover {
       background-color: #4099ff;
       color: #fff; }
+  .button.button-linkedin {
+    border-color: #0177b5;
+    background-color: transparent;
+    color: #0177b5; }
+    .button.button-linkedin:hover {
+      background-color: #0177b5;
+      color: #fff; }
   .button-solid.button-gold, .section-communities .grid-item .button-gold:hover {
     background-color: #ff8b18;
     color: #fff; }
@@ -726,6 +746,12 @@ h6 {
     .button-solid.button-twitter:hover, .section-communities .grid-item .button-twitter.button-gold:hover {
       background-color: transparent;
       color: #4099ff; }
+  .button-solid.button-linkedin, .section-communities .grid-item .button-linkedin.button-gold:hover {
+    background-color: #0177b5;
+    color: #fff; }
+    .button-solid.button-linkedin:hover, .section-communities .grid-item .button-linkedin.button-gold:hover {
+      background-color: transparent;
+      color: #0177b5; }
 
 .button-group, .facetwp-pager {
   display: -ms-flexbox;

@@ -23,6 +23,7 @@ $deep-blue: #0047c1;
 
 $color-facebook: #3b5998;
 $color-twitter: #4099ff;
+$color-linkedin: #0177b5;
 
 // Color sets, for the colorize mixin.
 $color-sets: (
@@ -43,6 +44,7 @@ $color-sets: (
 	social: (
 		facebook: $color-facebook,
 		twitter: $color-twitter,
+		linkedin: $color-linkedin,
 	),
 
 );

@@ -33,8 +33,10 @@ function crate_button_shortcode( $args = array(), $content ) {
 	foreach ( explode( ' ', $args['style'] ) as $style ) {
 		if ( in_array( $style, array(
 			'solid',
+			'badge',
 			'facebook',
 			'twitter',
+			'linkedin',
 			'email',
 		), true ) ) {
 			$classes[] = 'button-' . $style;

@@ -67,6 +67,16 @@
 		}
 	}
 
+	&.button-linkedin {
+		&:before {
+			@include fa-icon;
+			content: $fa-var-linkedin;
+			font-size: rem(22);
+			line-height: 1;
+			margin-right: rem(13);
+		}
+	}
+
 	&.button-email {
 		&:before {
 			@include fa-icon;
@@ -81,21 +91,25 @@
 		// On small screens, badge buttons are 50px by 50px.
 		padding: rem(12) 0;
 		border-radius: 50%;
-		font-size: rem(22);
+		// Hide all text (only ::before pseudo-element will be visible).
+		font-size: 0;
 		// Set width equal to vertical padding + border + font size.
 		width: rem(50);
 
 		@include breakpoint( $tablet ) {
 			// On larger screens, go to 60px by 60px.
 			padding: rem(14) 0;
-			font-size: rem(28);
 			width: rem(60);
 		}
 
 		// Remove margin from icons.
 		&:before {
-			font-size: 1em; // Inherit responsive font size from .button.
+			font-size: rem(22);
 			margin-right: 0;
+
+			@include breakpoint( $tablet ) {
+				font-size: rem(28);
+			}
 		}
 	}
 
