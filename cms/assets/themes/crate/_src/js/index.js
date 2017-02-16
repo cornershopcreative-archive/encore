@@ -34,3 +34,6 @@ jQuery( header_search_form );
 
 var dropdown_sections = require( 'dropdown-sections' );
 jQuery( dropdown_sections );
+
+var tickers = require( 'tickers' );
+jQuery( tickers );

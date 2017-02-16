@@ -11,11 +11,15 @@
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-	<header class="entry-header hero hero-float hero-float-right hero-with-text-bubbles">
+	<header class="entry-header hero hero-float hero-float-left">
 		<div class="container-10">
 
 			<?php if ( has_post_thumbnail() ) : ?>
 				<div class="hero-image">
+
+					<svg class="logo logo-surround" viewBox="0 0 50 50">
+						<use xlink:href="#icon-logo"></use>
+					</svg>
 
 					<?php
 					// Get the URL for the featured video, if there is one.
@@ -28,22 +32,6 @@
 
 							<?php the_post_thumbnail( 'square-md' ); ?>
 
-							<?php if ( $hero_callout_text = get_field( 'hero_callout_text' ) ) : ?>
-								<div class="hero-callout-text">
-									<p>
-
-									<?php if ( $video_url ) : ?>
-										<a href="<?php echo esc_url( $video_url ); ?>" class="lightbox-embed-link">
-									<?php endif; ?>
-
-										<?php echo wp_kses_post( wptexturize( $hero_callout_text ) ); ?></p>
-									<?php if ( $video_url ) : ?>
-										</a>
-									<?php endif; ?>
-
-									</div>
-								<?php endif; ?>
-
 					<?php if ( $video_url ) : ?>
 						</a><!-- /.lightbox-embed-link -->
 					<?php endif; ?>
@@ -51,10 +39,8 @@
 				</div>
 			<?php endif; ?>
 
-			<div class="hero-text-bubble">
-				<div class="hero-text">
-					<?php echo get_field( 'subtitle' ); ?>
-				</div>
+			<div class="hero-text prose prose-compact">
+				<?php echo get_field( 'subtitle' ); ?>
 			</div>
 
 		</div>

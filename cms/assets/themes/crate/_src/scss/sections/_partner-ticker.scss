@@ -1,0 +1,75 @@
+/**
+ * Styles for Partners Ticker sections.
+ */
+
+.section-partner-ticker {
+	position: relative; // Act as offset parent for .overlay-link (if it exists).
+
+	.hero + & {
+		// If an partners ticker immediately follows a hero element, reduce the
+		// space between them.
+		margin-top: 2rem;
+
+		@include breakpoint( $tablet ) {
+			margin-top: -2rem;
+		}
+	}
+
+	.section-ticker {
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: stretch;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		overflow: hidden;
+		// Hide until all images have loaded (and order has been shuffled).
+		opacity: 0;
+		transition: opacity 0.5s ease;
+
+		&.is-ready {
+			opacity: 1.0;
+		}
+	}
+
+	.ticker-half {
+		display: flex;
+		animation: ticker-slide 270s linear infinite;
+	}
+
+	.ticker-item {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: rem(72);
+		flex-shrink: 0;
+		margin: 0 rem(8);
+		// Hide long alt text if images fail to load.
+		color: transparent;
+		overflow: hidden;
+
+		img {
+			height: auto;
+			width: auto;
+			max-height: rem(60);
+			max-width: 100%;
+		}
+	}
+
+	.overlay-link {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+}
+
+@keyframes ticker-slide {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-100%);
+	}
+}

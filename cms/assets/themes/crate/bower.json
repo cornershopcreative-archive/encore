@@ -24,6 +24,7 @@
     "jquery-cycle2": "^2.1.6",
     "featherlight": "^1.5.0",
     "underscore": "^1.8.3",
-    "jquery-serialize-object": "^2.5.0"
+    "jquery-serialize-object": "^2.5.0",
+    "imagesloaded": "^4.1.1"
   }
 }

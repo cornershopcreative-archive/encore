@@ -2372,7 +2372,7 @@
                 {
                     "key": "581b4d0137b33",
                     "name": "partners-grid",
-                    "label": "Partners Grid",
+                    "label": "Partner Grid",
                     "display": "block",
                     "sub_fields": [
                         {
@@ -2623,6 +2623,59 @@
                             "layout": "vertical",
                             "toggle": 0,
                             "return_format": "value"
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                {
+                    "key": "58a5bb1300181",
+                    "name": "partner-ticker",
+                    "label": "Partner Ticker",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_58a5bb1300182",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
+                        {
+                            "key": "field_58a5bb2f0018d",
+                            "label": "Link",
+                            "name": "link",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_5808e01450f42",
+                                "field_5808e07d50f43"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
                         }
                     ],
                     "min": "",
@@ -3586,5 +3639,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1485804673
+    "modified": 1487256459
 }
