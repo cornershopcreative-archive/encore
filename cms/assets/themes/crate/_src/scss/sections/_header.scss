@@ -107,6 +107,11 @@
 	@include breakpoint( $tablet ) {
 		margin-top: 0;
 	}
+
+	// Hide on homepage.
+	.home & {
+		display: none;
+	}
 }
 
 // Replace .site-branding with logo.
@@ -396,15 +401,28 @@
 		}
 	}
 
-	// Don't highlight the 'home' link on the homepage.
-	.home & .menu:not(:hover) > .current-menu-item > a {
-		color: $white;
+	@include breakpoint( $medium ) {
+
+		// Don't highlight the 'home' link on the homepage on desktop (since it
+		// uses a different color scheme).
+		.home & .menu:not(:hover) > .current-menu-item > a {
+			color: $white;
+		}
 	}
 
 	.subnav-is-open {
 
 		.subnav-toggle {
 			transform: scaleY(-1);
+		}
+	}
+
+	.home & {
+
+		// Add right-hand padding on homepage. This re-centers the menu items when
+		// the 'count me in' button is hidden.
+		@include breakpoint( $medium ) {
+			padding-right: rem(190);
 		}
 	}
 }
