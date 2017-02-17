@@ -3104,7 +3104,7 @@ input[type='search'] {
   .section-partner-ticker .ticker-half {
     display: -ms-flexbox;
     display: flex;
-    animation: ticker-slide 270s linear infinite; }
+    animation: ticker-slide 120s linear infinite; }
   .section-partner-ticker .ticker-item {
     display: -ms-flexbox;
     display: flex;
