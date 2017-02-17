@@ -3348,13 +3348,14 @@ input[type='search'] {
     transition: opacity 0.5s ease; }
     .section-partner-ticker .section-ticker.is-ready {
       opacity: 1.0; }
+      .section-partner-ticker .section-ticker.is-ready .ticker-half {
+        -webkit-animation: ticker-slide 90s linear infinite;
+                animation: ticker-slide 90s linear infinite; }
   .section-partner-ticker .ticker-half {
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
-    display: flex;
-    -webkit-animation: ticker-slide 90s linear infinite;
-            animation: ticker-slide 90s linear infinite; }
+    display: flex; }
   .section-partner-ticker .ticker-item {
     display: -webkit-box;
     display: -webkit-flex;

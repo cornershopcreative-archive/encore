@@ -33,12 +33,15 @@
 
 		&.is-ready {
 			opacity: 1.0;
+
+			.ticker-half {
+				animation: ticker-slide 90s linear infinite;
+			}
 		}
 	}
 
 	.ticker-half {
 		display: flex;
-		animation: ticker-slide 90s linear infinite;
 	}
 
 	.ticker-item {
