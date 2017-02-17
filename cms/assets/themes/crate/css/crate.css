@@ -622,12 +622,47 @@ h6 {
       @media (min-width: 640px) {
         .button.button-badge:before {
           font-size: 1.75rem; } }
+  .button.button-facebook {
+    border-color: #3b5998;
+    background-color: transparent;
+    color: #3b5998; }
+    .button.button-facebook:hover {
+      background-color: #3b5998;
+      color: #fff; }
+  .button.button-twitter {
+    border-color: #4099ff;
+    background-color: transparent;
+    color: #4099ff; }
+    .button.button-twitter:hover {
+      background-color: #4099ff;
+      color: #fff; }
+  .button.button-linkedin {
+    border-color: #0177b5;
+    background-color: transparent;
+    color: #0177b5; }
+    .button.button-linkedin:hover {
+      background-color: #0177b5;
+      color: #fff; }
+  .button.button-orange {
+    border-color: #ff6317;
+    background-color: transparent;
+    color: #ff6317; }
+    .button.button-orange:hover {
+      background-color: #ff6317;
+      color: #fff; }
   .button.button-gold {
     border-color: #ff8b18;
     background-color: transparent;
     color: #ff8b18; }
     .button.button-gold:hover {
       background-color: #ff8b18;
+      color: #fff; }
+  .button.button-yellow {
+    border-color: #ffcf0f;
+    background-color: transparent;
+    color: #ffcf0f; }
+    .button.button-yellow:hover {
+      background-color: #ffcf0f;
       color: #fff; }
   .button.button-lime, .section-communities .grid-item .button.button-gold:hover {
     border-color: #aacc00;
@@ -664,40 +699,42 @@ h6 {
     .button.button-white:hover {
       background-color: #fff;
       color: #fff; }
-  .button.button-orange {
-    border-color: #ff6317;
-    background-color: transparent;
-    color: #ff6317; }
-    .button.button-orange:hover {
-      background-color: #ff6317;
-      color: #fff; }
-  .button.button-facebook {
-    border-color: #3b5998;
-    background-color: transparent;
-    color: #3b5998; }
-    .button.button-facebook:hover {
-      background-color: #3b5998;
-      color: #fff; }
-  .button.button-twitter {
-    border-color: #4099ff;
-    background-color: transparent;
-    color: #4099ff; }
-    .button.button-twitter:hover {
-      background-color: #4099ff;
-      color: #fff; }
-  .button.button-linkedin {
-    border-color: #0177b5;
-    background-color: transparent;
-    color: #0177b5; }
-    .button.button-linkedin:hover {
-      background-color: #0177b5;
-      color: #fff; }
+  .button-solid.button-facebook, .section-communities .grid-item .button-facebook.button-gold:hover {
+    background-color: #3b5998;
+    color: #fff; }
+    .button-solid.button-facebook:hover, .section-communities .grid-item .button-facebook.button-gold:hover {
+      background-color: transparent;
+      color: #3b5998; }
+  .button-solid.button-twitter, .section-communities .grid-item .button-twitter.button-gold:hover {
+    background-color: #4099ff;
+    color: #fff; }
+    .button-solid.button-twitter:hover, .section-communities .grid-item .button-twitter.button-gold:hover {
+      background-color: transparent;
+      color: #4099ff; }
+  .button-solid.button-linkedin, .section-communities .grid-item .button-linkedin.button-gold:hover {
+    background-color: #0177b5;
+    color: #fff; }
+    .button-solid.button-linkedin:hover, .section-communities .grid-item .button-linkedin.button-gold:hover {
+      background-color: transparent;
+      color: #0177b5; }
+  .button-solid.button-orange, .section-communities .grid-item .button-orange.button-gold:hover {
+    background-color: #ff6317;
+    color: #fff; }
+    .button-solid.button-orange:hover, .section-communities .grid-item .button-orange.button-gold:hover {
+      background-color: transparent;
+      color: #ff6317; }
   .button-solid.button-gold, .section-communities .grid-item .button-gold:hover {
     background-color: #ff8b18;
     color: #fff; }
     .button-solid.button-gold:hover, .section-communities .grid-item .button-gold:hover {
       background-color: transparent;
       color: #ff8b18; }
+  .button-solid.button-yellow, .section-communities .grid-item .button-yellow.button-gold:hover {
+    background-color: #ffcf0f;
+    color: #fff; }
+    .button-solid.button-yellow:hover, .section-communities .grid-item .button-yellow.button-gold:hover {
+      background-color: transparent;
+      color: #ffcf0f; }
   .button-solid.button-lime, .section-communities .grid-item .button-gold:hover {
     background-color: #aacc00;
     color: #fff; }
@@ -728,30 +765,6 @@ h6 {
     .button-solid.button-white:hover, .section-communities .grid-item .button-white.button-gold:hover {
       background-color: transparent;
       color: #fff; }
-  .button-solid.button-orange, .section-communities .grid-item .button-orange.button-gold:hover {
-    background-color: #ff6317;
-    color: #fff; }
-    .button-solid.button-orange:hover, .section-communities .grid-item .button-orange.button-gold:hover {
-      background-color: transparent;
-      color: #ff6317; }
-  .button-solid.button-facebook, .section-communities .grid-item .button-facebook.button-gold:hover {
-    background-color: #3b5998;
-    color: #fff; }
-    .button-solid.button-facebook:hover, .section-communities .grid-item .button-facebook.button-gold:hover {
-      background-color: transparent;
-      color: #3b5998; }
-  .button-solid.button-twitter, .section-communities .grid-item .button-twitter.button-gold:hover {
-    background-color: #4099ff;
-    color: #fff; }
-    .button-solid.button-twitter:hover, .section-communities .grid-item .button-twitter.button-gold:hover {
-      background-color: transparent;
-      color: #4099ff; }
-  .button-solid.button-linkedin, .section-communities .grid-item .button-linkedin.button-gold:hover {
-    background-color: #0177b5;
-    color: #fff; }
-    .button-solid.button-linkedin:hover, .section-communities .grid-item .button-linkedin.button-gold:hover {
-      background-color: transparent;
-      color: #0177b5; }
 
 .button-group, .facetwp-pager {
   display: -ms-flexbox;

@@ -31,14 +31,14 @@ $color-sets: (
 	// This is one color set.
 	rainbow: (
 		// These are color names within the set.
-		// Red-Orange and Orange are rarely used in the designs.
+		orange: $orange,
 		gold: $gold,
+		yellow: $yellow,
 		lime: $lime,
 		teal: $teal,
 		bright-blue: $bright-blue,
 		deep-blue: $deep-blue,
 		white: $white,
-		orange: $orange
 	),
 
 	social: (

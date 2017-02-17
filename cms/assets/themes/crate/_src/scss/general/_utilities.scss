@@ -113,7 +113,7 @@
 		}
 	}
 
-	@include colorize( button, rainbow social ) {
+	@include colorize( button, social rainbow ) {
 		color: $color;
 		border-color: $color;
 		background-color: transparent;
@@ -124,7 +124,7 @@
 	}
 
 	&-solid {
-		@include colorize( button, rainbow social ) {
+		@include colorize( button, social rainbow ) {
 			color: $white;
 			background-color: $color;
 			&:hover {

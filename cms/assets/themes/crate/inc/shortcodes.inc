@@ -20,11 +20,14 @@ function crate_button_shortcode( $args = array(), $content ) {
 
 	// Add color class, if color attribute was a valid color.
 	if ( in_array( $args['color'], array(
+		'orange',
 		'gold',
+		'yellow',
 		'lime',
 		'teal',
 		'bright-blue',
 		'deep-blue',
+		'white',
 	), true ) ) {
 		$classes[] = 'button-' . $args['color'];
 	}
