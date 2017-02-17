@@ -123,13 +123,13 @@ function serve(cb) {
 var processors = [
 	require('postcss-short')({ /* options */ }),
 	require('postcss-sorting')({ /* options */ }),
-	require('autoprefixer')({ browsers: ['last 3 versions'] })
+	require('autoprefixer')({ browsers: ['last 7 versions'] })
 ];
 
 var processorsProd = [
 	require('postcss-short')({ /* options */ }),
 	require('postcss-sorting')({ /* options */ }),
-	require('autoprefixer')({ browsers: ['last 3 versions'] }),
+	require('autoprefixer')({ browsers: ['last 7 versions'] }),
 	require('cssnano')({ /* options */ })
 ];
 
