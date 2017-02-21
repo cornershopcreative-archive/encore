@@ -105,6 +105,11 @@ module.exports = function( $ ) {
 		trackInteraction( 'open', 'generic' );
 	});
 
+	// Track when hero lightbox is opened
+	$(document).on('click', '.hero [data-featherlight="#signup-modal"]', function() {
+		trackInteraction( 'open', 'hero' );
+	});
+
 	// Track when modals are closed via user action
 	$(document).on('click', '.featherlight-close-icon, #share-modal-thanks .button-close', function() {
 		var modalType = 'generic';
