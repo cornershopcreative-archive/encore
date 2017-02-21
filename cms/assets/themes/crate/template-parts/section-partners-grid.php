@@ -54,7 +54,7 @@
 					<?php $is_featured = has_term( 'featured-partners', 'topic' ); ?>
 
 					<div class="logo-container">
-						<a href="<?php echo get_field( 'link_url' ); ?>" target="_blank"<?php if ( $is_featured ) echo ' class="modal-trigger"'; ?>>
+						<a href="<?php echo get_field( 'link_url' ); ?>" target="_blank"<?php if ( $is_featured ) echo ' class="modal-trigger"'; ?> data-org-name="<?php echo trim( esc_attr( get_the_title() ) ); ?>">
 						<img src="<?php the_post_thumbnail_url(); ?>" class="partner-logo">
 						</a>
 
