@@ -17,9 +17,7 @@ module.exports = function( $ ) {
 		// Duplicate it and append.
 		$ticker.find( '.ticker-half' ).clone().appendTo( this );
 
-		console.log( $.fn.imagesLoaded );
 		$ticker.imagesLoaded( function() {
-			console.log( 'huh' );
 			$ticker.addClass( 'is-ready' );
 		} );
 	} );
