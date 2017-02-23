@@ -3355,7 +3355,11 @@ input[type='search'] {
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
-    display: flex; }
+    display: flex;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 auto;
+        -ms-flex: 0 0 auto;
+            flex: 0 0 auto; }
   .section-partner-ticker .ticker-item {
     display: -webkit-box;
     display: -webkit-flex;
