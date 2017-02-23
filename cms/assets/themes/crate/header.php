@@ -78,7 +78,7 @@
 
 			<aside class="site-header-secondary">
 				<div class="button-group button-group-expand nav-nag">
-					<a class="button button-solid button-bright-blue" href="#" data-featherlight="#signup-modal" data-featherlight-variant="modalform"><?php echo esc_html_e( 'Count Me In', 'crate' ); ?></a>
+					<a class="button button-solid button-bright-blue signup-modal-trigger" href="#" data-modal-tracking-context="navigation"><?php echo esc_html_e( 'Count Me In', 'crate' ); ?></a>
 				</div>
 			</aside>
 

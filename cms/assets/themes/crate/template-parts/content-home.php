@@ -42,7 +42,7 @@
 			<div class="hero-text prose prose-compact">
 				<?php echo get_field( 'subtitle' ); ?>
 				<div class="button-group">
-					<a class="button button-solid button-gold" href="#" data-featherlight="#signup-modal" data-featherlight-variant="modalform"><?php echo esc_html_e( 'Count Me In', 'crate' ); ?></a>
+					<a class="button button-solid button-gold signup-modal-trigger" href="#" data-modal-tracking-context="hero"><?php echo esc_html_e( 'Count Me In', 'crate' ); ?></a>
 				</div>
 			</div>
 
