@@ -218,6 +218,14 @@ module.exports = function( $ ) {
 	// link is clicked.
 	$(document).on('click', '.signup-modal-trigger', function( e ) {
 		e.preventDefault();
+		// Set the 'trigger' field in the modal form depending on which button was
+		// clicked, for lead tracking within BSD.
+		if ( $( this ).closest( '#masthead' ).length ) {
+			$( '#signup-modal input[name="custom-24"]' ).val( 'G2G Site Header Button' );
+		} else {
+			$( '#signup-modal input[name="custom-24"]' ).val( 'G2G Hero Button' );
+		}
+		// Open the signup modal window.
 		openModal( $('#signup-modal'), $(this).data('modal-tracking-context'), {
 			variant: 'modalform'
 		});
