@@ -11,16 +11,29 @@
 		transition: border 0.3s ease;
 	}
 
+	&:before {
+		content: '';
+		display: block;
+		// Leave room for sticky main nav.
+		height: rem(70); // Standard height of .site-header-main.
+
+		@include breakpoint( $tablet ) {
+			display: none;
+		}
+	}
+
 	@include breakpoint( $tablet ) {
 		flex-wrap: nowrap;
 	}
 
-	@include breakpoint( $medium ) {
+	.home & {
+		// Use alternate colors for the homepage on desktop (except at screen
+		// widths that use a non-sticky nav that isn't 'blended' into the hero).
+		box-shadow: none;
+		background-color: $deep-blue;
 
-		.home & {
-			// Use alternate colors for the homepage on desktop.
-			box-shadow: none;
-			background-color: $deep-blue;
+		@include breakpoint( $tablet (max-width $medium - 1px) ) {
+			background-color: $white;
 		}
 	}
 
@@ -101,12 +114,6 @@
 }
 
 .site-header-secondary {
-	// Leave room for sticky main nav.
-	margin-top: rem(70); // Standard height of .site-header-main.
-
-	@include breakpoint( $tablet ) {
-		margin-top: 0;
-	}
 
 	// Hide on homepage.
 	.home & {

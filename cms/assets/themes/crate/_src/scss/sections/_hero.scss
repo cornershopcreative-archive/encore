@@ -103,7 +103,6 @@
 		position: relative;
 
 		@include breakpoint( $tablet ) {
-			width: 50vh;
 			min-width: rem(300);
 			margin-left: rem(30);
 		}
@@ -208,28 +207,33 @@
 }
 
 .home .hero {
-	padding-top: 5vh;
-	padding-bottom: 5vh;
+
+	@include breakpoint( $medium ) {
+		padding: 0 0 rem(32);
+	}
 
 	.container {
-		justify-content: space-between;
-		align-items: flex-start;
+		flex-wrap: wrap;
+
+		&:before {
+			content: '';
+		}
+
+		@include breakpoint( $tablet ) {
+			justify-content: space-between;
+		}
 	}
 
 	.hero-image {
+		align-self: stretch;
+		flex-shrink: 1;
 		display: flex;
 		align-items: center;
-		// Keep .hero to a reasonable height by limiting the size of the image.
-		max-width: rem(460);
+		max-width: rem(520);
 
 		@include breakpoint( max-width $tablet ) {
 			// Add space between the image and the manifesto text.
 			margin: rem(10) auto rem(30);
-		}
-
-		@include breakpoint( $medium ) {
-			// Pull up into .hero's 5vh padding.
-			margin-top: -4vh;
 		}
 
 		@include breakpoint( $desktop ) {
@@ -248,10 +252,42 @@
 	}
 
 	.hero-text {
+		width: auto;
+		min-width: rem(300);
+		// font-size: rem(17);
+		align-self: center;
 		padding-left: rem(24);
 		padding-right: rem(24);
 		background: $white;
 		color: $charcoal;
 		box-shadow: 0 10px 16px rgba($black, 0.2);
+		margin-top: rem(30);
+	}
+
+	@include breakpoint( $tablet + 100px ) {
+
+		.container {
+			flex-wrap: nowrap;
+		}
+
+		.hero-text {
+			width: span(4);
+			margin-top: 0;
+		}
+	}
+}
+
+// Limit height of homepage hero by limiting image's width.
+@include breakpoint( $medium ) {
+
+	.home {
+
+		.hero-image {
+			width: calc(100vh - 258px);
+		}
+
+		&.admin-bar .hero-image {
+			width: calc(100vh - 280px);
+		}
 	}
 }
