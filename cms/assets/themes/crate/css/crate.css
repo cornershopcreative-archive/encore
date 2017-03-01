@@ -2804,7 +2804,6 @@ input[type='search'] {
 
 .section-callout-white {
   display: block;
-  margin-top: 100px;
   margin-bottom: 50px;
   width: 100%;
   color: #000;
@@ -2827,6 +2826,8 @@ input[type='search'] {
   padding-top: 90px;
   min-height: 357px !important;
   width: 76%; }
+  .section-callout-white .callout-content {
+    padding-top: 1px; }
 
 .brightblue_background {
   background-color: #00c7f5; }
@@ -2943,7 +2944,7 @@ input[type='search'] {
   line-height: 28px; }
 
 .section-circle-grid + .section-callout-white {
-  margin-top: -10.5em; }
+  margin-top: -80px; }
 
 .section-callout-white + .section-partners-grid {
   margin-top: -50px; }

@@ -17,7 +17,6 @@
 	width: 100%;
 	color: $black;
 	margin-bottom: 50px;
-	margin-top: 100px;
 
 	&.bubble_background {
 		@include svg-bg( 'bubbles-5-lime' );
@@ -37,6 +36,11 @@
 	margin-left: 12%;
 	padding-top: 90px;
 	min-height: 357px !important;
+
+	.section-callout-white & {
+		// Remove most padding, but make sure margins don't collapse.
+		padding-top: 1px;
+	}
 }
 
 .brightblue_background {
@@ -173,7 +177,7 @@
 }
 
 .section-circle-grid + .section-callout-white {
-  margin-top: -10.5em;
+  margin-top: -80px;
 }
 
 .section-callout-white + .section-partners-grid {
