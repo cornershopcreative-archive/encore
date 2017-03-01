@@ -12,7 +12,7 @@
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	<header class="entry-header hero hero-float hero-float-left">
-		<div class="container-10">
+		<div class="container">
 
 			<?php if ( has_post_thumbnail() ) : ?>
 				<div class="hero-image">

@@ -2077,17 +2077,15 @@ input[type='search'] {
     padding: 0 0 2rem; } }
 
 .home .hero .container, .home .hero .container-10, .home .hero .container-8, .home .hero .container-6 {
-  -webkit-flex-wrap: wrap;
-      -ms-flex-wrap: wrap;
-          flex-wrap: wrap; }
-  .home .hero .container:before, .home .hero .container-10:before, .home .hero .container-8:before, .home .hero .container-6:before {
-    content: ''; }
-  @media (min-width: 640px) {
-    .home .hero .container, .home .hero .container-10, .home .hero .container-8, .home .hero .container-6 {
-      -webkit-box-pack: justify;
-      -webkit-justify-content: space-between;
-          -ms-flex-pack: justify;
-              justify-content: space-between; } }
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center; }
 
 .home .hero .hero-image {
   display: -webkit-box;
@@ -2101,15 +2099,16 @@ input[type='search'] {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-align-self: stretch;
-      -ms-flex-item-align: stretch;
-          align-self: stretch;
   max-width: 32.5rem; }
-  @media (max-width: 640px) {
+  @media (max-width: 739px) {
     .home .hero .hero-image {
       margin: 0.625rem auto 1.875rem; } }
   @media (min-width: 1280px) {
     .home .hero .hero-image {
+      -webkit-align-self: stretch;
+          -ms-flex-item-align: stretch;
+                  -ms-grid-row-align: stretch;
+              align-self: stretch;
       margin-bottom: 0; } }
   .home .hero .hero-image .logo-surround {
     margin-right: -100%;
@@ -2134,12 +2133,49 @@ input[type='search'] {
 
 @media (min-width: 740px) {
   .home .hero .container, .home .hero .container-10, .home .hero .container-8, .home .hero .container-6 {
-    -webkit-flex-wrap: nowrap;
-        -ms-flex-wrap: nowrap;
-            flex-wrap: nowrap; }
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    padding: 0 3.75rem; }
+    .home .hero .container:before, .home .hero .container-10:before, .home .hero .container-8:before, .home .hero .container-6:before, .home .hero .container:after, .home .hero .container-10:after, .home .hero .container-8:after, .home .hero .container-6:after {
+      -webkit-box-flex: 0.5;
+      -webkit-flex-grow: 0.5;
+          -ms-flex-positive: 0.5;
+              flex-grow: 0.5;
+      content: ''; }
+    .home .hero .container .hero-image, .home .hero .container-10 .hero-image, .home .hero .container-8 .hero-image, .home .hero .container-6 .hero-image {
+      -webkit-box-ordinal-group: 2;
+      -webkit-order: 1;
+          -ms-flex-order: 1;
+              order: 1; }
+    .home .hero .container:before, .home .hero .container-10:before, .home .hero .container-8:before, .home .hero .container-6:before {
+      -webkit-box-ordinal-group: 3;
+      -webkit-order: 2;
+          -ms-flex-order: 2;
+              order: 2; }
+    .home .hero .container .hero-text, .home .hero .container-10 .hero-text, .home .hero .container-8 .hero-text, .home .hero .container-6 .hero-text {
+      -webkit-box-ordinal-group: 4;
+      -webkit-order: 3;
+          -ms-flex-order: 3;
+              order: 3; }
+    .home .hero .container:after, .home .hero .container-10:after, .home .hero .container-8:after, .home .hero .container-6:after {
+      -webkit-box-ordinal-group: 5;
+      -webkit-order: 4;
+          -ms-flex-order: 4;
+              order: 4; }
   .home .hero .hero-text {
+    -webkit-box-flex: 1;
+    -webkit-flex-grow: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
     margin-top: 0;
-    width: 32.20339%; } }
+    width: 33%; } }
 
 @media (min-width: 1145px) {
   .home .hero-image {

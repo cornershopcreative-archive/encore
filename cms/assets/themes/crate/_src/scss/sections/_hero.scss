@@ -213,30 +213,23 @@
 	}
 
 	.container {
-		flex-wrap: wrap;
-
-		&:before {
-			content: '';
-		}
-
-		@include breakpoint( $tablet ) {
-			justify-content: space-between;
-		}
+		flex-direction: column;
+		align-items: center;
 	}
 
 	.hero-image {
-		align-self: stretch;
 		flex-shrink: 1;
 		display: flex;
 		align-items: center;
 		max-width: rem(520);
 
-		@include breakpoint( max-width $tablet ) {
+		@include breakpoint( max-width $tablet + 99px ) {
 			// Add space between the image and the manifesto text.
 			margin: rem(10) auto rem(30);
 		}
 
 		@include breakpoint( $desktop ) {
+			align-self: stretch;
 			// Remove negative margins added by hero-float-margins() on homepage.
 			margin-bottom: 0;
 		}
@@ -267,11 +260,33 @@
 	@include breakpoint( $tablet + 100px ) {
 
 		.container {
-			flex-wrap: nowrap;
+			flex-direction: row;
+			justify-content: space-between;
+			padding: 0 rem(60);
+
+			// Use before + after pseudo-elements as spacers.
+			&:before,
+			&:after {
+				content: '';
+				flex-grow: 0.5;
+			}
+			.hero-image {
+				order: 1;
+			}
+			&:before {
+				order: 2;
+			}
+			.hero-text {
+				order: 3;
+			}
+			&:after {
+				order: 4;
+			}
 		}
 
 		.hero-text {
-			width: span(4);
+			width: 33%;
+			flex-grow: 1;
 			margin-top: 0;
 		}
 	}
