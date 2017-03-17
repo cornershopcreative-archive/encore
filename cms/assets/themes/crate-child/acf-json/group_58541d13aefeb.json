@@ -92,6 +92,27 @@
             "min": "",
             "max": "",
             "step": 1
+        },
+        {
+            "key": "field_58cc2e699b079",
+            "label": "Reappear after",
+            "name": "coverlay_reappear_after_days",
+            "type": "number",
+            "instructions": "If a user dismisses the automatic signup lightbox without signing up, they will be shown the lightbox again after this many days. Set to 0 to prevent the lightbox from reappearing at all.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 7,
+            "placeholder": "",
+            "prepend": "",
+            "append": "days",
+            "min": 0,
+            "max": "",
+            "step": 1
         }
     ],
     "location": [
@@ -111,5 +132,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1481923755
+    "modified": 1489776913
 }

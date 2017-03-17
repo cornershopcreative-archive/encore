@@ -1,5 +1,6 @@
 var featherlight = require( 'featherlight' );
 var storage = require( 'localstorage.js' );
+var moment = require( 'moment' );
 module.exports = function( $ ) {
 
 	// Set a default signup modal tracking context. This global variable will
@@ -71,6 +72,11 @@ module.exports = function( $ ) {
 	 */
 	var autoLightboxSetup = function() {
 
+		// If the user has already signed up, don't bother opening the lightbox.
+		if ( parseInt( storage.getItem( 'signup_form_completed' ) ) ) {
+			return;
+		}
+
 		options = window.lightbox_opts || {};
 		// var force = window.location.search.indexOf("forceoverlay");
 		var alreadyOpened = false;
@@ -78,6 +84,7 @@ module.exports = function( $ ) {
 			context : 'none',
 			trigger : 'immediate',
 			amount  : 1,
+			reappear: 7,
 		}, options );
 
 		// do nothing if it's disabled...
@@ -86,8 +93,25 @@ module.exports = function( $ ) {
 		// ...if it's supposed to be on the homepage and we're not...
 		if ( 'home' === settings.context && !$('body').hasClass('home') ) return;
 
-		// ...or if the already-seen cookie is still around
-		if ( storage.getItem( 'lightbox_seen_1' ) ) return;
+		// Check for 'lightbox seen' storage var.
+		var lightbox_seen = parseInt( storage.getItem( 'lightbox_seen_1' ) );
+		var now = moment().valueOf();
+		// Convert old-format 'lightbox seen' storage var (1 = seen) to new format
+		// (timestamp = date seen in ms).
+		if ( 1 === lightbox_seen ) {
+			// Replace lightbox_seen with the time in ms from the UNIX epoch. Lightbox
+			// reappear in `settings.reappear` days.
+			lightbox_seen = storage['lightbox_seen_1'] = now;
+		}
+		// If the lightbox is not set to reappear, or the lightbox_seen date is less
+		// than `settings.reappear` days in the past, don't show the lightbox.
+		if (
+			( settings.reappear < 1 )
+			||
+			( moment( lightbox_seen ).add( settings.reappear, 'days' ).valueOf() > now )
+		) {
+			return;
+		}
 
 		// let's see if we meet our open criteria!
 		// right away
@@ -112,7 +136,7 @@ module.exports = function( $ ) {
 			alreadyOpened = true;
 
 			// Remember that we've opened the lightbox.
-			storage['lightbox_seen_1'] = 1;
+			storage['lightbox_seen_1'] = moment().valueOf();
 		};
 	};
 

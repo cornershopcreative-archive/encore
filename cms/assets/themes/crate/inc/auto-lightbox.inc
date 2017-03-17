@@ -11,8 +11,8 @@ function crate_lightbox_echo_config() {
 		'context'   => get_field( 'coverlay_visibility', 'options' ),
 		'trigger'   => get_field( 'coverlay_trigger', 'options' ),
 		'amount'    => get_field( 'coverlay_trigger_amount', 'options' ),
+		'reappear'  => get_field( 'coverlay_reappear_after_days', 'options' ),
 	);
 	echo '<script>window.lightbox_opts = ' . json_encode( $config ) . ';</script>';
 }
 add_action( 'wp_head', 'crate_lightbox_echo_config' );
-
