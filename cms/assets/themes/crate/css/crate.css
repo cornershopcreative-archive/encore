@@ -202,7 +202,7 @@ ul {
 
 /**
  * Featherlight – ultra slim jQuery lightbox
- * Version 1.6.1 - http://noelboss.github.io/featherlight/
+ * Version 1.5.0 - http://noelboss.github.io/featherlight/
  *
  * Copyright 2016, Noël Raoul Bossart (http://www.noelboss.com)
  * MIT Licensed.
@@ -267,9 +267,7 @@ ul {
     top: 0;
     right: 0;
     z-index: 9999;
-    padding: 0;
     width: 25px;
-    border: none;
     background: #fff;
     /* Set the background in case it overlaps the content */
     background: rgba(255, 255, 255, 0.3);
@@ -280,10 +278,6 @@ ul {
     line-height: 25px;
     /* styling */
     cursor: pointer; }
-  /* See http://stackoverflow.com/questions/16077341/how-to-reset-all-default-styles-of-the-html5-button-element */
-  .featherlight .featherlight-close-icon::-moz-focus-inner {
-    padding: 0;
-    border: 0; }
   .featherlight .featherlight-image {
     /* styling */
     width: 100%; }
@@ -2933,7 +2927,7 @@ input[type='search'] {
 .section-callout .second_column {
   -webkit-box-flex: 26rem;
   -webkit-flex: 26rem 1 0;
-      -ms-flex: 26rem 1 0;
+      -ms-flex: 26rem 1 0px;
           flex: 26rem 1 0; }
 
 .callout-content.callout_two {
@@ -3422,8 +3416,8 @@ input[type='search'] {
     .section-partner-ticker .section-ticker.is-ready {
       opacity: 1.0; }
       .section-partner-ticker .section-ticker.is-ready .ticker-half {
-        -webkit-animation: ticker-slide 90s linear infinite;
-                animation: ticker-slide 90s linear infinite; }
+        -webkit-animation: ticker-slide 120s linear infinite;
+                animation: ticker-slide 120s linear infinite; }
   .section-partner-ticker .ticker-half {
     display: -webkit-box;
     display: -webkit-flex;
@@ -3451,11 +3445,11 @@ input[type='search'] {
             justify-content: center;
     overflow: hidden;
     margin: 0 0.5rem;
-    width: 4.5rem;
+    width: 7.5rem;
     color: transparent; }
     .section-partner-ticker .ticker-item img {
       max-width: 100%;
-      max-height: 3.75rem;
+      max-height: 5.625rem;
       width: auto;
       height: auto; }
   .section-partner-ticker .overlay-link {
