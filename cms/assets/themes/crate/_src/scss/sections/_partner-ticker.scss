@@ -35,7 +35,7 @@
 			opacity: 1.0;
 
 			.ticker-half {
-				animation: ticker-slide 90s linear infinite;
+				animation: ticker-slide 120s linear infinite;
 			}
 		}
 	}
@@ -49,7 +49,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: rem(72);
+		width: rem(120);
 		flex-shrink: 0;
 		margin: 0 rem(8);
 		// Hide long alt text if images fail to load.
@@ -59,7 +59,7 @@
 		img {
 			height: auto;
 			width: auto;
-			max-height: rem(60);
+			max-height: rem(90);
 			max-width: 100%;
 		}
 	}
