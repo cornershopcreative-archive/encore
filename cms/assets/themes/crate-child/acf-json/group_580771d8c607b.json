@@ -2656,6 +2656,28 @@
                             "prefix_name": 0
                         },
                         {
+                            "key": "field_58cffeb80b935",
+                            "label": "Filter by Topic",
+                            "name": "topic",
+                            "type": "taxonomy",
+                            "instructions": "Leave all checkboxes unchecked to show all topics.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "taxonomy": "topic",
+                            "field_type": "checkbox",
+                            "allow_null": 0,
+                            "add_term": 0,
+                            "save_terms": 0,
+                            "load_terms": 0,
+                            "return_format": "id",
+                            "multiple": 0
+                        },
+                        {
                             "key": "field_58a5bb2f0018d",
                             "label": "Link",
                             "name": "link",
@@ -3639,5 +3661,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1487256459
+    "modified": 1490026216
 }
