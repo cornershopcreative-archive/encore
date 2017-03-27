@@ -202,9 +202,9 @@ ul {
 
 /**
  * Featherlight – ultra slim jQuery lightbox
- * Version 1.7.1 - http://noelboss.github.io/featherlight/
+ * Version 1.5.0 - http://noelboss.github.io/featherlight/
  *
- * Copyright 2017, Noël Raoul Bossart (http://www.noelboss.com)
+ * Copyright 2016, Noël Raoul Bossart (http://www.noelboss.com)
  * MIT Licensed.
 **/
 @media all {
@@ -232,6 +232,7 @@ ul {
     background: rgba(0, 0, 0, 0.8); }
   .featherlight:before {
     display: inline-block;
+    margin-right: -0.25em;
     height: 100%;
     /* position: trick to center content vertically */
     content: '';
@@ -266,9 +267,7 @@ ul {
     top: 0;
     right: 0;
     z-index: 9999;
-    padding: 0;
     width: 25px;
-    border: none;
     background: #fff;
     /* Set the background in case it overlaps the content */
     background: rgba(255, 255, 255, 0.3);
@@ -279,16 +278,10 @@ ul {
     line-height: 25px;
     /* styling */
     cursor: pointer; }
-  /* See http://stackoverflow.com/questions/16077341/how-to-reset-all-default-styles-of-the-html5-button-element */
-  .featherlight .featherlight-close-icon::-moz-focus-inner {
-    padding: 0;
-    border: 0; }
   .featherlight .featherlight-image {
     /* styling */
     width: 100%; }
   .featherlight-iframe .featherlight-content {
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
     padding: 0;
     /* removed the border for image croping since iframe is edge to edge */
     border-bottom: 0; }
@@ -302,9 +295,9 @@ ul {
 /* handling phones and small screens */
 @media only screen and (max-width: 1024px) {
   .featherlight .featherlight-content {
-    margin-right: 0;
+    margin-right: 10px;
     /* dimensions: maximize lightbox with for small screens */
-    margin-left: 0;
+    margin-left: 10px;
     padding: 10px 10px 0;
     max-height: 98%;
     border-bottom: 10px solid transparent; } }
@@ -1064,8 +1057,6 @@ svg {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
   -webkit-flex-flow: row wrap;
       -ms-flex-flow: row wrap;
           flex-flow: row wrap;
@@ -3425,8 +3416,8 @@ input[type='search'] {
     .section-partner-ticker .section-ticker.is-ready {
       opacity: 1.0; }
       .section-partner-ticker .section-ticker.is-ready .ticker-half {
-        -webkit-animation: ticker-slide 60s linear infinite;
-                animation: ticker-slide 60s linear infinite; }
+        -webkit-animation: ticker-slide 200s linear infinite;
+                animation: ticker-slide 200s linear infinite; }
   .section-partner-ticker .ticker-half {
     display: -webkit-box;
     display: -webkit-flex;
