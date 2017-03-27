@@ -182,6 +182,8 @@ class VolunteerMatchAPI {
 		$data['fieldsToDisplay'][] = 'parentOrg';
 		$data['fieldsToDisplay'][] = 'created';
 		$data['fieldsToDisplay'][] = 'location';
+		$data['fieldsToDisplay'][] = 'vmUrl';
+		$data['fieldsToDisplay'][] = 'imageUrl';
 
 		if ($display != 'opp summary') {
 			$data['fieldsToDisplay'][] = 'minimumAge';
