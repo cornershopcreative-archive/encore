@@ -18,6 +18,8 @@ jQuery(document).ready(function(){
 		});
 	}
 	
+	// Force datepicker date format. Some themes change the format on BB's page unfortunately.
+	jQuery.datepicker.setDefaults({"dateFormat":"mm\/dd\/yy"});
 });
 </script>
 

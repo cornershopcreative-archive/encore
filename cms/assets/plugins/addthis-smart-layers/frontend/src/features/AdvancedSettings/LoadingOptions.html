@@ -42,6 +42,95 @@
         <section>
             <div
                 setting-title-and-description
+                label="{{'advanced_settings_enqueue_client_label'|translate}}"
+                for="enqueue-client"
+            >
+                {{'advanced_settings_enqueue_client_description'|translate}}
+            </div>
+
+            <label for="enqueue-client-true">
+                <input
+                        type="radio"
+                        id="enqueue-client-true"
+                        name="enqueue-client-true"
+                        ng-model="globalOptions.enqueue_client"
+                        ng-value="true"
+                />
+                <span class="addthis-checkbox-label">
+                    <strong translate>advanced_settings_enqueue_true_label</strong>
+                </span>
+            </label>
+
+            <label for="enqueue-client-false">
+                <input
+                        type="radio"
+                        id="enqueue-client-false"
+                        name="enqueue-client-false"
+                        ng-model="globalOptions.enqueue_client"
+                        ng-value="false"
+                />
+                <span class="addthis-checkbox-label">
+                    <strong translate>advanced_settings_enqueue_false_label</strong>
+                </span>
+            </label>
+
+            <div
+                soft-alert
+                level="'warning'"
+                ng-show="globalOptions.enqueue_client"
+            >
+                {{'warning_message_advanced_settings_enqueue_client'|translate}}
+            </div>
+
+            <div class="input-description">
+                {{'advanced_settings_enqueue_local_settings_description'|translate}}
+            </div>
+
+            <label for="enqueue-local-settings-true">
+                <input
+                        type="radio"
+                        id="enqueue-local-settings-true"
+                        name="enqueue-local-settings-true"
+                        ng-model="globalOptions.enqueue_local_settings"
+                        ng-value="true"
+                />
+                <span class="addthis-checkbox-label">
+                    <strong translate>advanced_settings_enqueue_true_label</strong>
+                </span>
+            </label>
+
+            <label for="enqueue-local-settings-false">
+                <input
+                        type="radio"
+                        id="enqueue-local-settings-false"
+                        name="enqueue-local-settings-false"
+                        ng-model="globalOptions.enqueue_local_settings"
+                        ng-value="false"
+                />
+                <span class="addthis-checkbox-label">
+                    <strong>{{'advanced_settings_enqueue_false_label'|translate}} {{'option_recommended'|translate}}</strong>
+                </span>
+            </label>
+
+            <div
+                soft-alert
+                level="'warning'"
+                ng-show="globalOptions.enqueue_local_settings && addthis_plugin_controls === 'AddThis'"
+            >
+                {{'warning_message_advanced_settings_enqueue_client'|translate}}
+            </div>
+            <div
+                soft-alert
+                level="'warning'"
+                ng-show="globalOptions.enqueue_local_settings && addthis_plugin_controls !== 'AddThis'"
+            >
+                {{'warning_message_advanced_settings_enqueue_local_settings'|translate}}
+            </div>
+        </section>
+
+        <section>
+            <div
+                setting-title-and-description
                 label="{{'advanced_settings_excerpt_filters_label'|translate}}"
                 for="excerpt_filters"
             >
@@ -97,7 +186,6 @@
             for="per-post-enabled"
             label="{{'advanced_settings_per_post_option_label'|translate}}"
             recommend="true"
-            ng-show="false"
         >
             {{'advanced_settings_per_post_option_description'|translate}}
         </section>
@@ -146,7 +234,7 @@
                 basic-select
                 ng-model="globalOptions.addthis_language"
                 for="language"
-                label="{{'advanced_settings_excerpt_filters_label'|translate}}"
+                label="{{'advanced_settings_language_label'|translate}}"
                 options="languageOptions"
             >
             </div>

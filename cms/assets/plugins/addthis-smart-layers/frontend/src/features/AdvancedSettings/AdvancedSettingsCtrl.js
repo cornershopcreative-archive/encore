@@ -1,13 +1,13 @@
 appAddThisWordPress.controller('AdvancedSettingsCtrl', function(
   $scope,
-  wordpress,
+  $wordpress,
   $timeout
 ) {
 
   $scope.loadStatus = 'loading';
 
   $scope.globalOptions = {};
-  wordpress.globalOptions.get().then(function(data) {
+  $wordpress.globalOptions.get().then(function(data) {
     $scope.globalOptions = data;
     if (angular.isObject(data)) {
       $scope.loadStatus = 'loaded';
@@ -25,7 +25,7 @@ appAddThisWordPress.controller('AdvancedSettingsCtrl', function(
 
     $scope.saving = true;
     $scope.showSaveSuccessMessage = false;
-    wordpress.globalOptions.save().then(function(data) {
+    $wordpress.globalOptions.save().then(function(data) {
       $scope.globalOptions = data;
       $scope.saving = false;
       if (angular.isObject(data)) {

@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -26,7 +26,7 @@ if (!class_exists('AddThisSharingButtonsMobileToolbarTool')) {
      * A class with various special configs and functionality for
      * AddThis Mobile Toolbar tools
      *
-     * @category   FollowButtons
+     * @category   SharingButtons
      * @package    AddThisWordPress
      * @subpackage Tools
      * @author     AddThis <help@addthis.com>
@@ -35,45 +35,38 @@ if (!class_exists('AddThisSharingButtonsMobileToolbarTool')) {
      */
     class AddThisSharingButtonsMobileToolbarTool extends AddThisSharingButtonsToolParent
     {
-        public $prettyName = 'Mobile Toolbar';
-
-        public $edition = 'basic';
-        public $anonymousSupport = true;
-        public $inline = false;
-        public $settingsSubVariableName = 'smlmo';
+        //pco smlmo
         public $layersApiProductName = 'dock';
 
-        protected $defaultConfigs = array(
-            'enabled'           => false,
-            'follow'            => 'on', // off
-            'buttonBarTheme'    => 'light', // gray or dark
-            'buttonBarPosition' => 'bottom', // top
-        );
+        protected $defaultConfigs = array();
 
         /**
          * Creates tool specific settings for the JavaScript variable
          * addthis_layers, used to bootstrap layers
          *
-         * @param array $configs optional array of settings (used with widgets)
+         * @param array $input array of settings
          *
          * @return array an associative array
          */
-        public function getAddThisLayers($configs = array())
+        public function getAddThisLayers($input = array())
         {
-            if (empty($configs)) {
-                $configs = $this->getToolConfigs();
+            $output = array();
+            if (empty($input['enabled']) ||
+                !$this->enabledOnTemplate($input['templates'])
+            ) {
+                return $output;
             }
 
-            $layers = array(
-                'follow'             => $configs['follow'],
-                'buttonBarTheme'     => $configs['buttonBarTheme'],
-                'buttonBarPosition'  => $configs['buttonBarPosition'],
+            $smartLayersConfigs = array(
+                'follow'             => $input['follow'],
+                'buttonBarTheme'     => $input['buttonBarTheme'],
+                'buttonBarPosition'  => $input['buttonBarPosition'],
             );
 
-            $layers['followServices'] = AddThisFollowButtonsToolParent::formatServicesForAddThisLayers($configs['followServices']);
+            $smartLayersConfigs['followServices'] = AddThisFollowButtonsToolParent::formatServicesForAddThisLayers($input['followServices']);
 
-            $result = array($this->layersApiProductName => $layers);
-            return $result;
+            $output = array('dock' => $smartLayersConfigs);
+            return $output;
         }
 
         /**
@@ -105,6 +98,14 @@ if (!class_exists('AddThisSharingButtonsMobileToolbarTool')) {
                                 $output[$field] = $value;
                             }
                             break;
+                        case 'templates':
+                            if (is_array($value)) {
+                                $output[$field] = array();
+                                foreach ($value as $service) {
+                                    $output[$field][] = sanitize_text_field($service);
+                                }
+                            }
+                            break;
                         case 'followServices':
                             if (is_array($value)) {
                                 foreach ($value as $service => $username) {
@@ -123,6 +124,11 @@ if (!class_exists('AddThisSharingButtonsMobileToolbarTool')) {
                             if ($value === 'top' || $value === 'bottom') {
                                 $output[$field] = $value;
                             }
+                            break;
+                        case 'toolName':
+                        case 'widgetId':
+                        case 'id':
+                            $output[$field] = sanitize_text_field($value);
                             break;
                     }
                 }

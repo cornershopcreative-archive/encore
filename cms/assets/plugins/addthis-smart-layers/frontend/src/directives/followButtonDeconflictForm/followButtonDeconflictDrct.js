@@ -1,5 +1,5 @@
 appAddThisWordPress.directive('followButtonDeconflictForm', function(
-  wordpress,
+  $wordpress,
   $timeout
 ) {
   return {
@@ -9,7 +9,7 @@ appAddThisWordPress.directive('followButtonDeconflictForm', function(
     },
     controller: function($scope, $element, $filter) {
       $scope.followServices = $filter('followServiceInfo')();
-      wordpress.addThisGetFollowServices().then(function(followServices) {
+      $wordpress.addThisGetFollowServices().then(function(followServices) {
         $scope.followServices = followServices;
 
         $timeout(function() {

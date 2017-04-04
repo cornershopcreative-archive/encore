@@ -46,7 +46,7 @@
 
                 <div
                     setting-title-and-description
-                    label="{{'password_input_label'|translate}}"
+                    label="{{'client_string_password'|translate}}"
                     name="registrationPassword"
                     ng-class="{'bad-choice': createaccount.registrationPassword.$error.minlength || createaccount.registrationPassword.$error.required && (createaccount.registrationPassword.$touched || createaccount.$submitted)}"
                 >
@@ -142,6 +142,13 @@
             >
                 register_button
             </button>
+
+            <p>
+                <a ng-click="signIn()" translate>
+                    sign_in_existing_account
+                </a>
+            </p>
+
         </div>
     </div>
 </form>

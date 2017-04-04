@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -36,20 +36,8 @@ if (!class_exists('AddThisFollowButtonsVerticalTool')) {
     {
         public $layersClass = 'addthis_vertical_follow_toolbox';
         public $prettyName = 'Vertical Follow Buttons';
-
-        public $edition = 'basic';
-        public $anonymousSupport = true;
-        public $inline = true;
         public $settingsSubVariableName = 'flwv';
         public $layersApiProductName = 'followtoolbox';
-
-        public $widgetClassName = 'AddThisFollowButtonsVerticalWidget';
-        public $widgetBaseId = 'addthis_vertical_follow_toolbox_widget';
-        public $widgetName = 'Follow Buttons - Vertical';
-        public $widgetDescription = 'Vertical social follow buttons from AddThis to increase your followers.';
-        public $defaultWidgetTitle = 'Follow Me';
-
-        public $shortCode = 'addthis_vertical_follow_buttons';
 
         public $availableSizes = array(
             'large' => array(
@@ -69,7 +57,7 @@ if (!class_exists('AddThisFollowButtonsVerticalTool')) {
         protected $defaultConfigs = array(
             'enabled'   => false,
             'size'      => 'large',
-            'title'     => 'title',
+            'title'     => '',
             'thankyou'  => true,
         );
 

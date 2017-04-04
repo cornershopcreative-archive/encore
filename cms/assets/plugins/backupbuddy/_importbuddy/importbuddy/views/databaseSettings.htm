@@ -80,6 +80,7 @@
 			var prefix = jQuery('#mysql_prefix').val();
 			var databaseMethodStrategy = jQuery( '#databaseMethodStrategy').val();
 			
+			backupbuddy_log( 'Calling mysql_test AJAX.');
 			jQuery.ajax('importbuddy.php',
 				{
 					method: 'POST',
@@ -92,7 +93,7 @@
 							prefix: prefix
 					},
 					error: function( jqXHR, textStatus ) {
-						message = 'ERROR #329723: Unexpected server response from AJAX. See Status Log for more details. Response: `' + textStatus + '`.';
+						message = 'ERROR #329723: Unexpected server response from AJAX. See Status Log for more details. Response: `' + textStatus + '`, HTTP Status: `' + jqXHR.status + '`, Status Text: `' + jqXHR.statusText + '`, Response Text: `' + jqXHR.responseText + '`.';
 						alert( message );
 						backupbuddy_log( message );
 						jQuery('.pb_database_next_test').addClass( 'it-attention' );
@@ -210,6 +211,11 @@
 							window.restoreData.databaseSettings.ignoreSqlErrors = true;
 						} else {
 							window.restoreData.databaseSettings.ignoreSqlErrors = false;
+						}
+						if ( jQuery( '#db_force_ssl').is( ':checked' ) ) {
+							window.restoreData.databaseSettings.db_force_ssl = true;
+						} else {
+							window.restoreData.databaseSettings.db_force_ssl = false;
 						}
 						
 						// Determine SQL files to restore based on advanced checked items. Overwrites prior value of this var.
@@ -488,6 +494,13 @@
 					
 					<br>
 					
+					<input class="db_setting" type="checkbox" value="1" name="db_force_ssl" id="db_force_ssl">
+					&nbsp;&nbsp;
+					<label for="db_force_ssl">Force SSL connection with Database?</label> <%= tip( 'Check this option if you have configured your MySQL database to accept incoming connections via SSL. WARNING: This will cause errors if your database is not configured to accept SSL connections.' ) %>
+
+					<br>
+					<br>
+
 					<label>Database files to restore: </label>
 					<div class="database_restore_table_select">
 						<%

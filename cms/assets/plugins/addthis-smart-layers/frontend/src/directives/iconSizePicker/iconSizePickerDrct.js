@@ -2,7 +2,8 @@ appAddThisWordPress.directive('iconSizePicker', function() {
   return {
     scope: {
       ngModel: '=ngModel', // bi-directional
-      toolPco: '@toolPco'
+      toolPco: '@toolPco',
+      fieldName: '@fieldName'
     },
     controller: function($scope) {
 

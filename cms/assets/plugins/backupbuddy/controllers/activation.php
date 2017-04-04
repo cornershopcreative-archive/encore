@@ -429,8 +429,6 @@ pb_backupbuddy::save();
 
 
 
-
-
 // ********** BEGIN 7.0 UPGRADE **********
 pb_backupbuddy::$options['data_version'] = '14';
 if ( ( '10' == pb_backupbuddy::$options['max_site_log_size'] ) || ( '5' == pb_backupbuddy::$options['max_site_log_size'] ) ) {
@@ -438,6 +436,19 @@ if ( ( '10' == pb_backupbuddy::$options['max_site_log_size'] ) || ( '5' == pb_ba
 }
 pb_backupbuddy::save();
 // ********** END 7.0 UPGRADE **********
+
+
+
+// ********** BEGIN 7.3 UPGRADE **********
+if ( pb_backupbuddy::$options['data_version'] < 15 ) {
+	pb_backupbuddy::$options['data_version'] = '15';
+	pb_backupbuddy::save();
+	
+	require_once( pb_backupbuddy::plugin_path() . '/classes/housekeeping.php' );
+	backupbuddy_housekeeping::cleanup_transients( true ); // Clear out bad transients, including orphaned/non-expiring.
+}
+// ********** END 7.3 UPGRADE **********
+
 
 
 // ***** MISC BELOW *****

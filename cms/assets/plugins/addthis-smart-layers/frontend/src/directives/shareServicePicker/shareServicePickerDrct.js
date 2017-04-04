@@ -1,24 +1,24 @@
 appAddThisWordPress.directive('shareServicePicker', function(
-  wordpress,
+  $wordpress,
   $timeout
 ) {
   return {
     scope: {
-      pickedServices: '=services', // bi-directional
+      thirdParty: '=thirdParty',
+      services: '=services', // bi-directional
+      thirdPartyServices: '=thirdPartyServices', // bi-directional
       numberOfServices: '=numberOfServices',
+      autoPersonalization: '=autoPersonalization',
       min: '@min',
       max: '@max',
-      toolPco: '@toolPco'
+      widgetId: '@widgetId'
     },
-    link: function($scope, el, attrs) {
+    link: function($scope) {
       // set up functions
+      var addIncrement;
 
       $scope.isAutoPersonalized = function() {
-        return $scope.auto_personalization;
-      };
-
-      $scope.emptyPickedServiceList = function() {
-        $scope.pickedServices = [];
+        return $scope.autoPersonalization;
       };
 
       $scope.serviceAdded = function(service) {
@@ -56,6 +56,7 @@ appAddThisWordPress.directive('shareServicePicker', function(
         service.rank = -1;
       };
 
+      $scope.serviceOptions = [];
       var setServiceOptions = function(input) {
         var shareServices = angular.copy(input);
         shareServices.forEach(function(service, index) {
@@ -72,42 +73,65 @@ appAddThisWordPress.directive('shareServicePicker', function(
         });
       };
 
-      // do actual stuff
-      if (typeof $scope.pickedServices !== 'object') {
-        $scope.emptyPickedServiceList();
-      }
-      var addIncrement = $scope.pickedServices.length;
-
-      // in case the services load in late
-      $scope.$watch('pickedServices', function(newValue) {
-        if ((typeof newValue !== 'undefined') &&
-          $scope.auto_personalization === true &&
-          newValue.length > 0
-        ) {
-          $scope.auto_personalization = false;
-        }
-      });
-
       $scope.searchString = '';
 
-      if ($scope.pickedServices.length === 0) {
-        $scope.auto_personalization = true;
-      } else {
-        $scope.auto_personalization = false;
-      }
+      var setUpPickedServicesObject = function() {
+        var servicesPromise = setServiceDefaults();
+        servicesPromise.then(setServiceOptions);
 
-      $scope.serviceOptions = [];
-      // if the thirdParty attr is included, load third party services
-      var servicesPromise;
-      $scope.thirdParty = false;
-      if (typeof attrs.thirdParty !== 'undefined') {
-        servicesPromise = wordpress.thirdPartyGetShareServices();
-        $scope.thirdParty = true;
-      } else {
-        servicesPromise = wordpress.addThisGetShareServices();
-      }
+        addIncrement = $scope.pickedServices.length;
 
-      servicesPromise.then(setServiceOptions);
+        if (typeof $scope.autoPersonalization === 'undefined') {
+          if ($scope.thirdParty !== true && $scope.services.length === 0) {
+            $scope.autoPersonalization = true;
+          } else {
+            $scope.autoPersonalization = false;
+          }
+        }
+      };
+
+      var setServiceDefaults = function() {
+        var servicesPromise;
+
+        if ($scope.thirdParty === true) {
+          if (typeof $scope.thirdPartyServices === 'undefined') {
+            $scope.thirdPartyServices = [
+              'facebook_like',
+              'tweet',
+              'pinterest_pinit',
+              'google_plusone',
+              'counter'
+            ];
+          }
+          $scope.pickedServices = $scope.thirdPartyServices;
+          servicesPromise = $wordpress.thirdPartyGetShareServices();
+        } else {
+          if (typeof $scope.services === 'undefined') {
+            $scope.services = [
+              'facebook',
+              'twitter',
+              'email',
+              'pinterest_share',
+              'addthis'
+            ];
+          }
+          $scope.pickedServices = $scope.services;
+          servicesPromise = $wordpress.addThisGetShareServices();
+        }
+
+        return servicesPromise;
+      };
+
+      // populates the list of services and which input array to put results
+      // into based off of thirdParty boolean
+      $scope.$watch('thirdParty', function() {
+        setUpPickedServicesObject();
+      });
+
+      $scope.$watch('autoPersonalization', function() {
+        var servicesPromise = setServiceDefaults();
+        servicesPromise.then(setServiceOptions);
+      });
     },
     templateUrl: '/directives/shareServicePicker/shareServicePicker.html'
   };

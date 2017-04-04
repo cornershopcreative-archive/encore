@@ -324,9 +324,8 @@ if (!class_exists("pluginbuddy_dbreplace")) {
 			}
 			
 			$fields = $wpdb->get_results( "DESCRIBE `{$table}`", ARRAY_A );
-			$index_fields = '';  // Reset fields for each table.
-			$column_name = '';
-			$table_index = '';
+			$column_name = array();
+			$table_index = array();
 			$i = 0;
 			
 			$found_primary_key = false;
@@ -393,7 +392,7 @@ if (!class_exists("pluginbuddy_dbreplace")) {
 						}
 					
 						if ( isset( $table_index[$j] ) ) {
-							$WHERE_SQL = $WHERE_SQL . '`' . $current_column . '` = "' . $row[$current_column] . '" AND ';
+							$WHERE_SQL = $WHERE_SQL . '`' . $current_column . '` = "' . backupbuddy_core::dbEscape( $row[$current_column] ) . '" AND ';
 						}
 					}
 				

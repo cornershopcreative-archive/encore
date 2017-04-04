@@ -256,6 +256,9 @@ $backup_url .= '?page=pb_backupbuddy_backup';
 		echo '<span class="description">' . __( 'Remote site does not support deploying child theme. Update remote BackupBuddy.', 'it-l10n-backupbuddy' ) . '</span>';
 	}
 	
+	
+	
+	
 	?>
 	<br><br>
 	
@@ -269,6 +272,19 @@ $backup_url .= '?page=pb_backupbuddy_backup';
 	<?php pb_backupbuddy::nonce(); ?>
 	<input type="hidden" name="destination" value="<?php echo $destination_id; ?>">
 	<input type="hidden" name="deployData" value="<?php echo base64_encode( serialize( $deployData ) ); ?>">
+	
+	
+	<a class="button button-secondary" onclick="jQuery('.pb_backupbuddy_advanced').slideToggle();">Advanced Options</a>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<div class="pb_backupbuddy_advanced" style="display: none; margin-bottom: 15px; clear: both; background: rgb(229, 229, 229); padding: 15px; margin-top: 15px; border-radius: 10px;">
+		<label>Source chunk time limit: <input size="5" maxlength="5" type="text" name="sourceMaxExecutionTime" value="<?php echo $localInfo['php']['max_execution_time']; ?>"> sec</label>
+		<br>
+		<label>Destination chunk time limit: <input size="5" maxlength="5" type="text" name="destinationMaxExecutionTime" value="<?php echo $deployData['remoteInfo']['php']['max_execution_time']; ?>"> sec</label>
+		<br>
+		<label><input type="checkbox" name="doImportCleanup" value="true" checked="checked"> Cleanup importbuddy & log at end of Deployment</label>
+		<br>
+	</div>
+	
 	<input type="submit" name="submitForm" class="button button-primary" value="<?php
 	if ( 'pull' == $deployDirection ) {
 		_e('Begin Pull');
@@ -278,15 +294,6 @@ $backup_url .= '?page=pb_backupbuddy_backup';
 		echo '{Err3849374:UnknownDirection}';
 	}
 	?> &raquo;">
-	
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	
-	<a class="button button-secondary" onclick="jQuery('.pb_backupbuddy_advanced').toggle();">Advanced Options</a>
-	<span class="pb_backupbuddy_advanced" style="display: none; margin-left: 15px;">
-		<label>Source chunk time limit: <input size="5" maxlength="5" type="text" name="sourceMaxExecutionTime" value="<?php echo $localInfo['php']['max_execution_time']; ?>"> sec</label>
-		&nbsp;&nbsp;&nbsp;
-		<label>Destination chunk time limit: <input size="5" maxlength="5" type="text" name="destinationMaxExecutionTime" value="<?php echo $deployData['remoteInfo']['php']['max_execution_time']; ?>"> sec</label>
-	</span>
 	
 </form>
 

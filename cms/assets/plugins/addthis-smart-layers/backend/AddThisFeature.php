@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -129,8 +129,7 @@ if (!class_exists('AddThisFeature')) {
 
                 // tools w/o anonymous support don't get saved
                 // tools w/o settingsSubVariableName don't get saved
-                if ($toolObject->anonymousSupport &&
-                    isset($toolObject->settingsSubVariableName)
+                if (isset($toolObject->settingsSubVariableName)
                 ) {
                     $toolOutput = $toolObject->sanitizeSettings($toolInput);
                     $output[$subVariable] = $toolOutput;
@@ -171,7 +170,7 @@ if (!class_exists('AddThisFeature')) {
          * This must be public as it's used in a callback for add_menu_page and
          * add_submenu_page
          *
-         * Prints out the HTML too bootstrap this feature's settings page
+         * Prints out the HTML to bootstrap this feature's settings page
          *
          * @return null
          */
@@ -266,8 +265,7 @@ if (!class_exists('AddThisFeature')) {
          * AddThisWordPressPlugin::bootstrap
          *
          * This bootstraps this feature into wordpress, including creating the
-         * settings page, settings variable, registering widgets, adding short
-         * codes and adding a quick tag.
+         * settings page, settings variable, and adding short codes
          *
          * @return null
          */
@@ -282,12 +280,6 @@ if (!class_exists('AddThisFeature')) {
                 add_action('admin_init', array($this, 'registerSettingsVariable'));
                 $this->registerAjaxEndpoints();
             }
-
-            add_action('widgets_init', array($this, 'registerWidgets'));
-
-            $this->addShortCodes();
-
-            add_action('admin_print_footer_scripts', array($this, 'createQuickTag'));
 
             $this->registerContentFilters();
             $this->registerExcerptFilters();
@@ -418,55 +410,6 @@ if (!class_exists('AddThisFeature')) {
         }
 
         /**
-         * Determines if a widget with the passed class name has already been
-         * registered with WordPress
-         *
-         * @param string $widgetClassName the name of the class for a WordPress
-         * widget
-         *
-         * @return boolean true is the widget has already been registered, false
-         * if it has not
-         */
-        public static function existsWidget($widgetClassName)
-        {
-            if (empty($GLOBALS['wp_widget_factory'])) {
-                return false;
-            }
-
-            $widgets = array_keys($GLOBALS['wp_widget_factory']->widgets);
-
-            $exists = in_array($widgetClassName, $widgets);
-            return $exists;
-        }
-
-        /**
-         * Registers a tool widget, if it doesn't already exist.
-         *
-         * @param string $widgetClassName the name of the class for a WordPress
-         * widget
-         *
-         * @return null
-         */
-        public function registerWidget($widgetClassName)
-        {
-            if (!$this->existsWidget($widgetClassName)) {
-                register_widget($widgetClassName);
-            }
-        }
-
-        /**
-         * Determines if the Profile ID used on this website is for a PRO
-         * account or a basic one.
-         *
-         * @return boolean true for PRO account, false for a BASIC account
-         */
-        public function isProProfile()
-        {
-            $result = $this->globalOptionsObject->isProProfile();
-            return $result;
-        }
-
-        /**
          * Takes the tool name for a tool and returns the object for that tool
          *
          * @param string $toolName the name of the desired tool
@@ -489,154 +432,6 @@ if (!class_exists('AddThisFeature')) {
             }
 
             return $this->$toolObjectVariable;
-        }
-
-        /**
-         * This must be public as it's used in a callback for widgets_init
-         * action
-         *
-         * Adds a WordPress widget code for every enabled tool in this feature
-         * set
-         *
-         * @return null
-         */
-        public function registerWidgets()
-        {
-            foreach ($this->tools as $toolName) {
-                $widgetClassName = 'AddThis' . $toolName . 'Widget';
-                $toolObject = $this->getToolObject($toolName);
-
-                // if we're in anonymous mode only register stuff that works with it
-                if ($toolObject->inAnonymousMode()
-                    && !$toolObject->supportsAnonymousUse()
-                ) {
-                    continue;
-                }
-
-                // only register inline tools
-                if (!$toolObject->inlineTool()) {
-                    continue;
-                }
-
-                /**
-                 * For the sake of a less confusing UI, only show widgets that
-                 * currently work on the profile on the widgets page.
-                 * Unfortunately, we aren't just doing this on the widgits
-                 * screen because get_current_screen isn't available to us
-                 * until admin_init, at which point we can't unregister these
-                 * widgets. There's no harm in registering widgets on normal
-                 * pages even if they're not available for that profile, as the
-                 * AddThis client simply won't render them.
-                 */
-                if (is_admin() && !$toolObject->isAvailable()) {
-                    continue;
-                }
-
-                if (empty($widgetClassName)) {
-                    error_log(__METHOD__ . ' widget class name not defined for ' . $toolName);
-                    continue;
-                }
-
-                if (!class_exists($widgetClassName)) {
-                    error_log(__METHOD__ . ' class ' . $widgetClassName . ' does not exists.');
-                    continue;
-                }
-
-                if (!is_object($toolObject)) {
-                    error_log(__METHOD__ . ' could not load tool object for ' . $toolName);
-                    continue;
-                }
-
-                $this->registerWidget($widgetClassName);
-            }
-        }
-
-        /**
-         * Adds a WordPress short code for every enabled tool in this feature
-         * set. This must be public so that the minimum plugin can boostrap
-         * shortcodes.
-         *
-         * @return null
-         */
-        public function addShortCodes()
-        {
-            foreach ($this->tools as $toolName) {
-                $toolObject = $this->getToolObject($toolName);
-                $method = 'getInlineCodeForShortCode';
-
-                if (!is_object($toolObject)
-                    || !$toolObject->inlineTool()
-                    || $this->shortcodeExists($toolObject->shortCode)
-                ) {
-                    continue;
-                }
-
-                $callback = array($toolObject, $method);
-                add_shortcode($toolObject->shortCode, $callback);
-            }
-        }
-
-        /**
-         * Gets the tool to be used in the WordPress quicktag for this feature
-         * set.
-         *
-         * @return null|object
-         */
-        public function getQuickTagTool()
-        {
-            if (!isset($this->configs['quick_tag'])
-                || $this->configs['quick_tag'] == 'disabled'
-                || !in_array($this->configs['quick_tag'], $this->tools)
-            ) {
-                return null;
-            }
-
-            $toolObject = $this->getToolObject($this->configs['quick_tag']);
-
-            if ($toolObject->inlineTool() && $toolObject->isEnabled()) {
-                return $toolObject;
-            }
-
-            return null;
-        }
-
-        /**
-         * Prints out a snippet of JavaScript that adds a WordPress quick tag
-         * to the content edit screen for one tool from this feature set.
-         *
-         * @return null
-         */
-        public function createQuickTag()
-        {
-            if (!wp_script_is('quicktags')) {
-                return null;
-            }
-
-            $toolObject = $this-> getQuickTagTool();
-            if (!is_object($toolObject)) {
-                return null;
-            }
-
-            $javaScriptTemplate = '
-                <script type="text/javascript">
-                    QTags.addButton(\'%1$s\', \'%2$s\', \'%3$s\', \'%4$s\', \'%5$s\', \'%6$s\');
-                </script>
-            ';
-
-            $title = 'AddThis ' . $this->name;
-            $displayName = strtolower($this->name);
-
-            $javaScript = sprintf(
-                $javaScriptTemplate,
-                $this->quickTagId,
-                $displayName,
-                $toolObject->getShortCodeOpen(),
-                $toolObject->getShortCodeClose(),
-                $this->quickTagAccessKey,
-                $title
-            );
-
-            echo $javaScript;
         }
 
         /**
@@ -697,7 +492,13 @@ if (!class_exists('AddThisFeature')) {
             foreach ($this->tools as $toolName) {
                 $toolObject = $this->getToolObject($toolName);
 
-                if (!is_object($toolObject) || !$toolObject->isAvailable()) {
+                // we only save settings for tools in WordPress if that tool is
+                // available anonymously and the user is anonymous
+                // (isn't registered)
+                if (!is_object($toolObject) ||
+                    $this->globalOptionsObject->inRegisteredMode()
+
+                ) {
                     continue;
                 }
 
@@ -817,15 +618,15 @@ if (!class_exists('AddThisFeature')) {
 
             $this->checkForEditPermissions(true);
 
+            if (!empty($_REQUEST['data'])) {
+                $input = json_decode(stripslashes($_REQUEST['data']), true);
+            }
+
             if (!empty($required)) {
                 if (empty($_REQUEST['data'])) {
                     header('X-PHP-Response-Code: 400', true, 400);
                     die();
                 }
-
-                $input = $_REQUEST['data'];
-                $input = str_replace('\"', '"', $input);
-                $input = json_decode($input, true);
 
                 foreach ($required as $field) {
                     if ($field === 'nonce'
@@ -839,8 +640,6 @@ if (!class_exists('AddThisFeature')) {
                         die();
                     }
                 }
-            } else {
-                $input = array();
             }
 
             return $input;
@@ -866,7 +665,7 @@ if (!class_exists('AddThisFeature')) {
                 $jsonIndicator = substr($key, -5);
                 if (is_array($value) && $jsonIndicator == '_json') {
                     try {
-                        $phpVersion = explode(".", phpversion());
+                        $phpVersion = explode('.', phpversion());
                         // use JSON_UNESCAPED_SLASHES in php 5.4.0+
                         if ($phpVersion[0] > 5 ||
                             ($phpVersion[0] == 5 && $phpVersion[1] > 3)
@@ -1105,12 +904,13 @@ if (!class_exists('AddThisFeature')) {
         public function addSettingsPageScripts()
         {
             $this->killUnwantedScripts();
+            $settingPageProfileId = 'ra-584ec0ebef0525db';
 
             $bootstrapSettingsUrl = admin_url('admin-ajax.php') . '?action='.$this->adminJavaScriptAction;
             wp_enqueue_script('addthis_admin', $bootstrapSettingsUrl);
 
             $deps = array('addthis_admin');
-            $addThisWidgetUrl = $this->globalOptionsObject->getAddThisWidgetJavaScriptUrl();
+            $addThisWidgetUrl = $this->globalOptionsObject->getAddThisWidgetJavaScriptUrl($settingPageProfileId);
             wp_enqueue_script('addthis_widget', $addThisWidgetUrl, $deps);
 
             $settingsUiRoot = $this->globalOptionsObject->getSettingsUiBaseUrl();
@@ -1136,6 +936,9 @@ if (!class_exists('AddThisFeature')) {
             //wp_enqueue_style('addthis_ui_vendor', $cssRoot . 'vendor.min.css');
             wp_enqueue_style('addthis_admin_css', $cssRoot . 'addthis_wordpress_admin.min.css');
             wp_enqueue_style('roboto_font', 'https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,100italic,400italic|Roboto+Condensed&amp;lang=en');
+
+            $editorcss = includes_url('css/editor.min.css');
+            wp_enqueue_style('editor-buttons', $editorcss);
         }
 
         /**
@@ -1581,14 +1384,14 @@ if (!class_exists('AddThisFeature')) {
 
             /**
              * This filter allows users to hook into the plugin and disable
-             * automatically added sharing buttons on content both above and
+             * automatically added AddThis tools on content both above and
              * below
              */
             $enabled = $this->applyFilter($this->filterNamePrefix . 'enable', $enabled, $track);
 
             /**
              * This filter allows users to hook into the plugin and disable
-             * automatically added sharing buttons on content both above or
+             * automatically added AddThis tools on content either above or
              * below
              */
             $enabled = $this->applyFilter($filterName, $enabled, $track);
@@ -1679,20 +1482,6 @@ if (!class_exists('AddThisFeature')) {
         }
 
         /**
-         * Builds HTML for teling AddThis what URL to share for inline buttons
-         * rendered using the old client API
-         *
-         * @param array $track Optional. Used by reference. If the
-         * filter changes the value in any way the filter's name will be pushed
-         *
-         * @return string HTML attributes for telling AddThis what URL to share
-         */
-        public function getInlineClientApiAttributes(&$track = false)
-        {
-            return '';
-        }
-
-        /**
          * Returns HTML that AddThis client code will pick up and replace, using
          * layers
          *
@@ -1704,7 +1493,7 @@ if (!class_exists('AddThisFeature')) {
          */
         public function getHtmlForFilter($class, &$track = false)
         {
-            $htmlTemplate = '<div class="%1$s" %2$s></div>';
+            $htmlTemplate = '<div class="%1$s addthis_tool" %2$s></div>';
             $attrString = $this->getInlineLayersAttributes($track);
             $html = sprintf($htmlTemplate, $class, $attrString);
 
@@ -1714,6 +1503,25 @@ if (!class_exists('AddThisFeature')) {
             }
 
             return $html;
+        }
+
+        /**
+         * Checks if AddThis tools are disabled on this post via the meta box,
+         * and whether the meta box itself is even enabled
+         *
+         * @return boolean true for enabled, false for disabled
+         */
+        protected function metaBoxDisablesTools()
+        {
+            $configs = $this->globalOptionsObject->getConfigs();
+            if ($configs['addthis_per_post_enabled']) {
+                global $post;
+                $disabled = AddThisPlugin::metaBoxDisablesTools($post);
+            } else {
+                $disabled = false;
+            }
+
+            return $disabled;
         }
 
         /**
@@ -1733,8 +1541,12 @@ if (!class_exists('AddThisFeature')) {
                 return $inputHtml;
             }
 
+            // If the admin has disabled addthis tools on this post, do nothing
+            if ($this->metaBoxDisablesTools()) {
+                return $inputHtml;
+            }
+
             $track = array();
-            $attrs = array();
 
             $aboveEnabled = $this->enabledForContentAndLocation('above', $track);
             $belowEnabled = $this->enabledForContentAndLocation('below', $track);
@@ -1769,7 +1581,7 @@ if (!class_exists('AddThisFeature')) {
                 && $aboveClass
                 && strpos($inputHtml, $htmlComments['above']['search']) === false
             ) {
-                $outputHtml = $htmlComments['above']['comment'] . $aboveHtml . $outputHtml;
+                $outputHtml = $aboveHtml . $outputHtml . $htmlComments['above']['comment'];
             }
 
             // if it is enabled below and the class isn't falsey, and it wasn't
@@ -1798,22 +1610,91 @@ if (!class_exists('AddThisFeature')) {
         }
 
         /**
-         * The function shortcode_exists only works in WordPress 3.6.0+. We
-         * support 3.0.0+... making a function to fall back on the ugly hacky
-         * internal way of checking for this in older WordPress instances
+         * Builds the class used for sharing buttons above and below content on
+         * pages, posts, categories, archives and the homepage
          *
-         * @param string $tag the shortcode
+         * @param string $location Is this for a sharing button above or below
+         * content/excerpts?
          *
-         * @return boolean true if the shortcode exists, false if it does not
-         *
+         * @return string a class
          */
-        public function shortcodeExists($tag) {
-            if (function_exists('shortcode_exists')) {
-                return shortcode_exists($tag);
+        public function getDefaultClassForTypeAndLocation($location = 'above')
+        {
+            $pageTypeClean = AddThisTool::currentTemplateType();
+            switch ($pageTypeClean) {
+                case 'home':
+                    $appendClass = 'post-homepage';
+                    break;
+                case 'archives':
+                    $appendClass = 'post-arch-page';
+                    break;
+                case 'categories':
+                    $appendClass = 'post-cat-page';
+                    break;
+                case 'pages':
+                    $appendClass = 'post-page';
+                    break;
+                case 'posts':
+                    $appendClass = 'post';
+                    break;
+                default:
+                    $appendClass = false;
             }
 
-            global $shortcode_tags;
-            return isset($shortcode_tags[$tag]);
+            if ($location == 'above') {
+                $toolClass = 'at-above-' . $appendClass;
+            } else {
+                $toolClass = 'at-below-' . $appendClass;
+            }
+
+            if (!$appendClass) {
+                $toolClass = false;
+            }
+
+            return $toolClass;
         }
+
+        /**
+         * Figures out the URL to use when sharing a post or page and returns it.
+         *
+         * @param array $track Optional. Used by reference. If the
+         * filter changes the value in any way the filter's name will be pushed
+         *
+         * @return string a URL
+         */
+        public function getShareUrl(&$track = false)
+        {
+            $url = get_permalink();
+            /**
+             * This filter allows users to hook into the plugin and change the
+             * url used on an item. A flasey value will not add the data-url
+             * attribute
+             */
+            $url = $this->applyFilter('addthis_sharing_buttons_url', $url, $track);
+            return $url;
+        }
+
+        /**
+         * Figures out the title to use when sharing a post or page and returns
+         * it.
+         *
+         * @param array $track Optional. Used by reference. If the
+         * filter changes the value in any way the filter's name will be pushed
+         *
+         * @return string a title
+         */
+        public function getShareTitle(&$track = false)
+        {
+            $title = false;
+            /**
+             * This filter allows users to hook into the plugin and change the
+             * title used on an item. A flasey value will not add the data-title
+             * attribute
+             */
+            $title = $this->applyFilter('addthis_sharing_buttons_title', $title, $track);
+            $title = htmlspecialchars($title);
+            return $title;
+        }
+
     }
 }

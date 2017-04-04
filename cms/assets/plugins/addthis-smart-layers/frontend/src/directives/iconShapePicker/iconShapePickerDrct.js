@@ -1,11 +1,11 @@
-appAddThisWordPress.directive('iconShapePicker', function(wordpress) {
+appAddThisWordPress.directive('iconShapePicker', function($wordpress) {
   return {
     scope: {
       ngModel: '=ngModel', // bi-directional
       toolPco: '@toolPco'
     },
     controller: function($scope) {
-      $scope.templateBaseUrl = wordpress.templateBaseUrl();
+      $scope.templateBaseUrl = $wordpress.templateBaseUrl();
 
       $scope.fieldName = 'shape';
 

@@ -1,4 +1,7 @@
-appAddThisWordPress.directive('validateAddThisApiKey', function($q, wordpress) {
+appAddThisWordPress.directive('validateAddThisApiKey', function(
+  $q,
+  $wordpress
+) {
   return {
     require: 'ngModel',
     scope: {
@@ -17,7 +20,7 @@ appAddThisWordPress.directive('validateAddThisApiKey', function($q, wordpress) {
         if (scope.profileIdError === true) {
           def.reject();
         } else {
-          wordpress.addThisApiKeyCheck(scope.profileId, modelValue)
+          $wordpress.addThisApiKeyCheck(scope.profileId, modelValue)
           .then(function(data) {
             if (data.success) {
               def.resolve();

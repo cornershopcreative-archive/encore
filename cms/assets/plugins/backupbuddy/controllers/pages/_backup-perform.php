@@ -1315,13 +1315,17 @@ if ( 'deploy' == pb_backupbuddy::_GET( 'backupbuddy_backup' ) ) {
 		$deployData['sendTheme'] = false;
 	}
 	
-		if ( 'true' == pb_backupbuddy::_POST( 'sendChildTheme' ) ) {
+	if ( 'true' == pb_backupbuddy::_POST( 'sendChildTheme' ) ) {
 		$deployData['sendChildTheme'] = true;
 	} else {
 		$deployData['sendChildTheme'] = false;
 	}
 	
-	
+	if ( 'true' == pb_backupbuddy::_POST( 'doImportCleanup' ) ) {
+		$deployData['doImportCleanup'] = true;
+	} else {
+		$deployData['doImportCleanup'] = false;
+	}
 	
 	// Calculate plugin root directories we want to transfer.
 	$sendPlugins = pb_backupbuddy::_POST( 'sendPlugins' );
@@ -1366,6 +1370,12 @@ if ( 'deploy' == pb_backupbuddy::_GET( 'backupbuddy_backup' ) ) {
 		$deployData['sendMedia'] = true;
 	} else {
 		$deployData['sendMedia'] = false;
+	}
+	
+	if ( 'true' == pb_backupbuddy::_POST( 'doImportCleanup' ) ) {
+		$deployData['doImportCleanup'] = true;
+	} else {
+		$deployData['doImportCleanup'] = false;
 	}
 	
 	$deployData['destination_id'] = pb_backupbuddy::_POST( 'destination_id' );

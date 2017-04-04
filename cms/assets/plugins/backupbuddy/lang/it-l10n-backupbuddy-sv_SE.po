@@ -6220,7 +6220,7 @@ msgstr "Inaktivera filhantering"
 #: destinations/sftp/_configure.php:89
 #: destinations/stash/_configure.php:235
 #@ it-l10n-backupbuddy
-msgid "[Default: unchecked] - When checked, selecting this destination disables browsing or accessing files stored at this destination from within BackupBuddy."
+msgid "[[Default: unchecked] - When checked, selecting this destination disables browsing or accessing files stored at this destination from within BackupBuddy. NOTE: Once enabled this cannot be disabled without deleting and re-creating this destination."
 msgstr "[Default: oskyddad] - När ikryssad, val av denna destination inaktiverar bläddring eller åtkomst till filer som lagras på denna destination från BackupBuddy."
 
 #: destinations/dropbox/_manage.php:64

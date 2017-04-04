@@ -112,7 +112,7 @@ class FacetWP_Facet
         }
 
         // Sort the results by relevancy
-        if ( $this->is_search && 'default' == $sort_value ) {
+        if ( $this->is_search && 'default' == $sort_value && empty( $this->http_params['get']['orderby'] ) ) {
             $this->query_args['orderby'] = 'post__in';
         }
 
@@ -131,10 +131,21 @@ class FacetWP_Facet
         $this->query = new WP_Query( $this->query_args );
 
         // Debug
+        $debug = false;
+
         if ( defined( 'FACETWP_DEBUG' ) && FACETWP_DEBUG ) {
+            $debug = true;
+        }
+        elseif ( 'on' == FWP()->helper->get_setting( 'debug_mode', 'off' ) ) {
+            $debug = true;
+        }
+
+        if ( $debug ) {
             $output['settings']['debug'] = array(
                 'query_args'    => $this->query_args,
-                'sql'           => $this->query->request
+                'sql'           => $this->query->request,
+                'facets'        => $this->facets,
+                'template'      => $this->template,
             );
         }
 

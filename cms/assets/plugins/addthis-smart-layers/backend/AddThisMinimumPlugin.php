@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -35,7 +35,7 @@ if (!class_exists('AddThisMinimumPlugin')) {
      */
     class AddThisMinimumPlugin extends AddThisPlugin
     {
-        protected $version = '1.1.2';
+        protected $version = '3.0.0';
         protected $name = 'Website Tools by AddThis';
         protected $productPrefix = 'wpwt';
         protected $pluginSlug = 'addthis-all';
@@ -67,8 +67,7 @@ if (!class_exists('AddThisMinimumPlugin')) {
                 if (!$enabledByPlugin) {
                     $this->$objectVariable->registerContentFilters();
                     $this->$objectVariable->registerExcerptFilters();
-                    $this->$objectVariable->addShortCodes();
-                    add_action('widgets_init', array($this->$objectVariable, 'registerWidgets'));
+                    add_action('widgets_init', array($this, 'registerWidgets'));
                 }
             }
         }

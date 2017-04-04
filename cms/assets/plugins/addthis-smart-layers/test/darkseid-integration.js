@@ -3,11 +3,13 @@ var assert = require('chai').assert;
 var supertest = require('supertest');
 
 var environments = {
-  'prod':  'https://www.addthis.com/darkseid',
-  'uat':   'https://www-uat.addthis.com/darkseid',
-  'test':  'https://www-test.addthis.com/darkseid',
-  'dev':   'https://www-dev.addthis.com/darkseid',
-  'local': 'http://www-local.addthis.com/darkseid'
+  'prod':         'https://www.addthis.com/darkseid',
+  'uat':          'https://www-uat.addthis.com/darkseid',
+  'test':         'https://www-test.addthis.com/darkseid',
+  'dev':          'https://www-dev.addthis.com/darkseid',
+  'local':        'http://www-local.addthis.com/darkseid',
+  'jenkinsdev':   'http://ha-dev-www.clearspring.local/darkseid',
+  'jenkinstest':  'http://ha-test-www.clearspring.local/darkseid'
 };
 
 var darkseidUrl;
@@ -15,13 +17,20 @@ if (process.env.build_env && environments[process.env.build_env]) {
   darkseidUrl = environments[process.env.build_env];
 } else {
   darkseidUrl = environments.test;
+  // darkseidUrl = 'http://localhost:8019/darkseid'
 }
 
 var request = supertest(darkseidUrl);
 
 var json = 'application/json';
-var pco = 'wpf';
+var pco = 'wpsl';
 var version = '2.0.0';
+// the version of wpsl at which darkseid stops transforming boost configs for backward compatibility
+var followLegacyPcoLastVersion = '3.1.0';
+var recommendedLegacyPcoLastVersion = '3.1.0';
+var shareLegacyPcoLastVersion = '2.0.0';
+var shareConsolidatedVersion = '3.1.0';
+var newVersion = 'x.x.x';
 
 var getNewProfile = function(type, callback) {
   var username = 'julkaaddthis+integrationtests@gmail.com';
@@ -71,9 +80,9 @@ var confirmToolSettingsMatch = function(expectedSettings, returnedSettings) {
       expect(returnedSettings[field]).to.deep.include.members(expectedSettings[field]);
     } else if (Array.isArray(expectedSettings[field])) {
       assert.equal(expectedSettings[field].length, returnedSettings[field].length);
-      expect(returnedSettings[field]).to.include.members(expectedSettings[field]);
+      assert.deepEqual(expectedSettings[field], returnedSettings[field]);
     } else {
-      assert.equal(expectedSettings[field], returnedSettings[field]);
+      assert.deepEqual(expectedSettings[field], returnedSettings[field]);
     }
   });
 };
@@ -103,8 +112,20 @@ var checkBoostSettingsFormat = function(boostSettings, desiredToolPco) {
   return desiredToolSettings;
 };
 
+var getWidgetById = function(boostSettings, widgetId) {
+    var desiredToolSettings;
+
+    boostSettings.templates[0].widgets.forEach(function(toolSettings) {
+      if (widgetId === toolSettings.widgetId) {
+        desiredToolSettings = toolSettings;
+      }
+    });
+
+    return desiredToolSettings;
+}
+
 describe('WordPress compatibility check endpoint', function() {
-  this.timeout(5000);
+  this.timeout(15000);
   var unsupportedPluginVersions = {
     // Website Tools by AddThis
     'wpwt': [],
@@ -145,7 +166,7 @@ describe('WordPress compatibility check endpoint', function() {
 });
 
 describe('WordPress registration process on existing account', function() {
-  this.timeout(5000);
+  this.timeout(15000);
   var pubIdsOnProfile;
   var wptypePubId;
   var defaultPubId;
@@ -415,7 +436,7 @@ describe('WordPress registration process on existing account', function() {
 });
 
 describe('WordPress registration process on new account ', function() {
-  this.timeout(5000);
+  this.timeout(15000);
   var date = new Date();
   var dateString = date.getTime();
   var username = 'julkaaddthis+integrationtests'+dateString+'@gmail.com';
@@ -636,7 +657,7 @@ describe('WordPress registration process on new account ', function() {
 });
 
 describe('WordPress related post promoted URL functionality ', function() {
-  this.timeout(5000);
+  this.timeout(15000);
   var toolPco = 'smlre';
   var testUrl1 = 'https://addthis.com';
   var testUrl2 = 'http://example.com';
@@ -761,7 +782,7 @@ describe('WordPress related post promoted URL functionality ', function() {
 });
 
 describe('WordPress related boost get/update functionality ', function() {
-  this.timeout(5000);
+  this.timeout(15000);
   var pubId;
   var apiKey;
   var floatingToolPco = 'smlre'; // Recommended Content Footer
@@ -848,9 +869,9 @@ describe('WordPress related boost get/update functionality ', function() {
     });
   });
 
-  it('creates floating tool boost settings', function(done) {
+  it('creates floating tool recommended content footer boost settings', function(done) {
     request
-    .put('/plugins/'+pco+'/v/'+version+'/site/'+pubId+'/widget')
+    .put('/plugins/'+pco+'/v/'+recommendedLegacyPcoLastVersion+'/site/'+pubId+'/widget')
     .set('Authorization', apiKey)
     .set('Content-Type', json)
     .set('Accept', json)
@@ -863,9 +884,9 @@ describe('WordPress related boost get/update functionality ', function() {
     });
   });
 
-  it('confirms floating tool boost settings', function(done) {
+  it('confirms floating tool recommended content footer boost settings', function(done) {
     request
-    .get('/plugins/'+pco+'/v/'+version+'/site/'+pubId)
+    .get('/plugins/'+pco+'/v/'+recommendedLegacyPcoLastVersion+'/site/'+pubId)
     .set('Authorization', apiKey)
     .set('Accept', json)
     .expect(200)
@@ -876,9 +897,9 @@ describe('WordPress related boost get/update functionality ', function() {
     });
   });
 
-  it('changes floating tool boost settings', function(done) {
+  it('changes floating tool recommended content footer boost settings', function(done) {
     request
-    .put('/plugins/'+pco+'/v/'+version+'/site/'+pubId+'/widget')
+    .put('/plugins/'+pco+'/v/'+recommendedLegacyPcoLastVersion+'/site/'+pubId+'/widget')
     .set('Authorization', apiKey)
     .set('Content-Type', json)
     .set('Accept', json)
@@ -891,9 +912,9 @@ describe('WordPress related boost get/update functionality ', function() {
     });
   });
 
-  it('confirms floating tool has desired new boost settings', function(done) {
+  it('confirms floating tool recommended content footer has desired new boost settings', function(done) {
     request
-    .get('/plugins/'+pco+'/v/'+version+'/site/'+pubId)
+    .get('/plugins/'+pco+'/v/'+recommendedLegacyPcoLastVersion+'/site/'+pubId)
     .set('Authorization', apiKey)
     .set('Accept', json)
     .expect(200)
@@ -904,11 +925,11 @@ describe('WordPress related boost get/update functionality ', function() {
     });
   });
 
-  it('disables floating tool boost settings', function(done) {
+  it('disables floating tool recommended content footer boost settings', function(done) {
     updatedFloatingToolSettings.enabled  = false;
 
     request
-    .put('/plugins/'+pco+'/v/'+version+'/site/'+pubId+'/widget')
+    .put('/plugins/'+pco+'/v/'+recommendedLegacyPcoLastVersion+'/site/'+pubId+'/widget')
     .set('Authorization', apiKey)
     .set('Content-Type', json)
     .set('Accept', json)
@@ -921,9 +942,9 @@ describe('WordPress related boost get/update functionality ', function() {
     });
   });
 
-  it('confirms floating tool is disabled', function(done) {
+  it('confirms floating tool recommended content footer is disabled', function(done) {
     request
-    .get('/plugins/'+pco+'/v/'+version+'/site/'+pubId)
+    .get('/plugins/'+pco+'/v/'+recommendedLegacyPcoLastVersion+'/site/'+pubId)
     .set('Authorization', apiKey)
     .set('Accept', json)
     .expect(200)
@@ -934,9 +955,9 @@ describe('WordPress related boost get/update functionality ', function() {
     });
   });
 
-  it('creates inline tool boost settings', function(done) {
+  it('creates inline tool horizontal follow boost settings', function(done) {
     request
-    .put('/plugins/'+pco+'/v/'+version+'/site/'+pubId+'/widget')
+    .put('/plugins/'+pco+'/v/'+followLegacyPcoLastVersion+'/site/'+pubId+'/widget')
     .set('Authorization', apiKey)
     .set('Content-Type', json)
     .set('Accept', json)
@@ -949,9 +970,9 @@ describe('WordPress related boost get/update functionality ', function() {
     });
   });
 
-  it('confirms inline tool boost settings', function(done) {
+  it('confirms inline tool horizontal follow boost settings', function(done) {
     request
-    .get('/plugins/'+pco+'/v/'+version+'/site/'+pubId)
+    .get('/plugins/'+pco+'/v/'+followLegacyPcoLastVersion+'/site/'+pubId)
     .set('Authorization', apiKey)
     .set('Accept', json)
     .expect(200)
@@ -962,9 +983,9 @@ describe('WordPress related boost get/update functionality ', function() {
     });
   });
 
-  it('changes inline tool boost settings', function(done) {
+  it('changes inline tool horizontal follow boost settings', function(done) {
     request
-    .put('/plugins/'+pco+'/v/'+version+'/site/'+pubId+'/widget')
+    .put('/plugins/'+pco+'/v/'+followLegacyPcoLastVersion+'/site/'+pubId+'/widget')
     .set('Authorization', apiKey)
     .set('Content-Type', json)
     .set('Accept', json)
@@ -977,9 +998,9 @@ describe('WordPress related boost get/update functionality ', function() {
     });
   });
 
-  it('confirms inline tool has desired new boost settings', function(done) {
+  it('confirms inline tool horizontal follow has desired new boost settings', function(done) {
     request
-    .get('/plugins/'+pco+'/v/'+version+'/site/'+pubId)
+    .get('/plugins/'+pco+'/v/'+followLegacyPcoLastVersion+'/site/'+pubId)
     .set('Authorization', apiKey)
     .set('Accept', json)
     .expect(200)
@@ -990,11 +1011,11 @@ describe('WordPress related boost get/update functionality ', function() {
     });
   });
 
-  it('disable inline tool', function(done) {
+  it('disable inline horizontal follow tool', function(done) {
     updatedInlineToolSettings.enabled = false;
 
     request
-    .put('/plugins/'+pco+'/v/'+version+'/site/'+pubId+'/widget')
+    .put('/plugins/'+pco+'/v/'+followLegacyPcoLastVersion+'/site/'+pubId+'/widget')
     .set('Authorization', apiKey)
     .set('Content-Type', json)
     .set('Accept', json)
@@ -1007,9 +1028,9 @@ describe('WordPress related boost get/update functionality ', function() {
     });
   });
 
-  it('confirms inline tool is disabled', function(done) {
+  it('confirms inline tool horizontal follow is disabled', function(done) {
     request
-    .get('/plugins/'+pco+'/v/'+version+'/site/'+pubId)
+    .get('/plugins/'+pco+'/v/'+followLegacyPcoLastVersion+'/site/'+pubId)
     .set('Authorization', apiKey)
     .set('Accept', json)
     .expect(200)
@@ -1021,8 +1042,1381 @@ describe('WordPress related boost get/update functionality ', function() {
   });
 });
 
+describe('WordPress backward compatability pco translation for follow tools', function() {
+  this.timeout(15000);
+  var pubId;
+  var apiKey;
+  var newInlineFollowPCO = 'flwi';
+  var newFloatingFollowPCO = 'smlfw';
+  var inlineVerticalFollowWidgetId = Math.random().toString().substr(-4);
+  var inlineHorizontalFollowWidgetId = Math.random().toString().substr(-4);
+  var inlineCustomFollowWidgetId = Math.random().toString().substr(-4);
+  var followHeaderWidgetId = Math.random().toString().substr(-4);
+
+  var legacyInlineVerticalFollow = {
+    'id': 'flwv',
+    'widgetId': inlineVerticalFollowWidgetId,
+    'orientation': 'vertical',
+    'enabled': true,
+    'title': 'I am social',
+    'size': 'large',
+    'services': [
+      {
+        'service': 'facebook',
+        'usertype': 'id',
+        'id': 1234
+      },
+      {
+        'service': 'linkedin',
+        'usertype': 'company',
+        'id': 'addthis'
+      }
+    ]
+  };
+
+  var legacyInlineHorizontalFollow = {
+      'id': 'flwh',
+      'widgetId': inlineHorizontalFollowWidgetId,
+      'orientation': 'horizontal',
+      'enabled': true,
+      'title': 'I am social',
+      'size': 'large',
+      'services': [
+        {
+          'service': 'facebook',
+          'usertype': 'id',
+          'id': 1234
+        },
+        {
+          'service': 'linkedin',
+          'usertype': 'company',
+          'id': 'addthis'
+        }
+      ]
+  };
+
+  var legacyInlineCustomFollow = {
+      'id': 'cflwh',
+      'widgetId': inlineCustomFollowWidgetId,
+      'orientation': 'horizontal',
+      'enabled': true,
+      'title': 'I am social',
+      'size': 'large',
+      'theme': 'custom',
+      'iconColor': '#FFFFFF',
+      'services': [
+        {
+          'service': 'facebook',
+          'usertype': 'id',
+          'id': 1234
+        },
+        {
+          'service': 'linkedin',
+          'usertype': 'company',
+          'id': 'addthis'
+        }
+      ]
+  };
+
+  var legacyFollowHeader = {
+      'id': 'smlfw',
+      'widgetId': followHeaderWidgetId,
+      'enabled': true,
+      'theme': 'dark',
+      'title': 'I am social',
+      "thankyou": true,
+      "responsive": "979px",
+      'services': [
+        {
+          'service': 'facebook',
+          'usertype': 'id',
+          'id': 1234
+        },
+        {
+          'service': 'linkedin',
+          'usertype': 'company',
+          'id': 'addthis'
+        }
+      ],
+      "offset": {
+          "bottom": "0px"
+      },
+      '__hideOnUrls': [
+        'http://www.example.com/test1',
+        'http://www.example.com/test2'
+      ],
+      "__hideOnHomepage": false,
+  };
+
+  it('recieves empty boost settings for new pubid', function(done) {
+    getNewProfile('wp', function(aPubId, anApiKey) {
+      pubId = aPubId;
+      apiKey = anApiKey;
+      request
+      .get('/plugins/'+pco+'/v/'+version+'/site/'+pubId)
+      .set('Authorization', apiKey)
+      .set('Accept', json)
+      .expect(200)
+      .end(function(err, res) {
+        checkBoostSettingsFormat(res.body);
+        expect(res.body.templates).to.be.empty;
+        done(err, res);
+      });
+    });
+  });
+
+  it('creates legacy inline vertical follow tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+followLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyInlineVerticalFollow)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyInlineVerticalFollow.widgetId);
+      confirmToolSettingsMatch(legacyInlineVerticalFollow, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy inline vertical follow tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyInlineVerticalFollow.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newInlineFollowPCO);
+      expect(toolSettings.orientation).to.equal(legacyInlineVerticalFollow.orientation);
+      done(err, res);
+    });
+  });
+
+  it('creates legacy inline horizontal follow tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+followLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyInlineHorizontalFollow)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyInlineHorizontalFollow.widgetId);
+      confirmToolSettingsMatch(legacyInlineHorizontalFollow, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy inline horizontal follow tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyInlineHorizontalFollow.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newInlineFollowPCO);
+      expect(toolSettings.orientation).to.equal(legacyInlineHorizontalFollow.orientation);
+      done(err, res);
+    });
+  });
+
+  it('creates legacy inline custom follow tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+followLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyInlineCustomFollow)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyInlineCustomFollow.widgetId);
+      confirmToolSettingsMatch(legacyInlineCustomFollow, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy inline custom follow tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyInlineCustomFollow.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newInlineFollowPCO);
+      expect(toolSettings.orientation).to.equal(legacyInlineCustomFollow.orientation);
+      done(err, res);
+    });
+  });
+
+  it('creates legacy follow header tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+version+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyFollowHeader)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyFollowHeader.widgetId);
+      confirmToolSettingsMatch(legacyFollowHeader, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy follow header tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyFollowHeader.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newFloatingFollowPCO);
+      expect(toolSettings.title).to.equal(legacyInlineCustomFollow.title);
+      done(err, res);
+    });
+  });
+});
+
+describe('WordPress backward compatability pco translation for related post tools', function() {
+  this.timeout(15000);
+  var pubId;
+  var apiKey;
+  var newRelatedPostSliderPCO = 'rpsl';
+  var newRelatedPostInlinePCO = 'rpin';
+  var newRelatedPostFooterPCO = 'rpfo';
+  var recContentHorizontalWidgetId = Math.random().toString().substr(-4);
+  var recContentVerticalWidgetId = Math.random().toString().substr(-4);
+  var recContentFooterWidgetId = Math.random().toString().substr(-4);
+  var recContentJumboWidgetId = Math.random().toString().substr(-4);
+  var recContentDrawerWidgetId = Math.random().toString().substr(-4);
+  var whatsNextWidgetId = Math.random().toString().substr(-4);
+  var whatsNextMobileWidgetId = Math.random().toString().substr(-4);
+  var toasterWidgetId = Math.random().toString().substr(-4);
+
+  var legacyWhatsNext = {
+      "id": "smlwn",
+      "enabled": true,
+      "widgetId": whatsNextWidgetId,
+      "offset": {
+          "right": "0px"
+      },
+      "responsive": "979px",
+      "theme": "light",
+      "title": "Recommended for you",
+      "__hideOnHomepage": false,
+      "scrollDepth": 25
+  };
+
+  var legacyWhatsNextMobile = {
+      "id": "wnm",
+      "enabled": true,
+      "widgetId": whatsNextMobileWidgetId,
+      "theme": "light",
+      "title": "Recommended for you",
+      "__hideOnHomepage": false,
+      "scrollDepth": 25
+  }
+
+  var legacyToaster = {
+      "id": "tst",
+      "enabled": true,
+      "widgetId": toasterWidgetId,
+      "offset": {
+          "left": "0px"
+      },
+      "responsive": "979px",
+      "theme": "dark",
+      "title": "Recommended for you",
+      "__hideOnHomepage": false,
+      "scrollDepth": 25
+  };
+
+  var legacyRecContentInlineHorizontal = {
+      "id": "smlrebh",
+      "enabled": true,
+      "widgetId": recContentHorizontalWidgetId,
+      "orientation": "horizontal",
+      "numrows": 1,
+      "elements": ".addthis_recommended_horizontal",
+      "theme": "transparent",
+      "maxitems": 4,
+      "title": "Recommended for you"
+  };
+
+  var legacyRecContentInlineVertical = {
+      "id": "smlrebv",
+      "enabled": true,
+      "widgetId": recContentVerticalWidgetId,
+      "orientation": "vertical",
+      "numrows": 1,
+      "elements": ".addthis_recommended_vertical",
+      "theme": "transparent",
+      "maxitems": 4,
+      "title": "Recommended for you"
+  };
+
+  var legacyRecContentFooter = {
+      "id": "smlre",
+      "enabled": true,
+      "widgetId": recContentFooterWidgetId,
+      "numrows": 1,
+      "theme": "light",
+      "title": "Recommended for you",
+      "maxitems": 3,
+      "__hideOnHomepage": false
+  };
+
+  var legacyRecContentDrawerFooter = {
+      "id": "cod",
+      "enabled": true,
+      "widgetId": recContentDrawerWidgetId,
+      "title": "Recommended for you",
+      "position": "left",
+      "theme": "dark",
+      "animationType": "push",
+      "__hideOnHomepage": false,
+      '__hideOnUrls': [
+        'http://www.example.com/test1',
+        'http://www.example.com/test2'
+      ]
+  };
+
+  var legacyRecContentJumboFooter = {
+      "id": "jrcf",
+      "enabled": true,
+      "widgetId": recContentJumboWidgetId,
+      "responsive": "460px",
+      "elements": "",
+      "title": "Recommended for you",
+      "__hideOnHomepage": false
+  };
+
+  it('recieves empty boost settings for new pubid', function(done) {
+    getNewProfile('wp', function(aPubId, anApiKey) {
+      pubId = aPubId;
+      apiKey = anApiKey;
+      request
+      .get('/plugins/'+pco+'/v/'+version+'/site/'+pubId)
+      .set('Authorization', apiKey)
+      .set('Accept', json)
+      .expect(200)
+      .end(function(err, res) {
+        checkBoostSettingsFormat(res.body);
+        expect(res.body.templates).to.be.empty;
+        done(err, res);
+      });
+    });
+  });
+
+  it('creates legacy whats next tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+recommendedLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyWhatsNext)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyWhatsNext.widgetId);
+      confirmToolSettingsMatch(legacyWhatsNext, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy whats next tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyWhatsNext.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newRelatedPostSliderPCO);
+      expect(toolSettings.numPosts).to.equal(1);
+      expect(toolSettings.desktopPosition).to.equal('right');
+      expect(toolSettings.mobilePosition).to.equal('hide');
+      done(err, res);
+    });
+  });
+
+  it('creates legacy whats next mobile tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+recommendedLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyWhatsNextMobile)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyWhatsNextMobile.widgetId);
+      confirmToolSettingsMatch(legacyWhatsNextMobile, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy whats next mobile tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyWhatsNextMobile.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newRelatedPostSliderPCO);
+      expect(toolSettings.numPosts).to.equal(1);
+      expect(toolSettings.desktopPosition).to.equal('hide');
+      expect(toolSettings.mobilePosition).to.equal('bottom');
+      done(err, res);
+    });
+  });
+
+  it('creates legacy toaster tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+recommendedLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyToaster)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyToaster.widgetId);
+      confirmToolSettingsMatch(legacyToaster, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy toaster tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyToaster.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newRelatedPostSliderPCO);
+      expect(toolSettings.numPosts).to.equal(2);
+      expect(toolSettings.desktopPosition).to.equal('left');
+      expect(toolSettings.mobilePosition).to.equal('hide');
+      done(err, res);
+    });
+  });
+
+  it('creates legacy inline horizontal rec content tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+recommendedLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyRecContentInlineHorizontal)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyRecContentInlineHorizontal.widgetId);
+      confirmToolSettingsMatch(legacyRecContentInlineHorizontal, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy inline horizontal rec content tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyRecContentInlineHorizontal.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newRelatedPostInlinePCO);
+      expect(toolSettings.orientation).to.equal(legacyRecContentInlineHorizontal.orientation);
+      done(err, res);
+    });
+  });
+
+  it('creates legacy inline vertical rec content tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+recommendedLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyRecContentInlineVertical)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyRecContentInlineVertical.widgetId);
+      confirmToolSettingsMatch(legacyRecContentInlineVertical, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy inline vertical rec content tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyRecContentInlineVertical.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newRelatedPostInlinePCO);
+      expect(toolSettings.orientation).to.equal(legacyRecContentInlineVertical.orientation);
+      done(err, res);
+    });
+  });
+
+  it('creates legacy rec content footer tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+recommendedLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyRecContentFooter)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyRecContentFooter.widgetId);
+      confirmToolSettingsMatch(legacyRecContentFooter, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying rec content footer tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyRecContentFooter.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newRelatedPostFooterPCO);
+      expect(toolSettings.style).to.equal('standard');
+      done(err, res);
+    });
+  });
+
+  it('creates legacy rec content jumbo footer tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+recommendedLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyRecContentJumboFooter)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyRecContentJumboFooter.widgetId);
+      confirmToolSettingsMatch(legacyRecContentJumboFooter, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying rec content jumbo footer tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyRecContentJumboFooter.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newRelatedPostFooterPCO);
+      expect(toolSettings.style).to.equal('jumbo');
+      done(err, res);
+    });
+  });
+
+  it('creates legacy rec content drawer footer tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+version+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyRecContentDrawerFooter)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyRecContentDrawerFooter.widgetId);
+      confirmToolSettingsMatch(legacyRecContentDrawerFooter, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying rec content jumbo footer tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyRecContentDrawerFooter.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(legacyRecContentDrawerFooter.id);
+      done(err, res);
+    });
+  });
+});
+
+// Depreciation info:
+// Not used after wpsl-2.0.0, wpf-3.0.0, wpwt-1.1.2, wprp-1.0.0
+// never used in wpp
+describe('WordPress backward compatability pco translation for share tools (depricated after wpsl-2.0.0, wpf-3.0.0, wpwt-1.1.2, wprp-1.0.0)', function() {
+  this.timeout(15000);
+  var newInlineSharingPCO = 'shin';
+  var newShareingSidebarPCO = 'shfs';
+  var legacyOriginalShareButtonsId = Math.random().toString().substr(-4);
+  var legacyShareButtonsId = Math.random().toString().substr(-4);
+  var legacyCustomShareButtonsId = Math.random().toString().substr(-4);
+  var legacyResponsiveShareButtonsId = Math.random().toString().substr(-4);
+  var legacyJumboShareCounterId = Math.random().toString().substr(-4);
+  var legacySharingSidebarId = Math.random().toString().substr(-4);
+  var legacyCustomSharingSidebarId = Math.random().toString().substr(-4);
+  var legacyMobileSharingDockId = Math.random().toString().substr(-4);
+  var legacyCustomMobileSharingDockId = Math.random().toString().substr(-4);
+  var legacyMobileToolbarId = Math.random().toString().substr(-4);
+
+  var legacyOriginalShareButtons = {
+      widgetId: legacyOriginalShareButtonsId,
+      "id": "scopl",
+      "enabled": true,
+      "widgetId": "0sps",
+      "thirdPartyButtons": "true",
+      "elements": ".addthis_native_toolbox",
+      "services": "tweet,google_plusone,counter,pinterest_pinit"
+  };
+
+  var legacyShareButtons = {
+      widgetId: legacyShareButtonsId,
+      "id": "tbx",
+      "enabled": true,
+      "numPreferredServices": 5,
+      "size": "large",
+      "counts": false,
+      "elements": ".addthis_sharing_toolbox,.at-above-post-page",
+      "services": "facebook,twitter,pinterest,linkedin,addthis"
+  };
+
+  var legacyCustomShareButtons = {
+      widgetId: legacyCustomShareButtonsId,
+      "id": "ctbx",
+      "enabled": true,
+      "elements": ".addthis_custom_sharing",
+      "theme": "custom",
+      "shape": "rounded",
+      "background": "#E74339"
+  };
+
+  var legacyResponsiveShareButtons = {
+      widgetId: legacyResponsiveShareButtonsId,
+      "id": "resh",
+      "enabled": true,
+      "counts": "none",
+      "elements": ".addthis_responsive_sharing",
+      "responsive": "",
+      "services": ""
+  };
+
+  var legacyJumboShareCounter = {
+      widgetId: legacyJumboShareCounterId,
+      "id": "jsc",
+      "enabled": true,
+      "elements": ".addthis_jumbo_share"
+  };
+
+  var legacySharingSidebar = {
+      widgetId: legacySharingSidebarId,
+      "id": "smlsh",
+      "enabled": false,
+      "hideEmailSharingConfirmation": false,
+      "thankyou": true,
+      "postShareRecommendedMsg": "Recommended for you",
+      "offset": {
+          "top": "20%"
+      },
+      "counts": false,
+      "shareCountThreshold": 10,
+      "mobile": false,
+      "title": "Recommended for you",
+      "__hideOnHomepage": false,
+      "animationType": "overlay",
+      "numPreferredServices": 5,
+      "responsive": "979px",
+      "postShareFollowMsg": "Follow",
+      "theme": "dark",
+      "position": "right",
+      "postShareTitle": "Thanks for sharing!"
+  };
+
+  var legacyCustomSharingSidebar = {
+      widgetId: legacyCustomSharingSidebarId,
+      "id": "csmlsh",
+      "enabled": true,
+      "backgroundColor": "#FFFFFF",
+      "thankyou": true,
+      "postShareRecommendedMsg": "Recommended for you",
+      "offset": {
+          "top": "20%"
+      },
+      "counts": true,
+      "shareCountThreshold": 10,
+      "label": "SHARES",
+      "textColor": "#A8CE50",
+      "__hideOnHomepage": false,
+      "numPreferredServices": 5,
+      "responsive": "736px",
+      "postShareFollowMsg": "Follow",
+      "iconColor": "#FFFFFF",
+      "position": "right",
+      "postShareTitle": "Thanks for sharing!"
+  };
+
+  var legacyMobileSharingDock = {
+      widgetId: legacyMobileSharingDockId,
+      "id": "msd",
+      "enabled": true,
+      "numPreferredServices": 3,
+      "hideEmailSharingConfirmation": false,
+      "counts": true,
+      "shareCountThreshold": 10,
+      "responsive": "",
+      "services": "",
+      "position": "bottom",
+      "__hideOnHomepage": false
+  };
+
+  var legacyCustomMobileSharingDock = {
+      widgetId: legacyCustomMobileSharingDockId,
+      "id": "cmtb",
+      "enabled": true,
+      "numPreferredServices": 4,
+      "hideEmailSharingConfirmation": false,
+      "backgroundColor": "#FFFFFF",
+      "borderRadius": "20%",
+      "counts": true,
+      "shareCountThreshold": 10,
+      "responsive": "979px",
+      "iconColor": "#FFFFFF",
+      "label": "SHARES",
+      "position": "top",
+      "textColor": "#000000",
+      "__hideOnHomepage": false
+  };
+
+  var legacyMobileToolbar = {
+      widgetId: legacyMobileToolbarId,
+      "id": "smlmo",
+      "enabled": true,
+      "responsive": "979px",
+      "position": "bottom",
+      "buttonBarTheme": "dark",
+      "follow": "on",
+      "followServices": [
+        {
+          'service': 'facebook',
+          'usertype': 'id',
+          'id': 1234
+        },
+        {
+          'service': 'linkedin',
+          'usertype': 'company',
+          'id': 'addthis'
+        }
+      ],
+      "__hideOnHomepage": false,
+      '__hideOnUrls': [
+        'http://www.example.com/test1',
+        'http://www.example.com/test2'
+      ]
+  };
+
+  it('recieves empty boost settings for new pubid', function(done) {
+    getNewProfile('wp', function(aPubId, anApiKey) {
+      pubId = aPubId;
+      apiKey = anApiKey;
+      request
+      .get('/plugins/'+pco+'/v/'+version+'/site/'+pubId)
+      .set('Authorization', apiKey)
+      .set('Accept', json)
+      .expect(200)
+      .end(function(err, res) {
+        checkBoostSettingsFormat(res.body);
+        expect(res.body.templates).to.be.empty;
+        done(err, res);
+      });
+    });
+  });
+
+  it('creates legacy sharing buttons tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyShareButtons)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyShareButtons.widgetId);
+      confirmToolSettingsMatch(legacyShareButtons, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying sharing buttons tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyShareButtons.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newInlineSharingPCO);
+      expect(toolSettings.style).to.equal('fixed');
+      expect(toolSettings.counts).to.equal('none');
+      expect(toolSettings.size).to.equal('32px');
+      expect(toolSettings.responsive).to.equal('0px');
+      done(err, res);
+    });
+  });
+
+  it('creates legacy orginal sharing buttons tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyOriginalShareButtons)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyOriginalShareButtons.widgetId);
+      confirmToolSettingsMatch(legacyOriginalShareButtons, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying orginal sharing buttons tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyOriginalShareButtons.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newInlineSharingPCO);
+      expect(toolSettings.style).to.equal('original');
+      expect(toolSettings.thirdPartyButtons).to.equal(true);
+      expect(toolSettings.originalServices).to.equal(legacyOriginalShareButtons.services);
+      done(err, res);
+    });
+  });
+
+  it('creates legacy custom sharing buttons tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyCustomShareButtons)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyCustomShareButtons.widgetId);
+      confirmToolSettingsMatch(legacyCustomShareButtons, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying custom sharing buttons tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyCustomShareButtons.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newInlineSharingPCO);
+      expect(toolSettings.style).to.equal('fixed');
+      expect(toolSettings.borderRadius).to.equal('12%');
+      expect(toolSettings.buttonColor).to.equal(legacyCustomShareButtons.background);
+      done(err, res);
+    });
+  });
+
+  it('creates legacy responsive sharing buttons tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyResponsiveShareButtons)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyResponsiveShareButtons.widgetId);
+      confirmToolSettingsMatch(legacyResponsiveShareButtons, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy sharing buttons tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyResponsiveShareButtons.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newInlineSharingPCO);
+      expect(toolSettings.style).to.equal('responsive');
+      done(err, res);
+    });
+  });
+
+  it('creates legacy jumbo share counter tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyJumboShareCounter)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyJumboShareCounter.widgetId);
+      confirmToolSettingsMatch(legacyJumboShareCounter, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy jumbo share counter tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyJumboShareCounter.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newInlineSharingPCO);
+      expect(toolSettings.style).to.equal('responsive');
+      expect(toolSettings.counts).to.equal('jumbo');
+      done(err, res);
+    });
+  });
+
+  it('creates legacy sharing sidebar tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacySharingSidebar)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacySharingSidebar.widgetId);
+      confirmToolSettingsMatch(legacySharingSidebar, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy sharing sidebar tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacySharingSidebar.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newShareingSidebarPCO);
+      expect(toolSettings.style).to.equal('modern');
+      expect(toolSettings.mobilePosition).to.equal('hide');
+      expect(toolSettings.desktopPosition).to.equal(legacySharingSidebar.position);
+      done(err, res);
+    });
+  });
+
+  it('creates legacy custom sharing sidebar tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyCustomSharingSidebar)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyCustomSharingSidebar.widgetId);
+      confirmToolSettingsMatch(legacyCustomSharingSidebar, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy custom sharing sidebar tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyCustomSharingSidebar.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newShareingSidebarPCO);
+      expect(toolSettings.style).to.equal('bordered');
+      expect(toolSettings.mobilePosition).to.equal('hide');
+      expect(toolSettings.desktopPosition).to.equal(legacyCustomSharingSidebar.position);
+      done(err, res);
+    });
+  });
+
+  it('creates legacy mobile sharing dock tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyMobileSharingDock)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyMobileSharingDock.widgetId);
+      confirmToolSettingsMatch(legacyMobileSharingDock, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy custom sharing sidebar tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyMobileSharingDock.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newShareingSidebarPCO);
+      expect(toolSettings.style).to.equal('modern');
+      expect(toolSettings.desktopPosition).to.equal('hide');
+      expect(toolSettings.mobilePosition).to.equal(legacyMobileSharingDock.position);
+      done(err, res);
+    });
+  });
+
+  it('creates legacy custom mobile sharing dock tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyCustomMobileSharingDock)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyCustomMobileSharingDock.widgetId);
+      confirmToolSettingsMatch(legacyCustomMobileSharingDock, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy custom sharing sidebar tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyCustomMobileSharingDock.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(newShareingSidebarPCO);
+      expect(toolSettings.style).to.equal('bordered');
+      expect(toolSettings.desktopPosition).to.equal('hide');
+      expect(toolSettings.mobilePosition).to.equal(legacyCustomMobileSharingDock.position);
+      done(err, res);
+    });
+  });
+
+  it('creates legacy mobile toolbar tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareLegacyPcoLastVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyMobileToolbar)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyMobileToolbar.widgetId);
+      confirmToolSettingsMatch(legacyMobileToolbar, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy custom sharing sidebar tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+newVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyMobileToolbar.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(legacyMobileToolbar.id);
+      done(err, res);
+    });
+  });
+});
+
+describe('Multi-tool support (new consoidated PCO) for Share Tools', function() {
+  this.timeout(15000);
+  var americaInlineShareId1 = Math.random().toString().substr(-4);
+  var americaInlineShareId2 = Math.random().toString().substr(-4);
+  var americaFloatingShareId = Math.random().toString().substr(-4);
+  var legacyMobileToolbarId = Math.random().toString().substr(-4);
+
+  var americaInlineShareTool1 = {
+      widgetId: americaInlineShareId1,
+      'id': 'shin',
+      'enabled': true,
+      'countsFontSize': '60px',
+      'hideEmailSharingConfirmation': false,
+      //'counts': false,
+      //'counts': 'none',
+      'shareCountThreshold': 10,
+      'originalServices':
+        'facebook_like,tweet,pinterest_pinit,google_plusone,counter',
+      'label': 'SHARES',
+      '__hideOnHomepage': false,
+      'numPreferredServices': 3,
+      'size': 'large',
+      'titleFontSize': '18px',
+      'responsive': 979,
+      'elements': [
+          '.addthis_inline_share_toolbox'
+      ],
+      'counterColor': '#666666',
+      'iconColor': '#FFFFFF',
+      'creationTimestamp': 1480537145011,
+      'hideDevice': 'none'
+  };
+
+  var americaInlineShareTool2 = {
+      widgetId: americaInlineShareId2,
+      'id': 'shin',
+      'enabled': true,
+      'countsFontSize': '60px',
+      'hideEmailSharingConfirmation': false,
+      //'counts': false,
+      //'counts': 'none',
+      'shareCountThreshold': 5,
+      'originalServices':
+        'facebook_like,tweet,pinterest_pinit,google_plusone,counter',
+      'label': 'SHARES',
+      '__hideOnHomepage': false,
+      'numPreferredServices': 9,
+      'size': 'large',
+      'titleFontSize': '18px',
+      'responsive': 979,
+      'elements': [
+          '.addthis_inline_share_toolbox_2'
+      ],
+      'counterColor': '#666666',
+      'iconColor': '#FFFFFF',
+      'creationTimestamp': 1480537145012,
+      'hideDevice': 'none'
+  };
+
+  var americaFloatingShareTool = {
+      widgetId: americaFloatingShareId,
+      'id': 'shfs',
+      'enabled': true,
+      'hideEmailSharingConfirmation': false,
+      //'counts': false,
+      //'counts': 'none',
+      'shareCountThreshold': 10,
+      'desktopPosition': 'left',
+      'creationTimestamp': 1480453303892,
+      'mobilePosition': 'bottom',
+      'postShareTitle': 'Thanks for sharing!',
+      'hideLabel': false,
+      'toolName': 'Sidebar',
+      'backgroundColor': '#FFFFFF',
+      'thankyou': true,
+      'postShareRecommendedMsg': 'Recommended for you',
+      'offset': {
+          'location': 'top',
+          'amount': 20,
+          'unit': '%'
+      },
+      'label': '',
+      'textColor': '#222222',
+      '__hideOnHomepage': false,
+      'numPreferredServices': 5,
+      'borderRadius': '0%',
+      'responsive': 979,
+      'postShareFollowMsg': 'Follow',
+      'iconColor': '#FFFFFF',
+      'style': 'modern',
+      'position': 'left'
+  };
+
+  var legacyMobileToolbar = {
+      widgetId: legacyMobileToolbarId,
+      "id": "smlmo",
+      "enabled": true,
+      "responsive": "979px",
+      "position": "bottom",
+      "buttonBarTheme": "dark",
+      "follow": "on",
+      "followServices": [
+        {
+          'service': 'facebook',
+          'usertype': 'id',
+          'id': 1234
+        },
+        {
+          'service': 'linkedin',
+          'usertype': 'company',
+          'id': 'addthis'
+        }
+      ],
+      "__hideOnHomepage": false,
+      '__hideOnUrls': [
+        'http://www.example.com/test1',
+        'http://www.example.com/test2'
+      ]
+  };
+
+  it('recieves empty boost settings for new pubid', function(done) {
+    getNewProfile('wp', function(aPubId, anApiKey) {
+      pubId = aPubId;
+      apiKey = anApiKey;
+      request
+      .get('/plugins/'+pco+'/v/'+version+'/site/'+pubId)
+      .set('Authorization', apiKey)
+      .set('Accept', json)
+      .expect(200)
+      .end(function(err, res) {
+        checkBoostSettingsFormat(res.body);
+        expect(res.body.templates).to.be.empty;
+        done(err, res);
+      });
+    });
+  });
+
+  it('creates 1st consolidated inline share tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareConsolidatedVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(americaInlineShareTool1)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, americaInlineShareTool1.widgetId);
+      expect(toolSettings).to.be.a('object');
+      done(err, res);
+    });
+  });
+
+  it('saves expected pco outside legacy transformations for consolidated inline share tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+shareConsolidatedVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, americaInlineShareTool1.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(americaInlineShareTool1.id);
+      assert.deepEqual(toolSettings, americaInlineShareTool1);
+      done(err, res);
+    });
+  });
+
+  it('creates 2nd consolidated inline share tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareConsolidatedVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(americaInlineShareTool2)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, americaInlineShareTool2.widgetId);
+      expect(toolSettings).to.be.a('object');
+
+      // we should also be able to find americaInlineShareTool1 in the response
+      var toolSettings = getWidgetById(res.body, americaInlineShareTool1.widgetId);
+      expect(toolSettings).to.be.a('object');
+
+      done(err, res);
+    });
+  });
+
+  it('creates consolidated floating share tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareConsolidatedVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(americaFloatingShareTool)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, americaFloatingShareTool.widgetId);
+      expect(toolSettings).to.be.a('object');
+      done(err, res);
+    });
+  });
+
+  it('saves expected pco outside legacy transformations for consolidated floating share tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+shareConsolidatedVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, americaFloatingShareTool.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(americaFloatingShareTool.id);
+      assert.deepEqual(toolSettings, americaFloatingShareTool);
+      done(err, res);
+    });
+  });
+
+  it('creates legacy mobile toolbar tool', function(done) {
+    request
+    .put('/plugins/'+pco+'/v/'+shareConsolidatedVersion+'/site/'+pubId+'/widget')
+    .set('Authorization', apiKey)
+    .set('Content-Type', json)
+    .set('Accept', json)
+    .send(legacyMobileToolbar)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyMobileToolbar.widgetId);
+      confirmToolSettingsMatch(legacyMobileToolbar, toolSettings);
+      done(err, res);
+    });
+  });
+
+  it('rewrites pco of underlying legacy custom sharing sidebar tool', function(done) {
+    request
+    .get('/plugins/'+pco+'/v/'+shareConsolidatedVersion+'/site/'+pubId)
+    .set('Authorization', apiKey)
+    .set('Accept', json)
+    .expect(200)
+    .end(function(err, res) {
+      var toolSettings = getWidgetById(res.body, legacyMobileToolbar.widgetId);
+      expect(toolSettings).to.be.a('object');
+      expect(toolSettings.id).to.equal(legacyMobileToolbar.id);
+      done(err, res);
+    });
+  });
+});
+
 describe('Look up subscription type for PRO and not Pro pubids ', function() {
-  this.timeout(5000);
+  this.timeout(15000);
   var basicPubId;
   var proPubId = 'atblog';
 

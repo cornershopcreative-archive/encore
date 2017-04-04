@@ -1,6 +1,6 @@
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -31,21 +31,17 @@
 .atwidget iframe {
     max-width: none;
 }
-div.at-above-post-homepage a,
-div.at-below-post-homepage a,
-div.at-above-post a,
-div.at-below-post a,
-div.at-above-post-page a,
-div.at-below-post-page a,
-div.at-above-post-cat-page a,
-div.at-below-post-cat-page a,
-div.at-above-post-arch-page a,
-div.at-below-post-arch-page a,
+div.addthis_tool a,
+div.addthis_tool a:hover,
 div.addthis_toolbox a,
+div.addthis_toolbox a:hover,
 div.addthis_native_toolbox a,
-a.at-share-btn {
+div.addthis_native_toolbox a:hover,
+a.at-share-btn,
+a.at-share-btn:hover {
     border: 0;
     box-shadow: none;
+    -webkit-box-shadow: none;
 }
 div.addthis_toolbox br {
     display: none

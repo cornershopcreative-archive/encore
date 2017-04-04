@@ -82,16 +82,31 @@ $settings_form->add_setting( array(
 	'name'		=>		'region',
 	'title'		=>		__( 'Bucket region', 'it-l10n-backupbuddy' ),
 	'options'	=>		array(
-								's3.amazonaws.com'					=>		'us-east-1 &nbsp;|&nbsp; US East (US Standard)',
-								's3-accelerate.amazonaws.com'		=>		'Use S3 Transfer Acceleration (Enable for your bucket in your AWS console)',
-								's3-us-west-2.amazonaws.com'		=>		'us-west-2 &nbsp;|&nbsp; US West (Oregon)',
-								's3-us-west-1.amazonaws.com'		=>		'us-west-1 &nbsp;|&nbsp; US West (Northern California)',
-								's3-eu-central-1.amazonaws.com'		=>		'eu-central-1 &nbsp;|&nbsp; EU (Frankfurt)',
-								's3-eu-west-1.amazonaws.com'		=>		'eu-west-1 | EU (Ireland)',
-								's3-ap-southeast-1.amazonaws.com'	=>		'ap-southeast-1 &nbsp;|&nbsp; Asia Pacific (Singapore)',
-								's3-ap-southeast-2.amazonaws.com'	=>		'ap-southeast-2 &nbsp;|&nbsp; Asia Pacific (Sydney)',
-								's3-ap-northeast-1.amazonaws.com'	=>		'ap-northeast-1 &nbsp;|&nbsp; Asia Pacific (Tokyo)',
-								's3-sa-east-1.amazonaws.com'		=>		'sa-east-1 &nbsp;|&nbsp; South America (Sao Paulo)',
+								's3.amazonaws.com'				=>		'us-east-1 &nbsp;|&nbsp; US East 1 (US Standard; N. Virginia)',
+								's3-us-east-2.amazonaws.com'		=>		'us-east-2 &nbsp;|&nbsp; US East 2 (Ohio)',
+								
+								's3-us-west-1.amazonaws.com'		=>		'us-west-1 &nbsp;|&nbsp; US West 1 (N. California)',
+								's3-us-west-2.amazonaws.com'		=>		'us-west-2 &nbsp;|&nbsp; US West 2 (Oregon)',
+								
+								's3-ca-central-1.amazonaws.com'	=>		'ca-central-1 &nbsp;|&nbsp; Canada Central 1',
+								
+								's3-ap-south-1.amazonaws.com'		=>		'ap-south-1 &nbsp;|&nbsp; Asia Pacific South 1 (Mumbai)',
+								
+								's3-ap-northeast-1.amazonaws.com'	=>		'ap-northeast-1 &nbsp;|&nbsp; Asia Pacific Northeast 1 (Tokyo)',
+								's3-ap-northeast-2.amazonaws.com'	=>		'ap-northeast-2 &nbsp;|&nbsp; Asia Pacific Northeast 2 (Seoul)',
+								
+								's3-ap-southeast-1.amazonaws.com'	=>		'ap-southeast-1 &nbsp;|&nbsp; Asia Pacific Southeast 1 (Singapore)',
+								's3-ap-southeast-2.amazonaws.com'	=>		'ap-southeast-2 &nbsp;|&nbsp; Asia Pacific Southeast 2 (Sydney)',
+								
+								's3-eu-central-1.amazonaws.com'	=>		'eu-central-1 &nbsp;|&nbsp; EU Central 1 (Frankfurt)',
+								
+								's3-eu-west-1.amazonaws.com'		=>		'eu-west-1 &nbsp;|&nbsp; EU West 1 (Ireland)',
+								's3-eu-west-2.amazonaws.com'		=>		'eu-west-2 &nbsp;|&nbsp; EU West 2 (London)',
+								
+								's3-sa-east-1.amazonaws.com'		=>		'sa-east-1 &nbsp;|&nbsp; South America East 1 (Sao Paulo)',
+								
+								's3-cn-north-1.amazonaws.com.cn'	=>		'cn-north-1 &nbsp;|&nbsp; China North 1 (Beijing)',
+								
 								/*
 								's3-us-gov-west-1.amazonaws.com'			=>		'US GovCloud',
 								's3-fips-us-gov-west-1.amazonaws.com'		=>		'US GovCloud (FIPS 140-2)',
@@ -139,6 +154,16 @@ $settings_form->add_setting( array(
 	'css'		=>		'width: 50px;',
 	'after'		=>		' backups',
 ) );
+$settings_form->add_setting( array(
+	'type'		=>		'checkbox',
+	'name'		=>		'accelerate',
+	'options'	=>		array( 'unchecked' => '0', 'checked' => '1' ),
+	'title'		=>		__( 'Use Transfer Acceleration', 'it-l10n-backupbuddy' ),
+	'tip'		=>		__( '[Default: disabled] - When enabled, transfers will be sent using a geographically near endpoint to your server and then transferred internally by Amazon to your final endpoint location. This allows for faster transfers from your server into Amazon. Additional charges may apply from Amazon. Transfer acceleration must be enabled by you within your Amazon control panel for this bucket prior to enabling this feature.', 'it-l10n-backupbuddy' ),
+	'css'		=>		'',
+	'after'		=>		'<span class="description"> ' . __('Additional charges may apply from Amazon.', 'it-l10n-backupbuddy' ) . '</span>',
+	'rules'		=>		'',
+) );
 
 
 
@@ -163,7 +188,6 @@ $settings_form->add_setting( array(
 	'rules'		=>		'required',
 	'row_class'	=>		'advanced-toggle',
 ) );
-
 $settings_form->add_setting( array(
 	'type'		=>		'text',
 	'name'		=>		'max_burst',
@@ -255,15 +279,16 @@ $settings_form->add_setting( array(
 */
 
 
-if ( $mode !== 'edit' ) {
+if ( ( $mode !== 'edit' ) || ( '0' == $destination_settings['disable_file_management'] ) ) {
 	$settings_form->add_setting( array(
 		'type'		=>		'checkbox',
 		'name'		=>		'disable_file_management',
 		'options'	=>		array( 'unchecked' => '0', 'checked' => '1' ),
 		'title'		=>		__( 'Disable file management', 'it-l10n-backupbuddy' ),
-		'tip'		=>		__( '[Default: unchecked] - When checked, selecting this destination disables browsing or accessing files stored at this destination from within BackupBuddy.', 'it-l10n-backupbuddy' ),
+		'tip'		=>		__( '[[Default: unchecked] - When checked, selecting this destination disables browsing or accessing files stored at this destination from within BackupBuddy. NOTE: Once enabled this cannot be disabled without deleting and re-creating this destination. NOTE: Once enabled this cannot be disabled without deleting and re-creating this destination.', 'it-l10n-backupbuddy' ),
 		'css'		=>		'',
 		'rules'		=>		'',
+		'after'		=>		__( 'Once disabled you must recreate the destination to re-enable.', 'it-l10n-backupbuddy' ),
 		'row_class'	=>		'advanced-toggle',
 	) );
 }

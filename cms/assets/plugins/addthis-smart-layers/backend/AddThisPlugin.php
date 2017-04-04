@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -24,6 +24,8 @@ require_once 'AddThisGlobalOptionsFeature.php';
 require_once 'AddThisFollowButtonsFeature.php';
 require_once 'AddThisSharingButtonsFeature.php';
 require_once 'AddThisRecommendedContentFeature.php';
+require_once 'AddThisWidgetByDomClass.php';
+require_once 'AddThisGlobalOptionsWidget.php';
 require_once 'AddThisTool.php';
 
 if (!class_exists('AddThisPlugin')) {
@@ -57,6 +59,24 @@ if (!class_exists('AddThisPlugin')) {
         protected static $cmsName = 'WordPress';
         // adminJavaScriptAction needs to match here and in AddThisFeature
         protected $adminJavaScriptAction = 'addthis_admin_variables';
+
+        protected $metaBoxId = 'at_widget';
+        public static $metaBoxKey = '_at_widget';
+        // the text in $metaBoxName must match msgid meta_box_title's English
+        // text exactly or translations into other languages will fail
+        protected $metaBoxName = 'AddThis Tools';
+        // the text in $metaBoxDescription must match msgid
+        // meta_box_description's English text exactly or translations into
+        // other languages will fail
+        protected $metaBoxDescription = 'Select "Off" to stop the AddThis plugin from automatically adding tools above and below this entry.';
+        // the text in $metaBoxOnText must match msgid
+        // meta_box_tools_enabled's English text exactly or translations into
+        // other languages will fail
+        protected $metaBoxOnText = 'On';
+        // the text in $metaBoxOffText must match msgid
+        // meta_box_tools_disabled's English text exactly or translations into
+        // other languages will fail
+        protected $metaBoxOffText = 'Off';
 
         // the order of the array below matters for JavaScript variable
         // precidence make a protected variable that matches objectName above
@@ -215,27 +235,6 @@ if (!class_exists('AddThisPlugin')) {
             $gooConfigs = $goo->getConfigs();
             $saveGooConfigs = false;
 
-            /**
-             * We don't want to run updateProfileEdition unnecessarily as it
-             * talks to AddThis and blocks futher action until AddThis responds
-             * (to check the profile edition). It will only run here if this
-             * is an admin page that might be setting up widgets. We need this
-             * when registering widgets to know which ones to skip. See
-             * AddThisFeature::registerWidgets for details on why we do this
-             * here.
-             */
-            if (is_admin()
-                && !empty($_SERVER['REQUEST_URI'])
-                && (substr($_SERVER['REQUEST_URI'], -11) == 'widgets.php'
-                    || strpos($_SERVER['REQUEST_URI'], 'customize.php'))
-            ) {
-                $updatedProfileEdition = $goo->updateProfileEdition();
-                if ($updatedProfileEdition) {
-                    $gooConfigs = $goo->getConfigs();
-                    $saveGooConfigs = true;
-                }
-            }
-
             foreach ($this->features as $feature => $info) {
                 $objectVariable = $feature . 'Object';
                 $objectName = $info['objectName'];
@@ -264,14 +263,12 @@ if (!class_exists('AddThisPlugin')) {
             }
 
             if (!isset($gooConfigs['addthis_plugin_controls'])) {
-                if ($gooConfigs['follow_buttons_feature_enabled'] === true
-                    || $gooConfigs['recommended_content_feature_enabled'] === true
-                    || $gooConfigs['sharing_buttons_feature_enabled'] === true
-                    || $gooConfigs['trending_content_feature_enabled'] === true
-                ) {
-                    $gooConfigs['addthis_plugin_controls'] = 'WordPress';
-                } else {
+                if ($goo->isMinimalPlugin()) {
+                    // the minimal plugin is only functional in AddThis mode
+                    // start it off there
                     $gooConfigs['addthis_plugin_controls'] = 'AddThis';
+                } else {
+                    $gooConfigs['addthis_plugin_controls'] = 'WordPress';
                 }
 
                 $saveGooConfigs = true;
@@ -283,6 +280,9 @@ if (!class_exists('AddThisPlugin')) {
 
             // Add a link to the main settings page & the registration page
             $this->addSettingsLinkToPlugin();
+
+            // For adding option for show/hide AddThis tools on admin post add/edit page.
+            add_action('admin_init', array($this, 'addMetaBox'));
 
             add_filter(
                 'language_attributes',
@@ -316,10 +316,55 @@ if (!class_exists('AddThisPlugin')) {
                 $this->addScripts();
             }
 
+            add_action('widgets_init', array($this, 'registerWidgets'));
+
+            $this->addShortCodes();
+
             register_deactivation_hook(
                 $this->baseName,
                 array($this, 'deactivate')
             );
+        }
+
+        /**
+         * Registers the tool widget and script widgets, if they don't already
+         * exist.
+         *
+         * @return null
+         */
+        public function registerWidgets()
+        {
+            $widgetClassName = 'AddThisWidgetByDomClass';
+            if (!$this->existsWidget($widgetClassName)) {
+                register_widget($widgetClassName);
+            }
+
+            $widgetClassName = 'AddThisGlobalOptionsWidget';
+            if (!$this->existsWidget($widgetClassName)) {
+                register_widget($widgetClassName);
+            }
+        }
+
+        /**
+         * Determines if a widget with the passed class name has already been
+         * registered with WordPress
+         *
+         * @param string $widgetClassName the name of the class for a WordPress
+         * widget
+         *
+         * @return boolean true is the widget has already been registered, false
+         * if it has not
+         */
+        public static function existsWidget($widgetClassName)
+        {
+            if (empty($GLOBALS['wp_widget_factory'])) {
+                return false;
+            }
+
+            $widgets = array_keys($GLOBALS['wp_widget_factory']->widgets);
+
+            $exists = in_array($widgetClassName, $widgets);
+            return $exists;
         }
 
         /**
@@ -355,13 +400,19 @@ if (!class_exists('AddThisPlugin')) {
                 $pageScriptHook = 'wp_head';
             }
 
-            if (!empty($gooConfigs['addthis_asynchronous_loading'])) {
+            if (empty($gooConfigs['enqueue_local_settings']) ||
+                empty($gooConfigs['enqueue_client'])
+            ) {
                 add_action(
                     $pageScriptHook,
                     array($this, 'printAddThisWidgetScript'),
                     19
                 );
-            } else {
+            }
+
+            if (!empty($gooConfigs['enqueue_local_settings']) ||
+                !empty($gooConfigs['enqueue_client'])
+            ) {
                 add_action('wp_enqueue_scripts', array($this, 'enqueueScripts'));
             }
 
@@ -391,24 +442,34 @@ if (!class_exists('AddThisPlugin')) {
                 $enqueueInFooter = false;
             }
 
-            $bootstrapSettingsUrl = admin_url('admin-ajax.php') . '?action='.$this->globalOptionsObject->publicJavaScriptAction;
-            wp_enqueue_script(
-                'addthis_global_options',
-                $bootstrapSettingsUrl,
-                array(),
-                false,
-                $enqueueInFooter
-            );
+            if (!empty($gooConfigs['enqueue_local_settings'])) {
+                $localSettingsUrl = admin_url('admin-ajax.php')
+                    . '?action='.$this->globalOptionsObject->publicJavaScriptAction;
+                wp_enqueue_script(
+                    'addthis_global_options',
+                    $localSettingsUrl,
+                    array(),
+                    false,
+                    $enqueueInFooter
+                );
+            }
 
-            $addThisWidgetUrl = $this->globalOptionsObject->getAddThisWidgetJavaScriptUrl();
-            $dependencies = array('addthis_global_options');
-            wp_enqueue_script(
-                'addthis_widget',
-                $addThisWidgetUrl,
-                $dependencies,
-                false,
-                $enqueueInFooter
-            );
+            if (!empty($gooConfigs['enqueue_client'])) {
+                $clientUrl = $this->globalOptionsObject->getAddThisWidgetJavaScriptUrl();
+
+                $dependencies = array();
+                if (!empty($gooConfigs['enqueue_local_settings'])) {
+                    $dependencies[] = 'addthis_global_options';
+                }
+
+                wp_enqueue_script(
+                    'addthis_widget',
+                    $clientUrl,
+                    $dependencies,
+                    false,
+                    $enqueueInFooter
+                );
+            }
         }
 
         /**
@@ -468,11 +529,11 @@ if (!class_exists('AddThisPlugin')) {
             $attrs = array(
                 array(
                     'attr' => 'xmlns:fb',
-                    'value' => 'http://ogp.me/ns/fb#',
+                    'value' => 'https://www.facebook.com/2008/fbml',
                 ),
                 array(
                     'attr' => 'xmlns:addthis',
-                    'value' => 'http://www.addthis.com/help/api-spec',
+                    'value' => 'https://www.addthis.com/help/api-spec',
                 ),
             );
 
@@ -662,7 +723,9 @@ if (!class_exists('AddThisPlugin')) {
                       var first_load_interval_id = setInterval(function () {
                         if (typeof window.addthis !== \'undefined\') {
                           window.clearInterval(first_load_interval_id);
-                          window.addthis.layers(window.addthis_layers);
+                          if (Object.getOwnPropertyNames(window.addthis_layers).length > 0) {
+                            window.addthis.layers(window.addthis_layers);
+                          }
                           for (i = 0; i < window.addthis_layers_tools.length; i++) {
                             window.addthis.layers(window.addthis_layers_tools[i]);
                           }
@@ -683,7 +746,9 @@ if (!class_exists('AddThisPlugin')) {
                       var first_load_check = function () {
                         if (typeof window.addthis !== \'undefined\') {
                           window.clearInterval(first_load_interval_id);
-                          window.addthis.layers(window.addthis_layers);
+                          if (Object.getOwnPropertyNames(window.addthis_layers).length > 0) {
+                            window.addthis.layers(window.addthis_layers);
+                          }
                           for (i = 0; i < window.addthis_layers_tools.length; i++) {
                             window.addthis.layers(window.addthis_layers_tools[i]);
                           }
@@ -718,7 +783,6 @@ if (!class_exists('AddThisPlugin')) {
             $pluginInfo = array();
             $pluginInfo['info_status'] = 'enabled';
             $pluginInfo['cms_name'] = $this->getCmsName();
-            $pluginInfo['cms_version'] = $this->getCmsVersion();
             $pluginInfo['plugin_name'] = $this->name;
             $pluginInfo['plugin_version'] = $this->getVersion();
             if ($this->globalOptionsObject->inAnonymousMode()) {
@@ -748,12 +812,7 @@ if (!class_exists('AddThisPlugin')) {
                 && ($post instanceof WP_Post)
                 && !empty($post->ID)
             ) {
-                $at_flag = get_post_meta($post->ID, '_at_widget', true);
-                if ($at_flag === '0') {
-                    $pluginInfo['sharing_enabled_on_post_via_metabox'] = false;
-                } else {
-                    $pluginInfo['sharing_enabled_on_post_via_metabox'] = true;
-                }
+                $pluginInfo['sharing_enabled_on_post_via_metabox'] = self::metaBoxDisablesTools($post);
             }
 
             return $pluginInfo;
@@ -772,22 +831,29 @@ if (!class_exists('AddThisPlugin')) {
             }
 
             $configs = $this->globalOptionsObject->getConfigs();
-            $addthisWidgetUrl = $this->globalOptionsObject->getAddThisWidgetJavaScriptUrl();
+            $script = '';
 
-            $script = '
-                <script
-                    data-cfasync="false"
-                    type="text/javascript"
-                >
-                '.$this->getJavascriptForGlobalVariables().'
-                </script>
-                <script
-                    data-cfasync="false"
-                    type="text/javascript"
-                    src="' . $addthisWidgetUrl . '"
-                    async="async"
-                ></script>
-            ';
+            if (empty($configs['enqueue_local_settings'])) {
+                $script .= '<script data-cfasync="false" type="text/javascript"';
+                if (!empty($configs['addthis_asynchronous_loading'])) {
+                    $localSettingsUrl = admin_url('admin-ajax.php')
+                        . '?action='.$this->globalOptionsObject->publicJavaScriptAction;
+                    $script .= ' async="async" src="'.$localSettingsUrl.'"></script>';
+                } else {
+                    $script .= '>'.$this->getJavascriptForGlobalVariables()
+                        .'</script>';
+                }
+            }
+
+            if (empty($configs['enqueue_client'])) {
+                $clientUrl = $this->globalOptionsObject->getAddThisWidgetJavaScriptUrl();
+                $script .= ' <script data-cfasync="false" type="text/javascript"'
+                    . 'src="' . $clientUrl . '"';
+                if (!empty($configs['addthis_asynchronous_loading'])) {
+                    $script .= ' async="async"';
+                }
+                $script .= '></script>';
+            }
 
             echo $script;
         }
@@ -892,17 +958,16 @@ if (!class_exists('AddThisPlugin')) {
             header('Content-type: application/x-javascript');
 
             $current_user = wp_get_current_user();
-            $config = array(
-                'ignore_server_config' => true,
-            );
+
+            $config = array();
 
             $ui = array(
-                'defaults'   => array(
+                'defaults'    => array(
                     'rss'       => get_bloginfo('rss2_url'),
                     'email'     => $current_user->user_email,
                     'domain'    => $this->globalOptionsObject->getSiteDomain(),
                 ),
-                'urls'       => array(
+                'urls'        => array(
                     'home'     => home_url(),
                     'admin'    => admin_url(),
                     'ajax'     => admin_url('admin-ajax.php'),
@@ -910,26 +975,467 @@ if (!class_exists('AddThisPlugin')) {
                     'ui'       => $this->globalOptionsObject->getSettingsUiBaseUrl(),
                     'settings' => $this->globalOptionsObject->getSettingsPageUrl(),
                 ),
-                'plugin'     => array(
+                'plugin'      => array(
                     'slug'     => $this->pluginSlug,
                     'pco'      => $this->productPrefix,
                     'version'  => $this->getVersion(),
                 ),
-                'siteName'   => get_bloginfo('name'),
-                'language'   => get_bloginfo('language'),
-                'locale'     => get_locale(),
+                'siteName'    => get_bloginfo('name'),
+                'language'    => get_bloginfo('language'),
+                'locale'      => get_locale(),
+                'permissions' => array(
+                    'unfiltered_html' => current_user_can('unfiltered_html')
+                ),
             );
+
+            $pluginInfo = $this->getAddThisPluginInfo();
 
             $configJson = json_encode((object)$config);
             $uiJson = json_encode((object)$ui);
+            $pluginInfoJson = json_encode((object)$pluginInfo);
 
             $javaScript = '
                 window.addthis_config = ' . $configJson . ';
                 window.addthis_ui = ' . $uiJson . ';
+                window.addthis_plugin_info = ' . $pluginInfoJson . ';
             ';
 
             echo $javaScript;
             die();
+        }
+
+
+        /**
+         * This must be public as it's used in a callback for
+         * admin_init
+         *
+         * Checks if our meta box exists already
+         *
+         * @return null
+         */
+        public function addMetaBox()
+        {
+            $configs = $this->globalOptionsObject->getConfigs();
+            if ($configs['addthis_per_post_enabled']) {
+                $args = array(
+                   '_builtin' => false,
+                );
+                $postTypes = get_post_types($args, 'names');
+                $postTypes[] = 'post';
+                $postTypes[] = 'page';
+
+                foreach ($postTypes as $postType) {
+                    add_meta_box(
+                        $this->metaBoxId,
+                        __($this->metaBoxName, AddThisFeature::$l10n_domain),
+                        array($this, 'printMetaBoxHtml'),
+                        $postType,
+                        'advanced',
+                        'high'
+                    );
+                }
+
+                add_action('save_post', array($this, 'saveMetaBoxOption'));
+            }
+        }
+
+        /**
+         * This must be public as it's used in a callback for
+         * save_post
+         *
+         * Validates and saves selected option for meta box
+         *
+         * @param string|int $postId The ID for the post
+         *
+         * @return null
+         */
+        public function saveMetaBoxOption($postId)
+        {
+            global $post;
+
+            if (!isset($post, $_POST['_at_widget'])) {
+                return;
+            }
+
+            if ($_POST['_at_widget'] == 1) {
+                update_post_meta($postId, '_at_widget', '1');
+            } else {
+                update_post_meta($postId, '_at_widget', '0');
+            }
+        }
+
+        /**
+         * This must be public as it's used in AddThisFeature
+         *
+         * Checks if AddThis tools are disabled on this post via the meta box
+         *
+         * @param object $post a WordPress post object
+         *
+         * @return boolean true for enabled, false for disabled
+         */
+        public static function metaBoxDisablesTools($post)
+        {
+            $postId = $post->ID;
+            $metaBoxFlag = get_post_meta($postId, self::$metaBoxKey, true);
+            if ($metaBoxFlag == '0') {
+                $enabled = false;
+            } else {
+                $enabled = true;
+            }
+            return !$enabled;
+        }
+
+        /**
+         * This must be public as it's used in a callback for
+         * add_meta_box
+         *
+         * Echos out the HTML for the AddThis meta box
+         *
+         * @param object $post a WordPress post object
+         *
+         * @return null
+         */
+        public function printMetaBoxHtml($post)
+        {
+            $offChecked = '';
+            $onChecked = '';
+            $checkedValue = 'checked="checked"';
+            if (self::metaBoxDisablesTools($post)) {
+                $offChecked = $checkedValue;
+            } else {
+                $onChecked = $checkedValue;
+            }
+
+            $descriptionText = esc_html__($this->metaBoxDescription, AddThisFeature::$l10n_domain);
+            $onText = esc_html__($this->metaBoxOnText, AddThisFeature::$l10n_domain);
+            $offText = esc_html__($this->metaBoxOffText, AddThisFeature::$l10n_domain);
+
+            $html = '<p>' . $descriptionText . '</p>
+                <label for="'.self::$metaBoxKey.'_on">
+                    <input
+                        type="radio"
+                        id="'.self::$metaBoxKey.'_on"
+                        name="'.self::$metaBoxKey.'"
+                        value="1"
+                        ' . $onChecked . '
+                    />
+                    <span class="addthis-checkbox-label">' . $onText . '</span>
+                </label>
+                <label for="'.self::$metaBoxKey.'_off">
+                    <input
+                        type="radio"
+                        id="'.self::$metaBoxKey.'_off"
+                        name="'.self::$metaBoxKey.'"
+                        value="0"
+                        ' . $offChecked . '
+                    />
+                    <span class="addthis-checkbox-label">' . $offText . '</span>
+                </label>
+            ';
+
+            echo $html;
+        }
+
+        /**
+         * The function shortcode_exists only works in WordPress 3.6.0+. We
+         * support 3.0.0+... making a function to fall back on the ugly hacky
+         * internal way of checking for this in older WordPress instances
+         *
+         * @param string $tag the shortcode
+         *
+         * @return boolean true if the shortcode exists, false if it does not
+         */
+        public function shortcodeExists($tag)
+        {
+            if (function_exists('shortcode_exists')) {
+                return shortcode_exists($tag);
+            }
+
+            global $shortcode_tags;
+            return isset($shortcode_tags[$tag]);
+        }
+
+        /**
+         * This must be public as it's used in a callback for add_shortcode
+         *
+         * Returns HTML to use to replace a short tag for this tool. Includes
+         * tags to identify its from a short code.
+         *
+         * @param string $cssClass a CSS class for indentifying an AddThis tool
+         *
+         * @return string this should be valid html
+         */
+        public function getInlineCodeForShortCode($cssClass)
+        {
+            $html  = '<!-- Created with a shortcode from an AddThis plugin -->';
+
+            if (!empty($cssClass)) {
+                $html .= '<div class="'.$cssClass.' addthis_tool"></div>';
+            } else {
+                $html .= '<!-- No CSS class provided. Nothing to do here.-->';
+            }
+
+            $gooConfigs = $this->globalOptionsObject->getConfigs();
+            if (!empty($gooSettings['ajax_support'])) {
+                $html .= '<script>if (typeof window.atnt !== \'undefined\') { window.atnt(); }</script>';
+            }
+
+            $html .= '<!-- End of short code snippet -->';
+
+            return $html;
+        }
+
+        /**
+         * This must be public as it's used in a callback for add_shortcode
+         *
+         * Returns HTML with an old CSS class used for Custom Follow buttons
+         * before tool consolidation. This can't ever be deleted because then
+         * people's shortCodes (which we can't migrate) will start showing up
+         * as code on their site.
+         *
+         * @return string this should be valid html
+         */
+        public function historicShortCodeCustomFollow()
+        {
+            $cssClass = 'addthis_custom_follow';
+            $html = $this->getInlineCodeForShortCode($cssClass);
+            return $html;
+        }
+
+        /**
+         * This must be public as it's used in a callback for add_shortcode
+         *
+         * Returns HTML with an old CSS class used for Horizontal Follow buttons
+         * before tool consolidation. This can't ever be deleted because then
+         * people's shortCodes (which we can't migrate) will start showing up
+         * as code on their site.
+         *
+         * @return string this should be valid html
+         */
+        public function historicShortCodeHorizontalFollow()
+        {
+            $cssClass = 'addthis_horizontal_follow_toolbox';
+            $html = $this->getInlineCodeForShortCode($cssClass);
+            return $html;
+        }
+
+        /**
+         * This must be public as it's used in a callback for add_shortcode
+         *
+         * Returns HTML with an old CSS class used for Vertical Follow buttons
+         * before tool consolidation. This can't ever be deleted because then
+         * people's shortCodes (which we can't migrate) will start showing up
+         * as code on their site.
+         *
+         * @return string this should be valid html
+         */
+        public function historicShortCodeVerticalFollow()
+        {
+            $cssClass = 'addthis_vertical_follow_toolbox';
+            $html = $this->getInlineCodeForShortCode($cssClass);
+            return $html;
+        }
+
+        /**
+         * This must be public as it's used in a callback for add_shortcode
+         *
+         * Returns HTML with an old CSS class used for Horizontal Recommended
+         * Content before tool consolidation. This can't ever be deleted
+         * because then people's shortCodes (which we can't migrate) will start
+         * showing up as code on their site.
+         *
+         * @return string this should be valid html
+         */
+        public function historicShortCodeHorizontalRecommenededContent()
+        {
+            $cssClass = 'addthis_recommended_horizontal';
+            $html = $this->getInlineCodeForShortCode($cssClass);
+            return $html;
+        }
+
+        /**
+         * This must be public as it's used in a callback for add_shortcode
+         *
+         * Returns HTML with an old CSS class used for Vertical Recommended
+         * Content before tool consolidation. This can't ever be deleted
+         * because then people's shortCodes (which we can't migrate) will start
+         * showing up as code on their site.
+         *
+         * @return string this should be valid html
+         */
+        public function historicShortCodeVerticalRecommenededContent()
+        {
+            $cssClass = 'addthis_recommended_vertical';
+            $html = $this->getInlineCodeForShortCode($cssClass);
+            return $html;
+        }
+
+        /**
+         * This must be public as it's used in a callback for add_shortcode
+         *
+         * Returns HTML with an old CSS class used for Custom Share buttons
+         * before tool consolidation. This can't ever be deleted
+         * because then people's shortCodes (which we can't migrate) will start
+         * showing up as code on their site.
+         *
+         * @return string this should be valid html
+         */
+        public function historicShortCodeCustomShare()
+        {
+            $cssClass = 'addthis_custom_sharing_buttons';
+            $html = $this->getInlineCodeForShortCode($cssClass);
+            return $html;
+        }
+
+        /**
+         * This must be public as it's used in a callback for add_shortcode
+         *
+         * Returns HTML with an old CSS class used for Jumbo Share buttons
+         * before tool consolidation. This can't ever be deleted
+         * because then people's shortCodes (which we can't migrate) will start
+         * showing up as code on their site.
+         *
+         * @return string this should be valid html
+         */
+        public function historicShortCodeJumboShare()
+        {
+            $cssClass = 'addthis_jumbo_sharing_buttons';
+            $html = $this->getInlineCodeForShortCode($cssClass);
+            return $html;
+        }
+
+        /**
+         * This must be public as it's used in a callback for add_shortcode
+         *
+         * Returns HTML with an old CSS class used for Original Share buttons
+         * before tool consolidation. This can't ever be deleted
+         * because then people's shortCodes (which we can't migrate) will start
+         * showing up as code on their site.
+         *
+         * @return string this should be valid html
+         */
+        public function historicShortCodeOriginalShare()
+        {
+            $cssClass = 'addthis_original_sharing_buttons';
+            $html = $this->getInlineCodeForShortCode($cssClass);
+            return $html;
+        }
+
+        /**
+         * This must be public as it's used in a callback for add_shortcode
+         *
+         * Returns HTML with an old CSS class used for Responsive Share buttons
+         * before tool consolidation. This can't ever be deleted
+         * because then people's shortCodes (which we can't migrate) will start
+         * showing up as code on their site.
+         *
+         * @return string this should be valid html
+         */
+        public function historicShortCodeResponsiveShare()
+        {
+            $cssClass = 'addthis_responsive_sharing_buttons';
+            $html = $this->getInlineCodeForShortCode($cssClass);
+            return $html;
+        }
+
+        /**
+         * This must be public as it's used in a callback for add_shortcode
+         *
+         * Returns HTML with an old CSS class used for (Square) Share buttons
+         * before tool consolidation. This can't ever be deleted
+         * because then people's shortCodes (which we can't migrate) will start
+         * showing up as code on their site.
+         *
+         * @return string this should be valid html
+         */
+        public function historicShortCodeSquareShare()
+        {
+            $cssClass = 'addthis_sharing_buttons';
+            $html = $this->getInlineCodeForShortCode($cssClass);
+            return $html;
+        }
+
+        /**
+         * This must be public as it's used in a callback for add_shortcode
+         *
+         * Returns HTML with the passed CSS class. This can't ever be deleted
+         * because then people's shortCodes (which we can't migrate) will start
+         * showing up as code on their site.
+         *
+         * @param array $atts associative array of attributes on a widget.
+         *   This function looks for the 'tool' property
+         *
+         * @return string this should be valid html
+         */
+        public function shortCodeByDomClass($atts)
+        {
+            if (isset($atts['tool'])) {
+                $cssClass = $atts['tool'];
+            } else {
+                $cssClass = false;
+            }
+
+            $html = $this->getInlineCodeForShortCode($cssClass);
+            return $html;
+        }
+
+        /**
+         * Adds WordPress short codes.
+         *
+         * @return null
+         */
+        public function addShortCodes()
+        {
+            $globlaOptionsTool = new AddThisGlobalOptionsTool();
+
+            $shortCodes = array(
+                // 'shortCode' => array(objectWithMethod, 'methodName')
+                'addthis_script' => array($globlaOptionsTool, 'getInlineCodeForShortCode'),
+                'addthis' => array($this, 'shortCodeByDomClass'),
+                /*
+                 * Historic shortcodes. These can't ever be deleted because then
+                 * people's short codes inside posts/pages (which we can't
+                 * migrate) will start showing up as code on their site. Yipee!
+                 */
+                'addthis_custom_follow_buttons'          => array(
+                    $this, 'historicShortCodeCustomFollow'
+                ),
+                'addthis_horizontal_follow_buttons'      => array(
+                    $this, 'historicShortCodeHorizontalFollow'
+                ),
+                'addthis_vertical_follow_buttons'        => array(
+                    $this, 'historicShortCodeVerticalFollow'
+                ),
+                'addthis_horizontal_recommended_content' => array(
+                    $this, 'historicShortCodeHorizontalRecommenededContent'
+                ),
+                'addthis_vertical_recommended_content'   => array(
+                    $this, 'historicShortCodeVerticalRecommenededContent'
+                ),
+                'addthis_custom_sharing_buttons'         => array(
+                    $this, 'historicShortCodeCustomShare'
+                ),
+                'addthis_jumbo_sharing_buttons'          => array(
+                    $this, 'historicShortCodeJumboShare'
+                ),
+                'addthis_original_sharing_buttons'       => array(
+                    $this, 'historicShortCodeOriginalShare'
+                ),
+                'addthis_responsive_sharing_buttons'     => array(
+                    $this, 'historicShortCodeResponsiveShare'
+                ),
+                'addthis_sharing_buttons'                => array(
+                    $this, 'historicShortCodeSquareShare'
+                ),
+            );
+
+            foreach ($shortCodes as $shortCode => $callback) {
+                if ($this->shortcodeExists($toolObject->shortCode)) {
+                    continue;
+                }
+
+                add_shortcode($shortCode, $callback);
+            }
         }
     }
 }

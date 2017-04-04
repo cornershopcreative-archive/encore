@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -124,25 +124,27 @@ if (!class_exists('AddThisFollowButtonsToolParent')) {
         public static function formatServicesForAddThisLayers($input = array())
         {
             $output = array();
-            foreach ($input as $service => $id) {
-                if (empty($id)) {
-                    continue;
+            if (is_array($input)) {
+                foreach ($input as $service => $id) {
+                    if (empty($id)) {
+                        continue;
+                    }
+
+                    $parts = explode('_', $service);
+
+                    $serviceInfo = array('id' => $id);
+                    if ($parts[0] === 'facebook') {
+                        $serviceInfo['service'] = 'facebook';
+                    } elseif (count($parts) > 1) {
+                        $serviceInfo['usertype'] = array_pop($parts);
+                        $serviceInfo['service'] = implode($parts, '_');
+                    } else {
+                        $serviceInfo['usertype'] = 'id';
+                        $serviceInfo['service'] = $service;
+                    }
+
+                    $output[] = $serviceInfo;
                 }
-
-                $parts = explode('_', $service);
-
-                $serviceInfo = array('id' => $id);
-                if ($parts[0] === 'facebook') {
-                    $serviceInfo['service'] = 'facebook';
-                } elseif (count($parts) > 1) {
-                    $serviceInfo['usertype'] = array_pop($parts);
-                    $serviceInfo['service'] = implode($parts, '_');
-                } else {
-                    $serviceInfo['usertype'] = 'id';
-                    $serviceInfo['service'] = $service;
-                }
-
-                $output[] = $serviceInfo;
             }
 
             return $output;

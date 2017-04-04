@@ -1,6 +1,6 @@
 appAddThisWordPress.controller('FollowButtonConflictCtrl', function(
   $scope,
-  wordpress,
+  $wordpress,
   $stateParams,
   $state,
   $timeout
@@ -17,7 +17,7 @@ appAddThisWordPress.controller('FollowButtonConflictCtrl', function(
     }
   };
 
-  wordpress.followButtons.get('WordPress')
+  $wordpress.followButtons.get()
   .then(function(followButtons) {
     $scope.followButtons = followButtons;
 
@@ -51,9 +51,11 @@ appAddThisWordPress.controller('FollowButtonConflictCtrl', function(
   $scope.saving = false;
   $scope.save = function(toolPco) {
     $scope.saving = true;
-    $scope.followButtons[toolPco] = $scope.withoutConflicts[toolPco];
 
-    return wordpress.followButtons.save('WordPress', toolPco)
+    return $wordpress.followButtons.save(
+      toolPco,
+      $scope.withoutConflicts[toolPco]
+    )
     .then(function(followButtons) {
       $scope.followButtons = followButtons;
       $scope.saving = false;

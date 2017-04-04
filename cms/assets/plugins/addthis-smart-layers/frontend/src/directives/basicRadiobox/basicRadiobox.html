@@ -1,22 +1,15 @@
-<div
-    for="{{name}}"
->
-
+<label for="{{name}}">
     <input
-        type="radio"
-        id="{{name}}"
-        name="{{name}"
-        ng-model="ngModel"
-        value="{{value}}"
+            type="radio"
+            id="{{name}}"
+            name="{{name}}"
+            ng-model="ngModel"
+            value="{{value}}"
+            ng-checked="{{checked}}"
     />
-
-    <div class="radiobutton-details-container">
-        <label for="{{name}}">
-            {{label}}
-        </label>
-
-        <div class="transclude-here transclude-here-basic-radiobox">
-        </div>
+    <span class="addthis-checkbox-label">
+        <strong>{{label}}</strong>
+    </span>
+    <div class="transclude-here transclude-here-basic-radiobox">
     </div>
-
-</div>
+</label>

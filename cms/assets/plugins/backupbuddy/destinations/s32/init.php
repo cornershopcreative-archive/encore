@@ -238,7 +238,15 @@ class pb_backupbuddy_destination_s32 { // Change class name end to match destina
 				if ( pb_backupbuddy::$options['log_level'] == '3' ) { // Full logging enabled.
 					pb_backupbuddy::status( 'details', 'Call details due to logging level: `' . print_r( $thisCall, true ) . '`.' );
 				}
-				return self::_error ( 'Error #389383: Unable to initiate multipart upload for file `' . $file . '`. Details: `' . $e->getMessage() . '`.' );
+				$message = $e->getMessage();
+				
+				// If token has expired for Stash Live or Stash then clear cached token for next file.
+				if ( ( ( '1' == $settings['live_mode'] ) || ( '1' == $settings['stash_mode'] ) ) && ( strpos( $message, 'token has expired' ) !== false ) ) {
+					pb_backupbuddy::status( 'details', 'Clearing Live credentials transient because token has expired.' );
+					delete_transient( pb_backupbuddy_destination_live::LIVE_ACTION_TRANSIENT_NAME );
+				}
+				
+				return self::_error ( 'Error #389383a: Unable to initiate multipart upload for file `' . $file . '`. Details: `' . $message . '`.' );
 			}
 			
 			// Made it here so SUCCESS initiating multipart!

@@ -4037,7 +4037,7 @@ echo '<h4>Rolling back changes...</h4>';
 
 // Enable Maintenance Mode if not already.
 if ( ! file_exists( ABSPATH . '.maintenance' ) ) {
-	@file_put_contents( ABSPATH . '.maintenance', "<?php header('HTTP/1.1 503 Service Temporarily Unavailable'); header('Status: 503 Service Temporarily Unavailable'); header('Retry-After: 3600'); die( 'Site undergoing maintenance.' );" );
+	@file_put_contents( ABSPATH . '.maintenance', "<?php if ( empty( \$_REQUEST['action'] ) || 'pb_backupbuddy_backupbuddy' != \$_REQUEST['action'] ) { header('HTTP/1.1 503 Service Temporarily Unavailable'); header('Status: 503 Service Temporarily Unavailable'); header('Retry-After: 3600'); die( 'Site undergoing maintenance.' ); }" );
 }
 
 

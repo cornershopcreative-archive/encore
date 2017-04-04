@@ -608,14 +608,18 @@ if ( !class_exists( "pluginbuddy_zbzipcore" ) ) {
 			// default; if 0 | -1 then we'll set as larger integer;
 			// otherwise if it is a numeric value and +ve we'll use it
 			// otherwise set to false.
+			// Note: we must translate boolean false to string false
+			// because we can only use integer or string keys in the
+			// mapping array otherwise array_key_exists() complains.
 			$configured_execution_time = @get_cfg_var( 'max_execution_time' );
+			$configured_execution_time = ( false === $configured_execution_time ) ? "false" : $configured_execution_time;			
 			
-			$cfg_var_map = array(	false => false,
+			$cfg_var_map = array(	"false" => false,
 									"-1" => (int)PHP_INT_MAX,
 									"0" => (int)PHP_INT_MAX,
 									"" => false,
 								);
-			if ( array_key_exists( $configured_execution_time, $cfg_var_map ) ) {
+			if ( ( is_string( $configured_execution_time ) || is_int( $configured_execution_time ) ) && array_key_exists( $configured_execution_time, $cfg_var_map ) ) {
 				
 				// "Special" value, map it
 				$configured_execution_time = $cfg_var_map[ $configured_execution_time ];
@@ -642,15 +646,19 @@ if ( !class_exists( "pluginbuddy_zbzipcore" ) ) {
 			// if "7200" we have to assume it's because we set that
 			// so make it false; otherwsie if it is a numeric value
 			// and +ve we'll use it; otherwise set false.
+			// Note: we must translate boolean false to string false
+			// because we can only use integer or string keys in the
+			// mapping array otherwise array_key_exists() complains.
 			$current_execution_time = @ini_get( 'max_execution_time' );
+			$current_execution_time = ( false === $current_execution_time ) ? "false" : $current_execution_time;			
 
-			$ini_get_map = array(	false => false,
+			$ini_get_map = array(	"false" => false,
 									"-1" => (int)PHP_INT_MAX,
 									"0" => (int)PHP_INT_MAX,
 									"7200" => false,
 									"" => false,
 								);
-			if ( array_key_exists( $current_execution_time, $ini_get_map ) ) {
+			if ( ( is_string( $current_execution_time ) || is_int( $current_execution_time ) ) && array_key_exists( $current_execution_time, $ini_get_map ) ) {
 				
 				// "Special" value, map it
 				$current_execution_time = $ini_get_map[ $current_execution_time ];

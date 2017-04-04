@@ -1,6 +1,6 @@
 appAddThisWordPress.directive('validateAddThisProfileId', function(
   $q,
-  wordpress
+  $darkseid
 ) {
   return {
     require: 'ngModel',
@@ -14,7 +14,7 @@ appAddThisWordPress.directive('validateAddThisProfileId', function(
           return $q.when();
         }
 
-        wordpress.validateAddThisProfileId(modelValue).then(function(data) {
+        $darkseid.validateAddThisProfileId(modelValue).then(function(data) {
             if (data.success) {
               if (data.data.type === 'wp') {
                 ctrl.$setValidity('wpProfile', true);

@@ -6,9 +6,10 @@
             messageDivsOuterHeight = 0;
 
 
-        $('[id="message"]').each( function() {
+        $('.notice').each( function() {
             messageDivsOuterHeight += $(this).outerHeight(true);
         });
+
 
         scrollTop = $(window).scrollTop() - messageDivsOuterHeight;
 
@@ -28,9 +29,18 @@
             var acf_opened_field_groups = [];
 
 
+            // ACF PRO
             $('.acf-field-object.open').each( function( index ) {
                 acf_opened_field_groups.push( $( this ).attr( 'data-key' ) );
             });
+
+            // if not, then ACF free
+            if ( ! acf_opened_field_groups.length ) {
+
+                $('.field.form_open').each( function( index ) {
+                    acf_opened_field_groups.push( $( this ).attr( 'data-id' ) );
+                });
+            }
 
             $.cookie( 'TPBacfOpenFieldGroups', acf_opened_field_groups );
         }
@@ -47,7 +57,12 @@
 
 
     var button = $('input[type="submit"].button-primary, input[type="button"].button-primary'),
+        draft_button;
+
+
+    if ( tpb_l10n.draft_button ) {
         draft_button = $('input[type="submit"]#save-post:visible').not('.find-box input');
+    }
 
 
     button
@@ -69,12 +84,23 @@
             acfOpenFieldGroups = $.cookie( 'TPBacfOpenFieldGroups' ) ? $.cookie( 'TPBacfOpenFieldGroups' ).split(/,/) : 0;
 
 
-        if ( acfOpenFieldGroups && window.acf !== 'undefined' ) {
+        if ( acfOpenFieldGroups && typeof window.acf !== 'undefined' ) {
 
             scrollTimeout = 300;
 
             $.each( acfOpenFieldGroups, function( index, field_key ) {
-                window.acf.field_group.open_field( $( '.acf-field-object[data-key=' + field_key + ']' ) );
+
+                // ACF PRO
+                if ( typeof window.acf.field_group !== 'undefined' ) {
+                    window.acf.field_group.open_field( $( '.acf-field-object[data-key=' + field_key + ']' ) );
+                }
+                // if not, then ACF free
+                else {
+                    var $field = $( '.field[data-id=' + field_key + ']' );
+                    $field.addClass('form_open');
+                    $(document).trigger('acf/field_form-open', [ $field ]);
+                    $field.children('.field_form_mask').animate({'height':'toggle'}, 250);
+                }
             });
         }
         else {
@@ -85,7 +111,7 @@
 
             setTimeout( function() {
 
-                    $('[id="message"]').each(function() {
+                    $('.notice').each(function() {
                         currMessageDivOuterHeight += $(this).outerHeight(true);
                     });
                     $(window).scrollTop( scrollTop + currMessageDivOuterHeight );

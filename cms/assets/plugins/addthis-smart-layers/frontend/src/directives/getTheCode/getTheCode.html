@@ -11,16 +11,18 @@
     </li>
     <li
         translate
-        translate-values="{'name': '<strong>{{name}}</strong>'}"
+        translate-values="{'name': '<strong>{{'widget_name_by_dom_class'|translate}}</strong>'}"
     >
         gtc_drag_the_widget
     </li>
 </ol>
 
-<h4 translate>gtc_shortcode_title</h4>
-<p translate>gtc_copy_in_the_shortcode</p>
+<div ng-show="toolClass">
+    <h4 translate>gtc_shortcode_title</h4>
+    <p translate>gtc_copy_in_the_shortcode</p>
 
-<pre
-    tabindex="0"
-    alt="{{'gtc_pre_tag_alt'|translate}}"
->[{{shortcode}}]</pre>
+    <pre
+        tabindex="0"
+        alt="{{'gtc_pre_tag_alt'|translate}}"
+    >[addthis tool={{toolClass}}]</pre>
+</div>

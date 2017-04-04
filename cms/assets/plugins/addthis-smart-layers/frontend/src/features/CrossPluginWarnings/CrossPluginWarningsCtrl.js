@@ -1,9 +1,9 @@
 appAddThisWordPress.controller('CrossPluginWarningsCtrl', function(
   $scope,
-  wordpress
+  $wordpress
 ) {
 
-  wordpress.addThisOtherPlugins().then(function(data) {
+  $wordpress.addThisOtherPlugins().then(function(data) {
     $scope.otherPlugins = data;
   });
 
@@ -11,7 +11,7 @@ appAddThisWordPress.controller('CrossPluginWarningsCtrl', function(
   $scope.changeMode = function() {
     $scope.globalOptions.addthis_plugin_controls = 'AddThis';
 
-    wordpress.globalOptions.save().then(function(data) {
+    $wordpress.globalOptions.save().then(function(data) {
       $scope.globalOptions = data;
       if ($scope.globalOptions.addthis_plugin_controls === 'AddThis') {
         $scope.showSuccess = true;
@@ -20,7 +20,7 @@ appAddThisWordPress.controller('CrossPluginWarningsCtrl', function(
   };
 
   $scope.updateProfileId = function(source) {
-    wordpress.addThisUpdateOtherPlugin(source).then(function(data) {
+    $wordpress.addThisUpdateOtherPlugin(source).then(function(data) {
       $scope.otherPlugins = data;
     });
   };

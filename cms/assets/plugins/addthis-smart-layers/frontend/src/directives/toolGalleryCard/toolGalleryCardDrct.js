@@ -1,4 +1,4 @@
-appAddThisWordPress.directive('toolGalleryCard', function(wordpress) {
+appAddThisWordPress.directive('toolGalleryCard', function($wordpress) {
   return {
     scope: {
       image: '@image',
@@ -12,7 +12,7 @@ appAddThisWordPress.directive('toolGalleryCard', function(wordpress) {
     },
     transclude: true,
     link: function($scope, el, attrs) {
-      $scope.templateBaseUrl = wordpress.templateBaseUrl();
+      $scope.templateBaseUrl = $wordpress.templateBaseUrl();
 
       $scope.isProTool = function() {
         return (typeof attrs.pro !== 'undefined');

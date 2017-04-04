@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -20,15 +20,7 @@
  */
 
 require_once 'AddThisFeature.php';
-require_once 'AddThisRecommendedContentHorizontalWidget.php';
-require_once 'AddThisRecommendedContentHorizontalTool.php';
-require_once 'AddThisRecommendedContentVerticalWidget.php';
-require_once 'AddThisRecommendedContentVerticalTool.php';
-require_once 'AddThisRecommendedContentDrawerTool.php';
 require_once 'AddThisRecommendedContentFooterTool.php';
-require_once 'AddThisRecommendedContentJumboFooterTool.php';
-require_once 'AddThisRecommendedContentToasterTool.php';
-require_once 'AddThisRecommendedContentWhatsNextMobileTool.php';
 require_once 'AddThisRecommendedContentWhatsNextTool.php';
 
 if (!class_exists('AddThisRecommendedContentFeature')) {
@@ -49,13 +41,7 @@ if (!class_exists('AddThisRecommendedContentFeature')) {
         protected $settingsVariableName = 'addthis_recommended_content_settings';
         protected $settingsPageId = 'addthis_recommended_content';
         protected $name = 'Related Posts';
-        protected $RecommendedContentHorizontalToolObject = null;
-        protected $RecommendedContentVerticalToolObject = null;
-        protected $RecommendedContentDrawerToolObject = null;
         protected $RecommendedContentFooterToolObject = null;
-        protected $RecommendedContentJumboFooterToolObject = null;
-        protected $RecommendedContentToasterToolObject = null;
-        protected $RecommendedContentWhatsNextMobileToolObject = null;
         protected $RecommendedContentWhatsNextToolObject = null;
 
         protected $filterPriority = 2;
@@ -65,7 +51,6 @@ if (!class_exists('AddThisRecommendedContentFeature')) {
         // a list of all settings fields used for this feature that aren't tool
         // specific
         protected $settingsFields = array(
-            'quick_tag',
             'startUpgradeAt',
         );
 
@@ -73,25 +58,12 @@ if (!class_exists('AddThisRecommendedContentFeature')) {
         public $globalLayersJsonField = 'addthis_layers_recommended_json';
         public $globalEnabledField = 'recommended_content_feature_enabled';
 
-        // require the files with the tool and widget classes at the top of this
+        // require the files with the tool classes at the top of this
         // file for each tool
         protected $tools = array(
-            'RecommendedContentHorizontal',
-            'RecommendedContentVertical',
-            'RecommendedContentDrawer',
             'RecommendedContentFooter',
-            'RecommendedContentJumboFooter',
-            'RecommendedContentToaster',
-            'RecommendedContentWhatsNextMobile',
             'RecommendedContentWhatsNext',
         );
-
-        protected $quickTagId = 'addthis_recommend';
-        /**
-         * Review https://codex.wordpress.org/Quicktags_API for access keys used
-         * by WordPress
-         */
-        protected $quickTagAccessKey = 'z';
 
         /**
          * Builds the class used for recommended content below content on posts.
@@ -126,7 +98,6 @@ if (!class_exists('AddThisRecommendedContentFeature')) {
          */
         protected function upgradeIterative1()
         {
-            error_log(__METHOD__);
             $activated = get_option('smart_layer_activated');
             if (empty($activated)) {
                 return null;
@@ -171,6 +142,34 @@ if (!class_exists('AddThisRecommendedContentFeature')) {
                     $this->configs['smlre']['theme'] = $jsonDecoded['theme'];
                 }
             }
+        }
+
+        /**
+         * Upgrade from Smart Layers by AddThis 2.0.0 to 2.1.0
+         * Upgrade from Related Posts by AddThis 1.0.0 to 1.1.0
+         * Upgrade from Website Tools by AddThis 1.1.2 to 1.2.0
+         *
+         * @return null
+         */
+        protected function upgradeIterative2()
+        {
+            $horizontalRecWidgets = AddThisSharingButtonsFeature::upgradeIterative2ReformatWidgets(
+                'addthis_recommended_horizontal_widget',
+                'addthis_recommended_horizontal'
+            );
+
+            $verticalRecWidgets = AddThisSharingButtonsFeature::upgradeIterative2ReformatWidgets(
+                'addthis_recommended_vertical_widget',
+                'addthis_recommended_vertical'
+            );
+
+            $newWidgets = array_merge(
+                $horizontalRecWidgets,
+                $verticalRecWidgets
+            );
+
+            $widgetIdMapping = AddThisSharingButtonsFeature::upgradeIterative2SaveWidgets($newWidgets);
+            AddThisFollowButtonsFeature::upgradeIterative1MigrateSidebarWidgetIds($widgetIdMapping);
         }
     }
 }

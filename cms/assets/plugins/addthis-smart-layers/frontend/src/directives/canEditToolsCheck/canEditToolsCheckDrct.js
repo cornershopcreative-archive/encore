@@ -1,7 +1,8 @@
 appAddThisWordPress.directive('canEditToolsCheck', function(
-  wordpress,
+  $wordpress,
   $q,
-  $timeout
+  $timeout,
+  $darkseid
 ) {
   return {
     transclude: true,
@@ -35,17 +36,17 @@ appAddThisWordPress.directive('canEditToolsCheck', function(
         });
       };
 
-      wordpress.globalOptions.get().then(function(globalOptions) {
+      $wordpress.globalOptions.get().then(function(globalOptions) {
         $scope.globalOptions = globalOptions;
 
         if ($scope.globalOptions.addthis_plugin_controls === 'WordPress') {
           removeAlertAndTransclude();
         } else {
-          var compatibilityCheck = wordpress.compatibleWithBoost();
-          var validateProfile = wordpress.validateAddThisProfileId(
+          var compatibilityCheck = $wordpress.compatibleWithBoost();
+          var validateProfile = $darkseid.validateAddThisProfileId(
             $scope.globalOptions.addthis_profile
           );
-          var validateApiKey = wordpress.addThisApiKeyCheck(
+          var validateApiKey = $wordpress.addThisApiKeyCheck(
             $scope.globalOptions.addthis_profile,
             $scope.globalOptions.api_key
           );

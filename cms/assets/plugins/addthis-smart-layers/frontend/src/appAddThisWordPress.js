@@ -5,6 +5,8 @@ var appAddThisWordPress = angular.module(
   'appAddThisWordPress',
   [
     'addthis',
+    'addthisDarkseid',
+    'addthisWordpress',
     'cfp.hotkeys',
     'ngAria',
     'pascalprecht.translate',
@@ -58,15 +60,89 @@ appAddThisWordPress.config(function($stateProvider, $urlRouterProvider) {
       } else if (wpPageId === 'addthis_follow_buttons') {
         state = 'follow';
       } else if (wpPageId === 'addthis_sharing_buttons') {
-        state = 'share';
+        state = 'tools';
       } else if (wpPageId === 'addthis_recommended_content') {
-        state = 'recommend';
+        state = 'relatedpostslist';
       } else {
         state = 'oops';
       }
     }
     return state;
   });
+
+  var globalOptionsPromise = function($wordpress) {
+    return $wordpress.globalOptions.get();
+  };
+
+  var shareToolSettingsPromise = function(
+    $stateParams,
+    $q,
+    $wordpress,
+    modeHelper
+  ) {
+    var promise;
+
+    if ($stateParams.toolPco === 'new') {
+      promise = $q.defer();
+      promise.resolve({});
+    } else {
+      promise = modeHelper.get($wordpress.sharingButtons, true)
+      .then(function(result) {
+        return result[$stateParams.toolPco];
+      });
+    }
+
+    return promise;
+  };
+
+  var relatedPostsSettingsPromise = function(
+    modeHelper,
+    $wordpress,
+    $darkseid,
+    $filter,
+    $q
+  ) {
+    var mainSettingsPromise = modeHelper.get($wordpress.recommendedContent)
+    .then(function(result) {
+      return $filter('toolType')(result, 'relatedposts');
+    });
+
+    var promoteUrlSettings = $wordpress.globalOptions.get()
+    .then(function(globalOptions) {
+      // if addthis mode
+      if (globalOptions.addthis_plugin_controls === 'AddThis') {
+        // if this is a pro account
+        return $darkseid.isProProfile().then(function(isPro) {
+          if (isPro) {
+            // go get their promoted urls
+            return $darkseid.getPromotedUrl();
+          } else {
+            return false;
+          }
+        });
+      } else {
+        return false;
+      }
+    });
+
+    return $q.all([mainSettingsPromise, promoteUrlSettings])
+    .then(function(results) {
+      var recommendedContent = results[0];
+      var promotedUrls = results[1];
+
+      if (promotedUrls !== false) {
+        angular.forEach(promotedUrls, function(urls, toolPco) {
+          if (typeof recommendedContent[toolPco] === 'object') {
+            recommendedContent[toolPco].promotedUrl = urls[0];
+          } else {
+            recommendedContent[toolPco] = { promotedUrl: urls[0] };
+          }
+        });
+      }
+
+      return recommendedContent;
+    });
+  };
 
   $stateProvider
   .state('registration', {
@@ -95,26 +171,64 @@ appAddThisWordPress.config(function($stateProvider, $urlRouterProvider) {
     url: '/follow_conflict/:toolPco',
     templateUrl: '/features/FollowButtonConflict/FollowButtonConflict.html'
   })
-  .state('share', {
-    url: '/share',
-    templateUrl: '/features/ShareButtonSettings/ShareButtonSettingsParent.html'
+  .state('tools', {
+    url: '/tools',
+    templateUrl: '/features/ToolList/ToolList.html'
   })
-  .state('share.pco', {
-    url: '/pco/:toolPco',
-    templateUrl: '/features/ShareButtonSettings/ShareButtonSettingsParent.html'
+  .state('configurator', {
+    params: { settings: {} },
+    url: '/tool/settings/:toolPco',
+    templateUrl: '/features/ToolSettings/ToolSettings.html',
+    controller: 'ToolSettingsCtrl',
+    resolve: {
+      globalOptions: globalOptionsPromise,
+      toolSettings: shareToolSettingsPromise
+    }
   })
-  .state('recommend', {
-    url: '/recommend',
-    templateUrl:
-    '/features/RecommendedContentSettings/RecommendedContentSettingsParent.html'
+  .state('newShareTool', {
+    url: '/tool/share/new',
+    templateUrl: '/features/NewTool/NewShareTool.html'
   })
-  .state('recommend.pco', {
-    url: '/pco/:toolPco',
-    templateUrl:
-    '/features/RecommendedContentSettings/RecommendedContentSettingsParent.html'
+  .state('relatedpostslist', {
+    url: '/relatedpostslist',
+    templateUrl: '/features/RelatedPostSettings/RelatedPostToolListings.html',
+    controller: 'RelatedPostSettingsCtrl',
+    resolve: {
+      globalOptions: globalOptionsPromise,
+      toolSettings: relatedPostsSettingsPromise
+    }
+  })
+  .state('relatedpostssettings', {
+    url: '/relatedpostssettings/:toolPco',
+    templateUrl: '/features/RelatedPostSettings/RelatedPostSettings.html',
+    controller: 'RelatedPostSettingsCtrl',
+    resolve: {
+      globalOptions: globalOptionsPromise,
+      toolSettings: relatedPostsSettingsPromise
+    }
   })
   .state('oops', {
     url: '/oops',
     templateUrl: '/features/OopsSettings/OopsSettings.html'
+  })
+  .state('mock1', {
+    url: '/mock1',
+    templateUrl: '/mocks/mock1.html'
+  })
+  .state('mock2', {
+    url: '/mock2',
+    templateUrl: '/mocks/mock2.html'
+  })
+  .state('mock3', {
+    url: '/mock3',
+    templateUrl: '/mocks/mock3.html'
+  })
+  .state('mock4', {
+    url: '/mock4',
+    templateUrl: '/mocks/mock4.html'
+  })
+  .state('mock5', {
+    url: '/mock5',
+    templateUrl: '/mocks/mock5.html'
   });
 });

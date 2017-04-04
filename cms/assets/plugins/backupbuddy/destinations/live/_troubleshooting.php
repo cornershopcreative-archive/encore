@@ -42,8 +42,6 @@ class backupbuddy_live_troubleshooting {
 		'localized_time' => 0,
 		'current_timestamp' => 0,
 		
-		'alerts' => array(),
-		'highlights' => array(),
 		'memory' => array(
 			'estimated_base_usage' => 0,
 			'estimated_catalog_usage' => 0,							// Estimate of max free memory that will be needed. In MB.
@@ -55,9 +53,11 @@ class backupbuddy_live_troubleshooting {
 			'memory_max_usage_logged' => 0,
 			'memory_status' => 'OK',
 		),
-		'php_notices' => array(),								// Any PHP errors, warnings, notices found in any of the log searched.
 		'file_info' => array(),									// File sizes, mtime, etc of various logs.
-		'bb_notices' => array(),								// Any BackupBuddy errors or warnings logged.
+		
+		'alerts' => array(),
+		'highlights' => array(),
+		
 		'recent_waiting_on_files' => array(),					// Recent list of files waiting on as per $files_pending_send_file file contents.
 		'recent_waiting_on_files_time' => 0,					// File modified time.
 		'recent_waiting_on_files_time_ago' => 0,				// File modified time.
@@ -66,6 +66,10 @@ class backupbuddy_live_troubleshooting {
 		'recent_waiting_on_tables_time_ago' => 0,				// File modified time.
 		'recent_live_send_fails' => array(),					// Remote destination send failures to Live.
 		'recent_sync_notifications' => array(),					// Sync Notification errors (live_error).
+		
+		'php_notices' => array(),							// Any PHP errors, warnings, notices found in any of the log searched.
+		'bb_notices' => array(),								// Any BackupBuddy errors or warnings logged.
+		
 		'live_status_log_tail' => '',							// Recent Stash Live Status Log.
 		'live_stats' => array(),
 		'server_stats' => array(),
@@ -313,7 +317,7 @@ class backupbuddy_live_troubleshooting {
 				self::$_results['recent_waiting_on_files_time'] = @filemtime( $files_pending_send_file );
 				self::$_results['recent_waiting_on_files_time_ago'] = pb_backupbuddy::$format->time_ago( self::$_results['recent_waiting_on_files_time'] ) . ' ' . __( 'ago', 'it-l10n-backupbuddy' );
 				if ( count( self::$_results['recent_waiting_on_files'] ) > 0 ) {
-					self::$_results['highlights'][] = '`' . count( self::$_results['recent_waiting_on_files'] ) . '` total files recently needed waiting on.';
+					self::$_results['highlights'][] = '`' . count( self::$_results['recent_waiting_on_files'] ) . '` total files recently needed waiting on. See "recent_waiting_on_files" section for file listing.';
 				}
 			}
 		}

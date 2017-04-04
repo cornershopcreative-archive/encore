@@ -31,6 +31,7 @@ class backupbuddy_live {
 			if ( false === $quota ) {
 				pb_backupbuddy::status( 'error', 'Error #3489348944: Could not get quota for Stash Live.' );
 			}
+			
 			set_transient( self::STASH_QUOTA_TRANSIENT_NAME, $quota, self::STASH_QUOTA_TRANSIENT_EXPIRE );
 			
 			return $quota;

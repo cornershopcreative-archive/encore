@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -20,12 +20,8 @@
  */
 
 require_once 'AddThisFeature.php';
-require_once 'AddThisFollowButtonsHorizontalWidget.php';
 require_once 'AddThisFollowButtonsHorizontalTool.php';
-require_once 'AddThisFollowButtonsVerticalWidget.php';
 require_once 'AddThisFollowButtonsVerticalTool.php';
-require_once 'AddThisFollowButtonsCustomWidget.php';
-require_once 'AddThisFollowButtonsCustomTool.php';
 require_once 'AddThisFollowButtonsHeaderTool.php';
 
 if (!class_exists('AddThisFollowButtonsFeature')) {
@@ -48,19 +44,16 @@ if (!class_exists('AddThisFollowButtonsFeature')) {
         protected $name = 'Follow Buttons';
         protected $FollowButtonsHorizontalToolObject = null;
         protected $FollowButtonsVerticalToolObject = null;
-        protected $FollowButtonsCustomToolObject = null;
         protected $FollowButtonsHeaderToolObject = null;
         protected $filterNamePrefix = 'addthis_follow_buttons_';
 
         // a list of all settings fields used for this feature that aren't tool
         // specific
         protected $settingsFields = array(
-            'quick_tag',
             'startUpgradeAt',
         );
 
         protected $defaultConfigs = array(
-            'quick_tag' => 'disabled',
         );
 
         // used for temporary compatability with the Sharing Buttons plugin
@@ -74,16 +67,8 @@ if (!class_exists('AddThisFollowButtonsFeature')) {
         protected $tools = array(
             'FollowButtonsHorizontal',
             'FollowButtonsVertical',
-            'FollowButtonsCustom',
             'FollowButtonsHeader',
         );
-
-        protected $quickTagId = 'addthis_follow';
-        /**
-         * Review https://codex.wordpress.org/Quicktags_API for access keys used
-         * by WordPress
-         */
-        protected $quickTagAccessKey = 'x';
 
         /**
          * Upgrade to Follow Buttons by AddThis 2.0.0
@@ -162,11 +147,11 @@ if (!class_exists('AddThisFollowButtonsFeature')) {
             $widgetIdMapping = array_merge($widgetIdMapping, $newWidgetIdMapping);
 
             // Update sidebar pointers to use upgraded widgets
-            $this->upgradeIterative1MigrateSidebarWidgetIds($widgetIdMapping);
+            self::upgradeIterative1MigrateSidebarWidgetIds($widgetIdMapping);
         }
 
         /**
-         *  Takes in data about one type of widget, and saves as new widgits
+         * Takes in data about one type of widget, and saves as new widgits
          *
          * @param array  $oldWidgets         an array with old widget settings
          * @param array  $relevantWidgetKeys an array with the keys (for the
@@ -227,11 +212,13 @@ if (!class_exists('AddThisFollowButtonsFeature')) {
          * Takes a mapping of old widget identifiers and new widgit identifiers,
          * and updates the widget area settings for them.
          *
+         * Used in upgrade functions elsewhere
+         *
          * @param array $widgetIdMapping old widget id => new widget id
          *
          * @return null
          */
-        protected function upgradeIterative1MigrateSidebarWidgetIds(
+        public static function upgradeIterative1MigrateSidebarWidgetIds(
             $widgetIdMapping
         ) {
             $sideBarConfigs = get_option('sidebars_widgets');
@@ -517,6 +504,108 @@ if (!class_exists('AddThisFollowButtonsFeature')) {
                 $track
             );
             return $toolClass;
+        }
+
+        /**
+         * Upgrade from Smart Layers by AddThis 2.0.0 to 2.1.0
+         * Upgrade from Follow Buttons by AddThis 3.0.0 to 3.1.0
+         * Upgrade from Website Tools by AddThis 1.1.2 to 1.2.0
+         *
+         * @return null
+         */
+        protected function upgradeIterative3()
+        {
+            $customFollowWidgets = AddThisSharingButtonsFeature::upgradeIterative2ReformatWidgets(
+                'addthis_custom_follow_widget',
+                'addthis_custom_follow'
+            );
+
+            // Since this widget needs to be able to handle conflict state
+            // widgets, it'll uyse the upgradeIterative2ReformatWidgets method
+            // redefined in this class, instead of the one in
+            // AddThisSharingButtonsFeature
+            $horizontalFollowWidgets = $this->upgradeIterative2ReformatWidgets(
+                'addthis_horizontal_follow_toolbox_widget',
+                'addthis_horizontal_follow_toolbox'
+            );
+
+            // Since this widget needs to be able to handle conflict state
+            // widgets, it'll uyse the upgradeIterative2ReformatWidgets method
+            // redefined in this class, instead of the one in
+            // AddThisSharingButtonsFeature
+            $verticalFollowWidgets = $this->upgradeIterative2ReformatWidgets(
+                'addthis_vertical_follow_toolbox_widget',
+                'addthis_vertical_follow_toolbox'
+            );
+
+            $newWidgets = array_merge(
+                $customFollowWidgets,
+                $horizontalFollowWidgets,
+                $verticalFollowWidgets
+            );
+
+            $widgetIdMapping = AddThisSharingButtonsFeature::upgradeIterative2SaveWidgets($newWidgets);
+            self::upgradeIterative1MigrateSidebarWidgetIds($widgetIdMapping);
+        }
+
+        /**
+         * Reformats widgets settings from where the CSS class for the AddThis
+         * tool is hard coded per widget PHP class, to one widget PHP class
+         * which stores the proper CSS class as an instance variable for that
+         * widget. Reformats how conflicts are handled, too.
+         *
+         * @param array $oldWidgetName old settings for widgets
+         * @param array $class         the CSS class to use for all the old
+         * widgets passed
+         *
+         * @return array associated array of reformatted widgets, keys are used
+         * for migrating widgets
+         */
+        protected function upgradeIterative2ReformatWidgets($oldWidgetName, $class)
+        {
+            $oldWidgets = get_option('widget_' . $oldWidgetName);
+            $newWidgets = array();
+
+            if (!is_array($oldWidgets)) {
+                return array();
+            }
+
+            foreach ($oldWidgets as $key => $widget) {
+                if ($key == '_multiwidget') {
+                    continue;
+                }
+
+                $oldWidgetKey = $oldWidgetName . '-' . $key;
+                $newWidgets[$oldWidgetKey] = array();
+                if (isset($widget['title'])) {
+                    $newWidgets[$oldWidgetKey]['title'] = $widget['title'];
+                }
+                $newWidgets[$oldWidgetKey]['class'] = $class;
+
+                if ($oldWidgetName === 'addthis_horizontal_follow_toolbox_widget') {
+                    $toolObject = new AddThisFollowButtonsHorizontalTool();
+                } elseif ($oldWidgetName === 'addthis_vertical_follow_toolbox_widget') {
+                    $toolObject = new AddThisFollowButtonsVerticalTool();
+                }
+
+                if (isset($toolObject)) {
+                    $centralToolConfigs = $toolObject->getToolConfigs();
+                    // if the conflict hasn't been resolved yet
+                    if (!empty($centralToolConfigs['conflict'])) {
+                        if (isset($widget['title'])) {
+                            unset($widget['title']);
+                        }
+                        $layers = $toolObject->getAddThisLayers($widget);
+                        foreach ($layers as $toolApiName => $settings) {
+                            unset($layers[$toolApiName]['elements']);
+                        }
+                        $newWidgets[$oldWidgetKey]['layers'] = $layers;
+                        $newWidgets[$oldWidgetKey]['conflict'] = 1;
+                    }
+                }
+            }
+
+            return $newWidgets;
         }
     }
 }

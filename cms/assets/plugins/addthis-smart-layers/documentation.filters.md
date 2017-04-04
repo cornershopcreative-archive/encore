@@ -33,6 +33,9 @@ This is an exhaustive list of supported filters in this plugin that will remain 
 1. addthis_recommended_content_below_tool
 1. addthis_recommended_content_content_filter_priority
 1. addthis_recommended_content_excerpt_filter_priority
+1. addthis_custom_html_enable
+1. addthis_custom_html_above_enable
+1. addthis_custom_html_below_enable
 1. addthis_share_array
 1. addthis_share_json
 1. addthis_config_array

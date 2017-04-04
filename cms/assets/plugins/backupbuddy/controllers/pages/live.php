@@ -36,6 +36,13 @@ foreach( pb_backupbuddy::$options['remote_destinations'] as $destination_id => $
 	}
 }
 
+if ( ( 'disconnect_delete_only' == pb_backupbuddy::_GET( 'live_action' ) ) && ( false !== $liveDestinationID ) ) { // If disconnecting and not already disconnected.
+	pb_backupbuddy::verify_nonce();
+	unset( pb_backupbuddy::$options['remote_destinations'][ $liveDestinationID ] );
+	pb_backupbuddy::save();
+	pb_backupbuddy::alert( 'Success forcing remote destination removal of Stash Live destination WITHOUT disconnecting.' );
+	return;
+}
 
 // Handle disconnect.
 if ( ( 'disconnect' == pb_backupbuddy::_GET( 'live_action' ) ) && ( false !== $liveDestinationID ) ) { // If disconnecting and not already disconnected.
@@ -94,7 +101,7 @@ if ( ( 'disconnect' == pb_backupbuddy::_GET( 'live_action' ) ) && ( false !== $l
 			<table>
 				<tr>
 					<td>iThemes Username:</td>
-					<td><input type="text" name="username" value="<?php echo $destination_settings['itxapi_username']; ?>" disabled="disabled"></td>
+					<td><input type="text" name="username" value="<?php echo $destination_settings['itxapi_username']; ?>" readonly="true"></td>
 				</tr>
 				<tr>
 					<td>iThemes Password:</td>

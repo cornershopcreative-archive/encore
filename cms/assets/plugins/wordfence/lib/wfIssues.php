@@ -185,7 +185,7 @@ class wfIssues {
 		}
 		foreach($ret as $status => &$issueList){
 			for($i = 0; $i < sizeof($issueList); $i++){
-				if($issueList[$i]['type'] == 'file'){
+				if ($issueList[$i]['type'] == 'file' || $issueList[$i]['type'] == 'knownfile') {
 					$localFile = $issueList[$i]['data']['file'];
 					if ($localFile != '.htaccess' && $localFile != $userIni) {
 						$localFile = ABSPATH . '/' . preg_replace('/^[\.\/]+/', '', $localFile);
@@ -211,6 +211,9 @@ class wfIssues {
 			}
 		}
 		return $ret; //array of lists of issues by status
+	}
+	public function getIssueCount() {
+		return (int) $this->getDB()->querySingle("select COUNT(*) from " . $this->issuesTable . " WHERE status = 'new'");
 	}
 	public function updateSummaryItem($key, $val){
 		$arr = wfConfig::get_ser('wf_summaryItems', array());

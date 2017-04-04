@@ -2360,11 +2360,17 @@ class backupbuddy_core {
 	 * @return	string|array 							If string then importbuddy serial.  If array then an error has been encountered. Array format: array( false, 'Error message.' ).
 	 *
 	 */
-	public static function deploymentImportBuddy( $password, $backupFile, $additionalStateInfo = '' ) {
+	public static function deploymentImportBuddy( $password, $backupFile, $additionalStateInfo = '', $doCleanup = true ) {
 		if ( ! file_exists( $backupFile ) ) {
 			$error = 'Error #43848378: Backup file `' . $backupFile . '` not found uploaded.';
 			pb_backupbuddy::status( 'error', $error);
 			return array( false, $error );
+		}
+		
+		if ( true === $doCleanup ) {
+			pb_backupbuddy::status( 'details', 'NOT skipping cleanup procedures at end of importbuddy Deployment based on advanced Deployment settings.' );
+		} else {
+			pb_backupbuddy::status( 'details', 'SKIPPING CLEANUP procedures at end of importbuddy Deployment based on advanced Deployment settings.' );
 		}
 		
 		$backupSerial = backupbuddy_core::get_serial_from_file( $backupFile );
@@ -2389,14 +2395,15 @@ class backupbuddy_core {
 		$state['databaseSettings']['password'] = DB_PASSWORD;
 		$state['databaseSettings']['prefix'] = $wpdb->prefix;
 		$state['databaseSettings']['renamePrefix'] = true;
-		$state['cleanup']['deleteImportBuddy'] = true;
-		$state['cleanup']['deleteImportLog'] = true;
+		$state['cleanup']['deleteImportBuddy'] = $doCleanup;
+		$state['cleanup']['deleteImportBuddyDirectory'] = $doCleanup;
+		$state['cleanup']['deleteImportLog'] = $doCleanup;
 		
 		if ( is_array( $additionalStateInfo ) ) {
 			$state = array_merge( $state, $additionalStateInfo );
 		}
 		
-		error_log( print_r( $state, true ) );
+		//error_log( print_r( $state, true ) );
 		
 		// Write default state overrides.
 		$state_file = ABSPATH . 'importbuddy-' . $importFileSerial . '-state.php';
@@ -2997,7 +3004,7 @@ class backupbuddy_core {
 		$totalUsers = count_users();
 		$totalUsers = $totalUsers['total_users'];
 		
-		if ( '' == $settings['custom_root'] ) {
+		if ( ! isset( $settings['custom_root'] ) || ( '' == $settings['custom_root'] ) ) {
 			pb_backupbuddy::status( 'startSubFunction', json_encode( array( 'function' => 'post_count', 'title' => 'Found ' . $totalPosts . ' posts, ' . $totalPages . ' pages, and ' . $totalComments . ' comments.' ) ) );
 			pb_backupbuddy::status( 'startSubFunction', json_encode( array( 'function' => 'post_count', 'title' => 'Found ' . $totalUsers . ' user accounts.' ) ) );
 		}

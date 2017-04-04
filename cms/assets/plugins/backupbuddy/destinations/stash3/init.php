@@ -92,7 +92,7 @@ class pb_backupbuddy_destination_stash3 { // Change class name end to match dest
 			$stashAction = 'upload';
 			$response = self::stashAPI( $settings, $stashAction, $additionalParams );
 			if ( ! is_array( $response ) ) {
-				$error = 'Error #82333232973: Unable to initiate Stash (v2) upload. Details: `' . $response . '`.';
+				$error = 'Error #82333232973: Unable to initiate Stash (v3) upload. Details: `' . $response . '`.';
 				self::_error( $error );
 				return false;
 			}
@@ -458,7 +458,6 @@ class pb_backupbuddy_destination_stash3 { // Change class name end to match dest
 			$action = 'site-files';
 		}
 		$files = self::stashAPI( $settings, $action, $additionalParams );
-		
 		return $files;
 		
 	} // End listFiles().
@@ -535,7 +534,7 @@ class pb_backupbuddy_destination_stash3 { // Change class name end to match dest
 		
 		$response = self::stashAPI( $settings, $stashAction = 'trim', $additionalParams );
 		if ( ! is_array( $response ) ) {
-			$error = 'Error #8329545445573: Unable to trim Stash (v2) upload. Details: `' . print_r( $response, true ) . '`.';
+			$error = 'Error #8329545445573: Unable to trim Stash (v3) upload. Details: `' . print_r( $response, true ) . '`.';
 			self::_error( $error );
 			return false;
 		} else {

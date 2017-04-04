@@ -13,6 +13,7 @@ var saveLicense = require('uglify-save-license');
 var gettextParser = require("gettext-parser");
 var po2json = require('po2json');
 var foreach = require('gulp-foreach');
+var sortObj = require('sort-object');
 
 var path = {
   lintJs: [
@@ -50,7 +51,7 @@ var path = {
     'frontend/src/l10n/addthis-frontend-*.po',
     'frontend/build/l10n/addthis-frontend-*.po'
   ],
-  l10n_build: 'frontend/build/l10n/',
+  l10n_build: 'frontend/build/l10n',
   addThisTemplates: [
     'frontend/src/**/*.html',
     'frontend/src/**/*.svg'
@@ -190,9 +191,47 @@ gulp.task('l10n-compile-mo', ['l10n-make-backend-po'], function() {
       var po = gettextParser.po.parse(file.contents.toString());
       var mo = gettextParser.mo.compile(po);
 
-      fs.writeFileSync(path.l10n_build + moFilename, mo);
+      fs.writeFileSync(path.l10n_build + '/' + moFilename, mo);
       return stream;
     }));
+});
+
+// reorders strings in the po files to be alphabetical by msgid, and copies #,
+// and #. comments from en.po into the others
+gulp.task('po_cleanup', function() {
+  var getAuthoritativePo = function(next) {
+    return gulp.src('frontend/src/l10n/addthis-frontend-en_US.po')
+    .pipe(foreach(function(stream, poFile) {
+      var po = gettextParser.po.parse(poFile.contents.toString());
+      return next(po);
+    }));
+  };
+
+  return getAuthoritativePo(function(authPo) {
+    var authComments = {};
+    Object.keys(authPo.translations['']).forEach(function(msgid, key) {
+      var comments = authPo.translations[''][msgid].comments;
+      authComments[msgid] = comments;
+    });
+
+    return gulp.src('frontend/src/l10n/addthis-frontend-*.po')
+    .pipe(foreach(function(stream, poFile) {
+      var strings = gettextParser.po.parse(poFile.contents.toString());
+      strings.translations[''] = sortObj(strings.translations['']);
+
+      Object.keys(strings.translations['']).forEach(function(msgid, key) {
+        if (authComments[msgid]) {
+          var comments = strings.translations[''][msgid].comments;
+          comments.extracted = authComments[msgid].extracted;
+          comments.flag = authComments[msgid].flag;
+        }
+      });
+
+      newPo = gettextParser.po.compile(strings);
+      fs.writeFileSync(poFile.path, newPo);
+      return stream;
+    }));
+  });
 });
 
 var createBackendPo = function (file, backendPoLookups) {
@@ -253,7 +292,11 @@ gulp.task('l10n-make-backend-po', function() {
 
         debugFrontendPo.translations[''][element]['msgstr'][0] = frontendMsgid;
 
-        if (((typeof authoritativePo.translations[''][element]['comments']) !== 'undefined') && ((typeof authoritativePo.translations[''][element]['comments']['flag']) !== 'undefined')) {
+        var backendFlag = 'include in addthis-wordpress-plugin-backend domain';
+        if (((typeof authoritativePo.translations[''][element]['comments']) !== 'undefined') &&
+          ((typeof authoritativePo.translations[''][element]['comments']['flag']) !== 'undefined') &&
+          (authoritativePo.translations[''][element]['comments']['flag']).indexOf(backendFlag) !== -1
+        ) {
           // EEEEWWWW WordPress, why are you making me do this?
           var backendMsgid = translation['msgstr'][0];
 
@@ -271,7 +314,7 @@ gulp.task('l10n-make-backend-po', function() {
       });
 
       debugFrontendPo = gettextParser.po.compile(debugFrontendPo);
-      fs.writeFileSync(path.l10n_build + 'addthis-frontend-debug.po', debugFrontendPo);
+      fs.writeFileSync(path.l10n_build + '/addthis-frontend-debug.po', debugFrontendPo);
 
       //foreach frontend po, make a backend po
       return gulp.src(path.l10n_frontend_po)
@@ -281,7 +324,7 @@ gulp.task('l10n-make-backend-po', function() {
           var backendPoFilename = file.relative.replace(re, 'addthis-backend-');
           var backendPo = createBackendPo(file, backendPoLookups);
           var backendPo = gettextParser.po.compile(backendPo);
-          fs.writeFileSync(path.l10n_build + backendPoFilename, backendPo);
+          fs.writeFileSync(path.l10n_build + '/' + backendPoFilename, backendPo);
 
           return stream;
         }));
@@ -348,7 +391,7 @@ gulp.task('l10n-make-frontend-json', function() {
       };
 
       var jsonTranslation = po2json.parse(file.contents.toString(), options);
-      fs.writeFileSync(path.l10n_build + jsonFilename, jsonTranslation);
+      fs.writeFileSync(path.l10n_build + '/'+ jsonFilename, jsonTranslation);
     return stream;
   }));
 });
@@ -389,6 +432,20 @@ gulp.task('concat-templates', function () {
     .pipe(gulp.dest(path.buildRoot));
 });
 
+gulp.task('make-folders', function () {
+  var folders = [path.buildRoot, path.l10n_build];
+  folders.forEach(function(folder) {
+    try {
+        fs.mkdirSync(folder);
+    }
+    catch(err) {
+        if (err.code !== 'EEXIST') {
+            console.warn(err);
+        }
+    }
+  });
+});
+
 gulp.task('lint-js', function() {
   return gulp.src(path.lintJs)
     .pipe(jshint())
@@ -396,7 +453,7 @@ gulp.task('lint-js', function() {
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('build', ['lint-js'], function(){
+gulp.task('build', ['lint-js', 'make-folders'], function(){
   return gulp.start(
     'minify-addthis-js',
     'minify-addthis-public-css',

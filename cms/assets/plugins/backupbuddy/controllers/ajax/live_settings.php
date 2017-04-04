@@ -22,7 +22,7 @@ if ( '' != pb_backupbuddy::_POST( 'pb_backupbuddy_' ) ) {
 	if ( count( $save_result['errors'] ) == 0 ) { // NO ERRORS SO SAVE.
 		pb_backupbuddy::$options['remote_destinations'][$destination_id] = array_merge( pb_backupbuddy::$options['remote_destinations'][$destination_id], $save_result['data'] );
 		pb_backupbuddy::save();
-		pb_backupbuddy::alert( __( 'Settings saved. Restarting Live process so they take immediate effect.', 'it-l10n-backupbuddy' ) );
+		pb_backupbuddy::alert( __( 'Settings saved. Restarting Live process so they take immediate effect. If you disabled file managementrefresh the page to see the effect.', 'it-l10n-backupbuddy' ) );
 		set_transient( 'backupbuddy_live_jump', array( 'daily_init', array() ), 60*60*48 ); // Tells Live process to restart from the beginning (if mid-process) so new settigns apply.
 
 		// Add final entry to log if disabled
@@ -54,6 +54,8 @@ if ( 'live' == $destination_settings['type'] ) {
 	}
 	?>
 	<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=disconnect' ); ?>" target="_top" style="float:right;margin-top:-3em;color:#f95050;"><?php _e( 'Disconnect from Stash Live', 'it-l10n-backupbuddy' ); ?></a>
+	<br><br><br><br><br><br><br><br><br>
+	<a href="<?php echo pb_backupbuddy::nonce_url( $admin_url . '?page=pb_backupbuddy_live&live_action=disconnect_delete_only' ); ?>" onClick="if ( false === confirm( '<?php _e( 'Are you sure you want to remote the Stash Live destination WITHOUT disconnecting this site from Stash Live? WARNING: Use only if directed by support.', 'it-l10n-backupbuddy' ); ?>' ) ) { return false; }" target="_top" style="float:right;margin-top:-3em;color:#DFDFDF;"><?php _e( 'Remove Stash Live destination without disconnecting (use only if directed)', 'it-l10n-backupbuddy' ); ?></a>
 	<?php
 }
 

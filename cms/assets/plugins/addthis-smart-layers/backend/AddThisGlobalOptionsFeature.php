@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -21,7 +21,7 @@
 
 require_once 'AddThisFeature.php';
 require_once 'AddThisGlobalOptionsTool.php';
-require_once 'AddThisGlobalOptionsWidget.php';
+require_once 'AddThisGlobalOptionsCustomHtmlTool.php';
 
 if (!class_exists('AddThisGlobalOptionsFeature')) {
     /**
@@ -41,10 +41,13 @@ if (!class_exists('AddThisGlobalOptionsFeature')) {
         protected $oldConfigVariableName = 'addthis_settings';
         protected $settingsVariableName = 'addthis_shared_settings';
         protected $settingsPageId = 'addthis_advanced_settings';
-        protected $name = 'Advanced Settings';
         protected $GlobalOptionsToolObject = null;
+        protected $GlobalOptionsCustomHtmlToolObject = null;
+        protected $name = 'Advanced Settings';
         public $publicJavaScriptAction = 'addthis_global_options_settings';
-
+        protected $filterNamePrefix = 'addthis_custom_html_';
+        protected $enableAboveContent = true;
+        protected $enableBelowContent = true;
         public static $anonymousProfileIdPrefix = 'wp';
 
         // a list of all settings fields used for this feature that aren't tool
@@ -71,7 +74,9 @@ if (!class_exists('AddThisGlobalOptionsFeature')) {
             'follow_buttons_feature_enabled',
             'recommended_content_feature_enabled',
             'sharing_buttons_feature_enabled',
-            'trending_content_feature_enabled',
+            'html',
+            'enqueue_client',
+            'enqueue_local_settings',
             // debug settings
             'debug_enable',
             'addthis_plugin_controls',
@@ -125,7 +130,8 @@ if (!class_exists('AddThisGlobalOptionsFeature')) {
             'follow_buttons_feature_enabled'        => false,
             'recommended_content_feature_enabled'   => false,
             'sharing_buttons_feature_enabled'       => false,
-            'trending_content_feature_enabled'      => false,
+            'enqueue_client'                        => true,
+            'enqueue_local_settings'                => false,
             // debug settings
             'debug_enable'                          => false,
             'addthis_environment'                   => '',
@@ -166,6 +172,7 @@ if (!class_exists('AddThisGlobalOptionsFeature')) {
         // tool + ToolObject
         protected $tools = array(
             'GlobalOptions',
+            'GlobalOptionsCustomHtml',
         );
 
         /**
@@ -179,59 +186,6 @@ if (!class_exists('AddThisGlobalOptionsFeature')) {
         public function __construct($globalOptionsObject = null)
         {
             $this->globalOptionsObject = $this;
-        }
-
-        /**
-         * Determines if the Profile ID used on this website is for a PRO
-         * account or a basic one.
-         *
-         * @return boolean true for PRO, false for BASIC
-         */
-        public function isProProfile()
-        {
-            if (!empty($this->configs['profile_edition'])
-                && $this->configs['profile_edition'] == 'pro'
-            ) {
-                return true;
-            }
-
-            return false;
-        }
-
-        /**
-         * Goes out to AddThis' darkseid API and updates the profile edition for
-         * the profile on this site.
-         *
-         * @return true is changed, false if it stayed the same (so that the
-         * thing calling it knows when to save a settings change)
-         */
-        public function updateProfileEdition()
-        {
-            $oldEdition = $this->configs['profile_edition'];
-
-            $profileId = $this->getProfileId();
-            if (empty($profileId) || !$this->inRegisteredMode()) {
-                $newEdition = 'anonymous';
-            } else {
-                $boost = $this->getBoostConfig();
-
-                if (isset($boost['subscription']['edition'])) {
-                    if ($boost['subscription']['edition'] == 'PRO') {
-                        $newEdition = 'pro';
-                    } else {
-                        $newEdition = 'basic';
-                    }
-                } else {
-                    $newEdition = 'anonymous';
-                }
-            }
-
-            if ($oldEdition != $newEdition) {
-                $this->configs['profile_edition'] = $newEdition;
-                return true;
-            }
-
-            return false;
         }
 
         /**
@@ -421,6 +375,34 @@ if (!class_exists('AddThisGlobalOptionsFeature')) {
                 $output['script_location'] = 'header';
             }
 
+            if (!empty($input['html']) && is_array($input['html'])) {
+                if (!is_array($output['html'])) {
+                    $output['html'] = array();
+                }
+
+                foreach ($input['html'] as $widgetId => $toolSettings) {
+                    $toolObject = $this->getToolObject('GlobalOptionsCustomHtml');
+
+                    // if user can't do unfiltered HTML
+                    if (!current_user_can('unfiltered_html')) {
+                        if (isset($output['html'][$widgetId]['html'])) {
+                            // use old HTML (don't let them change it) if available
+                            $toolSettings['html'] = $output['html'][$widgetId]['html'];
+                        } else {
+                            // or leave blank
+                            $toolSettings['html'] = '';
+                        }
+                    }
+
+                    $sanitizedToolSettings = $toolObject->sanitizeSettings($toolSettings);
+                    $output['html'][$sanitizedToolSettings['widgetId']] = $sanitizedToolSettings;
+                }
+            }
+
+            if (isset($output['html']) && empty($output['html'])) {
+                unset($output['html']);
+            }
+
             $checkboxFields = array(
                 'addthis_508',
                 'addthis_addressbar',
@@ -428,6 +410,8 @@ if (!class_exists('AddThisGlobalOptionsFeature')) {
                 'addthis_asynchronous_loading',
                 'addthis_bitly',
                 'addthis_per_post_enabled',
+                'enqueue_client',
+                'enqueue_local_settings',
                 'ajax_support',
                 'debug_enable',
                 'filter_get_the_excerpt',
@@ -581,9 +565,12 @@ if (!class_exists('AddThisGlobalOptionsFeature')) {
          * Returns the URL to use for addthis_widget.js. Based on the
          * enviornment variable
          *
+         * @param string $profileId The profile Id, optional, defaults to the
+         *   one in the settings
+         *
          * @return string
          */
-        public function getAddThisWidgetJavaScriptUrl()
+        public function getAddThisWidgetJavaScriptUrl($profileId = false)
         {
             $urlRoot = 'https://s7.addthis.com/js/';
 
@@ -594,9 +581,13 @@ if (!class_exists('AddThisGlobalOptionsFeature')) {
                 $urlRoot = '//cache-' . $env . '.addthis.com/js/';
             }
 
+            if (!$profileId) {
+                $profileId = $this->getUsableProfileId();
+            }
+
             $url = $urlRoot .
                 '300/addthis_widget.js#pubid=' .
-                urlencode($this->getUsableProfileId());
+                urlencode($profileId);
 
             return $url;
         }
@@ -640,6 +631,25 @@ if (!class_exists('AddThisGlobalOptionsFeature')) {
             }
 
             return $url;
+        }
+
+        /**
+         * Determines if this is a minimal plugin with no tool editing in
+         * WordPress, or any other plugin with at least some tool editing in
+         * WordPress.
+         *
+         * @return boolean
+         */
+        public function isMinimalPlugin()
+        {
+            if ($this->configs['follow_buttons_feature_enabled'] === true
+                || $this->configs['recommended_content_feature_enabled'] === true
+                || $this->configs['sharing_buttons_feature_enabled'] === true
+            ) {
+                return false;
+            }
+
+            return true;
         }
 
         /**
@@ -803,6 +813,23 @@ if (!class_exists('AddThisGlobalOptionsFeature')) {
         }
 
         /**
+         * Upgrade from Smart Layers by AddThis 2.*.* to
+         * Smart Layers by AddThis 3.0.0
+         *
+         * @return null
+         */
+        protected function upgradeIterative3()
+        {
+            if (!empty($this->configs['addthis_asynchronous_loading'])) {
+                $this->configs['enqueue_client'] = false;
+                $this->configs['enqueue_local_settings'] = false;
+            } else {
+                $this->configs['enqueue_client'] = true;
+                $this->configs['enqueue_local_settings'] = true;
+            }
+        }
+
+        /**
          * Registering AJAX endpoints with WordPress
          *
          * @return null
@@ -850,14 +877,139 @@ if (!class_exists('AddThisGlobalOptionsFeature')) {
                 && $configs['recommended_content_feature_enabled'] === false
                 && isset($configs['sharing_buttons_feature_enabled'])
                 && $configs['sharing_buttons_feature_enabled'] === false
-                && isset($configs['trending_content_feature_enabled'])
-                && $configs['trending_content_feature_enabled'] === false
             ) {
                 $configs['addthis_plugin_controls'] === 'AddThis';
             }
 
             $output = parent::addDefaultConfigs($configs);
             return $output;
+        }
+
+        /**
+         * Generates HTML for the bottom of widgets with links to settings
+         * edit pages within WordPress and at AddThis.com, as appropriate.
+         *
+         * @return string HTML
+         */
+        public function getSettingsLinkHtmlForWidgets()
+        {
+            $links = array();
+            $editLink = '';
+
+            // minimal plugin doesn't include UI for editing tools
+            if (!$this->isMinimalPlugin()) {
+                $settingsText = esc_html__('the plugin\'s settings', AddThisFeature::$l10n_domain);
+                $settingsUrl = $this->getSettingsPageUrl().'#';
+                $links[] = '<a href="'.$settingsUrl.'" target="_blank">'.$settingsText.'</a>';
+            }
+
+            // unregistered users don't go to addthis to edit tools, ever
+            if ($this->inRegisteredMode()) {
+                $profileId = $this->getProfileId();
+                $dashboardUrl = 'https://www.addthis.com/dashboard#gallery/pub/'.$profileId;
+                $links[] = '<a href="'.$dashboardUrl.'" target="_blank">addthis.com</a>';
+            }
+
+            if (count($links) == 1) {
+                $editLinkTemplate = 'To edit the options for your AddThis tools, please go to %1$s';
+                $editLinkTemplate = esc_html__($editLinkTemplate, AddThisFeature::$l10n_domain);
+                $editLink = sprintf($editLinkTemplate, $links[0]);
+            } elseif (count($links) > 1) {
+                $editLinkTemplate = 'To edit the options for your AddThis tools, please go to %1$s or %2$s';
+                $editLinkTemplate = esc_html__($editLinkTemplate, AddThisFeature::$l10n_domain);
+                $editLink = sprintf($editLinkTemplate, $links[0], $links[1]);
+            }
+
+            return $editLink;
+        }
+
+        /**
+         * This must be public as it's used in widgets
+         *
+         * @param string $buttonName The text of the button that the user presses
+         * to indicate that they agree without EULA
+         *
+         * @return string End User License Agreement text
+         */
+        public function eulaText($buttonName = 'Save')
+        {
+            $buttonName = esc_html__($buttonName, AddThisFeature::$l10n_domain);
+
+            $eulaTemplate = 'By clicking "%1$s" you certify that you are at least 13 years old, and agree to the AddThis %2$s and %3$s.';
+            $eulaTemplate = esc_html__($eulaTemplate, AddThisFeature::$l10n_domain);
+
+            $privacyPolicyText = esc_html__(
+                'Privacy Policy',
+                AddThisFeature::$l10n_domain
+            );
+
+            $termsOfServiceText = esc_html__(
+                'Terms of Service',
+                AddThisFeature::$l10n_domain
+            );
+
+            $privacyPolicyLink = '<a href="http://www.addthis.com/privacy/privacy-policy">'.$privacyPolicyText.'</a>';
+            $termsOfServiceLink = '<a href="http://www.addthis.com/tos">'.$termsOfServiceText.'</a>';
+
+            $eula = sprintf($eulaTemplate, $buttonName, $privacyPolicyLink, $termsOfServiceLink);
+            return $eula;
+        }
+
+        /**
+         * Builds the element used for custom HTML above and below content on
+         * pages, posts, categories, archives and the homepage
+         *
+         * @param string $location Is this for a sharing button above or below
+         * content/excerpts?
+         * @param array  $track    Optional. Used by reference. If the
+         * filter changes the value in any way the filter's name will be pushed
+         *
+         * @return string a class
+         */
+        public function getClassForTypeAndLocation(
+            $location = 'above',
+            &$track = false
+        ) {
+            $toolClass = $this->getDefaultClassForTypeAndLocation($location);
+            return $toolClass;
+        }
+
+        /**
+         * Returns HTML specified by the user. Intended for old Client API use.
+         *
+         * @param array $class the class that will identify the tool
+         * @param array $track Optional. Used by reference. If the
+         * filter changes the value in any way the filter's name will be pushed
+         *
+         * @return string this should be valid html
+         */
+        public function getHtmlForFilter($class, &$track = false)
+        {
+            $element = '.' . $class;
+            $html = '';
+
+            $configs = $this->getConfigs();
+            if (!empty($configs['html']) && is_array($configs['html'])) {
+                foreach ($configs['html'] as $toolSettings) {
+                    if (!empty($toolSettings['enabled']) &&
+                        is_array($toolSettings['elements']) &&
+                        in_array($element, $toolSettings['elements'])
+                    ) {
+                        $html = $html . $toolSettings['html'];
+                    }
+                }
+            }
+
+            $url = $this->getShareUrl($track);
+            $title = $this->getShareTitle($track);
+
+            $html = sprintf($html, $url, $title);
+
+            if (!empty($configs['ajax_support'])) {
+                $html .= '<script>if (typeof window.atnt !== \'undefined\') { window.atnt(); }</script>';
+            }
+
+            return $html;
         }
     }
 }

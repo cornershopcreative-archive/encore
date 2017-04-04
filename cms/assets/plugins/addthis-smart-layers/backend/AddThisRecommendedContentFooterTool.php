@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -34,11 +34,6 @@ if (!class_exists('AddThisRecommendedContentFooterTool')) {
      */
     class AddThisRecommendedContentFooterTool extends AddThisRecommendedContentToolParent
     {
-        public $prettyName = 'Recommended Content Footer';
-
-        public $edition = 'basic';
-        public $anonymousSupport = true;
-        public $inline = false;
         public $settingsSubVariableName = 'smlre';
         public $layersApiProductName = 'recommended';
         protected $defaultConfigs = array(
@@ -46,7 +41,6 @@ if (!class_exists('AddThisRecommendedContentFooterTool')) {
             'title'          => 'Recommended for you',
             'theme'          => 'light',
         );
-
 
         /**
          * Creates tool specific settings for the JavaScript variable

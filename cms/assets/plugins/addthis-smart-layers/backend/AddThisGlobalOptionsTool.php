@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -34,19 +34,7 @@ if (!class_exists('AddThisGlobalOptionsTool')) {
     class AddThisGlobalOptionsTool extends AddThisTool
     {
         protected $featureClassName = 'AddThisGlobalOptionsFeature';
-
         public $prettyName = 'AddThis Script';
-
-        public $edition = 'basic';
-        public $anonymousSupport = true;
-        public $inline = true;
-
-        public $widgetClassName = 'AddThisGlobalOptionsWidget';
-        public $widgetBaseId = 'addthis_global_options_widget';
-        public $widgetName = 'AddThis Script';
-        public $widgetDescription = 'If your theme is not adding the AddThis script (addthis_widget.js) onto your pages, try adding this widget.';
-
-        public $shortCode = 'addthis_script';
 
         /**
          * This must be public as it's used in the tool's widget
@@ -79,7 +67,7 @@ if (!class_exists('AddThisGlobalOptionsTool')) {
                 <script
                     data-cfasync="false"
                     type="text/javascript"
-                    src="'.admin_url('admin-ajax.php') . '?action='.$this->featureObject->publicJavaScriptAction.'"'
+                    src="' . admin_url('admin-ajax.php') . '?action='.$this->featureObject->publicJavaScriptAction.'"'
                     . $async . '
                 >
                 </script>
@@ -92,6 +80,24 @@ if (!class_exists('AddThisGlobalOptionsTool')) {
             ';
 
             return $script;
+        }
+
+        /**
+         * This must be public as it's used in a callback for add_shortcode
+         *
+         * Returns HTML to use to replace a short tag for this tool. Includes
+         * tags to identify its from a short code.
+         *
+         * @return string this should be valid html
+         */
+        public function getInlineCodeForShortCode()
+        {
+            $html  = '<!-- Created with a shortcode from an AddThis plugin -->';
+            $html .= '<!-- tool name: ' . $this->prettyName . ' -->';
+            $html .= $this->getInlineCode();
+            $html .= '<!-- End of short code snippet -->';
+
+            return $html;
         }
     }
 }

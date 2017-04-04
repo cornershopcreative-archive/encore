@@ -170,6 +170,32 @@ if ( isset( pb_backupbuddy::$options['cron_request_timeout_override'] ) && ( '' 
 
 
 
+// TODO: In the future when WordPress handles this for us, remove on WP versions where it is no longer needed.
+/* Disabled -- may be causing issues with Stash transients?
+function backupbuddy_clean_transients() {
+	backupbuddy_transient_delete( true );
+}
+function backupbuddy_clear_transients() {
+	backupbuddy_transient_delete( false );
+}
+function backupbuddy_transient_delete( $expired = true ) {
+	global $_wp_using_ext_object_cache;
+	if ( !$_wp_using_ext_object_cache ) {
+		global $wpdb;
+		$sql = "DELETE FROM `$wpdb->options` WHERE option_name LIKE '_transient_timeout%'";
+		if ( $expired ) {
+			$time = time();
+			$sql .=  " AND option_value < $time";
+		}
+		$wpdb->query( $sql );
+		$wpdb->query( "OPTIMIZE TABLE $wpdb->options" );
+	}
+}
+add_action( 'wp_scheduled_delete', 'backupbuddy_clean_transients' );
+add_action( 'after_db_upgrade', 'backupbuddy_clear_transients' );
+*/
+
+
 // iThemes Sync Verb Support
 function backupbuddy_register_sync_verbs( $api ) {
 	$verbs = array(

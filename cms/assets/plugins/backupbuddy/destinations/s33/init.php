@@ -49,9 +49,10 @@ class pb_backupbuddy_destination_s33 { // Change class name end to match destina
 		'stash_mode'					=>		'0',		// When 1, this destination is wrapped with Stash.
 		'live_mode'					=>		'0',		// When 1, this destination is wrapped in Live.
 		'max_filelist_keys'				=>		'250',		// Maximum number of files to list from server via listObjects calls.
-		'disable_hostpeer_verficiation'	=>	'0',		// Disables SSL host/peer verification.
+		'disable_hostpeer_verficiation'	=>		'0',		// Disables SSL host/peer verification.
+		'accelerate'					=>		'0',		// Whether or not to use endpoint acceleration. Must be enabled for bucket by user first.
 		
-		'debug_mode'					=>	'0',
+		'debug_mode'					=>		'0',
 		
 		// Do not store these for destination settings. Only used to pass to functions in this file.
 		'_multipart_id'				=>		'',			// Instance var. Internal use only for continuing a chunked upload.
@@ -143,6 +144,10 @@ class pb_backupbuddy_destination_s33 { // Change class name end to match destina
 				);
 			}
 			
+			if ( isset( $settings['accelerate'] ) && ( '1' == $settings['accelerate'] ) ) {
+				$s3Config['use_accelerate_endpoint'] = true;
+			}
+			
 			self::$_client = new S3Client( $s3Config );
 			//self::$_client->getConfig()->set( 'curl.options', array( 'body_as_string' => true ) ); // Work around "[curl] 65: necessary data rewind wasn't possible" issue. See https://github.com/aws/aws-sdk-php/issues/284
 			
@@ -228,7 +233,15 @@ class pb_backupbuddy_destination_s33 { // Change class name end to match destina
 				if ( pb_backupbuddy::$options['log_level'] == '3' ) { // Full logging enabled.
 					pb_backupbuddy::status( 'details', 'Call details due to logging level: `' . print_r( $thisCall, true ) . '`.' );
 				}
-				return self::_error ( 'Error #389383: Unable to initiate multipart upload for file `' . $file . '`. Details: `' . $e->getMessage() . '`.' );
+				$message = $e->getMessage();
+				
+				// If token has expired for Stash Live or Stash then clear cached token for next file.
+				if ( ( ( '1' == $settings['live_mode'] ) || ( '1' == $settings['stash_mode'] ) ) && ( strpos( $message, 'token has expired' ) !== false ) ) {
+					pb_backupbuddy::status( 'details', 'Clearing Live credentials transient because token has expired.' );
+					delete_transient( pb_backupbuddy_destination_live::LIVE_ACTION_TRANSIENT_NAME );
+				}
+				
+				return self::_error ( 'Error #389383b: Unable to initiate multipart upload for file `' . $file . '`. Details: `' . $message . '`.' );
 			}
 			
 			// Made it here so SUCCESS initiating multipart!
@@ -794,7 +807,7 @@ class pb_backupbuddy_destination_s33 { // Change class name end to match destina
 			$sendOK = true;
 		} else {
 			global $pb_backupbuddy_destination_errors;
-			$send_response = 'Error sending test file to S3 (v2). Details: `' . implode( ', ', $pb_backupbuddy_destination_errors ) . '`.';
+			$send_response = 'Error sending test file to S3 (v3). Details: `' . implode( ', ', $pb_backupbuddy_destination_errors ) . '`.';
 		}
 		
 		pb_backupbuddy::add_status_serial( 'remote_send-' . $send_id );

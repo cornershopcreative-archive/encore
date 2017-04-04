@@ -24,12 +24,19 @@ pb_backupbuddy::alert( '{error placeholder}', false, $error_code = '', $rel_tag 
 	var loadingIndicator = '';
 	jQuery(document).ready(function() {
 		loadingIndicator = jQuery( '.pb_backupbuddy_loading' );
+		
+		jQuery( '.backupbuddy-live-stats-container' ).on( 'click', '.backupbuddy-stats-help-link', function(){
+			tb_show( 'BackupBuddy', '<?php echo pb_backupbuddy::ajax_url( 'live_last_snapshot_details' ); ?>&TB_iframe=1&width=640&height=455', null );
+			return false;
+		});
 	});
 	
 	function backupbuddy_resizeIframe(obj) {
 		newHeight = obj.contentWindow.document.body.scrollHeight;
 		obj.style.height = newHeight + 'px';
 	}
+	
+	
 </script>
 
 <?php
@@ -146,8 +153,12 @@ if ( '' != pb_backupbuddy::_GET( 'live_action' ) ) {
 		
 	} elseif ( 'view_files' == $action ) {
 		
-		require( '_viewfiles.php' );
-		echo '<br><hr><br><br>';
+		if ( '1' == $destination['disable_file_management'] ) {
+			pb_backupbuddy::alert( __( 'Remote file management has been disabled for Stash Live. Its files cannot be viewed & managed from within BackupBuddy. To re-enable you must Disconnect and Re-connect Stash Live. You may also manage your files at <a href="https://sync.ithemes.com" target="_new">https://sync.ithemes.com</a>.', 'it-l10n-backupbuddy' ) );
+		} else {
+			require( '_viewfiles.php' );
+			echo '<br><hr><br><br>';
+		}
 		
 	/*} elseif ( 'view_stash_files' == $action ) {
 		
@@ -156,8 +167,12 @@ if ( '' != pb_backupbuddy::_GET( 'live_action' ) ) {
 		*/
 	} elseif ( 'view_files_tables' == $action ) {
 		
-		require( '_viewfiles_tables.php' );
-		echo '<br><hr><br><br>';
+		if ( '1' == $destination['disable_file_management'] ) {
+			pb_backupbuddy::alert( __( 'Remote file management has been disabled for Stash Live. Its files cannot be viewed & managed from within BackupBuddy. To re-enable you must Disconnect and Re-connect Stash Live. You may also manage your files at <a href="https://sync.ithemes.com" target="_new">https://sync.ithemes.com</a>.', 'it-l10n-backupbuddy' ) );
+		} else {
+			require( '_viewfiles_tables.php' );
+			echo '<br><hr><br><br>';
+		}
 		
 	} elseif ( 'view_tables' == $action ) {
 		
@@ -531,6 +546,25 @@ if ( 0 != $state['stats']['files_pending_delete'] ) {
 	$filePendingDelete = ', ' . $state['stats']['files_pending_delete'] . ' ' . __( 'pending deletion', 'it-l10n-backupbuddy' );
 }
 
+
+$cron_warnings = array();
+require( pb_backupbuddy::plugin_path() . '/controllers/pages/server_info/_cron.php' );
+if ( count( $cron_warnings ) > 2 ) {
+	$cronText = '';
+	$i = 0;
+	foreach( $crons as $time => $cron ) {
+		if ( $time > time() ) { // Not past due.
+			continue;
+		}
+		$i++;
+		if ( $i > 50 ) {
+			$cronText .= 'More than 50 stuck crons found. Hiding remaining as to not flood screen...<br>';
+			break;
+		}
+		$cronText .= 'Cron `' . $cron[0] . '` running `' . $cron[2] . '` should have ran `' . pb_backupbuddy::$format->time_ago( $time ) . '` ago.<br>';
+	}
+	pb_backupbuddy::alert( 'Warning #839984343: ' . count( $cron_warnings ) . ' cron(s) warnings were found (such as past due). _IF_ you encounter problems AND this persists there may be a problem with your WordPress cron (such as caused by a caching plugin). Potentially stuck crons:<br>' . $cronText );
+}
 ?>
 
 
@@ -945,11 +979,8 @@ if ( 0 != $state['stats']['files_pending_delete'] ) {
 			<div class="backupbuddy-live-stats-overview">
 				<h3><?php _e( 'BackupBuddy Stash Live created new zip files for you as of', 'it-l10n-backupbuddy' ); ?>:</h3>
 				<div class="backupbuddy-stats-time-ago">{{ stats.last_remote_snapshot_ago }}</div>
-				<a href="#" class="backupbuddy-stats-help-link">
-					<?php _e( 'What does this mean?', 'it-l10n-backupbuddy' ); ?>
-					<span class="backupbuddy-stats-time-ago-explanation">
-						<?php _e( 'This is the time since your latest full Snapshot was taken by BackupBuddy Stash Live. Stash Live continuously watches for changes and pushes them up for safe storage. Periodically a "Snapshot" in time is created which is a recording of the state of your site at that time. You can download your latest Snapshot zip files from the Sync dashboard.', 'it-l10n-backupbuddy' ); ?>
-					</span>
+				<a href="javascript:void(0);" class="backupbuddy-stats-help-link">
+					<?php _e( 'View Last Snapshot Details', 'it-l10n-backupbuddy' ); ?></a>
 				</a>
 				
 				<div class="backupbuddy-stats-overview-create-snapshot">

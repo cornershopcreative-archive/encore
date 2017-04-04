@@ -1,12 +1,12 @@
 appAddThisWordPress.directive('debugHotKeys', function(
   hotkeys,
   $translate,
-  wordpress
+  $wordpress
 ) {
   return {
     link: function() {
       var globalOptions = {};
-      wordpress.globalOptions.get().then(function(data) {
+      $wordpress.globalOptions.get().then(function(data) {
         globalOptions = data;
       });
 

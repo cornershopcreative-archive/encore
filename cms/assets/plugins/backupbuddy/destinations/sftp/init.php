@@ -116,7 +116,7 @@ class pb_backupbuddy_destination_sftp {
 		}
 		
 		// Change to directory.
-		pb_backupbuddy::status( 'details', 'Attempting to change into directory...' );
+		pb_backupbuddy::status( 'details', 'Attempting to change into directory `' . $settings['path'] . '`...' );
 		if ( true === $sftp->chdir( $settings['path'] ) ) {
 			pb_backupbuddy::status( 'details', 'Changed into directory `' . $settings['path'] . '`. All uploads will be relative to this.' );
 		} else {
@@ -286,7 +286,11 @@ class pb_backupbuddy_destination_sftp {
 		}
 		
 		
-		$destination_file = $settings['path'] . '/backupbuddy_test.txt';
+		if ( empty( $settings['path'] ) ) {
+			$destination_file = 'backupbuddy_test.txt';
+		} else {
+			$destination_file = $settings['path'] . '/backupbuddy_test.txt';
+		}
 		pb_backupbuddy::status( 'details', 'About to put to sFTP test file `backupbuddy_test.txt` to remote location `' . $destination_file . '`.' );
 		$send_time = -microtime( true );
 		if ( true !== $sftp->put( $destination_file, 'Upload test for BackupBuddy destination. Delete me.' ) ) {

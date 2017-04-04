@@ -1,7 +1,8 @@
 appAddThisWordPress.directive('toolGallerySettingsPage', function(
-  wordpress,
+  $wordpress,
   $q,
-  $stateParams
+  $stateParams,
+  $darkseid
 ) {
   return {
     scope: {
@@ -45,8 +46,8 @@ appAddThisWordPress.directive('toolGallerySettingsPage', function(
         return usingProField;
       };
 
-      var proProfilePromise = wordpress.isProProfile();
-      var globalOptionsPromise = wordpress.globalOptions.get();
+      var proProfilePromise = $darkseid.isProProfile();
+      var globalOptionsPromise = $wordpress.globalOptions.get();
 
       $q.all([proProfilePromise, globalOptionsPromise]).then(function(data) {
         var proProfile = data[0];
@@ -62,7 +63,7 @@ appAddThisWordPress.directive('toolGallerySettingsPage', function(
 
       var stashOldSettings = function(newSettings) {
         $scope.originalSettings = angular.copy(newSettings[$scope.toolPco]);
-        $scope.settings = wordpress.addDefaultToolConfigurations(
+        $scope.settings = $wordpress.addDefaultToolConfigurations(
           $scope.toolPco,
           newSettings[$scope.toolPco]
         );

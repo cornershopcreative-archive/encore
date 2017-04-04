@@ -1,10 +1,11 @@
 appAddThisWordPress.controller('RegistrationCtrl', function(
   $scope,
   $q,
-  wordpress,
+  $wordpress,
   $filter,
   $stateParams,
-  $state
+  $state,
+  $darkseid
 ) {
   $scope.globalOptions = {};
   $scope.registrationFormModel = {};
@@ -12,7 +13,7 @@ appAddThisWordPress.controller('RegistrationCtrl', function(
   $scope.loadingStatus = true;
   $scope.loadingMessage = 'progress_message_loading';
 
-  $scope.templateBaseUrl = wordpress.templateBaseUrl();
+  $scope.templateBaseUrl = $wordpress.templateBaseUrl();
   jQuery('[id="wpcontent"]').attr('class', 'registration-page');
 
   var defaultErrorMessage = $filter('translate')('error_message_unknown_error');
@@ -40,7 +41,7 @@ appAddThisWordPress.controller('RegistrationCtrl', function(
       deferred.resolve(goodSetup);
     }
 
-    wordpress.validateAddThisProfileId($scope.globalOptions.addthis_profile)
+    $darkseid.validateAddThisProfileId($scope.globalOptions.addthis_profile)
     .then(function(data) {
       if (!data.success) {
         goodSetup = false;
@@ -61,7 +62,7 @@ appAddThisWordPress.controller('RegistrationCtrl', function(
       deferred.resolve(goodSetup);
     }
 
-    wordpress.addThisApiKeyCheck(
+    $wordpress.addThisApiKeyCheck(
       $scope.globalOptions.addthis_profile,
       $scope.globalOptions.api_key
     )
@@ -91,13 +92,13 @@ appAddThisWordPress.controller('RegistrationCtrl', function(
   var bootstrapGlobalOptions = function(globalOptions) {
     $scope.registrationFormModel = {};
     $scope.registrationFormModel.emailSubscription = true;
-    if(wordpress.defaults('email')) {
-      $scope.registrationFormModel.email = wordpress.defaults('email');
+    if($wordpress.defaults('email')) {
+      $scope.registrationFormModel.email = $wordpress.defaults('email');
     }
 
-    if (wordpress.defaults('profileName')) {
+    if ($wordpress.defaults('profileName')) {
       $scope.registrationFormModel.profileName =
-        wordpress.defaults('profileName');
+        $wordpress.defaults('profileName');
     } else {
       $scope.registrationFormModel.profileName =
         $filter('translate')('registration_first_profile_name_fallback');
@@ -133,7 +134,7 @@ appAddThisWordPress.controller('RegistrationCtrl', function(
     });
   };
 
-  wordpress.globalOptions.get().then(function(globalOptions) {
+  $wordpress.globalOptions.get().then(function(globalOptions) {
     bootstrapGlobalOptions(globalOptions);
   });
 
@@ -160,7 +161,7 @@ appAddThisWordPress.controller('RegistrationCtrl', function(
     $scope.loadingStatus = true;
     $scope.loadingMessage = 'progress_message_checking_login';
 
-    wordpress.addThisCheckLogin(email, password).then(function(data) {
+    $wordpress.addThisCheckLogin(email, password).then(function(data) {
       $scope.signInFailed = !data.success;
 
       if (data.message) {
@@ -170,7 +171,7 @@ appAddThisWordPress.controller('RegistrationCtrl', function(
       if (data.success === true) {
         $scope.loadingStatus = true;
         $scope.loadingMessage = 'progress_message_retrieving_profiles';
-        wordpress.addThisGetProfiles(email, password).then(function(data) {
+        $wordpress.addThisGetProfiles(email, password).then(function(data) {
           populateProfiles(data.data);
         });
       } else {
@@ -235,7 +236,7 @@ appAddThisWordPress.controller('RegistrationCtrl', function(
     $scope.loadingMessage = 'progress_message_creating_api_key';
 
     var createApiKey = function() {
-      var promise = wordpress.addThisCreateApiKey(email, password, profileId)
+      var promise = $wordpress.addThisCreateApiKey(email, password, profileId)
       .then(function(data) {
         if (data.success === true) {
           $scope.globalOptions.api_key = data.apiKey;
@@ -267,7 +268,7 @@ appAddThisWordPress.controller('RegistrationCtrl', function(
       $scope.loadingStatus = true;
       $scope.loadingMessage = 'progress_message_changing_profile_type';
 
-      var promise = wordpress.addThisChangeProfileType(profileId, apiKey)
+      var promise = $wordpress.addThisChangeProfileType(profileId, apiKey)
       .then(function(data) {
         if (data.success !== true) {
           $scope.createApiKeyAndSaveStatus.failed = true;
@@ -285,7 +286,7 @@ appAddThisWordPress.controller('RegistrationCtrl', function(
       $scope.loadingStatus = true;
       $scope.loadingMessage = 'progress_message_checking_profile_type';
 
-      var profileTypeFixPromise = wordpress.validateAddThisProfileId(profileId)
+      var profileTypeFixPromise = $darkseid.validateAddThisProfileId(profileId)
       .then(function(data) {
         if (data.success !== true) {
           $scope.createApiKeyAndSaveStatus.failed = true;
@@ -309,7 +310,7 @@ appAddThisWordPress.controller('RegistrationCtrl', function(
         $scope.loadingMessage = 'progress_message_saving_registration';
 
         $scope.globalOptions.addthis_plugin_controls = 'AddThis';
-        wordpress.globalOptions.save().then(function(data) {
+        $wordpress.globalOptions.save().then(function(data) {
           $scope.globalOptions = data;
           if(!$scope.createApiKeyAndSaveStatus.failed) {
             $scope.successfulNewRegistration = true;
@@ -346,14 +347,14 @@ appAddThisWordPress.controller('RegistrationCtrl', function(
     $scope.loadingStatus = true;
     $scope.loadingMessage = 'progress_message_checking_account';
 
-    wordpress.addThisCreateAccount(email, password, newsletter)
+    $wordpress.addThisCreateAccount(email, password, newsletter)
     .then(function(data) {
       $scope.createAccountFailed = !data.success;
 
       if(data.success === true) {
         $scope.loadingStatus = true;
         $scope.loadingMessage = 'progress_message_retrieving_profile';
-        wordpress.addThisGetProfiles(email, password).then(function(data) {
+        $wordpress.addThisGetProfiles(email, password).then(function(data) {
             if (data.success) {
               $scope.globalOptions.addthis_profile = data.data[0].pubId;
               createApiKeyAndSave(
@@ -385,7 +386,7 @@ appAddThisWordPress.controller('RegistrationCtrl', function(
     $scope.loadingStatus = true;
     $scope.loadingMessage = 'progress_message_creating_profile';
 
-    wordpress.addThisCreateProfile(email, password, profileName)
+    $wordpress.addThisCreateProfile(email, password, profileName)
     .then(function(data) {
       if (data.success === true) {
         $scope.globalOptions.addthis_profile = data.profileId;

@@ -883,7 +883,7 @@ class pb_backupbuddy {
 	 *	@param		boolean		$hide_getting_status	Default: false. Whether or not to output status retrieval message.
 	 *	@return		array								Array of arrays.  Each sub-array contains three values: timestamp, type of message, and the message itself. See function description for details. Empty array if non-existing log.
 	 */
-	public static function get_status( $serial = '', $clear_retrieved = true, $erase_retrieved = true, $hide_getting_status = false ) {
+	public static function get_status( $serial = '', $clear_retrieved = true, $erase_retrieved = true, $hide_getting_status = false, $copy_retrieved = false ) {
 		//$delimiter = '|~|';
 		
 		// Calculate log directory.
@@ -923,6 +923,10 @@ class pb_backupbuddy {
 			
 			if ( $erase_retrieved === true ) {
 				@unlink( $status_file ); // todo: catch errors on this? supress?
+			}
+			
+			if ( false !== $copy_retrieved ) {
+				@file_put_contents( $copy_retrieved, $status_lines, FILE_APPEND );
 			}
 			
 			return $status_lines;
@@ -1709,7 +1713,11 @@ class pb_backupbuddy {
 	 *		set advanced option to prevent flush
 	 *
 	 */
-	public static function flush() {
+	public static function flush( $force = false ) {
+		if ( true === $force ) {
+			self::$_has_flushed = false;
+		}
+		
 		if ( defined( 'BACKUPBUDDY_NOFLUSH' ) && ( BACKUPBUDDY_NOFLUSH === true ) ) { // Some servers seem to die on multiple flushes in the same pageload. Define this to prevent flushing.
 			return;
 		}

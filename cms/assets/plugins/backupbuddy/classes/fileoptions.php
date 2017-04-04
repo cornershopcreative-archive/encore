@@ -202,15 +202,30 @@ class pb_backupbuddy_fileoptions {
 		
 		// BackupBuddy Stash Live mode. (one array entry per line for performance/memory usage).
 		if ( true === $this->_live ) {
+			$found_start = false;
+			$found_end = false;
+			$found_corrupt = false;
+			
 			if ( ! isset( $options ) ) { // Not set so file exists. Read in data.
-				
 				if ( false === ( $fso = @fopen( $this->_file, 'r' ) ) ) {
 					pb_backupbuddy::status( 'error', 'Error #4394974: Unable to read fileoptions file `' . $this->_file . '` in Live mode. Verify permissions on this directory.' );
 					$this->_is_ok = 'ERROR_READ';
 					@fclose( $fso );
 					return false;
 				}
+				if ( ! is_array( $this->options ) ) {
+					$this->options = array();
+				}
 				while ( false !== ( $buffer = fgets( $fso ) ) ) {
+					if ( ( false === $found_start ) && ( "FILEOPTIONS_START\n" == $buffer ) ) { // Check for start marker -- know we should have an end marker as well in this case (as of BB v7.2.2.2).
+						$found_start = true;
+						continue;
+					}
+					if ( ( true === $found_start ) && ( false === $found_end ) && ( 'FILEOPTIONS_END' == $buffer ) ) { // Check for end (as of BB v7.2.2.2). Only bother to check if found start.
+						$found_end = true;
+						continue;
+					}
+					
 					$buffer = explode( '|', $buffer );
 					/*
 					if ( false === ( $data = base64_decode( $buffer[1] ) ) ) {
@@ -227,9 +242,10 @@ class pb_backupbuddy_fileoptions {
 					}
 					*/
 					if ( ! isset( $buffer[1] ) ) {
-						$error = 'BackupBuddy Error #893484: Corrupt fileoptions line skipped: `' . print_r( $buffer, true ) . '`.';
+						$error = 'BackupBuddy Error #893484: Corrupt fileoptions line skipped in `' . $this->_file .  '`: `' . print_r( $buffer, true ) . '`.';
 						error_log( $error );
 						pb_backupbuddy::status( 'error', $error );
+						$found_corrupt = true;
 						continue;
 					}
 					if ( false === ( $data = json_decode( $buffer[1], true ) ) ) {
@@ -248,6 +264,39 @@ class pb_backupbuddy_fileoptions {
 				}
 				
 				@fclose( $fso );
+			}
+			
+			// Corrupt line encountered OR ( found start marker but did not find end marker ). If file seems incomplete or corrupted then we will check the .bak catalog backup and load it if its filesize is larger. Help avoid restarting process too far back.
+			if ( ( true === $found_corrupt ) || ( ( true === $found_start ) && ( false === $found_end ) ) ) {
+				pb_backupbuddy::status( 'warning', 'Live catalog detected corruption or incomplete file. Checking if we can load backup catalog instead.' );
+				
+				// Check if .bak backup file is larger than this catalog file.
+				if ( false !== ( $current_fileoptions_size = @filesize( $this->_file ) ) ) {
+					if ( false !== ( $backup_fileoptions_size = @filesize( $this->_file . '.bak' ) ) ) {
+						if ( $backup_fileoptions_size > $current_fileoptions_size ) { // Backup is larger. Load it instead.
+							pb_backupbuddy::status( 'warning', 'Live backup catalog is larger than current catalog. Copying over and re-loading backup instead.' );
+							
+							// Copy over file.
+							if ( true === @copy( $this->_file . '.bak', $this->_file ) ) {
+								pb_backupbuddy::status( 'warning', 'Restored previous catalog backup. Loading...' );
+								// Unlock fileoptions.
+								$this->unlock();
+								
+								return $this->load( $ignore_lock, $create_file, $retryCount );
+							} else {
+								pb_backupbuddy::status( 'error', 'Error #84949834: Failed restoring previous catalog backup. Could not copy.' );
+							}
+							
+						} else {
+							pb_backupbuddy::status( 'warning', 'Live backup catalog is SMALLER than current catalog. NOT switching to backup.' );
+						}
+					} else {
+						pb_backupbuddy::status( 'warning', 'Warning #3328733: Unable to get size of backup Live catalog `' . $this->_file . '.bak' . '`.' );
+					}
+				} else {
+					pb_backupbuddy::status( 'warning', 'Warning #3489239823: Unable to get size of current Live catalog `' . $this->_file . '`.' );
+				}
+				
 			}
 			
 			$this->_is_ok = true;
@@ -346,6 +395,19 @@ class pb_backupbuddy_fileoptions {
 			}
 			
 			$bytesWritten = 0;
+			
+			// Write file start marker (new in data version 2 (BB v7.2.2.2)
+			if ( false === ( $written = @fwrite( $fso, "FILEOPTIONS_START\n" ) ) ) {
+				pb_backupbuddy::status( 'error', 'Error #329823955: Unable to write to fileoptions file `' . $this->_file . '`. Verify permissions.' );
+				if ( true === $remove_lock ) {
+					$this->unlock();
+				}
+				@fclose( $fso );
+				return false;
+			} else { // Wrote.
+				$bytesWritten += $written;
+			}
+			
 			foreach( $this->options as $optionKey => $optionItem ) {
 				/*
 				if ( null == $optionItem ) {
@@ -367,6 +429,18 @@ class pb_backupbuddy_fileoptions {
 				} else { // Wrote.
 					$bytesWritten += $written;
 				}
+			}
+			
+			// Write file end marker (new in data version 2 (BB v7.2.2.2)
+			if ( false === ( $written = @fwrite( $fso, 'FILEOPTIONS_END') ) ) {
+				pb_backupbuddy::status( 'error', 'Error #32893355: Unable to write to fileoptions file `' . $this->_file . '`. Verify permissions.' );
+				if ( true === $remove_lock ) {
+					$this->unlock();
+				}
+				@fclose( $fso );
+				return false;
+			} else { // Wrote.
+				$bytesWritten += $written;
 			}
 			
 			// Success.

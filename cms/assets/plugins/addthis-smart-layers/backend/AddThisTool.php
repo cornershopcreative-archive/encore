@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -37,10 +37,6 @@ if (!class_exists('AddThisTool')) {
     {
         public $layersClass = 'addthis_you_forgot_to_set_the_addthis_layers_class';
         public $prettyName = 'You forgot to set a pretty name';
-
-        public $edition = 'pro';
-        public $anonymousSupport = false;
-        public $inline = false;
         public $addedDefaultValue = false;
         protected $defaultConfigs = array(
             'enabled' => false,
@@ -54,14 +50,6 @@ if (!class_exists('AddThisTool')) {
         protected $featureConfigs = null;
         protected $globalOptionsConfigs = null;
         protected $toolConfigs = null;
-
-        public $widgetClassName = null;
-        public $widgetBaseId = 'addthis_you_forgot_to_set_the_base_id_widget';
-        public $widgetName = 'You forgot to name your widget';
-        public $widgetDescription = 'You forgot to describe your widget';
-        public $defaultWidgetTitle = 'No default title set for this widget';
-
-        public $shortCode = 'addthis_you_forgot_to_set_the_short_code';
 
         public $defaultTheme = 'transparent';
 
@@ -206,182 +194,6 @@ if (!class_exists('AddThisTool')) {
         }
 
         /**
-         * Checks if this tool supports anonymous usage where
-         * settings are set on page
-         *
-         * @return boolean true for supported, false for unsupported
-         */
-        public function supportsAnonymousUse()
-        {
-            return $this->anonymousSupport;
-        }
-
-        /**
-         * Checks if this tool is placed inline or floating. Inline
-         * tools get widgets and short codes. Floating tools do not.
-         *
-         * @return boolean true for inline, false floating
-         */
-        public function inlineTool()
-        {
-            return $this->inline;
-        }
-
-        /**
-         * Checks if this tool is only for pro users. This is used to make sure
-         * we only display tools to users that will work for them.
-         *
-         * @return boolean true for pro, false for basic
-         */
-        public function isProTool()
-        {
-            if ($this->edition == 'pro') {
-                return true;
-            }
-
-            return false;
-        }
-
-        /**
-         * Checks if this plugin is in anonymous mode where settings are set
-         * on page, and not lojson/boost mode where settings are retrieved from
-         * AddThis.com
-         *
-         * @return boolean false for lojson/boost mode, true for layers API /
-         * anonymous mode
-         */
-        public function inAnonymousMode()
-        {
-            $this->getGlobalOptionsObject();
-            return $this->globalOptionsObject->inAnonymousMode();
-        }
-
-        /**
-         * Checks if this profile on the account is pro or basic
-         *
-         * @return boolean false for basic, true for pro
-         */
-        public function isProProfile()
-        {
-            $this->getGlobalOptionsObject();
-            return $this->globalOptionsObject->isProProfile();
-        }
-
-        /**
-         * Checks if this plugin is in lojson/boost mode where settings are
-         * retrieved from AddThis.com and not set on page
-         *
-         * @return boolean true for lojson/boost mode, false for layers API mode
-         */
-        public function inRegisteredMode()
-        {
-            $this->getGlobalOptionsObject();
-            return $this->globalOptionsObject->inRegisteredMode();
-        }
-
-        /**
-         * This must be public as it's used in the tool's widget for inline
-         * tools
-         *
-         * Returns HTML for creating this tool on page.
-         *
-         * @param array $args     settings for this widget (we only use
-         * widget_id)
-         * @param array $instance settings for this particular tool, if not
-         * being used from the tool settings (a widget instance)
-         *
-         * @return string this should be valid html
-         */
-        public function getInlineCode($args = array(), $instance = array())
-        {
-            if (!$this->inlineTool()) {
-                $html = '<!-- this tool cannot be added inline -->' . "\n";
-            } elseif ($this->inAnonymousMode() && !$this->isEnabled()) {
-                $html = '<!-- ' . $this->prettyName . ' is not enabled -->';
-            } elseif (!is_string($this->layersClass)) {
-                $html = '<!-- layers class not set for this tool -->';
-            } else {
-                $html = '<div class="'.$this->layersClass.'"></div>';
-
-                $featureConfigs = $this->getFeatureConfigs();
-                if (isset($featureConfigs[$this->settingsSubVariableName])) {
-                    $toolConfigs = $featureConfigs[$this->settingsSubVariableName];
-                }
-
-                if (!empty($toolConfigs)
-                    && !empty($toolConfigs['conflict'])
-                ) {
-                    // do special stuff if widget is in conflict mode
-                    $class = $args['widget_id'];
-                    $layers = $this->getAddThisLayers($instance);
-                    $layers[$this->layersApiProductName]['elements'] = '.'.$class;
-                    $toolHtml = '<div class="'.$class.'"></div>';
-
-                    $layersJson = json_encode((object)$layers);
-
-                    $addLayersJavaScript = '<script>';
-                    $addLayersJavaScript .= '  if (typeof window.addthis_layers_tools === \'undefined\') { ';
-                    $addLayersJavaScript .= '    window.addthis_layers_tools = ['.$layersJson.']';
-                    $addLayersJavaScript .= '  } else { ';
-                    $addLayersJavaScript .= '    window.addthis_layers_tools.push('.$layersJson.');';
-                    $addLayersJavaScript .= '  }';
-                    $addLayersJavaScript .= '</script>';
-                    $html = $addLayersJavaScript . $toolHtml;
-                } else {
-                    $html = '<div class="'.$this->layersClass.'"></div>';
-                }
-
-                $gooSettings = $this->getGlobalOptionsConfigs();
-                if (!empty($gooSettings['ajax_support'])) {
-                    $html .= '<script>if (typeof window.atnt !== \'undefined\') { window.atnt(); }</script>';
-                }
-            }
-
-            return $html;
-        }
-
-        /**
-         * This must be public as it's used in a callback for add_shortcode
-         *
-         * Returns HTML to use to replace a short tag for this tool. Includes
-         * tags to identify its from a short code.
-         *
-         * @return string this should be valid html
-         */
-        public function getInlineCodeForShortCode()
-        {
-            $html  = '<!-- Created with a shortcode from an AddThis plugin -->';
-            $html .= '<!-- tool name: ' . $this->prettyName . ' -->';
-            $html .= $this->getInlineCode();
-            $html .= '<!-- End of short code snippet -->';
-
-            return $html;
-        }
-
-        /**
-         * The openning tag for short tags for this tool.
-         *
-         * @return string
-         */
-        public function getShortCodeOpen()
-        {
-            $code = '[' . $this->shortCode . ']';
-            return $code;
-        }
-
-        /**
-         * The closing tags for short tags for this tool. If this tools short
-         * tags don't have a closing tag, then just return an empty string.
-         *
-         * @return string
-         */
-        public function getShortCodeClose()
-        {
-            $code = '';
-            return $code;
-        }
-
-        /**
          * Creates tool specific settings for the JavaScript variable
          * addthis_share
          *
@@ -464,7 +276,7 @@ if (!class_exists('AddThisTool')) {
          * values for missing fields
          *
          * @return array A cleaned up associative array of settings specific to
-         *               this tool.
+         * this tool.
          */
         public function sanitizeSettings($input, $addDefaultConfigs = true)
         {
@@ -494,7 +306,7 @@ if (!class_exists('AddThisTool')) {
          * tools' settings
          *
          * @return array An associative array of settings specific to this tool
-         *               with added defaults where not already present.
+         * with added defaults where not already present.
          */
         public function addDefaultConfigs($configs)
         {
@@ -513,54 +325,19 @@ if (!class_exists('AddThisTool')) {
             return $configs;
         }
 
-        /**
-         * This must be public as it's used in the feature object with this tool
-         *
-         * @return boolean true is available to user, false if not
-         */
-        public function isAvailable()
-        {
-            $this->getGlobalOptionsObject();
+        public function enabledOnTemplate($enabledTemplates) {
+            $templateType = $this->currentTemplateType();
 
-            if (($this->inAnonymousMode() && !$this->supportsAnonymousUse())
-                || ($this->isProTool() && !$this->isProProfile())
+            if (!is_array($enabledTemplates) ||
+                !in_array($templateType, $enabledTemplates)
             ) {
-                return false;
+                $configs = $this->getGlobalOptionsConfigs();
+                if (empty($configs['enqueue_local_settings'])) {
+                    return false;
+                }
             }
 
             return true;
-        }
-
-        /**
-         * This must be public as it's used in widgets
-         *
-         * @param string $buttonName The text of the button that the user presses
-         * to indicate that they agree without EULA
-         *
-         * @return string End User License Agreement text
-         */
-        public function eulaText($buttonName = 'Save')
-        {
-            $buttonName = esc_html__($buttonName, AddThisFeature::$l10n_domain);
-
-            $eulaTemplate = 'By clicking "%1$s" you certify that you are at least 13 years old, and agree to the AddThis %2$s and %3$s.';
-            $eulaTemplate = esc_html__($eulaTemplate, AddThisFeature::$l10n_domain);
-
-            $privacyPolicyText = esc_html__(
-                'Privacy Policy',
-                AddThisFeature::$l10n_domain
-            );
-
-            $termsOfServiceText = esc_html__(
-                'Terms of Service',
-                AddThisFeature::$l10n_domain
-            );
-
-            $privacyPolicyLink = '<a href="http://www.addthis.com/privacy/privacy-policy">'.$privacyPolicyText.'</a>';
-            $termsOfServiceLink = '<a href="http://www.addthis.com/tos">'.$termsOfServiceText.'</a>';
-
-            $eula = sprintf($eulaTemplate, $buttonName, $privacyPolicyLink, $termsOfServiceLink);
-            return $eula;
         }
     }
 }

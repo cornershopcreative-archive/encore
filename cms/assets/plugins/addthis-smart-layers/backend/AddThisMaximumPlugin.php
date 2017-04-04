@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -35,7 +35,7 @@ if (!class_exists('AddThisMaximumPlugin')) {
      */
     class AddThisMaximumPlugin extends AddThisPlugin
     {
-        protected $version = '2.0.0';
+        protected $version = '3.0.0';
         protected $name = 'Smart Layers by AddThis';
         protected $productPrefix = 'wpsl';
         protected $pluginSlug = 'addthis-smart-layers';

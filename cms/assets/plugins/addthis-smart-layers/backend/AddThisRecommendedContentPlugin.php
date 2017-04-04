@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -34,7 +34,7 @@ if (!class_exists('AddThisRecommendedContentPlugin')) {
      */
     class AddThisRecommendedContentPlugin extends AddThisPlugin
     {
-        protected $version = '1.0.0';
+        protected $version = '2.0.0';
         protected $name = 'Related Posts by AddThis';
         protected $productPrefix = 'wprp';
         protected $pluginSlug = 'addthis-related-posts';

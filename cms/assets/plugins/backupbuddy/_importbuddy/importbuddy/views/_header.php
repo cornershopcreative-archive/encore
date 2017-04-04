@@ -180,7 +180,7 @@ if ( ! defined( 'PB_IMPORTBUDDY' ) || ( true !== PB_IMPORTBUDDY ) ) {
 						},
 						dataType: 'json'
 					}).done( function(data) {
-						jQuery('#hash_view_response').html( '<b>Checksum (MD5 hash):</b> <input type="text" disabled="disabled" value="' + data.hash + '" style="width: 400px;">' );
+						jQuery('#hash_view_response').html( '<b>Checksum (MD5 hash):</b> <input type="text" readonly="true" value="' + data.hash + '" style="width: 400px;">' );
 						jQuery('#hash_view_loading').hide();
 						jQuery('#hash_view_response').show();
 					}).fail( function( jqXHR, textStatus, errorThrown ){
@@ -240,6 +240,8 @@ if ( ! defined( 'PB_IMPORTBUDDY' ) || ( true !== PB_IMPORTBUDDY ) ) {
 				jQuery('.step-wrap').hide();
 				console.log( 'Show step: `' + step + '`.' );
 				console.dir( window.restoreData );
+				backupbuddy_log( 'Loading step `' + step + '`.');
+				
 				//jQuery('.step-' + step + '-wrap').show();
 				if ( 'finished' == step ) { // In case we cannot load final template, at least say finished.
 					jQuery('.main_box_foot').html( '<h3>Finished</h3>' );

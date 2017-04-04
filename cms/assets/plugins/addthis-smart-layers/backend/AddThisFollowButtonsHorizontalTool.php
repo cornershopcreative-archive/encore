@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -36,20 +36,8 @@ if (!class_exists('AddThisFollowButtonsHorizontalTool')) {
     {
         public $layersClass = 'addthis_horizontal_follow_toolbox';
         public $prettyName = 'Horizontal Follow Buttons';
-
-        public $edition = 'basic';
-        public $anonymousSupport = true;
-        public $inline = true;
         public $settingsSubVariableName = 'flwh';
         public $layersApiProductName = 'followtoolbox';
-
-        public $widgetClassName = 'AddThisFollowButtonsHorizontalWidget';
-        public $widgetBaseId = 'addthis_horizontal_follow_toolbox_widget';
-        public $widgetName = 'Follow Buttons - Horizontal';
-        public $widgetDescription = 'Horizontal social follow buttons from AddThis to increase your followers.';
-        public $defaultWidgetTitle = 'Follow Me';
-
-        public $shortCode = 'addthis_horizontal_follow_buttons';
 
         public $availableSizes = array(
             'large' => array(

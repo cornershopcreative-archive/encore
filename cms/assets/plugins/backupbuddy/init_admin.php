@@ -29,23 +29,6 @@ function enqueue_dashboard_stylesheet($hook) {
 add_action( 'admin_enqueue_scripts', 'enqueue_dashboard_stylesheet' );
 
 
-// Set datepicker defaults for schedules page
-function pb_backupbuddy_set_scheduled_datepicker_default_format() {
-	$cs = get_current_screen();
-	if ( ! empty( $cs->base ) && $cs->base == 'backupbuddy_page_pb_backupbuddy_scheduling' ) {
-		?>
-		<script type="text/javascript">
-			jQuery(function($) {
-				$.datepicker.setDefaults({
-					'dateFormat':'m/d/yy'
-				});
-			});
-		</script>
-		<?php
-	}
-}
-add_action( 'admin_footer', 'pb_backupbuddy_set_scheduled_datepicker_default_format', 999 );
-
 
 // Load backupbuddy class with helper functions.
 if ( ! class_exists( 'backupbuddy_core' ) ) {

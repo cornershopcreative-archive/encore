@@ -44,6 +44,7 @@ class backupbuddy_housekeeping {
 		self::remove_importbuddy_dir();
 		self::remove_dat_file_from_root();
 		self::remove_rollback_files();
+		self::remove_old_fileoptions_locks();
 		
 		// Potential large file/dir cleanup. May bog down site.
 		self::cleanup_temp_dir( $backup_age_limit );
@@ -58,7 +59,7 @@ class backupbuddy_housekeeping {
 		self::backup_bb_settings();
 		
 		// More minor cleanup.
-		self::remove_temp_tables();
+		self::remove_temp_tables( '', $backup_age_limit );
 		self::remove_wp_schedules_with_no_bb_schedule();
 		self::trim_old_notifications();
 		self::trim_remote_send_stats();
@@ -68,6 +69,8 @@ class backupbuddy_housekeeping {
 		self::purge_logs();
 		self::purge_large_logs();
 		self::clear_cron_send();
+		
+		self::cleanup_transients( false ); // Don't purge unexpiring transients.
 		
 		// PHP tests.
 		self::schedule_php_runtime_tests();
@@ -101,7 +104,7 @@ class backupbuddy_housekeeping {
 						}
 					}
 					
-					if ( $days_since_last > (int)$destination['no_new_snapshots_error_days'] ) {
+					if ( ( (int)$destination['no_new_snapshots_error_days'] > 0 ) && ( $days_since_last > (int)$destination['no_new_snapshots_error_days'] ) ) {
 						$message = 'Warning! BackupBuddy is configured to notify you if no new BackupBuddy Stash Live Snapshots have been made in `' . (int)$destination['no_new_snapshots_error_days'] . '` days. It has been `' . $days_since_last . '` days since your last Snapshot. There may be a problem with your site\'s Stash Live setup requiring your attention.';
 						pb_backupbuddy::status( 'warning', $message );
 						if ( (int)$destination['no_new_snapshots_error_days'] > 0 ) { // Live destination and notifications are enabled.
@@ -119,7 +122,7 @@ class backupbuddy_housekeeping {
 						}
 					}
 					
-					if ( $days_since_last > ( (int)$destination['no_new_snapshots_error_days'] * 2 ) ) {
+					if ( ( (int)$destination['no_new_snapshots_error_days'] > 0 ) && ( $days_since_last > ( (int)$destination['no_new_snapshots_error_days'] * 2 ) ) ) {
 						$message = 'Warning! BackupBuddy is configured to notify you if no new BackupBuddy Stash Live Snapshots have been made in `' . (int)$destination['no_new_snapshots_error_days'] . '` days. It has been at least twice this (`' . $days_since_last . '` days) since you set up BackupBuddy Stash Live but the first Snapshot has not been made yet. There may be a problem with your site\'s Stash Live setup requiring your attention.';
 						pb_backupbuddy::status( 'warning', $message );
 						if ( (int)$destination['no_new_snapshots_error_days'] > 0 ) { // Live destination and notifications are enabled.
@@ -163,6 +166,18 @@ class backupbuddy_housekeeping {
 	public static function remove_rollback_files() {
 		// Clean up any old rollback undo files hanging around.
 		$files = (array)glob( ABSPATH . 'backupbuddy_rollback*' );
+		foreach( $files as $file ) {
+			$file_stats = stat( $file );
+			if ( ( time() - $file_stats['mtime'] ) > backupbuddy_constants::CLEANUP_MAX_STATUS_LOG_AGE ) {
+				@unlink( $file );
+			}
+		}
+	}
+	
+	
+	
+	public static function remove_old_fileoptions_locks() {
+		$files = (array)glob( backupbuddy_core::getLogDirectory() . 'fileoptions/*.lock' );
 		foreach( $files as $file ) {
 			$file_stats = stat( $file );
 			if ( ( time() - $file_stats['mtime'] ) > backupbuddy_constants::CLEANUP_MAX_STATUS_LOG_AGE ) {
@@ -348,6 +363,124 @@ class backupbuddy_housekeeping {
 		return;
 		
 	} // End trim_remote_send_stats().
+	
+	
+	
+	/* cleanup_transients()
+	 *
+	 * Cleans up expired or corrupted transients.
+	 *
+	 * bool	$remote_unexpiring	When true unexpiring transients (value row exists but expiration row does NOT exist) will be purged. Useful if expiration row is missing resulting in infinite lasting transient(s). Default: false.
+	 *
+	 */
+	public static function cleanup_transients( $remove_unexpiring = false ) {
+		pb_backupbuddy::status( 'details', 'Cleaning up expired or corrupt transients.' );
+		
+		if ( true === $remove_unexpiring ) {
+			pb_backupbuddy::status( 'details', 'Option selected to purge unexpiring transients.' );
+		} else {
+			pb_backupbuddy::status( 'details', 'Option NOT selected to purge unexpiring transients.' );
+		}
+		
+		global $wpdb;
+		$sql = "SELECT `option_name` AS `name`, `option_value` AS `value`
+			  FROM  `" . $wpdb->options . "`
+			  WHERE `option_name` LIKE '%transient_%'
+			  ORDER BY `option_name`";
+		
+		$results = $wpdb->get_results( $sql );
+		$transients = array();
+		foreach ( $results as $result ) {
+			if ( 0 === strpos( $result->name, '_site_transient_' ) ) {
+				if ( 0 === strpos( $result->name, '_site_transient_timeout_') ) {
+					$transients[ str_replace( '_site_transient_timeout_', '', $result->name ) ]['expires'] = $result->value;
+					$transients[ str_replace( '_site_transient_timeout_', '', $result->name ) ]['type'] = 'site';
+				} else {
+					$transients[ str_replace( '_site_transient_', '', $result->name ) ]['found'] = true;
+					$transients[ str_replace( '_site_transient_', '', $result->name ) ]['type'] = 'site';
+				}
+			} else {
+				if ( 0 === strpos( $result->name, '_transient_timeout_') ) {
+					$transients[ str_replace( '_transient_timeout_', '', $result->name ) ]['expires'] = $result->value;
+					$transients[ str_replace( '_transient_timeout_', '', $result->name ) ]['type'] = 'normal';
+				} else {
+					$transients[ str_replace( '_transient_', '', $result->name ) ]['found'] = true;
+					$transients[ str_replace( '_transient_', '', $result->name ) ]['type'] = 'normal';
+				}
+			}
+		}
+		pb_backupbuddy::status( 'details', 'Found `' . count( $transients ) . '` transients.' );
+		
+		foreach( $transients as $transient_name => $transient ) {
+			// Check if we found a value.
+			if ( isset( $transient['found'] ) && ( true === $transient['found'] ) ) { // Value was found.
+				// Check if we found a paired expiration time. (NORMALLY we should find this. if not then something is wrong!).
+				if ( ! isset( $transient['expires'] ) ) { // Either never expires or glitched missing expiration date.
+					
+					if ( true === $remove_unexpiring ) { // Only remove if specified. It's valid for a transient to be set to never expire so this should not be used regularly.
+						
+						// Delete transient. NOTE: No expiration entry exists so only need to remove value row here.
+						if ( 'site' == $transient['type'] ) { // site
+							$sql = "DELETE FROM `" . $wpdb->options . "` WHERE option_name='" . '_site_transient_' . $transient_name . "' LIMIT 1";
+							$wpdb->query( $sql );
+							
+							pb_backupbuddy::status( 'details', 'SQL: `' . $sql . '`. Rows affected: `' . $wpdb->rows_affected . '`. (value found; no expire)' );
+						} else { // normal
+							$sql = "DELETE FROM `" . $wpdb->options . "` WHERE option_name='" . '_transient_' . $transient_name . "' LIMIT 1";
+							$wpdb->query( $sql );
+							
+							pb_backupbuddy::status( 'details', 'SQL: `' . $sql . '`. Rows affected: `' . $wpdb->rows_affected . '`. (value found; no expire)' );
+						}
+					}
+					
+				} else { // Expiration found. See if it already expired. If so, delete it to clean up options table.
+					
+					if ( $transient['expires'] > time() ) { // Transient expired. Remove from WP to clean up table.
+						// Delete transient. !!!!!! IMPORTANT: Expiration exists so we MUST delete both value row AND expiration row !!!!!!
+						if ( 'site' == $transient['type'] ) { // site
+							$sql = "DELETE FROM `" . $wpdb->options . "` WHERE option_name='" . '_site_transient_' . $transient_name . "' LIMIT 1";
+							$wpdb->query( $sql );
+							
+							pb_backupbuddy::status( 'details', 'SQL: `' . $sql . '`. Rows affected: `' . $wpdb->rows_affected . '`. (value found; expires; PAST expiration)' );
+							
+							$sql = "DELETE FROM `" . $wpdb->options . "` WHERE option_name='" . '_site_transient_timeout_' . $transient_name . "' LIMIT 1";
+							$wpdb->query( $sql );
+							
+							pb_backupbuddy::status( 'details', 'SQL: `' . $sql . '`. Rows affected: `' . $wpdb->rows_affected . '`. (value found; expires; PAST expiration)' );
+							
+						} else { // normal
+							$sql = "DELETE FROM `" . $wpdb->options . "` WHERE option_name='" . '_transient_' . $transient_name . "' LIMIT 1";
+							$wpdb->query( $sql );
+							
+							pb_backupbuddy::status( 'details', 'SQL: `' . $sql . '`. Rows affected: `' . $wpdb->rows_affected . '`. (value found; expires; PAST expiration)' );
+							
+							$sql = "DELETE FROM `" . $wpdb->options . "` WHERE option_name='" . '_transient_timeout_' . $transient_name . "' LIMIT 1";
+							$wpdb->query( $sql );
+							
+							pb_backupbuddy::status( 'details', 'SQL: `' . $sql . '`. Rows affected: `' . $wpdb->rows_affected . '`. (value found; expires; PAST expiration)' );
+						}
+					}
+				}
+			} else { // No value found but expiration was. Should never happen. Delete expiration entry.
+				
+				// Delete transient. NOTE: No value entry exists so only need to remove expiration row here.
+				if ( 'site' == $transient['type'] ) { // site
+					$sql = "DELETE FROM `" . $wpdb->options . "` WHERE option_name='" . '_site_transient_timeout_' . $transient_name . "' LIMIT 1";
+					$wpdb->query( $sql );
+					
+					pb_backupbuddy::status( 'details', 'SQL: `' . $sql . '`. Rows affected: `' . $wpdb->rows_affected . '`. (no value found)' );
+				} else { // normal
+					$sql = "DELETE FROM `" . $wpdb->options . "` WHERE option_name='" . '_transient_timeout_' . $transient_name . "' LIMIT 1";
+					$wpdb->query( $sql );
+					
+					pb_backupbuddy::status( 'details', 'SQL: `' . $sql . '`. Rows affected: `' . $wpdb->rows_affected . '`. (no value found)' );
+				}
+				
+			}
+		}
+		
+		pb_backupbuddy::status( 'details', 'Completed transient cleanup.' );
+	} // End cleanup_transients().
 	
 	
 	
@@ -705,7 +838,7 @@ class backupbuddy_housekeeping {
 	 * @param	string	$forceSerial	Optional. If provided then this only this serial will be cleaned up AND it will be cleaned up now regardless of its age.
 	 * @return	null
 	 */
-	public static function remove_temp_tables( $forceSerial = '' ) {
+	public static function remove_temp_tables( $forceSerial = '', $backup_age_limit = 0 ) {
 		global $wpdb;
 		
 		if ( '' != $forceSerial ) {
@@ -713,25 +846,34 @@ class backupbuddy_housekeeping {
 		} else {
 			$cleanups = pb_backupbuddy::$options['rollback_cleanups'];
 		}
+
+		// Check for orphaned tables
+		$possible_orphans = $wpdb->get_results('SELECT table_name, create_time FROM information_schema.tables WHERE table_name LIKE "bbold%" OR table_name LIKE "bbnew%"');
+		foreach( (array) $possible_orphans as $possible_orphan ) {
+			$serial = substr( $possible_orphan->table_name, 6, 4 );
+			if ( empty( $forceSerial ) && ! isset( $cleanups[$serial] ) ) {
+				$create_time = mysql2date( 'U', $possible_orphan->create_time );
+				if ( ( time() - $create_time ) > $backup_age_limit ) {
+					$cleanups[$serial] = $create_time;
+				}
+			}
+		}
 		
 		foreach( $cleanups as $cleanup_serial => $start_time ) {
 			
-			if ( ( time() - $start_time ) > backupbuddy_constants::CLEANUP_MAX_STATUS_LOG_AGE ) {
-				
-				$results = $wpdb->get_results( "SELECT table_name FROM information_schema.tables WHERE ( ( table_name LIKE 'bbnew-" . substr( $cleanup_serial, 0, 4 ) . "\_%' ) OR ( table_name LIKE 'bbold-" . substr( $cleanup_serial, 0, 4 ) . "\_%' ) ) AND table_schema = DATABASE()", ARRAY_A );
-				if ( count( $results ) > 0 ) {
-					foreach( $results as $result ) {
-						if ( false === $wpdb->query( "DROP TABLE `" . backupbuddy_core::dbEscape( $result['table_name'] ) . "`" ) ) {
-							pb_backupbuddy::status( 'error', 'Error #372837683: Unable to copy over BackupBuddy settings from live site to incoming database in temp table. Details: `' . $wpdb->last_error . '`.' );
-							return false;
-						}
+			$results = $wpdb->get_results( "SELECT table_name FROM information_schema.tables WHERE ( ( table_name LIKE 'bbnew-" . substr( $cleanup_serial, 0, 4 ) . "\_%' ) OR ( table_name LIKE 'bbold-" . substr( $cleanup_serial, 0, 4 ) . "\_%' ) ) AND table_schema = DATABASE()", ARRAY_A );
+			if ( count( $results ) > 0 ) {
+				foreach( $results as $result ) {
+					if ( false === $wpdb->query( "DROP TABLE `" . backupbuddy_core::dbEscape( $result['table_name'] ) . "`" ) ) {
+						pb_backupbuddy::status( 'error', 'Error #343344683: Unable to remove stale old temp table `' . $result['table_name'] . '`. Details: `' . $wpdb->last_error . '`.' );
+						return false;
 					}
 				}
-				
-				unset( pb_backupbuddy::$options['rollback_cleanups'][ $cleanup_serial ] );
-				pb_backupbuddy::save();
 			}
 			
+			unset( pb_backupbuddy::$options['rollback_cleanups'][ $cleanup_serial ] );
+			pb_backupbuddy::save();
+		
 		} // end foreach.
 		
 		// Delete any undo PHP files.

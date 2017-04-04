@@ -10,7 +10,7 @@ appAddThisWordPress.filter('toolType', function() {
         'flwv',
         'smlfw'
       ];
-    } else if (type === 'recommended') {
+    } else if (type === 'relatedposts') {
       pcos = [
         'cod',
         'jrcf',
@@ -25,7 +25,6 @@ appAddThisWordPress.filter('toolType', function() {
       pcos = [
         'cmtb',
         'ctbx',
-        'ist',
         'jsc',
         'msd',
         'newsletter',
@@ -34,7 +33,11 @@ appAddThisWordPress.filter('toolType', function() {
         'smlmo',
         'smlsh',
         'smlshp',
-        'tbx'
+        'tbx',
+        'shfs',
+        'shin',
+        'ist',
+        'esb'
       ];
     }
 

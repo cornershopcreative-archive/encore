@@ -609,6 +609,12 @@ class backupbuddy_remote_api {
 		$backupFile = pb_backupbuddy::_POST( 'backupFile' );
 		$password = md5( md5( pb_backupbuddy::_POST( 'backupbuddy_api_key' ) ) );
 		$max_execution_time = pb_backupbuddy::_POST( 'max_execution_time' );
+		$doImportCleanup = true;
+		if ( 'true' == pb_backupbuddy::_POST( 'doImportCleanup' ) ) {
+			$doImportCleanup = true;
+		} elseif ( 'false' == pb_backupbuddy::_POST( 'doImportCleanup' ) ) {
+			$doImportCleanup = false;
+		}
 		
 		// Store this serial in settings to cleanup any temp db tables in the future with this serial with periodic cleanup.
 		$backupSerial = backupbuddy_core::get_serial_from_file( $backupFile );
@@ -620,7 +626,7 @@ class backupbuddy_remote_api {
 			$additionalStateInfo['maxExecutionTime'] = $max_execution_time;
 		}
 		
-		$importFileSerial = backupbuddy_core::deploymentImportBuddy( $password, backupbuddy_core::getBackupDirectory() . $backupFile, $additionalStateInfo );
+		$importFileSerial = backupbuddy_core::deploymentImportBuddy( $password, backupbuddy_core::getBackupDirectory() . $backupFile, $additionalStateInfo, $doImportCleanup );
 		if ( is_array( $importFileSerial ) ) {
 			die( json_encode( array( 'success' => false, 'error' => $importFileSerial[1] ) ) );
 		} else {

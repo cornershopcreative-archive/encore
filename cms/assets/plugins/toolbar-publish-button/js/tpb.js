@@ -1,12 +1,14 @@
-(function($) {
+( function( $ ) {
 
-    button_bg = '' !== button_bg ? ' style="background-color: ' + button_bg + '"' : '';
+    var button_bg = '' !== tpb_l10n.button_bg ? ' style="background-color: ' + tpb_l10n.button_bg + '"' : '';
+
+
 
     $.fn.extend({
 
         duplicateButton: function ( bclass )
         {
-            bclass = ' ' + bclass || '';
+            var bclass = ' ' + bclass || '';
 
             if ( $(this).length ) {
 
@@ -41,27 +43,43 @@
     });
 
 
-    var button = $('input[type="submit"].button-primary, input[type="button"].button-primary').not('.find-box input, .widget-control-save'),
-        draft_button = $('input[type="submit"]#save-post:visible').not('.find-box input'),
-        preview_button = $('a#post-preview');
+
+    // input[type="button"] was excluded since v1.6
+    // because it's causing issues to some jquery plugins
+    var button = $('#wpbody-content .wrap input[type="submit"].button-primary').not('.find-box input, .widget-control-save, #screen-options-wrap input, #bulk_edit');
 
 
-    if ( ! button.is( '#bulk_edit' ) )
-    {
-        if ( ! button.attr( 'id' ) )
-            button.first().attr( 'id','tpb_publish' );
-        button.first().duplicateButton( 'wpuxss-tpb-publish' );
+    if ( ! button.attr( 'id' ) )
+        button.first().attr( 'id','tpb_publish' );
+    button.first().duplicateButton( 'wpuxss-tpb-publish' );
+
+
+
+    if ( tpb_l10n.draft_button ) {
+
+        var draft_button = $('#wpbody-content .wrap input[type="submit"]#save-post:visible').not('.find-box input');
+
+
+        draft_button.first().duplicateButton( 'wpuxss-tpb-save-post' );
+
+        $('.save-post-status').on('click', function() {
+            setTimeout( function() {
+                $('.wpuxss-tpb-save-post .ab-item .ab-label').html( draft_button.val() );
+            }, 15 );
+
+        });
     }
-    draft_button.first().duplicateButton( 'wpuxss-tpb-save-post' );
-    preview_button.first().duplicateButton( 'wpuxss-tpb-post-preview' );
 
 
-    $('.save-post-status').on('click', function() {
-        setTimeout( function() {
-            $('.wpuxss-tpb-save-post .ab-item .ab-label').html( draft_button.val() );
-        }, 15 );
 
-    });
+    if ( tpb_l10n.preview_button ) {
+
+        var preview_button = $('#wpbody-content .wrap a#post-preview');
+
+
+        preview_button.first().duplicateButton( 'wpuxss-tpb-post-preview' );
+    }
+
 
 
     $('#wpadminbar .wpuxss-tpb a').click(function(e)

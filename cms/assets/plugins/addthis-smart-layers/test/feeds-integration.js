@@ -17,6 +17,7 @@ if (process.env.build_env && environments[process.env.build_env]) {
 var request = supertest(feedsUrl);
 
 describe('Feeds API tests for Wordpress', function() {
+  this.timeout(5000);
   var pubId = 'atblog';
   var domain = 'www.addthis.com';
 

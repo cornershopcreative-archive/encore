@@ -603,7 +603,7 @@ class backupbuddy_live_periodic {
 		}
 		
 		
-		// Loop through files in the catalog.
+		// Loop through tables in the catalog.
 		$loopCount = 0;
 		$checkCount = 0;
 		$sendTimeSum = 0;
@@ -1590,6 +1590,14 @@ class backupbuddy_live_periodic {
 			return false;
 		}
 		
+		// If catalog backup is older than X seconds then backup.
+		$catalog_file = backupbuddy_core::getLogDirectory() . 'live/catalog-' . pb_backupbuddy::$options['log_serial'] . '.txt';
+		if ( false !== ( $file_stats = @stat( $catalog_file . '.bak' ) ) ) {
+			if ( ( time() - $file_stats['mtime'] ) > backupbuddy_constants::MAX_TIME_BETWEEN_CATALOG_BACKUP ) {
+				self::backup_catalog();
+			}
+		}
+		
 		require_once( pb_backupbuddy::plugin_path() . '/destinations/bootstrap.php' );
 		
 		// Truncate log if it is getting too large. Keeps newest half.
@@ -1641,7 +1649,7 @@ class backupbuddy_live_periodic {
 			
 			// If too many remote sends have failed today then give up for now since something is likely wrong.
 			if ( self::$_state['stats']['recent_send_fails'] > $destination_settings['max_daily_failures'] ) {
-				$error = 'Error #5002: Too many file transfer failures have occurred so stopping transfers. We will automatically try again in 12 hours. Verify there are no remote file transfer problems. Check recently send file logs on Remote Destinations page. Don\'t want to wait? Pause Files process then select "Reset Send Attempts" under "Advanced Troubleshooting Options".';
+				$error = 'Error #5002: Too many file transfer failures have occurred so stopping transfers. We will automatically try again in 12 hours. Verify there are no remote file transfer problems. Check recently send file logs on Remote Destinations page. Don\'t want to wait? Pause Files process then select \'Reset Send Attempts\' under \'Advanced Troubleshooting Options\'.';
 				backupbuddy_core::addNotification( 'live_error', 'BackupBuddy Stash Live Error', $error );
 				self::$_state['step']['last_status'] =  $error;
 				pb_backupbuddy::status( 'error', $error );
@@ -1752,7 +1760,7 @@ class backupbuddy_live_periodic {
 		pb_backupbuddy::status( 'warning', 'Warning: Skipped due to lacking signature data: `' . $lackSignatureData . '`. If this is temporary it is normal. If this persists there may be permissions blocking reading file details.' );
 		
 		if ( $tooManyAttempts > 0 ) {
-			$warning = 'Warning #5003. `' . $tooManyAttempts . '` files were skipped due to too many send attempts failing. Check the Remote Destinations page\'s Recently sent files list to check for errors of failed sends. To manually reset sends Pause the Files process and wait for it to finish, then select the Advanced Troubleshooting Option to "Reset Send Attempts".';
+			$warning = 'Warning #5003. `' . $tooManyAttempts . '` files were skipped due to too many send attempts failing. Check the Remote Destinations page\'s Recently sent files list to check for errors of failed sends. To manually reset sends Pause the Files process and wait for it to finish, then select the Advanced Troubleshooting Option to \'Reset Send Attempts\'.';
 			pb_backupbuddy::status( 'warning', $warning );
 			backupbuddy_core::addNotification( 'live_error', 'BackupBuddy Stash Live Error', $warning );
 		}
@@ -1900,7 +1908,7 @@ class backupbuddy_live_periodic {
 			// Process any remaining deletions.
 			if ( count( $pendingDelete ) > 0 ) {
 				if ( true !== ( $delete_result = pb_backupbuddy_destination_live::deleteFile( $destination_settings, $pendingDelete ) ) ) {
-					pb_backupbuddy::status( 'error', 'Error #373262793: Unable to delete one or more remote files. See log above for details. Details: `' . $deleteResult . '`. Clearing pendingDelete var for next batch.' );
+					pb_backupbuddy::status( 'error', 'Error #373262793: Unable to delete one or more remote files. See log above for details. Details: `' . $delete_result . '`. Clearing pendingDelete var for next batch.' );
 				} else {
 					pb_backupbuddy::status( 'details', 'Deleted batch of `' . count( $pendingDelete ) . '` remote files.' );
 					$filesDeleted += count( $pendingDelete );
@@ -2282,7 +2290,8 @@ class backupbuddy_live_periodic {
 	public static function &_get_daily_stats_ref() {
 		if ( false === self::_load_state() ) {
 			pb_backupbuddy::status( 'warning', 'Warning #3298233298: _grab_daily_stats() could not load state.' );
-			return false;
+			$return_var = false; // Only variable references should be returned by reference
+			return $return_var;
 		}
 		
 		if ( ! isset( self::$_state['stats']['daily'] ) ) {

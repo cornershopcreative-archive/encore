@@ -1,4 +1,4 @@
-appAddThisWordPress.directive('reviewNag', function(wordpress) {
+appAddThisWordPress.directive('reviewNag', function($wordpress) {
   return {
     scope: {},
     controller: function($scope) {
@@ -36,7 +36,7 @@ appAddThisWordPress.directive('reviewNag', function(wordpress) {
       var now = unixTimestampNow();
 
       // get global options
-      wordpress.globalOptions.get().then(function(data) {
+      $wordpress.globalOptions.get().then(function(data) {
         globalOptions = data;
 
         if (typeof data.addthis_rate_us !== 'undefined') {
@@ -78,7 +78,7 @@ appAddThisWordPress.directive('reviewNag', function(wordpress) {
 
         globalOptions.addthis_rate_us = newState;
         globalOptions.addthis_rate_us_timestamp = lastInteraction;
-        wordpress.globalOptions.save().then(function(data) {
+        $wordpress.globalOptions.save().then(function(data) {
           globalOptions = data;
         });
       };

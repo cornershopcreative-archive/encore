@@ -4,7 +4,8 @@ appAddThisWordPress.directive('basicRadiobox', function() {
       ngModel: '=ngModel', // bi-directional
       value: '=value',
       label: '@label',
-      name: '@for'
+      name: '@for',
+      checked: '@checked'
     },
     transclude: true,
     link: function(scope, el, attrs, ctrl, transclude) {

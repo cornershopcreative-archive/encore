@@ -1,8 +1,8 @@
 /*!
- * Collapse-O-Matic JavaSctipt v1.6.5
+ * Collapse-O-Matic JavaSctipt v1.6.6
  * http://plugins.twinpictures.de/plugins/collapse-o-matic/
  *
- * Copyright 2016, Twinpictures
+ * Copyright 2017, Twinpictures
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -71,6 +71,9 @@ function swapTitle(origObj, swapObj){
 }
 
 function toggleState (obj, id, maptastic, trig_id) {
+	//toggletarget class
+	//jQuery('[id^=target][id$='+id+']').toggleClass('colomat-targ-visable');
+
 	if (maptastic && jQuery('[id^=target][id$='+id+']').hasClass('maptastic') ) {
 		jQuery('[id^=target][id$='+id+']').removeClass('maptastic');
 	}
@@ -569,10 +572,6 @@ jQuery(document).ready(function() {
 			}
 
 			if( jQuery('#' + anchor).length ){
-				if(!jQuery('#' + anchor).hasClass('colomat-close')){
-					jQuery('#' + anchor).click();
-				}
-
 				//expand any nested parents
 				jQuery('#' + anchor).parents('.collapseomatic_content').each(function(index) {
 					parent_arr = jQuery(this).attr('id').split('-');
@@ -582,6 +581,10 @@ jQuery(document).ready(function() {
 						jQuery('#' + parent).click();
 					}
 				})
+				//now expand the target anchor
+				if(!jQuery('#' + anchor).hasClass('colomat-close')){
+					jQuery('#' + anchor).click();
+				}
 			}
 		}
 	});

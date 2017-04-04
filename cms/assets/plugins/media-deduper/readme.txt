@@ -1,9 +1,9 @@
 === Media Deduper ===
-Contributors: drywallbmb
+Contributors: drywallbmb, kenjigarland
 Tags: media, attachments, admin, upload
-Requires at least: 3.6
-Tested up to: 4.6.1
-Stable tag: 1.1.1
+Requires at least: 4.3
+Tested up to: 4.7.2
+Stable tag: 1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,7 +17,7 @@ Before Media Deduper can identify duplicate assets, it first must build an index
 Once up and running, Media Deduper provides two key tools:
 
 1. A page listing all of your duplicate media files. The list makes it easy to see and delete duplicate files: delete one and its twin will disappear from the list because it's then no longer a duplicate. Easy! The list is optionally now sortable by file size, so you can focus on deleting the files that will free up the most space.
-2. A scan of media files as they're uploaded to prevent a duplicate from being added to your Media Library. Prevents new duplicates from being introduced, automagically!
+2. A scan of media files as they're uploaded via the admin to prevent a duplicate from being added to your Media Library. Prevents new duplicates from being introduced, automagically!
 
 Media Deduper comes with a "Delete Preserving Featured" option that prevents a post's Featured Image from being deleted, even if that image is found to be a duplicate elsewhere on the site. If a post has a featured image that's a duplicate file, Media Deduper will re-assign that post's image to an already-in-use copy of the image before deleting the duplicate so that the post's appearance is unaffected. At this time, this feature only tracks Featured Images, and not images used in galleries, post bodies, shortcodes, meta fields, or anywhere else.
 
@@ -45,12 +45,36 @@ Because there's no way of knowing which of the duplicates is the "real" or "best
 
 NO! Because the list includes every copy of your duplicates, you'll likely always want to save one version, so bulk deleting all of them would be very, very bad. Don't do that. You've been warned.
 
+= Does Media Deduper prevent duplicates from all methods of import? =
+
+At this time, Media Deduper only identifies and blocks duplicate media files manually uploaded via the admin dashboard -- it does not block duplicates that are imported via WP-CLI or the WordPress Importer plugin.
+
 = How can I contribute? =
 
 The git repository should be publicly available at https://bitbucket.org/cornershopcreative/plugin_media-deduper. Feel free to fork, edit, make pull requests, etc.
 
 
 == Changelog ==
+= 1.3 =
+* Refactoring PHP to take advantage of WP 4.7's new hooks for handling bulk actions.
+* Minor improvements to 'success' messages displayed after a bulk action has been performed on a set of duplicate attachments.
+* When uninstalled, the plugin will now delete the 'mdd_size' meta field that it adds to attachments. Previously it would only delete the 'mdd_hash' field.
+* Minor code cleanup.
+* Bugfix: Fixing an issue that caused the columns on the Manage Duplicates screen (File, Author, etc.) to not actually be sortable.
+* Bugfix: Ensuring that the 'size' column added to the main media library (in list view only) is styled properly & sortable.
+
+= 1.2.2 =
+* Bugfix: The bugfix in 1.2.1 introduced a problem with performing smart deletions, so it's been rewritten. Deduper and the normal Media Library should both work as expected now.
+
+= 1.2.1 =
+* Bugfix: Eliminating behavior where bulk-deleting media from the media library would redirect user to Deduper admin page after performing deletion.
+
+= 1.2.0 =
+* Adding sharing tools to help encourage spreading Media Deduper love!
+* Refactoring CSS into standalone CSS file.
+* Refactoring JS into standalone JS file.
+* Bugfix: Altering notification message shown when indexing is manually aborted to indicate that indexing is not yet complete.
+
 = 1.1.1 =
 * Fixing a bug that would list all media as duplicates if all duplicates share a media file
 

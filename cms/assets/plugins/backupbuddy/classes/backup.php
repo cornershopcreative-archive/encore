@@ -366,7 +366,7 @@ class pb_backupbuddy_backup {
 		// Files type profile with a custom root does NOT currently support exclusions at all. Strip all excludes.
 		if ( ( $type == 'files' ) && ( isset( $profile['custom_root'] ) ) && ( '' != $profile['custom_root'] ) ) {
 			$dir_excludes = array();
-			pb_backupbuddy::status( 'warning', 'Warning #3893833: Files profile with custom root does not currently support any file or directory exclusions. Skipping any exclusions for this backup.' );
+			pb_backupbuddy::status( 'warning', 'Warning #33333893833: Files profile with custom root does not currently support any file or directory exclusions. Skipping any exclusions for this backup.' );
 			$profile['integrity_check'] = '0';
 			pb_backupbuddy::status( 'warning', 'Warning #3434794793: Files profile with custom root are not currently submitted for integrity checks.' );
 			$custom_root = $profile['custom_root'];
@@ -2657,10 +2657,11 @@ class pb_backupbuddy_backup {
 		$siteurl = site_url();
 		
 		$additionalStateInfo = array(
-			'maxExecutionTime' => $state['minimumExecutionTime']
+			'maxExecutionTime' => $state['minimumExecutionTime'],
+			'doImportCleanup' => $state['doImportCleanup'],
 		);
 		
-		$importFileSerial = backupbuddy_core::deploymentImportBuddy( $importbuddyPassword, $state['pullLocalArchiveFile'], $additionalStateInfo );
+		$importFileSerial = backupbuddy_core::deploymentImportBuddy( $importbuddyPassword, $state['pullLocalArchiveFile'], $additionalStateInfo, $state['doImportCleanup'] );
 		if ( is_array( $importFileSerial ) ) { // Could not generate importbuddy file.
 			return false;
 		}
@@ -2855,12 +2856,19 @@ class pb_backupbuddy_backup {
 		require_once( pb_backupbuddy::plugin_path() . '/classes/deploy.php' );
 		$deploy = new backupbuddy_deploy( $state['destinationSettings'], $state );
 		
+		if ( true === $state['doImportCleanup'] ) {
+			$cleanupStringBool = 'true';
+		} else {
+			$cleanupStringBool = 'false';
+		}
+		
 		if ( false === ( $response = backupbuddy_remote_api::remoteCall(
 				$state['destination'],
 				'renderImportBuddy',
 				array(
 					'backupFile' => basename( $this->_backup['archive_file'] ),
 					'max_execution_time' => $state['minimumExecutionTime'],
+					'doImportCleanup' => $cleanupStringBool,
 				),
 				$state['minimumExecutionTime']
 			) ) ) {

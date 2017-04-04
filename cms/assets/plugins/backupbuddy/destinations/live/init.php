@@ -49,7 +49,7 @@ class pb_backupbuddy_destination_live {
 		'max_wait_on_transfers_time' =>		'5',		// Maximum minutes to wait for pending transfers to complete before falling back to Snapshotting.
 		'email'						=>		'',			// Email to send snapshot notifications to. If blank it will use iThemes Member Account email.
 		'max_delete_burst'			=>		'100',		// Max number of files per delete per burst. Eg number of files to pass into deleteFiles() function.
-		
+		'disable_file_management'	=>		'0',
 		'destination_version'		=>		'2', // Which Stash remote destination version to use. Launched with 2 (v2).
 		
 		/***** BEGIN ARCHIVE LIMITS *****/

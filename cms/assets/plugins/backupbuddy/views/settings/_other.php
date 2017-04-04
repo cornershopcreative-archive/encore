@@ -1,3 +1,65 @@
+<script type="text/javascript">
+	function pb_status_append( json ) {
+		if( 'undefined' === typeof statusBox ) { // No status box yet so may need to create it.
+			statusBox = jQuery( '#pb_backupbuddy_status' );
+			if( statusBox.length == 0 ) { // No status box yet so suppress.
+				return;
+			}
+		}
+		
+		if ( 'string' == ( typeof json ) ) {
+			backupbuddy_log( json );
+			console.log( 'Status log received string: ' + json );
+			return;
+		}
+		
+		// Used in BackupBuddy _backup-perform.php and ImportBuddy _header.php
+		json.date = new Date();
+		json.date = new Date(  ( json.time * 1000 ) + json.date.getTimezoneOffset() * 60000 );
+		var seconds = json.date.getSeconds();
+		if ( seconds < 10 ) {
+			seconds = '0' + seconds;
+		}
+		json.date = backupbuddy_hourpad( json.date.getHours() ) + ':' + json.date.getMinutes() + ':' + seconds;
+		
+		triggerEvent = 'backupbuddy_' + json.event;
+		
+		
+		// Log non-text events.
+		if ( ( 'details' !== json.event ) && ( 'message' !== json.event ) && ( 'error' !== json.event ) ) {
+			//console.log( 'Non-text event `' + triggerEvent + '`.' );
+		} else {
+			//console.log( json.data );
+		}
+		//console.log( 'trigger: ' + triggerEvent );
+		
+		backupbuddy_log( json );
+		
+		
+	} // End function pb_status_append().
+	
+	// left hour pad with zeros
+	function backupbuddy_hourpad(n) { return ("0" + n).slice(-2); }
+	
+	// Used in BackupBuddy _backup-perform.php and ImportBuddy _header.php and _rollback.php
+	function backupbuddy_log( json ) {
+		
+		message = '';
+		
+		if ( 'string' == ( typeof json ) ) {
+			message = "-----------\t\t-------\t-------\t" + json;
+		} else {
+			message = json.date + '.' + json.u + " \t" + json.run + "sec \t" + json.mem + "MB\t" + json.data;
+		}
+		
+		statusBox.append( "\r\n" + message );
+		statusBox.scrollTop( statusBox[0].scrollHeight - statusBox.height() );
+		
+	}
+</script>
+
+
+
 <?php
 function plugin_information( $plugin_slug, $data ) {
 	$plugin_path = $data['path'];
@@ -21,10 +83,29 @@ function plugin_information( $plugin_slug, $data ) {
 
 // User forced cleanup.
 if ( '' != pb_backupbuddy::_GET( 'cleanup_now' ) ) {
-	pb_backupbuddy::alert( 'Performing cleanup procedures now trimming old files and data.' );
+	
+	echo '<h3>' . __( 'Cleanup Procedure Status Log', 'it-l10n-backupbuddy' ) . '</h3>';
+	global $pb_backupbuddy_js_status;
+	$pb_backupbuddy_js_status = true;
+	echo pb_backupbuddy::status_box( 'Performing cleanup procedures...' );
+	echo '<script>jQuery("#pb_backupbuddy_status_wrap").show();</script>';
+	echo '<div id="pb_backupbuddy_cleanup_working"><img src="' . pb_backupbuddy::plugin_url() . '/images/loading_large.gif" title="Working... Please wait as this may take a moment..."></div>';
+	
+	pb_backupbuddy::flush();
 	
 	require_once( pb_backupbuddy::plugin_path() . '/classes/housekeeping.php' );
-	backupbuddy_housekeeping::run_periodic( 0 ); // 0 cleans up everything even if not very old.
+	
+	if ( 'true' == pb_backupbuddy::_GET( 'transients_only' ) ) {
+		backupbuddy_housekeeping::cleanup_transients( true ); // true deletes unexpiring, expired, or corrupt.
+	} elseif ( 'true' == pb_backupbuddy::_GET( 'transients_only_expired' ) ) {
+		backupbuddy_housekeeping::cleanup_transients( false ); // false only cleans expired or corrupt.
+	} else {
+		backupbuddy_housekeeping::run_periodic( 0 ); // 0 cleans up everything even if not very old.
+	}
+	
+	echo '<script>jQuery("#pb_backupbuddy_cleanup_working").hide();';
+	echo 'jQuery(document).ready( function(){ backupbuddy_log("Cleanup Completed!"); } );';
+	echo '</script>';
 }
 
 // Delete temporary files directory.
@@ -95,28 +176,42 @@ if ( '1' == pb_backupbuddy::_GET( 'cancel_running_backups' ) ) {
 ?>
 
 
-<h3><?php _e( 'Version History', 'it-l10n-backupbuddy' ); ?></h3>
+<h1><?php _e( 'Version History', 'it-l10n-backupbuddy' ); ?></h1>
 <?php
 plugin_information( pb_backupbuddy::settings( 'slug' ), array( 'name' => pb_backupbuddy::settings( 'name' ), 'path' => pb_backupbuddy::plugin_path() ) );
 ?>
 
 
 
-<br style="clear: both;"><br>
-<h3><?php _e( 'Housekeeping', 'it-l10n-backupbuddy' ); ?></h3>
+<br style="clear: both;"><br><br>
+<h1><?php _e( 'Housekeeping & Troubleshooting', 'it-l10n-backupbuddy' ); ?></h1>
+<?php _e( 'BackupBuddy automatically cleans up after itself on a regular basis. You may force various cleanup procedures to happen sooner or troubleshoot some uncommon issues using the tools below.', 'it-l10n-backupbuddy' ); ?>
+<br><br>
 <div>
-	<a href="<?php echo pb_backupbuddy::page_url(); ?>&cleanup_now=true&tab=3" class="button secondary-button"><?php _e('Cleanup OLD temporary data & perform housekeeping', 'it-l10n-backupbuddy' );?>*</a>
+	
+	<?php echo '<h3>' . __( 'Cleanup', 'it-l10n-backupbuddy' ) . '</h3>'; ?>
+	<a href="<?php echo pb_backupbuddy::page_url(); ?>&cleanup_now=true&tab=3" class="button secondary-button"><?php _e('Cleanup old/temp data & perform daily housekeeping now', 'it-l10n-backupbuddy' );?>*</a>
 	&nbsp;
-	<a href="<?php echo pb_backupbuddy::page_url(); ?>&delete_tempfiles_now=true&tab=3" class="button secondary-button"><?php _e('Delete ALL data files (including resetting Stash Live catalog)', 'it-l10n-backupbuddy' );?>*</a>
+	<a href="<?php echo pb_backupbuddy::page_url(); ?>&delete_tempfiles_now=true&tab=3" class="button secondary-button"><?php _e('Delete ALL data files (including resetting Stash Live)', 'it-l10n-backupbuddy' );?>*</a>
 	&nbsp;
-	<a href="<?php echo pb_backupbuddy::page_url(); ?>&reset_disalerts=true&tab=3" class="button secondary-button"><?php _e('Reset Dismissed Alerts (' . count( pb_backupbuddy::$options['disalerts'] ) . ')', 'it-l10n-backupbuddy' );?></a>
+	<br><br>
+	
+	<?php echo '<h3>' . __( 'Transients', 'it-l10n-backupbuddy' ) . '</h3>'; ?>
+	<a href="<?php echo pb_backupbuddy::page_url(); ?>&cleanup_now=true&transients_only_expired=true&tab=3" class="button secondary-button"><?php _e('Cleanup Transients (expiring & corrupt only)', 'it-l10n-backupbuddy' );?>*</a>
 	&nbsp;
-	<a href="<?php echo pb_backupbuddy::page_url(); ?>&cancel_running_backups=1&tab=3" class="button secondary-button"><?php _e('Force Cancel of all Backups & Transfers', 'it-l10n-backupbuddy' );?></a>
+	<a href="<?php echo pb_backupbuddy::page_url(); ?>&cleanup_now=true&transients_only=true&tab=3" class="button secondary-button"><?php _e('Cleanup Transients (expiring, corrupt, & purge non-expiring)', 'it-l10n-backupbuddy' );?>*</a>
+	<br><br>
+	
+	<?php echo '<h3>' . __( 'Misc.', 'it-l10n-backupbuddy' ) . '</h3>'; ?>
+	<a href="<?php echo pb_backupbuddy::page_url(); ?>&reset_disalerts=true&tab=3" class="button secondary-button"><?php _e('Reset dismissed alerts (' . count( pb_backupbuddy::$options['disalerts'] ) . ')', 'it-l10n-backupbuddy' );?></a>
+	&nbsp;
+	<a href="<?php echo pb_backupbuddy::page_url(); ?>&cancel_running_backups=1&tab=3" class="button secondary-button"><?php _e('Force Cancel of all backups & transfers', 'it-l10n-backupbuddy' );?></a>
 	&nbsp;
 	<a href="javascript:void(0);" class="button secondary-button" onClick="jQuery( '#backupbuddy-extra-log' ).toggle();"><?php _e('Show Extraneous Log (do NOT send to support)', 'it-l10n-backupbuddy' );?></a>
+	<br><br>
+	
 </div>
 <br style="clear: both;">
-<span class="description"><?php _e( '* Temporary files & data are normally automatically cleaned up on a regularly scheduled basis.', 'it-l10n-backupbuddy' ); ?></span>
 
 
 <br><br><br>

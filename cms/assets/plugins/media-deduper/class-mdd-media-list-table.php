@@ -16,11 +16,6 @@ class MDD_Media_List_Table extends WP_Media_List_Table {
 	public function prepare_items() {
 		global $wp_query;
 
-		$columns  = $this->get_columns();
-		$hidden   = array();
-		$sortable = $this->get_sortable_columns();
-		$this->_column_headers = array( $columns, $hidden, $sortable );
-
 		// Eliminate some E_NOTICES from class-wp-media-list-table.
 		$this->is_trash = false;
 
@@ -46,33 +41,5 @@ class MDD_Media_List_Table extends WP_Media_List_Table {
 		$actions['delete']      = __( 'Delete Permanently', 'media-deduper' );
 		$actions['smartdelete'] = __( 'Delete Preserving Featured', 'media-deduper' );
 		return $actions;
-	}
-
-	/**
-	 * Handles the file size column output.
-	 *
-	 * @param WP_Post $post The current WP_Post object.
-	 */
-	public function column_mdd_size( $post ) {
-		$filesize = get_post_meta( $post->ID, 'mdd_size', true );
-		if ( ! $filesize ) {
-			echo __( 'Unknown', 'media-deduper' );
-		} else {
-			echo size_format( $filesize );
-		}
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function get_sortable_columns() {
-		return array(
-			'title'    => 'title',
-			'author'   => 'author',
-			'parent'   => 'parent',
-			'comments' => 'comment_count',
-			'date'     => array( 'date', true ),
-			'mdd_size' => array( 'mdd_size', true ),
-		);
 	}
 }

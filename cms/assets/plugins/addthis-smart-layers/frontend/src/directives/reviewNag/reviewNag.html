@@ -54,13 +54,6 @@
             translate
             translate-values="{
                 'button_text': '{{buttonName|translate}}',
-                'supportForumLink': '
-                    <a
-                        target=\'_blank\'
-                        href=\'https://wordpress.org/support/plugin/{{slug}}\'
-                    >
-                        {{'review_nag_support_forum_link'|translate}}
-                    </a>',
                 'emailAddressLink': '
                     <a
                         href=\'mailto:{{helpEmailAddress}}\'
@@ -84,7 +77,7 @@
             class="btn-at btn-inverse"
             ng-href="mailto:{{helpEmailAddress}}"
         >
-            {{'review_nag_email_support_link'|translate}}
+            {{'client_string_email'|translate}}
         </a>
     </div>
 

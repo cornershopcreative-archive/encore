@@ -71,6 +71,7 @@ class backupbuddy_restore {
 				'deleteArchive' => true,
 				'deleteTempFiles' => true,
 				'deleteImportBuddy' => true,
+				'deleteImportBuddyDirectory' => true,
 				'deleteImportLog' => true,
 								),
 			'potentialProblems' => array(),		// Array of potential issues encountered to show the user AFTER import is done.
@@ -92,6 +93,12 @@ class backupbuddy_restore {
 		if ( is_array( $existingState ) ) { // User passed along an existing state to resume.
 			pb_backupbuddy::status( 'details', 'Using provided restore state data.' );
 			$this->_state = $this->_array_replace_recursive( $this->_state, $existingState );
+		}
+
+		// Allow ability to Force DB over SSL
+		if ( ! empty( $this->_state['databaseSettings']['db_force_ssl'] ) ) {
+			pb_backupbuddy::status( 'details', 'Setting flag to connect to MySQL via SSL.' );
+			define( 'MYSQL_CLIENT_FLAGS', MYSQL_CLIENT_SSL );
 		}
 		
 		// Check if a default state override exists.  Used by automated restoring.
@@ -464,7 +471,6 @@ class backupbuddy_restore {
 		}
 		
 		
-		
 		// Determine database strategy.
 		if ( 'php' == $this->_state['databaseSettings']['databaseMethodStrategy'] ) {
 			pb_backupbuddy::status( 'details', 'Database method set to PHP only.' );
@@ -790,7 +796,7 @@ class backupbuddy_restore {
 		// Turn on maintenance mode.
 		pb_backupbuddy::status( 'details', 'Turning on maintenance mode on.' );
 		if ( ! file_exists( ABSPATH . '.maintenance' ) ) {
-			$maintenance_result = @file_put_contents( ABSPATH . '.maintenance', "<?php header('HTTP/1.1 503 Service Temporarily Unavailable'); header('Status: 503 Service Temporarily Unavailable'); header('Retry-After: 3600'); die( 'Site undergoing maintenance.' );" );
+			$maintenance_result = @file_put_contents( ABSPATH . '.maintenance', "<?php if ( empty( \$_REQUEST['action'] ) || 'pb_backupbuddy_backupbuddy' != \$_REQUEST['action'] ) { header('HTTP/1.1 503 Service Temporarily Unavailable'); header('Status: 503 Service Temporarily Unavailable'); header('Retry-After: 3600'); die( 'Site undergoing maintenance.' ); }" );
 			if ( false === $maintenance_result ) {
 				$this->_error( '.maintenance file unable to be generated to prevent viewing.' );
 				return false;
@@ -817,9 +823,12 @@ class backupbuddy_restore {
 		if ( file_exists( ABSPATH . '.maintenance' ) ) {
 			
 			if ( false === $onlyDeleteOurFile ) {
-				pb_backupbuddy::status( 'details', '.maintenance file exists. Deleting...' );
+				pb_backupbuddy::status( 'details', '.maintenance file exists. Deleting whether importbuddy-created or not...' );
 				if ( false === @unlink( ABSPATH . '.maintenance' ) ) {
+					pb_backupbuddy::status( 'error', 'Unable to delete temporary .maintenance file.  This is likely due to permissions. You may need to manually delete it to view your site.' );
 					$this->_error( 'Unable to delete .maintenance file.' );
+				} else {
+					pb_backupbuddy::status( 'details', '.maintenance file deleted whether importbuddy-created or not.' );
 				}
 			} else { // See if ImportBuddy created it before deleting.
 
@@ -829,7 +838,7 @@ class backupbuddy_restore {
 				if ( false === $maintenance_contents ) { // Cannot read.
 					pb_backupbuddy::status( 'error', '.maintenance file unreadable. You may need to manually delete it to view your site.' );
 				} else { // Read file succeeded.
-					if ( trim( $maintenance_contents ) == "<?php header('HTTP/1.1 503 Service Temporarily Unavailable'); header('Status: 503 Service Temporarily Unavailable'); header('Retry-After: 3600'); die( 'Site undergoing maintenance.' );" ) { // Our file. Delete it!
+					if ( trim( $maintenance_contents ) == "<?php if ( empty( \$_REQUEST['action'] ) || 'pb_backupbuddy_backupbuddy' != \$_REQUEST['action'] ) { header('HTTP/1.1 503 Service Temporarily Unavailable'); header('Status: 503 Service Temporarily Unavailable'); header('Retry-After: 3600'); die( 'Site undergoing maintenance.' ); }" ) { // Our file. Delete it!
 						$maintenance_unlink = @unlink( ABSPATH . '.maintenance' );
 						if ( true === $maintenance_unlink ) {
 							pb_backupbuddy::status( 'details', 'Temporary .maintenance file created by ImportBuddy successfully deleted.' );
@@ -858,6 +867,10 @@ class backupbuddy_restore {
 	 *	@return		true on success, new wp config file content on failure.
 	 */
 	function migrateWpConfig() {
+		if ( 'deploy' == $this->_state['type'] ) {
+			pb_backupbuddy::status( 'details', 'Skipping wp-config.php migration due to being Deployment.' );
+			return true;
+		}
 		if ( isset( $this->_state['dat']['wp-config_in_parent'] ) ) {
 			if ( $this->_state['dat']['wp-config_in_parent'] === true ) { // wp-config.php used to be in parent. Must copy from temp dir to root.
 				pb_backupbuddy::status( 'details', 'DAT file indicates wp-config.php was previously in the parent directory. Copying into site root.' );

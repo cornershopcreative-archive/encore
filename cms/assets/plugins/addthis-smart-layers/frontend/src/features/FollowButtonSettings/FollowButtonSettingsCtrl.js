@@ -1,8 +1,10 @@
 appAddThisWordPress.controller('FollowButtonSettingsCtrl', function(
   $scope,
-  wordpress,
+  $wordpress,
   $stateParams,
-  $state
+  $state,
+  $filter,
+  modeHelper
 ) {
   $scope.changeState = function(newState) {
     if (newState === 'all') {
@@ -26,43 +28,29 @@ appAddThisWordPress.controller('FollowButtonSettingsCtrl', function(
     $scope.changeState('all');
   };
 
-  $scope.templateBaseUrl = wordpress.templateBaseUrl();
+  $scope.templateBaseUrl = $wordpress.templateBaseUrl();
 
   $scope.globalOptions = {};
   $scope.followButtons = {};
 
-  wordpress.globalOptions.get().then(function(globalOptions) {
-    $scope.globalOptions = globalOptions;
+  $wordpress.globalOptions.get().then(function(result) {
+    $scope.globalOptions = result;
+  });
 
-    wordpress.followButtons.get($scope.globalOptions.addthis_plugin_controls)
-    .then(function(followButtons) {
-      $scope.followButtons = followButtons;
-      if (angular.isDefined(followButtons.flwh) &&
-        angular.isDefined(followButtons.flwh.conflict) &&
-        followButtons.flwh.conflict === true
-      ) {
-        $state.go('follow_conflict', {toolPco: 'flwh'});
-      } else if (angular.isDefined(followButtons.flwv) &&
-        angular.isDefined(followButtons.flwv.conflict) &&
-        followButtons.flwv.conflict === true
-      ) {
-        $state.go('follow_conflict', {toolPco: 'flwv'});
-      }
-    });
+  modeHelper.get($wordpress.followButtons).then(function(result) {
+    $scope.followButtons = $filter('toolType')(result, 'follow');
   });
 
   $scope.saving = false;
   $scope.save = function(toolPco) {
     $scope.saving = true;
-
-    return wordpress.followButtons.save(
-      $scope.globalOptions.addthis_plugin_controls,
-      toolPco
-    )
-    .then(function(data) {
-      $scope.followButtons = data;
+    return modeHelper.save(
+      $wordpress.followButtons,
+      toolPco,
+      $scope.followButtons[toolPco]
+    ).then(function(result) {
+      $scope.followButtons = $filter('toolType')(result, 'follow');
       $scope.saving = false;
-      return data;
     });
   };
 

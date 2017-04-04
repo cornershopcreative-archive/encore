@@ -1,5 +1,5 @@
 appAddThisWordPress.directive('followServicePicker', function(
-  wordpress,
+  $wordpress,
   $timeout
 ) {
   return {
@@ -8,7 +8,7 @@ appAddThisWordPress.directive('followServicePicker', function(
       toolPco: '@toolPco'
     },
     link: function($scope) {
-      wordpress.addThisGetFollowServices().then(function(followServices) {
+      $wordpress.addThisGetFollowServices().then(function(followServices) {
         makeServiceOptions(followServices);
       });
 
@@ -85,7 +85,7 @@ appAddThisWordPress.directive('followServicePicker', function(
           if (!angular.isDefined($scope.ngModel[userTypeElement.fieldName])) {
             if (userTypeElement.fieldName === 'rss') {
               $scope.ngModel[userTypeElement.fieldName] =
-                wordpress.defaults('rss');
+                $wordpress.defaults('rss');
             } else {
               $scope.ngModel[userTypeElement.fieldName] = '';
             }

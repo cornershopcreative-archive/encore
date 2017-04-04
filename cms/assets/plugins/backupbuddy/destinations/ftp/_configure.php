@@ -183,15 +183,16 @@ $settings_form->add_setting( array(
 	'row_class'	=>		'advanced-toggle',
 ) );
 
-if ( $mode !== 'edit' ) {
+if ( ( $mode !== 'edit' ) || ( '0' == $destination_settings['disable_file_management'] ) ) {
 	$settings_form->add_setting( array(
 		'type'		=>		'checkbox',
 		'name'		=>		'disable_file_management',
 		'options'	=>		array( 'unchecked' => '0', 'checked' => '1' ),
 		'title'		=>		__( 'Disable file management', 'it-l10n-backupbuddy' ),
-		'tip'		=>		__( '[Default: unchecked] - When checked, selecting this destination disables browsing or accessing files stored at this destination from within BackupBuddy.', 'it-l10n-backupbuddy' ),
+		'tip'		=>		__( '[[Default: unchecked] - When checked, selecting this destination disables browsing or accessing files stored at this destination from within BackupBuddy. NOTE: Once enabled this cannot be disabled without deleting and re-creating this destination. NOTE: Once enabled this cannot be disabled without deleting and re-creating this destination.', 'it-l10n-backupbuddy' ),
 		'css'		=>		'',
 		'rules'		=>		'',
+		'after'		=>		__( 'Once disabled you must recreate the destination to re-enable.', 'it-l10n-backupbuddy' ),
 		'row_class'	=>		'advanced-toggle',
 	) );
 }

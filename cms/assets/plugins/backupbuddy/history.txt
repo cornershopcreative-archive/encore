@@ -1184,4 +1184,102 @@
 	Custom backup root setting fixed showing for all profile types as this feature is only for FILES type profiles.
 	Backgound color of error alerts now reddish for better visibility to color-blind persons.
 	Added additional changes to keep beta S3 (v3) memory usage low when bursing.
+7.2.1.1 - 2016-11-21 - Dustin Bolton
+	Scheduling page: Fixed forcing Datepicker date format if theme overrides WordPress date format.
+	Added additional error logging for importbuddy Error #329723 to detect server response to failed ajax call.
+7.2.1.2 - 2016-12-07 - Dustin Bolton
+	Changed all disabled form items to readonly to allow for copy/pasting and expanding box sizes.
+	ImportBuddy: Added additional logging when loading a step template.
+	ImportBuddy: Added additional logging when calling mysql_test ajax call.
+	Stash Live: Added new link in Stash Live Settings screen at VERY BOTTOM of modal: "Remove Stash Live destination without disconnecting (use only if directed)" -- Allows removing destination without calling API for a disconnect. Use only if directed by support.
+7.2.1.3 - 2016-12-09 - Dustin Bolton
+	Re-added automatic cleaning of expired transients.
+	Clean up orphansed deployment temp tables. - Glenn Ansley
+	Don't 503 during BackupBuddy-related AJAX calls. - Glenn Ansley
+	Add importbuddy support for SSL mysql connections. - Glenn Ansley
+	sFTP test fixed if no path specified. - Glenn Ansley
+7.2.1.4 - 2016-12-29 - Dustin Bolton
+	Fix return by reference error when returning false. - Glenn Ansley
+	Fixed cleanup of deployment tables. - Glenn Ansley
+	Stash Live & Stash v3 now auto-bust cache on next file if token is reported expired. - Dustin Bolton
+7.2.1.5 - 2016-12-30 - Dustin Bolton
+	Disabled WP transient cleanup -- possible issue effecting Stash transient storage.
+7.2.1.6 - 2016-12-30 - Dustin Bolton
+	Deployment: No longer migrating wp-config.php during Deployment as this file is not transferred in the process and should be skipped migrating.
+7.2.1.7 - 2017-01-03 - Dustin Bolton
+	Fixed undefined custom_root during DAT file rendering.
+	Added additional escaping into bruteforce_table() for WHERE portion of statement to avoid SQL syntax error if criteria includes quote.
+7.2.1.8 - 2017-01-04 - Dustin Bolton
+	Added additional logging when clearing Live transient due to expired token.
+	Added transient clearing for expired token for S32 destination.
+7.2.2.0 - 2017-01-16 - Dustin Bolton
+	Housekeeping now cleans up old fileoptions lock files. Helps address problems loading backup page when large numbers of old locks exist.
+	Fixed .maintenance file contents not matching expected importbuddy.php generated version resulting in file hanging around. - Glenn Ansley
+	Removed S3 (v2 & v3) acceleration endpoints as they are invalid.
+	ENHANCEMENT:
+		Added S3 (v3) acceleration option.
+	Misc minor fixes.
+	S3  (v3) settings tooltrip wording improvements.
+	Major release of Quick Release versions 7.2.1.0-7.2.1.8.
+	Stash Live robustness improvements.
+7.2.2.1 - 2017-01-20 - Dustin Bolton
+	Clarified Amazon S3 (v3) acceleration charges being from Amazon.
+	S3 (v3) destination: Added several new Amazon S3 regions/endpoints.
+7.2.2.2 - 2017-02-13 - Dustin Bolton
+	Stash Live:
+		Increased robustness of catalog.
+		Catalog is now backed up more regularly locally during file send step, at least once each 90 seconds, at the beginning of step.
+		Upon detection of a corrupt or truncated catalog file (eg. due to PHP process being killed) if the backup catalog is larger it is reverted to as to prevent 'falling back' to a much earlier catalog state requiring many file re-transfers.
+	Fixed housekeeping not cleaning up recently made bbold and bbnew tables if in rollback_cleanups settings array. Resulted in some bbold & bbnew hanging around longer than normal.
+	Fixed confirmation of a Deployment pull not immediately cleaning up tables NOR undo PHP file.
+	Housekeeping remove_temp_tables() now accepts $backup_age_limit so that clicking button to perform housekeeping will immediately clean up ALL deployment tables.
+7.2.2.4 - 2017-02-14 - Dustin Bolton
+	Happy Valentine's Day!
+	sftp destination: Added additional logging of directory we are trying to change into.
+	Stash Live: If files are remaining we are waiting on, added logging to display first 5 files.
+	Stash Live: Re-organized ordering in Troubleshooting Log to place higher priority items higher for visibility/readability.
+	Added Cleanup Procedure Status Log when manually running cleanup from Settings -> Other tab.
+	FEATURE:
+		Added expired transients cleanup to housekeeping including expired or corrupt.
+		Added new housekeeping option to cleanup all unexpiring transients. Useful if some transients are set to not expire though they should.
+7.2.2.5 - 2017-02-20 - Dustin Bolton
+	Now automatically cleaning up orphaned transients upon upgrade one time (new data structure version 15) to address problems with orphaned transients due to old transient cleanup bug.
+7.2.2.6 - 2017-02-22 - Dustin Bolton
+	The array-key_exists() function maps changed to use all string keys so as not to raise Warning on a non-string key. The boolean false value that get_cfg_var() or ini_get() might return is changed to string "false" to be a valid string to check against array keys. - Jeremy Trask
+	Replace reference to v2 with v3 in Stash 3 and S33 init.php files. - Glenn Ansley
+7.3.0.1 - 2017-02-27 - Dustin Bolton
+	OVERVIEW:
+		This release focuses on increasing robustness and reliability of the Stash Live and Deployment features.
+		Also includes the official release of Quick Release updates 7.2.2.1-7.2.2..6, including all features and enhancements within those.
+	FEATURES:
+		Automatic cleanup of expired transients from the database to increase site performance and reduce needless old transients from hanging in the database.
+		Automatic cleanup of corrupt transients from the database.
+		Settings -> Other tab has added new button to clean up transients manually.
+	ENHANCEMENTS:
+		Stash Live: Significant increase in robustness. Prior to this version corruption of the catalog would result in the backup process falling back to an earlier state, resulting in longer transfer times or Stash Live even hanging indefinitely if the catalog was repeatedly corrupted. This is no longer the case.
+		Stash Live: Faster recovery upon encountering a temporary error due to timeout or memory limit causing file lock to persist.
+		Settings -> Other tab's housekeeping options now include a Status Log to see what is happening. Re-organized the display.
+	BUG FIXES:
+		Various fixes to Deployment cleanup and confirmation procedures.
+		Misc fixes.
+		Added is_array() check then default assignment to Stash Live catalog load to avoid warning in PHP 7.1.
+7.3.0.2 - 2017-03-03 - Dustin Bolton
+	Fixed PHP 7.1 compatibility issue in importbuddy database replacement due to variable being initialized as string instead of array. Only impacts PHP 7.1+.
+7.3.0.3 - 2017-03-03 - Dustin Bolton
+	Fixed inability to disable Stash Live no new snapshot notification by setting its value to zero (0).
+7.3.0.4 - 2017-03-06 - Dustin Bolton
+	Fixed PHP 7.1 compatibility issue in importbuddy database replacement due to variable being initialized as string instead of array. Only impacts PHP 7.1+.
+7.3.0.5 - 2017-03-20 - Dustin Bolton
+	ENHANCEMENT:
+		Remote Destination file management can now be disabled on existing destinations, just not enabled.
+	FEATURE:
+		Stash Live: Added advanced option to disable remote file management.
+	Deployment: Fixed confirm deployment PHP warning.
+	ENHANCEMENT:
+		Deployment: Added new advanced option to skip importbuddy cleanup at end of Deployment. Useful if deployment hangs near end due to importbuddy.php being prematurely deleted. Also preserves log file in importbuddy directory for better troubleshooting.
+	Deployment: Copy of importbuddy.php step of deployment log now stored in importbuddy/status-deploycopy-XXXXXX.txt of the destination site ABSPATH.
+	FEATURE:
+		Stash Live: Added new link to view Last Snapshot Details below the 'Time since last snapshot' section on the Stash Live page. Shows overview of snapshot, malware scan results, download links, plugin and themes in snapshot + their versions, and more!
+	ENHANCEMENT:
+		Stash Live: Added new warning/alert to Stash Live page if multiple crons are passed due, indicating possible cron issue.
 	

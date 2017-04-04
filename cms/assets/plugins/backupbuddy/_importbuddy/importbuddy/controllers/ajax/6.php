@@ -53,7 +53,22 @@ if ( 'true' == pb_backupbuddy::_GET( 'deploy' ) ) {
 	echo '<h5>Finished deploying pushed data & temporary file cleanup.</h5>';
 }
 echo "<script>bb_showStep( 'finished', " . json_encode( $restore->_state ) . " );</script>";
-sleep( 3 );
+
+
+
+// Replaces sleeping 6 seconds. More reliable but uses lots of CPU.
+$stop_time_limit = 6;
+pb_backupbuddy::status( 'details', 'Beggining `' . $stop_time_limit . '` second sleep while files delete.' );
+pb_backupbuddy::flush( true );
+$t = 0; // Time = 0;
+while( $t < $stop_time_limit ) {
+	$now = time();
+	while ( time() < ( $now + 1 ) ) { true; }
+	$t++;
+}
+
+
+
 
 cleanup( $restore->_state );
 
@@ -82,6 +97,12 @@ function parse_options( $restoreData ) {
 		$restoreData['cleanup']['deleteImportBuddy'] = false;
 	}
 	
+	if ( '1' == pb_backupbuddy::_POST( 'delete_importbuddy_directory' ) ) {
+		$restoreData['cleanup']['deleteImportBuddyDirectory'] = true;
+	} else {
+		$restoreData['cleanup']['deleteImportBuddyDirectory'] = false;
+	}
+	
 	if ( '1' == pb_backupbuddy::_POST( 'delete_importbuddylog' ) ) {
 		$restoreData['cleanup']['deleteImportLog'] = true;
 	} else {
@@ -100,6 +121,8 @@ function parse_options( $restoreData ) {
  *	@return		null
  */
 function cleanup( $restoreData ) {
+	pb_backupbuddy::status( 'details', 'Starting importbuddy cleanup procedures.' );
+	
 	if ( true !== $restoreData['cleanup']['deleteArchive'] ) {
 		pb_backupbuddy::status( 'details', 'Skipped deleting backup archive.' );
 	} else {
@@ -128,24 +151,30 @@ function cleanup( $restoreData ) {
 		// Temp restore dir.
 		remove_file( ABSPATH . 'importbuddy/temp_'. $restoreData['serial'] .'/', 'Temporary restore directory', false );
 		
-		remove_file( ABSPATH . 'importbuddy/', 'ImportBuddy Directory', true );
-		remove_file( ABSPATH . 'importbuddy/_settings_dat.php', '_settings_dat.php (temporary settings file)', false );
-		
 		// Remove state file (deployment/default settings).
 		global $importbuddy_file;
 		$importFileSerial = backupbuddy_core::get_serial_from_file( $importbuddy_file );
 		$state_file = ABSPATH . 'importbuddy-' . $importFileSerial . '-state.php';
 		remove_file( $state_file, 'Default state data file', false );
 	}
+	
 	if ( true !== $restoreData['cleanup']['deleteImportBuddy'] ) {
 		pb_backupbuddy::status( 'details', 'Skipped deleting ' . $importbuddy_file . ' (this script).' );
 	} else {
 		global $importbuddy_file;
 		remove_file( ABSPATH . $importbuddy_file, $importbuddy_file . ' (this script)', true );
 	}
+	
+	if ( true !== $restoreData['cleanup']['deleteImportBuddyDirectory'] ) {
+		pb_backupbuddy::status( 'details', 'Skipped deleting importbuddy directory.' );
+	} else {
+		remove_file( ABSPATH . 'importbuddy/', 'ImportBuddy Directory', true );
+		remove_file( ABSPATH . 'importbuddy/_settings_dat.php', '_settings_dat.php (temporary settings file)', false );
+	}
+	
 	// Delete log file last.
 	if ( true !== $restoreData['cleanup']['deleteImportLog'] ) {
-		pb_backupbuddy::status( 'details', 'Skipped deleting import log.' );
+		pb_backupbuddy::status( 'details', 'Skipped deleting import log (deleteImportBuddyDirectory may override).' );
 	} else {
 		remove_file( 'importbuddy-' . pb_backupbuddy::$options['log_serial'] . '.txt', 'importbuddy-' . pb_backupbuddy::$options['log_serial'] . '.txt log file', true );
 	}

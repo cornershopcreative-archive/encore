@@ -2,40 +2,40 @@
 Contributors: webbistro
 Tags: ux, user experience, wp-admin, admin, publish, toolbar, save, button, update, post, page, settings, scrollbar, scrolling, admin bar, backend, admin menu, sticky menu
 Requires at least: 4.6
-Tested up to: 4.6.1
-Stable tag: 1.5.2
+Tested up to: 4.7.2
+Stable tag: 1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 
 
-Save a lot of your time by scrolling less in WP admin!
+Scroll less in WordPress admin area! A small UX improvement will keep Publish button within reach and retain the scrollbar position after saving.
 
 
 
 == Description ==
 
-A small UX improvement keeps Publish button within reach and retains the scrollbar position after saving in WordPress admin.
+Too often it turns out very inconvenient to scroll WordPress admin page back and forth in the quest for the big blue button to save latest changes.
 
-Too often it turns out very inconvenient to scroll WordPress admin page back and forth in the quest for a big blue button to save latest changes.
-
-A simple jQuery script of this plugin duplicates Update / Publish / Save Changes / Save Draft button for posts, pages, custom posts, taxonomies, user profiles, and settings to the top WordPress admin bar, so that it stays on site while you are scrolling your admin page.
+Simple jQuery script of this plugin duplicates Update / Publish / Save Changes / Save Draft / Preview Changes button for posts, pages, custom posts, taxonomies, user profiles, and settings to the top WordPress admin bar, so that it stays on site while you are scrolling your admin page. The plugin options allow to keep the scrollbar position after saving.
 
 The plugin is well-integrated with the Advanced Custom Fields, and capable to leave open ACF field groups after saving your edits.
 
-The plugin doesn't affect any native WordPress functionality. It just redirects your click to the original button. The plugin uses the current button text, of course, with the current language.
+The plugin does not affect any native WordPress functionality, it just redirects your click to the original button, and uses the current button text, of course, with the current language.
 
 
 = Plugin options allow: =
 
 * to keep the scrollbar position after saving for admin pages including code Editor and Plugins page after plugin activation / deactivation,
+* to choose which buttons to show on the admin bar,
 * to set a background color for its buttons to highlight them.
 
 
-= Available Languages (for the plugin's Settings page) =
+= Available Languages =
 
-* Serbian
-* Ukrainian
+You can see the list of available translations and their progress on [wpUXsolutions.com](https://www.wpuxsolutions.com/l10n/projects/toolbar-publish-button). Many thanks to all involved!
+
+Assistance with translating is highly appreciated! If you'd like to be a translation editor or to suggest translations for your language please feel free to contribute to translation. All changes made are included to every new release of the plugin.
 
 
 
@@ -63,7 +63,18 @@ The plugin doesn't affect any native WordPress functionality. It just redirects 
 
 == Changelog ==
 
+= 1.6 =
+*Release Date - February 2, 2017*
 
+= Improvements =
+* "Save Draft" and "Preview" buttons are now optional
+* Minor code improvements
+
+= Bugfixes =
+* Minor bugs fixed
+
+
+&nbsp;
 = 1.5.2 =
 *Release Date - October 11, 2016*
 

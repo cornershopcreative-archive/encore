@@ -27,6 +27,7 @@ class backupbuddy_constants {
 	const MINIMUM_TIME_BETWEEN_ACTIVITY_AND_PERIODIC_CRON_RUN = 1800; // [30min] Minimum amount of time to allow between the last_activity state key and restarting the periodic process via cron.
 	const TIMED_OUT_PROCESS_RESUME_WIGGLE_ROOM = 60; // The number of seconds added to the backupbuddy_core::detectLikelyHighestExecutionTime() after which we MAY restart the periodic process assuming it timed out. This happens in live_stats.php AJAX if a user is on the Live page and also is used for the fileoptions lock ignoring value.
 	const DAYS_BEFORE_RUNNING_TROUBLESHOOTING_TEST = 3; // After this many days with no snapshot run the troubleshooting script to possibly pop up alert of issues on live page.
+	const MAX_TIME_BETWEEN_CATALOG_BACKUP = 90; // Make sure backed up at least every X seconds max (ONLY when running periodic functions; not always running).
 	
 	// Cron
 	const DEFAULT_CRON_PRIORITY = 5; // Default cron priority for registering via add_action().

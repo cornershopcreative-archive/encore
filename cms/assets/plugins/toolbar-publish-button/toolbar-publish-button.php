@@ -4,7 +4,7 @@
  * Plugin Name: Toolbar Publish Button
  * Plugin URI: https://wpUXsolutions.com
  * Description: Save a lot of your time by scrolling less in WP admin! A small UX improvement that keeps Publish button within reach and retains the scrollbar position after saving in WordPress admin.
- * Version: 1.5.2
+ * Version: 1.6
  * Author: wpUXsolutions
  * Author URI: https://wpUXsolutions.com
  * License: GPL2+ - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -31,7 +31,7 @@ class tpb {
      *
      * @var string
      */
-    public $version = '1.5.2';
+    public $version = '1.6';
 
 
 
@@ -205,8 +205,10 @@ class tpb {
 
     function sanitize_tpb_settings( $input ) {
 
-        // scrollbar setting
+        // settings
         $input['scrollbar_return'] = isset( $input['scrollbar_return'] ) && !! $input['scrollbar_return'] ? 1 : 0;
+        $input['draft_button'] = isset( $input['draft_button'] ) && !! $input['draft_button'] ? 1 : 0;
+        $input['preview_button'] = isset( $input['preview_button'] ) && !! $input['preview_button'] ? 1 : 0;
 
 
         // button BG color setting
@@ -267,8 +269,8 @@ class tpb {
 
         // scripts
         wp_register_script( 'tpb-admin', $dir . 'js/tpb.js', array( 'jquery' ), $version, true );
-        wp_register_script( 'tpb-jquery-cookie', $dir . 'js/jquery.cookie.js', array( 'jquery' ), $version, true );
-        wp_register_script( 'tpb-scrollbar', $dir . 'js/tpb-scrollbar.js', array( 'jquery' ), $version, true );
+        wp_register_script( 'tpb-jquery-cookie', $dir . 'js/jquery.cookie.js', array( 'jquery', 'tpb-admin' ), $version, true );
+        wp_register_script( 'tpb-scrollbar', $dir . 'js/tpb-scrollbar.js', array( 'jquery', 'tpb-admin' ), $version, true );
         wp_register_script( 'tpb-color-picker', $dir . 'js/tpb-color-picker.js', array( 'wp-color-picker' ), $version, true );
 
 
@@ -297,15 +299,17 @@ class tpb {
 
 
         $settings = $this->get_option( 'settings' );
-        $button_bg_color = $settings['button_bg_color'];
-        $scrollbar_return = (bool) $settings['scrollbar_return'];
 
 
         // scripts
         wp_enqueue_script( 'tpb-admin' );
-        wp_localize_script( 'tpb-admin', 'button_bg', $button_bg_color );
+        wp_localize_script( 'tpb-admin', 'tpb_l10n', array(
+            'button_bg' => $settings['button_bg_color'],
+            'draft_button' => (bool) $settings['draft_button'],
+            'preview_button' => (bool) $settings['preview_button']
+        ) );
 
-        if ( $scrollbar_return ) {
+        if ( (bool) $settings['scrollbar_return'] ) {
 
             wp_enqueue_script( 'tpb-jquery-cookie' );
             wp_enqueue_script( 'tpb-scrollbar' );
@@ -372,8 +376,6 @@ class tpb {
 
         $version = $this->version;
         $settings = $this->get_option( 'settings' );
-        $button_bg_color = $settings['button_bg_color'];
-        $scrollbar_return = (bool) $settings['scrollbar_return'];
 
 
         if ( ! current_user_can( 'manage_options' ) )
@@ -407,9 +409,29 @@ class tpb {
                                             <td>
                                                 <fieldset>
                                                     <legend class="screen-reader-text"><span><?php _e('Remember scrollbar position','toolbar-publish-button'); ?></span></legend>
-                                                    <label><input id="wpuxss_tpb_scrollbar_return" name="wpuxss_tpb_settings[scrollbar_return]" type="checkbox" value="1" <?php checked( '1', $scrollbar_return ); ?> /> <?php _e('Remember scrollbar position','toolbar-publish-button'); ?></label>
+                                                    <label><input name="wpuxss_tpb_settings[scrollbar_return]" type="checkbox" value="1" <?php checked( '1', (bool) $settings['scrollbar_return'] ); ?> /> <?php _e('Remember scrollbar position','toolbar-publish-button'); ?></label>
                                                     <p class="description"><?php _e('Returns the scrollbar of an admin page (including code Editor page) to its position after saving.','toolbar-publish-button'); ?></p>
                                                     <p class="description"><?php _e('Works for Plugins page after plugin actiation / deactivation.','toolbar-publish-button'); ?></p>
+                                                </fieldset>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th scope="row"><?php _e('"Save Draft" button','toolbar-publish-button'); ?></th>
+                                            <td>
+                                                <fieldset>
+                                                    <legend class="screen-reader-text"><span><?php _e('"Save Draft" button','toolbar-publish-button'); ?></span></legend>
+                                                    <label><input name="wpuxss_tpb_settings[draft_button]" type="checkbox" value="1" <?php checked( '1', (bool) $settings['draft_button'] ); ?> /> <?php _e('Duplicate "Save Draft" button to admin bar','toolbar-publish-button'); ?></label>
+                                                </fieldset>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th scope="row"><?php _e('"Preview" button','toolbar-publish-button'); ?></th>
+                                            <td>
+                                                <fieldset>
+                                                    <legend class="screen-reader-text"><span><?php _e('"Preview" button','toolbar-publish-button'); ?></span></legend>
+                                                    <label><input name="wpuxss_tpb_settings[preview_button]" type="checkbox" value="1" <?php checked( '1', (bool) $settings['preview_button'] ); ?> /> <?php _e('Duplicate "Preview" / "Preview Changes" button to admin bar','toolbar-publish-button'); ?></label>
                                                 </fieldset>
                                             </td>
                                         </tr>
@@ -419,7 +441,7 @@ class tpb {
                                             <td>
                                                 <fieldset>
                                                     <legend class="screen-reader-text"><span><?php _e('Button Background','toolbar-publish-button'); ?></span></legend>
-                                                    <label><input type="text" value="<?php echo $button_bg_color; ?>" class="wpuxss-tpb-button-color" name="wpuxss_tpb_settings[button_bg_color]" /></label>
+                                                    <label><input type="text" value="<?php echo $settings['button_bg_color']; ?>" class="wpuxss-tpb-button-color" name="wpuxss_tpb_settings[button_bg_color]" /></label>
                                                 </fieldset>
                                             </td>
                                         </tr>
@@ -520,7 +542,9 @@ class tpb {
         // set initial settings
         $tpb_settings = array (
             'scrollbar_return' => 1,
-            'button_bg_color' => ''
+            'button_bg_color' => '',
+            'draft_button' => 1,
+            'preview_button' => 1
         );
 
         update_option( 'wpuxss_tpb_settings', $tpb_settings );
@@ -543,30 +567,18 @@ class tpb {
         update_option( 'wpuxss_tpb_version', $this->version );
 
 
-        // correct settings if needed
+        // correct settings
         $tpb_settings = $this->get_option( 'settings' );
 
-        // @since 1.5
-        $settings = array(
-            'wpuxss_tpb_scrollbar_return'   => array( 'name' => 'scrollbar_return', 'default' => 1 ),
-            'wpuxss_tpb_background'         => array( 'name' => 'button_bg_color', 'default' => '' )
+        $tpb_settings_defaults = array (
+            'scrollbar_return' => isset( $tpb_settings['wpuxss_tpb_scrollbar_return'] ) ? $tpb_settings['wpuxss_tpb_scrollbar_return'] : 1,
+            'button_bg_color' => isset( $tpb_settings['wpuxss_tpb_background'] ) ? $tpb_settings['wpuxss_tpb_background'] : '',
+            'draft_button' => 1,
+            'preview_button' => 1
         );
 
-        foreach( $settings as $old_name => $new ) {
-
-            if ( isset( $tpb_settings[$new['name']] ) ) {
-                continue;
-            }
-
-            if ( isset( $tpb_settings[$old_name] ) ) {
-
-                $tpb_settings[$new['name']] = $tpb_settings[$old_name];
-                unset( $tpb_settings[$old_name] );
-            }
-            else {
-                $tpb_settings[$new['name']] = $new['default'];
-            }
-        }
+        $tpb_settings = array_intersect_key( $tpb_settings, $tpb_settings_defaults );
+        $tpb_settings = array_merge( $tpb_settings_defaults, $tpb_settings );
 
 
         update_option( 'wpuxss_tpb_settings', $tpb_settings );

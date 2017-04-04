@@ -729,7 +729,7 @@ if ( !defined( 'PB_IMPORTBUDDY' ) ) {
 	$parent_class_test = array(
 					'title'			=>		'Http Loopbacks',
 					'suggestion'	=>		'enabled',
-					'value'			=>		$loopback_status . '<br><textarea style="width: 100%; max-height: 200px;" disabled="disabled">' . $backupbuddy_loopback_details . '</textarea>',
+					'value'			=>		$loopback_status . '<br><textarea style="width: 100%; max-height: 200px;" readonly="true">' . $backupbuddy_loopback_details . '</textarea>',
 					'tip'			=>		__('Some servers do are not configured properly to allow WordPress to connect back to itself via the site URL (ie: http://your.com connects back to itself on the same server at http://your.com/ to trigger a simulated cron step). If this is the case you must either ask your hosting provider to fix this or enable WordPres Alternate Cron mode in your wp-config.php file.', 'it-l10n-backupbuddy' ),
 				);
 	$parent_class_test['status'] = __( $status, 'it-l10n-backupbuddy' );
@@ -749,7 +749,7 @@ if ( !defined( 'PB_IMPORTBUDDY' ) ) {
 	$parent_class_test = array(
 					'title'			=>		'wp-cron.php Loopbacks',
 					'suggestion'	=>		'enabled',
-					'value'			=>		$cronback_status . '<br><textarea style="width: 100%; max-height: 200px;" disabled="disabled">' . $backupbuddy_cronback_details . '</textarea>',
+					'value'			=>		$cronback_status . '<br><textarea style="width: 100%; max-height: 200px;" readonly="true">' . $backupbuddy_cronback_details . '</textarea>',
 					'tip'			=>		__('Some servers do are not configured properly to allow WordPress to connect back to itself via the site URL (ie: http://your.com connects back to itself on the same server at http://your.com/ to trigger a simulated cron step). If this is the case you must either ask your hosting provider to fix this or enable WordPres Alternate Cron mode in your wp-config.php file.', 'it-l10n-backupbuddy' ),
 				);
 	$parent_class_test['status'] = __( $status, 'it-l10n-backupbuddy' );
@@ -821,7 +821,7 @@ if ( $disabled_functions == '' ) {
 $parent_class_test = array(
 				'title'			=>		'Disabled PHP Functions',
 				'suggestion'	=>		'n/a',
-				'value'			=>		'<textarea style="width: 100%; max-height: 200px;" disabled="disabled">' . str_replace( ',', ', ', $disabled_functions ) . '</textarea>',
+				'value'			=>		'<textarea style="width: 100%; max-height: 200px;" readonly="true">' . str_replace( ',', ', ', $disabled_functions ) . '</textarea>',
 				'tip'			=>		__('Some hosts block certain PHP functions for various reasons. Sometimes hosts block functions that are required for proper functioning of WordPress or plugins.', 'it-l10n-backupbuddy' ),
 			);
 $disabled_functions = str_replace( ', ', ',', $disabled_functions ); // Normalize spaces or lack of spaces between disabled functions.

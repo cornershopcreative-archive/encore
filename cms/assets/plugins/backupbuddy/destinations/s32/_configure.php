@@ -83,7 +83,6 @@ $settings_form->add_setting( array(
 	'title'		=>		__( 'Bucket region', 'it-l10n-backupbuddy' ),
 	'options'	=>		array(
 								's3.amazonaws.com'					=>		'us-east-1 &nbsp;|&nbsp; US East (US Standard)',
-								's3-accelerate.amazonaws.com'		=>		'Use S3 Transfer Acceleration (Enable for your bucket in your AWS console)',
 								's3-us-west-2.amazonaws.com'		=>		'us-west-2 &nbsp;|&nbsp; US West (Oregon)',
 								's3-us-west-1.amazonaws.com'		=>		'us-west-1 &nbsp;|&nbsp; US West (Northern California)',
 								's3-eu-central-1.amazonaws.com'		=>		'eu-central-1 &nbsp;|&nbsp; EU (Frankfurt)',
@@ -244,15 +243,16 @@ $settings_form->add_setting( array(
 */
 
 
-if ( $mode !== 'edit' ) {
+if ( ( $mode !== 'edit' ) || ( '0' == $destination_settings['disable_file_management'] ) ) {
 	$settings_form->add_setting( array(
 		'type'		=>		'checkbox',
 		'name'		=>		'disable_file_management',
 		'options'	=>		array( 'unchecked' => '0', 'checked' => '1' ),
 		'title'		=>		__( 'Disable file management', 'it-l10n-backupbuddy' ),
-		'tip'		=>		__( '[Default: unchecked] - When checked, selecting this destination disables browsing or accessing files stored at this destination from within BackupBuddy.', 'it-l10n-backupbuddy' ),
+		'tip'		=>		__( '[[Default: unchecked] - When checked, selecting this destination disables browsing or accessing files stored at this destination from within BackupBuddy. NOTE: Once enabled this cannot be disabled without deleting and re-creating this destination. NOTE: Once enabled this cannot be disabled without deleting and re-creating this destination.', 'it-l10n-backupbuddy' ),
 		'css'		=>		'',
 		'rules'		=>		'',
+		'after'		=>		__( 'Once disabled you must recreate the destination to re-enable.', 'it-l10n-backupbuddy' ),
 		'row_class'	=>		'advanced-toggle',
 	) );
 }

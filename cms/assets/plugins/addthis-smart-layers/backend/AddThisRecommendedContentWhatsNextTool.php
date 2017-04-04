@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -34,11 +34,6 @@ if (!class_exists('AddThisRecommendedContentWhatsNextTool')) {
      */
     class AddThisRecommendedContentWhatsNextTool extends AddThisRecommendedContentToolParent
     {
-        public $prettyName = 'What\'s Next';
-
-        public $edition = 'basic';
-        public $anonymousSupport = true;
-        public $inline = false;
         public $settingsSubVariableName = 'smlwn';
         public $layersApiProductName = 'whatsnext';
         protected $defaultConfigs = array(

@@ -1,7 +1,7 @@
 <?php
 /**
  * +--------------------------------------------------------------------------+
- * | Copyright (c) 2008-2016 AddThis, LLC                                     |
+ * | Copyright (c) 2008-2017 AddThis, LLC                                     |
  * +--------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or modify     |
  * | it under the terms of the GNU General Public License as published by     |
@@ -34,7 +34,7 @@ if (!class_exists('AddThisFollowButtonsPlugin')) {
      */
     class AddThisFollowButtonsPlugin extends AddThisPlugin
     {
-        protected $version = '3.0.0';
+        protected $version = '4.0.0';
         protected $name = 'Follow Buttons by AddThis';
         protected $productPrefix = 'wpf';
         protected $pluginSlug = 'addthis-follow';

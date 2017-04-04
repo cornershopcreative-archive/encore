@@ -2,8 +2,8 @@
 Contributors: abramsm, jgrodel, bradaddthis.com, addthis_paul, addthis_matt, ribin_addthis, addthis_elsa, AddThis_Mike
 Tags: AddThis, bookmark, bookmarking, email sharing, mobile sharing, mobile sharing buttons, plugin, share, share buttons, share buttons plugin, sharing, sharing buttons, sharing sidebar, social buttons, social tools, widget, follow buttons, follow buttons plugin, shortcode, facebook, twitter, pinterest, linkedin, instagram, content recommendations, recommended content, related content, related posts
 Requires at least: 3.0
-Tested up to: 4.5.3
-Stable tag: 2.0.0
+Tested up to: 4.7
+Stable tag: 3.0.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,12 @@ See our <a href="https://plugins.svn.wordpress.org/addthis-all/trunk/documentati
 
 == Changelog ==
 
+= 3.0.0 =
+* Adding meta box to allow site editors to disable automatically added tools when editing posts and pages. Compatible with the <a href="https://wordpress.org/support/plugin/addthis">Share Button by AddThis</a> meta box. If disabled in one, auto adding of tools will be disabled in both.
+* Redesigned the plugin's widgets to work with AddThis.com's support of multiple definitions of the same tool type. The class for the new widget is AddThisWidgetByDomClass. Widgets created through WordPress's UI will automatically be migrated to use the new class. However, any hard coded use of the old widget classes will need to be updated before upgrading. Deleted widget classes: AddThisSharingButtonsSquareWidgets, AddThisSharingButtonsOriginalWidget, AddThisSharingButtonsCustomWidget, AddThisSharingButtonsJumboWidget, AddThisSharingButtonsResponsiveWidget, AddThisFollowButtonsHorizontalWidget, AddThisFollowButtonsVerticalWidget, AddThisFollowButtonsCustomWidget, AddThisRecommendedContentHorizontalWidget, AddThisRecommendedContentVerticalWidget. Developer <a href="https://plugins.svn.wordpress.org/addthis-all/trunk/documentation.widgets.md">documentation</a> on the new widget is available.
+* Fix for PHP Warning on AddThisFollowButtonsToolParent.php line 127
+* Doing profile ID validation, sharing and follow service list retreival directly in the browser rather than proxying through a WordPress backend AJAX call. This will make this plugin work for "Ignore the tool configurations in this profile" mode in environments where the WordPress server can't talk to AddThis.com.
+
 = 2.0.0 =
 * Plugin rewritten from scratch.
 * Adding widgets and shortcodes.
@@ -186,6 +192,9 @@ See our <a href="https://plugins.svn.wordpress.org/addthis-all/trunk/documentati
 
 
 == Upgrade Notice ==
+
+= 3.0.0 =
+Fix for PHP Warning on AddThisFollowButtonsToolParent.php line 127. Doing profile ID validation, sharing and follow service list retreival directly in the browser rather than proxying through a WordPress backend AJAX call. This will make this plugin work for "Ignore the tool configurations in this profile" mode in environments where the WordPress server can't talk to AddThis.com. Redesigned the plugin's widgets (including renaming classes) to work with AddThis.com's support of multiple definitions of the same tool type (see changelog for details). Adding meta box support.
 
 = 2.0.0 =
 More follow button tools! More follow services! More share button tools! Widgets! Shortcodes! Easier set up for linking your WordPress site with your AddThis account (optional). Linking with an account will unlock even more follow button and recommended content tools, and more options. Not compatible with 1.3.1 or earlier versions of <a href="https://wordpress.org/support/plugin/addthis-follow">Follow Buttons by AddThis.</a> Completely compatible with <a href="https://wordpress.org/support/plugin/addthis-follow">Follow Buttons by AddThis.</a> versions 2.0.0+ and all versions of <a href="https://wordpress.org/support/plugin/addthis-all">Website Tools by AddThis</a> and <a href="http://wordpress.org/extend/plugins/addthis-related-posts/">Related Posts by AddThis</a>. Mostly compatible with <a href="https://wordpress.org/support/plugin/addthis">Share Buttons by AddThis</a> 5.0+.
