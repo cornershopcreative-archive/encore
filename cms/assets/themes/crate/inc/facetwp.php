@@ -57,16 +57,16 @@ function crate_facetwp_pager_html( $output, $params ) {
 		$start_page = 1;
 		$end_page = $total_pages;
 	}
-	elseif ( $page - 5 < 1 ) {
-		// If the current page is less than 5 pages away from the first page, start
-		// at page 1.
+	elseif ( $page - 3 < 1 ) {
+		// If the current page is less than 3 pages away from the first page, show
+		// the first five pages.
 		$start_page = 1;
 		$end_page = 5;
 	}
-	elseif ( $page + 5 > $total_pages ) {
-		// If the current page is less than 5 pages away from the last page, start
-		// 5 pages before the last page.
-		$start_page = $total_pages - 5;
+	elseif ( $page + 3 > $total_pages ) {
+		// If the current page is less than 3 pages away from the last page, show
+		// the last five pages.
+		$start_page = $total_pages - 4;
 		$end_page = $total_pages;
 	}
 	else {
