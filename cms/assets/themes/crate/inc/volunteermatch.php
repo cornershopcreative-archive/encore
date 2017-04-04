@@ -59,6 +59,7 @@ class VolunteerMatchAPI {
 		$response = curl_exec($curl_handle);
 
 		if ( ! $response ) {
+			$httpStatus = curl_getinfo( $curl_handle, CURLINFO_HTTP_CODE );
 			$error = self::$errorMap["http_" . $httpStatus];
 			self::$errorMessage = $error ? $error : self::$defaultError;
 		} else {
@@ -184,6 +185,7 @@ class VolunteerMatchAPI {
 		$data['fieldsToDisplay'][] = 'location';
 		$data['fieldsToDisplay'][] = 'vmUrl';
 		$data['fieldsToDisplay'][] = 'imageUrl';
+		$data['fieldsToDisplay'][] = 'plaintextDescription';
 
 		if ($display != 'opp summary') {
 			$data['fieldsToDisplay'][] = 'minimumAge';
@@ -194,8 +196,6 @@ class VolunteerMatchAPI {
 			$data['fieldsToDisplay'][] = 'availability';
 			$data['fieldsToDisplay'][] = 'referralFields';
 			$data['fieldsToDisplay'][] = 'description';
-		} else {
-			$data['fieldsToDisplay'][] = 'plaintextDescription';
 		}
 
 		self::sendRequest('searchOpportunities', $data);
@@ -351,6 +351,7 @@ function get_vmatch_results( $query ) {
 		'location'        => 'United States',
 		'sortCriteria'    => 'default',
 		'categoryIds'     => array(22),
+		'opportunityTypes' => array( 'public' ),
 		'numberOfResults' => 12,
 		'keywords'        => array(),
 		'greatFor'        => array('s'),
