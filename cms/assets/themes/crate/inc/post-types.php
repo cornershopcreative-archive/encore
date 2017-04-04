@@ -30,7 +30,7 @@ function crate_post_types() {
 		'search_items'        => __( 'Search the Partners', 'text_domain' ),
 		'not_found'           => __( 'No Partners found', 'text_domain' ),
 		'not_found_in_trash'  => __( 'No Partners found in trash', 'text_domain' ),
-		
+
 	);
 
 	$args = array(
@@ -233,6 +233,49 @@ function crate_post_types() {
 	);
 
 	register_post_type( 'opportunity', $args );
+
+
+	// VolunteerMatch Opportunities
+	// Plural: VolunteerMatch Opportunities
+	// Singular: VolunteerMatch Opportunity
+	// URL: /opportunities/
+	$labels = array(
+		'name'                => _x( 'VolunteerMatch Opportunities', 'Post Type General Name', 'crate' ),
+		'singular_name'       => _x( 'VolunteerMatch Opportunity', 'Post Type Singular Name', 'crate' ),
+		'menu_name'           => __( 'VolunteerMatch', 'crate' ),
+		'all_items'           => __( 'All VolunteerMatch Opportunities', 'crate' ),
+		'view_item'           => __( 'View Opportunity', 'crate' ),
+		'add_new_item'        => __( 'Add New VolunteerMatch Opportunity', 'crate' ),
+		'add_new'             => __( 'Add New VolunteerMatch Opportunity', 'crate' ),
+		'edit_item'           => __( 'Edit Opportunity', 'crate' ),
+		'update_item'         => __( 'Update Opportunity', 'crate' ),
+		'search_items'        => __( 'Search VolunteerMatch Opportunities', 'crate' ),
+		'not_found'           => __( 'No VolunteerMatch Opportunities found', 'crate' ),
+		'not_found_in_trash'  => __( 'No VolunteerMatch Opportunities found in trash', 'crate' ),
+	);
+
+	$args = array(
+		'label'               => __( 'Opportunity', 'crate' ),
+		'description'         => __( 'VolunteerMatch Opportunity', 'crate' ),
+		'labels'              => $labels,
+		'supports'            => array( 'title', 'excerpt', 'editor', 'thumbnail' ),
+		'taxonomies'          => array(),
+		'hierarchical'        => true,
+		'public'              => true,
+		'show_ui'             => false,
+		'show_in_menu'        => false,
+		'show_in_nav_menus'   => true,
+		'show_in_admin_bar'   => true,
+		'menu_position'       => 5,
+		'menu_icon'           => 'dashicons-lightbulb',
+		'rewrite'             => false,
+		'can_export'          => true,
+		'has_archive'         => false,
+		'publicly_queryable'  => false,
+		'capability_type'     => 'post',
+	);
+
+	register_post_type( 'vm-opportunity', $args );
 }
 
 add_action( 'init', 'crate_post_types', 0 );
@@ -249,7 +292,7 @@ function crate_taxonomies() {
 			'hierarchical' => true,
 		)
 	);
-	
+
 		register_taxonomy(
 		'location',	// taxonomy machine name
 		array( 'post', 'partner', 'news', 'story', 'opportunity' ),		// post types supported, can be array('post', 'page' ... )

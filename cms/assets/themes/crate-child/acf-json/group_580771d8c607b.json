@@ -2073,7 +2073,7 @@
                 {
                     "key": "581371b2c98a2",
                     "name": "volunteer-opportunities",
-                    "label": "Volunteer Opportunities List",
+                    "label": "VolunteerMatch API Results (old format)",
                     "display": "block",
                     "sub_fields": [
                         {
@@ -2111,6 +2111,176 @@
                                 "id": ""
                             },
                             "default_value": "United States",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                {
+                    "key": "58e3e9335f4cf",
+                    "name": "volunteer-opportunity-posts",
+                    "label": "Volunteer Opportunities List (new format)",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_58e3e9335f4d0",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
+                        {
+                            "key": "field_58e3e9335f4d1",
+                            "label": "Display Facets for Filtering",
+                            "name": "filtering",
+                            "type": "radio",
+                            "instructions": "Please note that only one section per page may have filtering enabled.",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "no": "No",
+                                "yes": "Yes"
+                            },
+                            "allow_null": 0,
+                            "other_choice": 0,
+                            "save_other_choice": 0,
+                            "default_value": "",
+                            "layout": "vertical",
+                            "return_format": "value"
+                        },
+                        {
+                            "key": "field_58e3e9335f4d2",
+                            "label": "Items per page",
+                            "name": "items_per_page",
+                            "type": "number",
+                            "instructions": "Enter 0 to show all available items.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": 9,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "min": "",
+                            "max": "",
+                            "step": ""
+                        },
+                        {
+                            "key": "field_58e3e9335f4d3",
+                            "label": "Pagination",
+                            "name": "show_pager",
+                            "type": "checkbox",
+                            "instructions": "Leave this unchecked to disallow paging (only the number of items set under \"Items per page\" will be displayed).",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "1": "Show pagination controls"
+                            },
+                            "default_value": [
+                                1
+                            ],
+                            "layout": "vertical",
+                            "toggle": 0,
+                            "return_format": "value"
+                        },
+                        {
+                            "key": "field_58e3e9335f4d4",
+                            "label": "Local\/Virtual Options",
+                            "name": "vm_local_virtual",
+                            "type": "radio",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "local": "Local opportunties only",
+                                "virtual": "Virtual opportunities only",
+                                "both": "Both virtual & local"
+                            },
+                            "allow_null": 0,
+                            "other_choice": 0,
+                            "save_other_choice": 0,
+                            "default_value": "both",
+                            "layout": "horizontal",
+                            "return_format": "value"
+                        },
+                        {
+                            "key": "field_58e3e9335f4d5",
+                            "label": "Locations",
+                            "name": "vm_locations",
+                            "type": "textarea",
+                            "instructions": "Enter locations to display opportunities for, one per line, in any of the following formats:\r\nState only \u2013\u00a0\"CA\"\r\nCity, State \u2013 \"San Francisco, CA\"\r\nZip code \u2013\u00a0\"94129\"\r\nLeave blank to display opportunities from any location.",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_58e3e9335f4d4",
+                                        "operator": "==",
+                                        "value": "local"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "maxlength": "",
+                            "rows": 3,
+                            "new_lines": ""
+                        },
+                        {
+                            "key": "field_58e3e9335f4d6",
+                            "label": "Organization IDs",
+                            "name": "vm_org_ids",
+                            "type": "text",
+                            "instructions": "Enter a comma-separated list of VolunteerMatch organization IDs whose opportunities should be displayed. Leave blank to display opportunities for all organizations.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
                             "placeholder": "",
                             "prepend": "",
                             "append": "",
@@ -3821,5 +3991,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1490637314
+    "modified": 1491332311
 }
