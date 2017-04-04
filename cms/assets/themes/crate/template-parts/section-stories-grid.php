@@ -26,9 +26,11 @@
 
 		?>
 		<?php if (get_sub_field('filtering') == "yes"): ?>
+			<div class="section-facets section-facets-basic">
 				<?php echo facetwp_display( 'facet', 'topics' ); ?>
 				<?php echo facetwp_display( 'facet', 'locatio' ); ?>
 				<?php echo facetwp_display( 'facet', 'search' ); ?>
+			</div>
 		<?php endif; ?>
 
 		<div class="content-section-grid container<?php echo ( $show_pager || $show_facet ? ' facetwp-template' : '' ); ?>">

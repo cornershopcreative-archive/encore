@@ -2,59 +2,105 @@
  * Styles for FacetWP elements.
  */
 
-.facetwp-facet {
-	float: left;
-	margin-top: -20px;
-}
+.section-facets:not(.section-facets-basic) {
 
-.facetwp-type-dropdown {
-	width: 25%;
-}
+	@include breakpoint( $tablet ) {
+		display: flex;
 
-.facetwp-type-search {
-	width: 50%;
-}
+		.section-facet {
+			@include span( 3 );
 
-.facetwp-dropdown {
-   background: white;
-   border: 1px solid $silver;
-   border-radius: 5px;
-   font-size: 14px;
-   height: 45px;
-   padding: 5px; /* If you add too much padding here, the options won't show in IE */
-   width: 80%;
-   margin-left: 10%;
-   box-shadow: 5px 5px 5px $silver;
-}
-
-.facetwp-search {
-	width: 50% !important;
-	margin-left: 45% !important;
-	height: 45px !important;
-	padding: 5px !important;
-	box-shadow: 5px 5px 5px $silver;
-
+			&:last-child {
+				@include span( 3 last );
+			}
+		}
 	}
 
-@media (max-width: 500px) { 
+	.flex-space {
+		flex-grow: 1;
+	}
+}
+
+.section-facet {
 
 	.facetwp-facet {
-	float: none !important;
+
+		input,
+		select {
+			width: 100%;
+		}
+	}
+}
+
+.section-facet-label {
+	font-size: rem(18);
+	margin: 0 0 0.5em;
+}
+
+/**
+ * Basic facets, with no wrappers or labels, as added to some sections in 2016.
+ */
+.section-facets-basic {
+
+	.facetwp-facet {
+		float: left;
+		margin-top: -20px;
 	}
 
 	.facetwp-type-dropdown {
-	width: 100%;
+		width: 25%;
+	}
+
+	.facetwp-dropdown {
+		margin-left: 10%;
+		width: 80%;
 	}
 
 	.facetwp-type-search {
-	width: 100%;
+		width: 50%;
 	}
 
 	.facetwp-search {
-	width: 80% !important;
-	float: none !important;
-	margin-left: 10% !important;
+		width: 50% !important;
+		margin-left: 45% !important;
 	}
+
+	@media (max-width: 500px) {
+
+		.facetwp-facet {
+		float: none !important;
+		}
+
+		.facetwp-type-dropdown {
+		width: 100%;
+		}
+
+		.facetwp-type-search {
+		width: 100%;
+		}
+
+		.facetwp-search {
+		width: 80% !important;
+		float: none !important;
+		margin-left: 10% !important;
+		}
+	}
+}
+
+.facetwp-dropdown {
+	background: white;
+	border: 1px solid $silver;
+	border-radius: 5px;
+	font-size: 14px;
+	height: 45px;
+	padding: 5px; /* If you add too much padding here, the options won't show in IE */
+	box-shadow: 5px 5px 5px $silver;
+}
+
+.facetwp-search {
+	height: 45px !important;
+	padding: 5px !important;
+	box-shadow: 5px 5px 5px $silver;
 }
 
 .facetwp-pager {

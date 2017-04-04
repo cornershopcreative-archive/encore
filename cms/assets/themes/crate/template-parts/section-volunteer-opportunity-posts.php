@@ -117,10 +117,20 @@ $section_query = crate_section_query( $query_args );
 <div class="content-section section-volunteer-opportunities" <?php crate_section_id_attr(); ?>>
 
 	<?php if ( get_sub_field( 'filtering' ) == 'yes' ) : ?>
-		<div class="section-filters container">
-			<?php echo facetwp_display( 'facet', 'vm-organization' ); ?>
-			<?php echo facetwp_display( 'facet', 'vm-state' ); ?>
-			<?php echo facetwp_display( 'facet', 'vm-search' ); ?>
+		<div class="section-facets container">
+			<div class="section-facet">
+				<h3 class="section-facet-label">Organization</h3>
+				<?php echo facetwp_display( 'facet', 'vm-organization' ); ?>
+			</div>
+			<div class="section-facet">
+				<h3 class="section-facet-label">State</h3>
+				<?php echo facetwp_display( 'facet', 'vm-state' ); ?>
+			</div>
+			<span class="flex-space"></span>
+			<div class="section-facet">
+				<h3 class="section-facet-label">Search</h3>
+				<?php echo facetwp_display( 'facet', 'vm-search' ); ?>
+			</div>
 		</div>
 	<?php endif; ?>
 

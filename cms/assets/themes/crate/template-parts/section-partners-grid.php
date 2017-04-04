@@ -40,14 +40,16 @@
 
 		?>
 		<?php if (get_sub_field('filtering') == "yes"): ?>
+			<div class="section-facets section-facets-basic">
 				<?php echo facetwp_display( 'facet', 'topics' ); ?>
 				<?php echo facetwp_display( 'facet', 'locatio' ); ?>
 				<?php echo facetwp_display( 'facet', 'search' ); ?>
+			</div>
 		<?php endif; ?>
 		<div class="content-section-grid container<?php echo ( $show_pager || $show_facet ? ' facetwp-template' : '' ); ?>">
-			
+
 			<?php while ( $partner_query->have_posts() ) : $partner_query->the_post(); ?>
-		
+
 
 				<article class="partners-grid-item">
 
@@ -64,7 +66,7 @@
 
 						<h3 class="partner-title">
 						<?php if (get_sub_field('button') == "hide") {
-							
+
 							echo '<a href="'.get_field( 'link_url' ).'"' . (  $is_featured ? ' class="modal-trigger"' : '' ) . ' target="_blank" >'.get_the_title().'</a>';
 						}
 						else
@@ -90,7 +92,7 @@ if(get_sub_field('button') == "show")
 }
 else
 {
-	
+
 }
 ?>
 
