@@ -8,8 +8,8 @@
 */
 
 class CSVImporterPlugin {
-    	
-	function CSVImporterPlugin() {
+
+	function __construct() {
 		add_action( 'wp_ajax_encore_import_stories', array( &$this, 'import_stories_ajax' ) );
 		add_action( 'wp_ajax_encore_import_cleanup', array( &$this, 'import_cleanup_ajax' ) );
 		add_action( 'admin_menu', array( &$this, 'csv_admin_menu') );
@@ -545,8 +545,8 @@ class CSVImporterPlugin {
 }
 
 
-add_action( 'init', 'CSVImporterPlugin' );
-function CSVImporterPlugin() {
+add_action( 'init', 'encore_story_importer_init' );
+function encore_story_importer_init() {
 	global $CSVImporterPlugin;
 	$CSVImporterPlugin = new CSVImporterPlugin();
 }
