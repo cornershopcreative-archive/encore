@@ -537,9 +537,11 @@ function vmatch_sync_loop() {
 		error_log( "VM SYNC:   No opportunities found." );
 		$sync_status['retries'] = 0;
 		$sync_status['previous_page'] = $sync_status['current_page'];
+		$sync_status['running'] = false;
 
 		if ( 'get_local' === $sync_status['stage'] ) {
 			// If we haven't covered virtual opportunities yet, do that.
+			$sync_status['previous_page'] = 0;
 			$sync_status['current_page'] = 1;
 			$sync_status['stage'] = 'get_virtual';
 		} else {
