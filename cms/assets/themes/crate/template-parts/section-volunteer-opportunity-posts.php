@@ -89,8 +89,10 @@ if ( ! empty( $org_query ) ) {
 // General query vars.
 $query_args = array(
 	'post_type' => 'vm-opportunity',
-	'orderby' => 'post_date',
-	'order' => 'DESC',
+	'orderby' => array(
+		'post_modified' => 'DESC',
+		'post_date' => 'DESC',
+	),
 );
 
 // Build and add overall meta query.

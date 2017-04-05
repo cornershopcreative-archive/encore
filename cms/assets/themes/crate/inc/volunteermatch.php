@@ -182,6 +182,7 @@ class VolunteerMatchAPI {
 		$data['fieldsToDisplay'][] = 'categoryIds';
 		$data['fieldsToDisplay'][] = 'parentOrg';
 		$data['fieldsToDisplay'][] = 'created';
+		$data['fieldsToDisplay'][] = 'updated';
 		$data['fieldsToDisplay'][] = 'location';
 		$data['fieldsToDisplay'][] = 'vmUrl';
 		$data['fieldsToDisplay'][] = 'imageUrl';
@@ -609,6 +610,12 @@ function vmatch_sync_loop() {
 		$opp_date->setTimezone( new DateTimeZone( 'UTC' ) );
 		$opp_post['post_date_gmt'] = $opp_date->format( 'Y-m-d H:i:s' );
 		unset( $opp['created'] );
+		// Updated -> post modified date + post modified date GMT.
+		$opp_updated = DateTime::createFromFormat( DATE_ISO8601, $opp['updated'] );
+		$opp_post['post_modified'] = $opp_updated->format( 'Y-m-d H:i:s' );
+		$opp_updated->setTimezone( new DateTimeZone( 'UTC' ) );
+		$opp_post['post_modified_gmt'] = $opp_updated->format( 'Y-m-d H:i:s' );
+		unset( $opp['updated'] );
 
 		// Set the post status (otherwise the new post would be left as a draft).
 		$opp_post['post_status'] = 'publish';
