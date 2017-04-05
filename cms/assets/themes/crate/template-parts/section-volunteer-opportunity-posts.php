@@ -126,6 +126,10 @@ $section_query = crate_section_query( $query_args );
 				<h3 class="section-facet-label">State</h3>
 				<?php echo facetwp_display( 'facet', 'vm-state' ); ?>
 			</div>
+			<div class="section-facet">
+				<h3 class="section-facet-label">City</h3>
+				<?php echo facetwp_display( 'facet', 'vm-city' ); ?>
+			</div>
 			<span class="flex-space"></span>
 			<div class="section-facet">
 				<h3 class="section-facet-label">Search</h3>
