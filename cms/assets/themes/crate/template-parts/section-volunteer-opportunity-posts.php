@@ -186,4 +186,6 @@ $section_query = crate_section_query( $query_args );
 		echo facetwp_display( 'pager' );
 	endif; ?>
 
+	<?php crate_section_links(); ?>
+
 </div>

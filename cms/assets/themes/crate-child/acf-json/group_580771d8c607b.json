@@ -60,7 +60,8 @@
                             "default_value": "",
                             "tabs": "all",
                             "toolbar": "full",
-                            "media_upload": 1
+                            "media_upload": 1,
+                            "delay": 0
                         }
                     ],
                     "min": "",
@@ -127,7 +128,7 @@
                             },
                             "collapsed": "",
                             "min": 1,
-                            "max": "",
+                            "max": 0,
                             "layout": "block",
                             "button_label": "Add Row",
                             "sub_fields": [
@@ -219,7 +220,7 @@
                             },
                             "collapsed": "field_5808c7d5c1c37",
                             "min": 1,
-                            "max": "",
+                            "max": 0,
                             "layout": "block",
                             "button_label": "Add Item",
                             "sub_fields": [
@@ -323,7 +324,9 @@
                                     "default_value": [],
                                     "layout": "vertical",
                                     "toggle": 0,
-                                    "return_format": "value"
+                                    "return_format": "value",
+                                    "allow_custom": 0,
+                                    "save_custom": 0
                                 }
                             ]
                         }
@@ -373,7 +376,7 @@
                             },
                             "collapsed": "",
                             "min": 1,
-                            "max": "",
+                            "max": 0,
                             "layout": "block",
                             "button_label": "Add Row",
                             "sub_fields": [
@@ -849,7 +852,8 @@
                             "default_value": "",
                             "tabs": "all",
                             "toolbar": "full",
-                            "media_upload": 1
+                            "media_upload": 1,
+                            "delay": 0
                         },
                         {
                             "key": "field_5813a2c2d31fc",
@@ -978,7 +982,7 @@
                             },
                             "collapsed": "field_58095cb633a98",
                             "min": 1,
-                            "max": "",
+                            "max": 0,
                             "layout": "block",
                             "button_label": "Add Row",
                             "sub_fields": [
@@ -1101,7 +1105,9 @@
                                     "default_value": [],
                                     "layout": "vertical",
                                     "toggle": 0,
-                                    "return_format": "value"
+                                    "return_format": "value",
+                                    "allow_custom": 0,
+                                    "save_custom": 0
                                 }
                             ]
                         }
@@ -1232,7 +1238,7 @@
                             },
                             "collapsed": "",
                             "min": 1,
-                            "max": "",
+                            "max": 0,
                             "layout": "block",
                             "button_label": "Add Row",
                             "sub_fields": [
@@ -1635,6 +1641,8 @@
                             "choices": {
                                 "1": "Show pagination controls"
                             },
+                            "allow_custom": 0,
+                            "save_custom": 0,
                             "default_value": [],
                             "layout": "vertical",
                             "toggle": 0,
@@ -1798,7 +1806,9 @@
                             "default_value": [],
                             "layout": "vertical",
                             "toggle": 0,
-                            "return_format": "value"
+                            "return_format": "value",
+                            "allow_custom": 0,
+                            "save_custom": 0
                         }
                     ],
                     "min": "",
@@ -1958,7 +1968,9 @@
                             "default_value": [],
                             "layout": "vertical",
                             "toggle": 0,
-                            "return_format": "value"
+                            "return_format": "value",
+                            "allow_custom": 0,
+                            "save_custom": 0
                         }
                     ],
                     "min": "",
@@ -2006,7 +2018,7 @@
                             },
                             "collapsed": "",
                             "min": 1,
-                            "max": "",
+                            "max": 0,
                             "layout": "block",
                             "button_label": "Add Row",
                             "sub_fields": [
@@ -2168,51 +2180,7 @@
                             "other_choice": 0,
                             "save_other_choice": 0,
                             "default_value": "",
-                            "layout": "vertical",
-                            "return_format": "value"
-                        },
-                        {
-                            "key": "field_58e3e9335f4d2",
-                            "label": "Items per page",
-                            "name": "items_per_page",
-                            "type": "number",
-                            "instructions": "Enter 0 to show all available items.",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "50",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": 9,
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "min": "",
-                            "max": "",
-                            "step": ""
-                        },
-                        {
-                            "key": "field_58e3e9335f4d3",
-                            "label": "Pagination",
-                            "name": "show_pager",
-                            "type": "checkbox",
-                            "instructions": "Leave this unchecked to disallow paging (only the number of items set under \"Items per page\" will be displayed).",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "50",
-                                "class": "",
-                                "id": ""
-                            },
-                            "choices": {
-                                "1": "Show pagination controls"
-                            },
-                            "default_value": [
-                                1
-                            ],
-                            "layout": "vertical",
-                            "toggle": 0,
+                            "layout": "horizontal",
                             "return_format": "value"
                         },
                         {
@@ -2245,7 +2213,7 @@
                             "label": "Locations",
                             "name": "vm_locations",
                             "type": "textarea",
-                            "instructions": "Enter locations to display opportunities for, one per line, in any of the following formats:\r\nState only \u2013\u00a0\"CA\"\r\nCity, State \u2013 \"San Francisco, CA\"\r\nZip code \u2013\u00a0\"94129\"\r\nLeave blank to display opportunities from any location.",
+                            "instructions": "Enter locations to display opportunities for, one per line, in any of the following formats:\r\nState only – \"CA\"\r\nCity, State – \"San Francisco, CA\"\r\nZip code – \"94129\"\r\nLeave blank to display opportunities from any location.",
                             "required": 0,
                             "conditional_logic": [
                                 [
@@ -2285,6 +2253,122 @@
                             "prepend": "",
                             "append": "",
                             "maxlength": ""
+                        },
+                        {
+                            "key": "field_58e62ffca32c4",
+                            "label": "Primary Link Text",
+                            "name": "primary_link_text",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_58e6301ca32c6",
+                            "label": "Primary Link URL",
+                            "name": "primary_link_url",
+                            "type": "url",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_58e63010a32c5",
+                            "label": "Secondary Link Text",
+                            "name": "secondary_link_text",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_58e6302aa32c7",
+                            "label": "Secondary Link URL",
+                            "name": "secondary_link_url",
+                            "type": "url",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_58e3e9335f4d2",
+                            "label": "Items per page",
+                            "name": "items_per_page",
+                            "type": "number",
+                            "instructions": "Enter 0 to show all available items.",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": 12,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "min": "",
+                            "max": "",
+                            "step": ""
+                        },
+                        {
+                            "key": "field_58e3e9335f4d3",
+                            "label": "Pagination",
+                            "name": "show_pager",
+                            "type": "checkbox",
+                            "instructions": "Leave this unchecked to disallow paging (only the number of items set under \"Items per page\" will be displayed).",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "1": "Show pagination controls"
+                            },
+                            "allow_custom": 0,
+                            "save_custom": 0,
+                            "default_value": [
+                                1
+                            ],
+                            "layout": "vertical",
+                            "toggle": 0,
+                            "return_format": "value"
                         }
                     ],
                     "min": "",
@@ -2465,7 +2549,9 @@
                             "default_value": [],
                             "layout": "vertical",
                             "toggle": 0,
-                            "return_format": "value"
+                            "return_format": "value",
+                            "allow_custom": 0,
+                            "save_custom": 0
                         },
                         {
                             "key": "field_580aa4a60eccd",
@@ -2693,7 +2779,9 @@
                             "default_value": [],
                             "layout": "vertical",
                             "toggle": 0,
-                            "return_format": "value"
+                            "return_format": "value",
+                            "allow_custom": 0,
+                            "save_custom": 0
                         }
                     ],
                     "min": "",
@@ -2952,7 +3040,9 @@
                             "default_value": [],
                             "layout": "vertical",
                             "toggle": 0,
-                            "return_format": "value"
+                            "return_format": "value",
+                            "allow_custom": 0,
+                            "save_custom": 0
                         }
                     ],
                     "min": "",
@@ -3191,8 +3281,8 @@
                                 "id": ""
                             },
                             "collapsed": "",
-                            "min": "",
-                            "max": "",
+                            "min": 0,
+                            "max": 0,
                             "layout": "block",
                             "button_label": "Add Option",
                             "sub_fields": [
@@ -3273,7 +3363,8 @@
                                                     "default_value": "",
                                                     "tabs": "all",
                                                     "toolbar": "full",
-                                                    "media_upload": 1
+                                                    "media_upload": 1,
+                                                    "delay": 0
                                                 }
                                             ],
                                             "min": "",
@@ -3321,7 +3412,7 @@
                                                     },
                                                     "collapsed": "field_58811b5bd219c",
                                                     "min": 1,
-                                                    "max": "",
+                                                    "max": 0,
                                                     "layout": "block",
                                                     "button_label": "Add Item",
                                                     "sub_fields": [
@@ -3425,7 +3516,9 @@
                                                             "default_value": [],
                                                             "layout": "vertical",
                                                             "toggle": 0,
-                                                            "return_format": "value"
+                                                            "return_format": "value",
+                                                            "allow_custom": 0,
+                                                            "save_custom": 0
                                                         }
                                                     ]
                                                 }
@@ -3948,7 +4041,9 @@
                                                     "default_value": [],
                                                     "layout": "vertical",
                                                     "toggle": 0,
-                                                    "return_format": "value"
+                                                    "return_format": "value",
+                                                    "allow_custom": 0,
+                                                    "save_custom": 0
                                                 }
                                             ],
                                             "min": "",
@@ -3991,5 +4086,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1491332311
+    "modified": 1491481436
 }
