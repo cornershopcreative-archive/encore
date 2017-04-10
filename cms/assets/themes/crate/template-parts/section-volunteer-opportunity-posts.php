@@ -145,7 +145,7 @@ $section_query = crate_section_query( $query_args );
 		</div>
 	<?php endif; ?>
 
-	<div class="content-section-grid container<?php echo ( get_sub_field( 'show_pager' ) ? ' facetwp-template' : '' ); ?>">
+	<div class="content-section-grid container<?php echo ( ( get_sub_field( 'show_pager' ) || 'yes' === get_sub_field( 'filtering' ) ) ? ' facetwp-template' : '' ); ?>">
 		<?php while ( $section_query->have_posts() ) : $section_query->the_post(); ?>
 			<article class="grid-item grid-item-4">
 

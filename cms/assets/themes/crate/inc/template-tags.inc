@@ -123,13 +123,14 @@ function crate_section_query( $query_vars ) {
 
 	// Get fields for standard query vars.
 	$show_pager = get_sub_field( 'show_pager' );
+	$show_facets = ( 'yes' === get_sub_field( 'filtering' ) );
 	$posts_per_page = get_sub_field( 'items_per_page' );
 	if ( $posts_per_page < 1 ) {
 		$posts_per_page = -1;
 	}
 
 	$defaults = array(
-		'facetwp' => $show_pager, // Allow filtering/pagination via FWP.
+		'facetwp' => ( $show_pager || $show_facets ), // Allow filtering/pagination via FWP.
 		'posts_per_page' => $posts_per_page,
 		'orderby' => 'post_date',
 		'order' => 'DESC',
