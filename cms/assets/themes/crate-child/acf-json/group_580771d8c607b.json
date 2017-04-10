@@ -2184,6 +2184,25 @@
                             "return_format": "value"
                         },
                         {
+                            "key": "field_58ebcd25000b6",
+                            "label": "Title Keywords",
+                            "name": "title_keywords",
+                            "type": "text",
+                            "instructions": "Limit opportunities displayed to those whose titles match these keywords. Leave this field blank to disable filtering by title.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
                             "key": "field_58e3e9335f4d4",
                             "label": "Local\/Virtual Options",
                             "name": "vm_local_virtual",
@@ -4086,5 +4105,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1491481436
+    "modified": 1491851000
 }

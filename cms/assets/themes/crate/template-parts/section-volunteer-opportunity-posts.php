@@ -111,6 +111,11 @@ if ( ! empty( $meta_query ) ) {
 	$query_args['meta_query'] = $meta_query;
 }
 
+// Add title keyword search, if present.
+if ( $title_keywords = get_sub_field( 'title_keywords' ) ) {
+	$query_args['title_keywords'] = $title_keywords;
+}
+
 // Build query.
 $section_query = crate_section_query( $query_args );
 
