@@ -125,20 +125,23 @@ $section_query = crate_section_query( $query_args );
 
 	<?php if ( get_sub_field( 'filtering' ) == 'yes' ) : ?>
 		<div class="section-facets container">
-			<div class="section-facet">
+			<div class="section-facet section-facet-organization">
 				<h3 class="section-facet-label">Organization</h3>
 				<?php echo facetwp_display( 'facet', 'vm-organization' ); ?>
 			</div>
-			<div class="section-facet">
+			<div class="section-facet section-facet-state">
 				<h3 class="section-facet-label">State</h3>
 				<?php echo facetwp_display( 'facet', 'vm-state' ); ?>
 			</div>
-			<div class="section-facet">
+			<div class="section-facet section-facet-city">
 				<h3 class="section-facet-label">City</h3>
 				<?php echo facetwp_display( 'facet', 'vm-city' ); ?>
+				<div class="section-facet-placeholder section-facet-placeholder-city">
+					Please select a state.
+				</div>
 			</div>
 			<span class="flex-space"></span>
-			<div class="section-facet">
+			<div class="section-facet section-facet-search">
 				<h3 class="section-facet-label">Search</h3>
 				<?php echo facetwp_display( 'facet', 'vm-search' ); ?>
 			</div>

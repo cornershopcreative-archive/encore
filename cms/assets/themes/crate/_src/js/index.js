@@ -20,6 +20,9 @@ jQuery( modals );
 var fwp_load_more = require( 'fwp-load-more' );
 jQuery( fwp_load_more );
 
+var fwp_vmatch_dropdowns = require( 'fwp-vmatch-dropdowns' );
+jQuery( fwp_vmatch_dropdowns );
+
 var volunteer_pager = require( 'volunteer-opportunities' );
 jQuery( volunteer_pager );
 

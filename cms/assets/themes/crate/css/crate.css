@@ -1278,7 +1278,7 @@ input[type='search'] {
 .section-facets-basic .facetwp-type-dropdown {
   width: 25%; }
 
-.section-facets-basic .facetwp-dropdown {
+.section-facets-basic .facetwp-dropdown, .section-facets-basic .section-facet-placeholder {
   margin-left: 10%;
   width: 80%; }
 
@@ -1301,7 +1301,7 @@ input[type='search'] {
     margin-left: 10% !important;
     width: 80% !important; } }
 
-.facetwp-dropdown {
+.facetwp-dropdown, .section-facet-placeholder {
   padding: 5px;
   height: 45px;
   border: 1px solid #d8d8d8;
@@ -1310,6 +1310,27 @@ input[type='search'] {
   /* If you add too much padding here, the options won't show in IE */
   box-shadow: 5px 5px 5px #d8d8d8;
   font-size: 14px; }
+
+/**
+ * Placeholders (intended to be shown in place of hidden facets using the FWP
+ * Conditional Logic add-on).
+ */
+.section-facet-placeholder {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+  -webkit-justify-content: flex-start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  margin: 0 0 40px;
+  font-style: italic;
+  opacity: 0.5; }
 
 .facetwp-search {
   padding: 5px !important;

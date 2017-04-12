@@ -189,7 +189,9 @@ var b = watchify(browserify(opts));
 // Dev Build
 function bundle() {
 	return b.bundle()
-		.on('error', gutil.log.bind(gutil, 'Browserify Error'))
+		.on('error', function( error ) {
+			gutil.log( 'Browserify Error', error.trace || error.message );
+		})
 		.pipe(source('crate.js'))
 		.pipe(buffer())
 		.pipe(sourcemaps.init({loadMaps: true}))

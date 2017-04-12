@@ -97,6 +97,22 @@
 	box-shadow: 5px 5px 5px $silver;
 }
 
+/**
+ * Placeholders (intended to be shown in place of hidden facets using the FWP
+ * Conditional Logic add-on).
+ */
+.section-facet-placeholder {
+	// Match dropdown styles.
+	@extend .facetwp-dropdown;
+	// Vertically center text.
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	margin: 0 0 40px; // Match standard facet margin.
+	font-style: italic;
+	opacity: 0.5;
+}
+
 .facetwp-search {
 	height: 45px !important;
 	padding: 5px !important;

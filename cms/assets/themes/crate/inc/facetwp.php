@@ -100,3 +100,23 @@ function crate_facetwp_pager_html( $output, $params ) {
 	return $output;
 }
 add_filter( 'facetwp_pager_html', 'crate_facetwp_pager_html', 10, 2 );
+
+/**
+ * Always show all options in the VM State dropdown.
+ */
+function crate_facetwp_facet_render_args( $args ) {
+
+	if ( 'vm-state' === $args['facet']['name'] ) {
+		// Temporarily remove $or_values property.
+		$real_or_values = FWP()->or_values;
+		unset( FWP()->or_values );
+		// Re-load drodpown options. With $or_values unset, this will cause all
+		// state options to be displayed, regardless of how other facets are set.
+		$args['values'] = FWP()->facet->facet_types[ $args['facet']['type'] ]->load_values( $args );
+		// Restore original $or_values property.
+		FWP()->or_values = $real_or_values;
+	}
+
+	return $args;
+}
+add_filter( 'facetwp_facet_render_args', 'crate_facetwp_facet_render_args' );
