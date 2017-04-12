@@ -34,3 +34,14 @@ function crate_disable_emoji() {
 	remove_action( 'admin_print_styles', 'print_emoji_styles' );
 }
 add_action( 'init', 'crate_disable_emoji', 99 );
+
+/**
+ * Enqueue admin scripts.
+ */
+function crate_enqueue_admin() {
+  $screen = get_current_screen();
+  if ( 'toplevel_page_crate-site-options' === $screen->id ) {
+    wp_enqueue_script( 'crate_admin', get_template_directory_uri() . '/admin.js', array( 'jquery' ), '4.4.14' );
+  }
+}
+add_action( 'admin_enqueue_scripts', 'crate_enqueue_admin' );

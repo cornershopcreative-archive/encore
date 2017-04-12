@@ -419,18 +419,43 @@ function _get_vmatch_opp_image_html( $opp ) {
  * Set up the daily VolunteerMatch sync task.
  */
 function vmatch_cron_init() {
-	if ( ! wp_next_scheduled( 'vmatch_sync' ) ) {
-		// Schedule sync for just before midnight, PST.
+	// If automatic sync is enabled, make sure there's a sync task scheduled for
+	// the proper time.
+	if ( get_field( 'vm_sync_enabled', 'option' ) ) {
+		// Get sync time option.
+		$desired_sync_time = get_field( 'vm_sync_time', 'option' );
+		// Default to 11:59 PM if no time was set.
+		if ( ! $desired_sync_time ) $desired_sync_time = '23:59:00';
+		// Split into hours, minutes, and seconds.
+		list( $h, $m, $s ) = explode( ':', $desired_sync_time );
+		// Convert to Pacific Time.
 		$sync_time = new DateTime();
 		$sync_time->setTimezone( new DateTimeZone( 'America/Los_Angeles' ) );
-		$sync_time->setTime( 23, 59, 59 );
-		// If $sync_time is in the future, subtract one day. This will force sync to
-		// occur immediately (or the next time wp-cron is run); then the next sync
-		// will occur at midnight.
-		if ( $sync_time->getTimestamp() > time() ) {
-			$sync_time->sub( new DateInterval( 'P1D' ) );
+		$sync_time->setTime( $h, $m, $s );
+		$sync_timestamp = $sync_time->getTimestamp();
+		// Get timestamp for the next scheduled auto-sync.
+		$next_sync = wp_next_scheduled( 'vmatch_sync' );
+		// If no auto-sync is scheduled, schedule one.
+		if ( ! $next_sync ) {
+			// If $sync_time is in the future, subtract one day. This will force sync
+			// to occur immediately (or the next time wp-cron is run); then the NEXT
+			// sync will occur at the time set in the site options.
+			if ( $sync_timestamp > time() ) {
+				$sync_time->sub( new DateInterval( 'P1D' ) );
+				$sync_timestamp = $sync_time->getTimestamp();
+			}
+			wp_schedule_event( $sync_timestamp, 'daily', 'vmatch_sync' );
 		}
-		wp_schedule_event( $sync_time->getTimestamp(), 'daily', 'vmatch_sync' );
+		// If an auto-sync is scheduled for the wrong time, unschedule it and
+		// re-schedule for the correct time.
+		elseif ( $next_sync !== $sync_timestamp ) {
+			wp_clear_scheduled_hook( 'vmatch_sync' );
+			wp_schedule_event( $sync_timestamp, 'daily', 'vmatch_sync' );
+		}
+	}
+	// If sync is disabled but an auto-sync task is scheduled, un-schedule it.
+	elseif ( wp_next_scheduled( 'vmatch_sync' ) ) {
+		wp_clear_scheduled_hook( 'vmatch_sync' );
 	}
 }
 add_action( 'init', 'vmatch_cron_init' );
@@ -446,15 +471,60 @@ function run_vmatch_sync_loop() {
 	// Get current sync status.
 	$sync_status = get_option( 'vmatch_sync_status' );
 
+	// Don't do anything if sync is paused.
+	if ( $sync_status['paused'] ) {
+		return;
+	}
+
+	// Get 'sync pause' status. This is set separately from vmatch_sync_status
+	// because changes made to vmatch_sync_status while vmatch_sync_loop() is
+	// running can easily be overwritten.
+	if ( get_option( 'vmatch_sync_pause' ) ) {
+		error_log( 'PAUSE' );
+		// If 'sync pause' option is set, don't proceed with another page of results.
+		$sync_status['paused'] = true;
+		$sync_status['last_active'] = time();
+		update_option( 'vmatch_sync_status', $sync_status );
+		// Delete the sync pause option, now that we've paused this sync.
+		delete_option( 'vmatch_sync_pause' );
+		return;
+	}
+
 	// If no sync status record was found, or if the most recent sync has ended,
 	// start anew.
 	if ( ! $sync_status || ( 'complete' === $sync_status['stage'] ) ) {
+
+		// Get batch size option. We'll store this in the sync status because
+		// otherwise, if a user were to change the batch size mid-sync, that would
+		// throw pagination off.
+		$batch_size = (int) get_field( 'vm_batch_size', 'option' );
+		// Default to 100 if no batch size was set.
+		if ( ! $batch_size ) $batch_size = 100;
+		// Clamp to min/max values.
+		$batch_size = min( 200, max( 1, $batch_size ) );
+
+		$now = new DateTime();
+		$now->setTimezone( new DateTimeZone( 'America/Los_Angeles' ) );
+
+		// Set initial values for sync status info.
 		$sync_status = array(
+			'start' => time(),
+			'start_string' => $now->format( 'D M j, Y g:i:sa' ),
+			'last_active' => time(),
+			'batch_size' => $batch_size,
 			'previous_page' => 0,
 			'current_page' => 1,
+			'total_pages' => 0,
 			'retries' => 0,
 			'stage' => 'get_local',
 			'running' => false,
+			'throttled' => false,
+			'paused' => false,
+			'added' => 0,
+			'updated' => 0,
+			'skipped' => 0,
+			'deleted' => 0,
+			'errors' => 0,
 		);
 		update_option( 'vmatch_sync_status', $sync_status );
 	}
@@ -474,14 +544,35 @@ add_action( 'vmatch_sync', 'run_vmatch_sync_loop' );
  */
 function vmatch_sync_loop() {
 
-	$count = 100;
-
 	// Check current sync status.
 	$sync_status = get_option( 'vmatch_sync_status' );
 
 	// If no sync status info was found, bail.
 	if ( ! $sync_status ) {
 		return;
+	}
+
+	// Check CPU load, and delay if it's exceeded the limit.
+	list( $load1, $load5, $load15 ) = sys_getloadavg();
+	$max_load = (int) get_field( 'vm_max_load', 'option' );
+	if ( ! $max_load ) $max_load = 2;
+	if ( $load1 > $max_load ) {
+		// Delay 4x the load average (is this some kind of magic number? I don't
+		// know, this is what SearchWP does).
+		$wait_time = floor( $load1 * 4 );
+		// Don't delay by more than twenty seconds.
+		$wait_time = min( 20, $wait_time );
+		// Update sync status to indicate that we're letting the server chill a bit.
+		$sync_status['throttled'] = true;
+		$sync_status['last_active'] = time();
+		update_option( 'vmatch_sync_status', $sync_status );
+		// Wait.
+		sleep( $wait_time );
+		// Re-spawn the sync process.
+		run_vmatch_sync_loop();
+		exit;
+	} else {
+		$sync_status['throttled'] = false;
 	}
 
 	// If we're done syncing and ready to clean up old posts, go do that.
@@ -506,17 +597,18 @@ function vmatch_sync_loop() {
 
 	// Set 'running' flag to prevent running more than one sync task at once.
 	$sync_status['running'] = true;
+	$sync_status['last_active'] = time();
 	update_option( 'vmatch_sync_status', $sync_status );
 
 	// Log current status.
 	$local_virtual = ( 'get_local' === $sync_status['stage'] ?
 		'local' : 'virtual'
 	);
-	error_log( "VM SYNC: Processing $local_virtual page {$sync_status['current_page']}, $count per page" );
+	error_log( "VM SYNC: Processing $local_virtual page {$sync_status['current_page']}, {$sync_status['batch_size']} per page" );
 
 	// Hit up the VolunteerMatch API for opportunities, and save them as posts.
 	$result = get_vmatch_results( array(
-		'numberOfResults' => max( 1, $count ),
+		'numberOfResults' => $sync_status['batch_size'],
 		'pageNumber' => max( 1, $sync_status['current_page'] ),
 		'virtual' => ( 'get_virtual' === $sync_status['stage'] ),
 	) );
@@ -527,6 +619,7 @@ function vmatch_sync_loop() {
 		$sync_status['retries'] += 1;
 		$sync_status['previous_page'] = $sync_status['current_page'];
 		$sync_status['running'] = false;
+		$sync_status['last_active'] = time();
 		update_option( 'vmatch_sync_status', $sync_status );
 		run_vmatch_sync_loop();
 		wp_send_json( $sync_status );
@@ -551,6 +644,7 @@ function vmatch_sync_loop() {
 			$sync_status['stage'] = 'cleanup';
 		}
 
+		$sync_status['last_active'] = time();
 		update_option( 'vmatch_sync_status', $sync_status );
 		run_vmatch_sync_loop();
 		wp_send_json( $sync_status );
@@ -559,9 +653,13 @@ function vmatch_sync_loop() {
 
 	// Log the number of pages remaining.
 	if ( ! empty( $result['resultsSize'] ) ) {
-		$total_pages = ceil( $result['resultsSize'] / $count );
+		$total_pages = (int) ceil( $result['resultsSize'] / $sync_status['batch_size'] );
 		$remaining_pages = $total_pages - $sync_status['current_page'];
 		error_log( "VM SYNC:   $remaining_pages pages of results remaining." );
+		// Store total page count.
+		$sync_status['total_pages'] = $total_pages;
+		$sync_status['last_active'] = time();
+		update_option( 'vmatch_sync_status', $sync_status );
 	}
 
 	// Create or update posts for each opportunity returned.
@@ -569,7 +667,7 @@ function vmatch_sync_loop() {
 		// error_log( "VM SYNC:   Processing opportunity {$opp['id']}" );
 
 		// Check for existing posts.
-		$update = false; // By default, assume that we'll be inserting a new post.
+		$is_update = false; // By default, assume that we'll be inserting a new post.
 		$existing_posts = get_posts( array(
 			'post_type'   => 'vm-opportunity',
 			'post_status' => 'any',
@@ -582,46 +680,54 @@ function vmatch_sync_loop() {
 		) );
 
 		if ( empty( $existing_posts ) ) {
-			// If no existing post was found, start with an empty array, to which
+			// If no existing post was found, start with an empty object, to which
 			// we'll add a title, etc.
-			$opp_post = array();
+			$opp_post = new StdClass();
 			// error_log( "VM SYNC:     No existing post found." );
 		} else {
 			// An existing post was found, so we'll be updating it instead of
 			// inserting a new one.
-			$update = true;
-			$opp_post = array( 'ID' => $existing_posts[0]->ID );
+			$is_update = true;
+			// Get current post data.
+			$opp_post = get_post( $existing_posts[0]->ID );
+			// Get the 'last updated' time that was stored the last time we synced this post.
+			$old_modified_date = get_post_meta( $opp_post->ID, '_vm_updated', true );
+			// If the creation + modification dates match, don't bother updating this
+			// post -- just add the _vm__justSynced flag so this post doesn't get
+			// deleted during cleanup.
+			if ( $old_modified_date === $opp['updated'] ) {
+				error_log( "VM SYNC:     Skipping update for opportunity {$opp['id']} -- post already exists and dates match." );
+				update_post_meta( $opp_post->ID, '_vm__justSynced', 1 );
+				$sync_status['skipped'] += 1;
+				continue;
+			}
 			// error_log( "VM SYNC:     Existing post found: #{$existing_posts[0]->ID}" );
 		}
 
 		// Set the post type (duh).
-		$opp_post['post_type'] = 'vm-opportunity';
+		$opp_post->post_type = 'vm-opportunity';
 
 		// Map VM fields to WP post fields.
 		// Description -> post content.
-		$opp_post['post_content'] = $opp['description'];
+		$opp_post->post_content = $opp['description'];
 		unset( $opp['description'] );
+
 		// Title -> post title.
-		$opp_post['post_title'] = $opp['title'];
+		$opp_post->post_title = $opp['title'];
 		unset( $opp['title'] );
+
 		// Created -> post date + post date GMT.
 		$opp_date = DateTime::createFromFormat( DATE_ISO8601, $opp['created'] );
-		$opp_post['post_date'] = $opp_date->format( 'Y-m-d H:i:s' );
+		$opp_post->post_date = $opp_date->format( 'Y-m-d H:i:s' );
 		$opp_date->setTimezone( new DateTimeZone( 'UTC' ) );
-		$opp_post['post_date_gmt'] = $opp_date->format( 'Y-m-d H:i:s' );
+		$opp_post->post_date_gmt = $opp_date->format( 'Y-m-d H:i:s' );
 		unset( $opp['created'] );
-		// Updated -> post modified date + post modified date GMT.
-		$opp_updated = DateTime::createFromFormat( DATE_ISO8601, $opp['updated'] );
-		$opp_post['post_modified'] = $opp_updated->format( 'Y-m-d H:i:s' );
-		$opp_updated->setTimezone( new DateTimeZone( 'UTC' ) );
-		$opp_post['post_modified_gmt'] = $opp_updated->format( 'Y-m-d H:i:s' );
-		unset( $opp['updated'] );
 
 		// Set the post status (otherwise the new post would be left as a draft).
-		$opp_post['post_status'] = 'publish';
+		$opp_post->post_status = 'publish';
 
 		// Update/insert the post.
-		if ( $update ) {
+		if ( $is_update ) {
 			$post_result = wp_update_post( $opp_post, true );
 		} else {
 			$post_result = wp_insert_post( $opp_post, true );
@@ -629,9 +735,11 @@ function vmatch_sync_loop() {
 
 		if ( is_wp_error( $post_result ) ) {
 			// Something went wrong inserting the post.
-			$verbing = ( $update ? 'updating' : 'inserting' );
+			$verbing = ( $is_update ? 'updating' : 'inserting' );
 			error_log( "VM SYNC:     Error $verbing post for opportunity {$opp['id']}:" );
 			error_log( 'VM SYNC:       ' . $post_result->get_error_message() );
+			// Increment error count.
+			$sync_status['errors'] += 1;
 			// Stop processing this opportunity.
 			continue;
 		}
@@ -639,7 +747,7 @@ function vmatch_sync_loop() {
 		// If $post_result isn't an error, it's the newly inserted/updated post ID.
 		$opp_post_id = $post_result;
 
-		$verbed = ( $update ? 'updated' : 'inserted' );
+		$verbed = ( $is_update ? 'updated' : 'inserted' );
 		error_log( "VM SYNC:     Post #$opp_post_id $verbed successfully." );
 
 		// Remove URL escape sequences from URL fields, and change HTTP protocols
@@ -658,6 +766,8 @@ function vmatch_sync_loop() {
 				$opp['orgImageUrl'] = crate_sanitize_vmatch_url( $org_results['organizations'][0]['imageUrl'] );
 			}
 		}
+
+		// TODO: process geolocation data.
 
 		// Map remaining VM fields to post meta fields.
 		foreach ( $opp as $key => $val ) {
@@ -683,6 +793,9 @@ function vmatch_sync_loop() {
 			}
 		}
 
+		// Add to added/updated count in status option.
+		$sync_status[ $is_update ? 'updated' : 'added' ] += 1;
+
 		// Add a meta flag indicating that this post was affected in the most recent
 		// sync. After this sync is complete, we'll delete all posts that don't have
 		// this flag, then delete this flag from all other posts.
@@ -694,11 +807,13 @@ function vmatch_sync_loop() {
 	$sync_status['current_page'] += 1;
 	$sync_status['running'] = false;
 	$sync_status['retries'] = 0;
+	$sync_status['last_active'] = time();
 	update_option( 'vmatch_sync_status', $sync_status );
 	run_vmatch_sync_loop();
 	wp_send_json( $sync_status );
 	exit;
 }
+add_action( 'wp_ajax_vmatch_sync', 'vmatch_sync_loop' );
 add_action( 'wp_ajax_nopriv_vmatch_sync', 'vmatch_sync_loop' );
 
 /**
@@ -720,27 +835,29 @@ function vmatch_sync_cleanup() {
 	// Get all posts that don't have the 'justSynced' flag that vmatch_sync_loop()
 	// adds to all updated posts.
 	$unsynced = get_posts( array(
+		'numberposts' => -1,
 		'post_type' => 'vm-opportunity',
 		'post_status' => 'publish',
-		'meta_query' => array(
+		'meta_query' => array( array(
 			'key' => '_vm__justSynced',
 			'value' => 1,
-			'compare' => '=',
-		),
+			'compare' => 'NOT EXISTS',
+		) ),
 	) );
 
 	error_log( 'VM SYNC:   Found ' . count( $unsynced ) . ' posts to delete.' );
 
 	// Loop over all unsynced posts and trash them.
 	foreach ( $unsynced as $old_post ) {
-		$old_post->post_status = 'trash';
 		$trash_result = wp_delete_post( $old_post->ID );
 		if ( is_wp_error( $trash_result ) ) {
 			// Something went wrong inserting the post.
 			error_log( "VM SYNC:   Error deleting post #{$old_post->ID}:" );
 			error_log( 'VM SYNC:     ' . $trash_result->get_error_message() );
+			$sync_status['errors'] += 1;
 		} else {
 			error_log( "VM SYNC:   Deleted post #{$old_post->ID}" );
+			$sync_status['deleted'] += 1;
 		}
 	}
 
@@ -763,6 +880,11 @@ function vmatch_sync_cleanup() {
 
 	// Set sync stage to complete, because this sync is finally over.
 	$sync_status['stage'] = 'complete';
+	// Store a human-readable end time string too.
+	$now = new DateTime();
+	$now->setTimezone( new DateTimeZone( 'America/Los_Angeles' ) );
+	$sync_status['end_string'] = $now->format( 'D M j, Y g:i:sa' );
+	$sync_status['last_active'] = time();
 	update_option( 'vmatch_sync_status', $sync_status );
 }
 
@@ -894,3 +1016,60 @@ function vmatch_get_state_name( $abbrev ) {
 function crate_sanitize_vmatch_url( $url ) {
 	return str_replace( 'http://', '//', urldecode( $url ) );
 }
+
+/**
+ * Add an AJAX action for getting info on the current VM sync process.
+ */
+function crate_get_vmatch_sync_status() {
+	// Get sync status info.
+	$sync_status = get_option( 'vmatch_sync_status' );
+	// Add server time, so client-sie script can compare it to last_active time.
+	$sync_status['server_time'] = time();
+	// Output status data.
+	wp_send_json( $sync_status );
+	exit;
+}
+add_action( 'wp_ajax_vmatch_sync_status', 'crate_get_vmatch_sync_status' );
+
+/**
+ * Add an AJAX action for manually starting a VolunteerMatch sync.
+ */
+function crate_vmatch_sync_start() {
+	// Clear out current/old sync status, if any.
+	delete_option( 'vmatch_sync_status' );
+	// Start syncing all over again.
+	run_vmatch_sync_loop();
+	wp_send_json( array( 'status' => 1 ) );
+	exit;
+}
+add_action( 'wp_ajax_vmatch_sync_start', 'crate_vmatch_sync_start' );
+
+/**
+ * Add an AJAX action for manually pausing a VolunteerMatch sync.
+ */
+function crate_vmatch_sync_pause() {
+	// Set an option that will cause run_vmatch_sync_loop() to stop syncing the
+	// next time it's called (we can't immediately stop syncing the page of
+	// results that's currently being processed.)
+	update_option( 'vmatch_sync_pause', 1 );
+	error_log( 'PAUSING...' );
+	wp_send_json( array( 'status' => 1 ) );
+	exit;
+}
+add_action( 'wp_ajax_vmatch_sync_pause', 'crate_vmatch_sync_pause' );
+
+/**
+ * Add an AJAX action for manually resuming a stalled VolunteerMatch sync.
+ */
+function crate_vmatch_sync_resume() {
+	// Unpause, if we're paused.
+	$sync_status = get_option( 'vmatch_sync_status' );
+	$sync_status['paused'] = false;
+	$sync_status['last_active'] = time();
+	update_option( 'vmatch_sync_status', $sync_status );
+	// Start syncing again.
+	run_vmatch_sync_loop();
+	wp_send_json( array( 'status' => 1 ) );
+	exit;
+}
+add_action( 'wp_ajax_vmatch_sync_resume', 'crate_vmatch_sync_resume' );

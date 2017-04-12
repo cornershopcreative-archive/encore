@@ -231,7 +231,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "Copyright \u00a9 [year]. All rights reserved.",
+            "default_value": "Copyright © [year]. All rights reserved.",
             "placeholder": "",
             "prepend": "",
             "append": "",
@@ -302,8 +302,8 @@
                 "id": ""
             },
             "collapsed": "field_57f7ca3567a99",
-            "min": "",
-            "max": "",
+            "min": 0,
+            "max": 0,
             "layout": "row",
             "button_label": "Add Service",
             "sub_fields": [
@@ -432,8 +432,8 @@
             "maxlength": ""
         },
         {
-            "key": "field_57fbf3bd6e7ed",
-            "label": "CSS",
+            "key": "field_58ecc7657ec46",
+            "label": "VolunteerMatch",
             "name": "",
             "type": "tab",
             "instructions": "",
@@ -448,23 +448,106 @@
             "endpoint": 0
         },
         {
-            "key": "field_57fbf3c76e7ee",
-            "label": "Custom CSS",
-            "name": "custom_css",
-            "type": "textarea",
+            "key": "field_58ecd30e97824",
+            "label": "Daily sync",
+            "name": "vm_sync_enabled",
+            "type": "true_false",
+            "instructions": "Enable this option to automatically sync opportunity data from VolunteerMatch on a daily basis.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "ui": 1,
+            "ui_on_text": "Enabled",
+            "ui_off_text": "Disabled"
+        },
+        {
+            "key": "field_58ecd1127ec49",
+            "label": "Daily sync time",
+            "name": "vm_sync_time",
+            "type": "time_picker",
+            "instructions": "Opportunity data will be synced from VolunteerMatch at this time (in Pacific Time) each day.",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_58ecd30e97824",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "g:i a",
+            "return_format": "H:i:s"
+        },
+        {
+            "key": "field_58ecd3e5ce970",
+            "label": "Sync status",
+            "name": "",
+            "type": "message",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
-                "class": "acf-field-monospace",
+                "class": "",
                 "id": ""
             },
-            "default_value": "",
-            "placeholder": "\/* CSS code entered here will be inserted into the <head> tag on all pages. *\/",
-            "maxlength": "",
-            "rows": 16,
-            "new_lines": ""
+            "message": "<div class=\"vm-sync-status\"><\/div>",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_58ecc76d7ec47",
+            "label": "Batch size",
+            "name": "vm_batch_size",
+            "type": "number",
+            "instructions": "Increasing this number may cause the sync process to complete sooner, but may also cause the process to stall if PHP exceeds max_execution_time when processing a batch. If sync processes are not completing properly, try decreasing this number.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 100,
+            "placeholder": "",
+            "prepend": "",
+            "append": "opportunities",
+            "min": 1,
+            "max": 200,
+            "step": 1
+        },
+        {
+            "key": "field_58ecd0817ec48",
+            "label": "Max CPU load",
+            "name": "vm_max_load",
+            "type": "number",
+            "instructions": "If CPU load average exceeds this number during a sync process, synchronization will pause temporarily in order to give the server time to recover.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 2,
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "min": 1,
+            "max": "",
+            "step": ".1"
         }
     ],
     "location": [
@@ -484,5 +567,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1485801451
+    "modified": 1491939926
 }
