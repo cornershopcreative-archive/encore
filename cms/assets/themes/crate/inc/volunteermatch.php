@@ -884,6 +884,11 @@ function vmatch_sync_cleanup() {
 		'stage'      => 'complete',
 		'end_string' => $now->format( 'D M j, Y g:i:sa' ),
 	) );
+
+	// Now that we're fully sunc, tell FacetWP to re-index.
+	if ( function_exists( 'FWP' ) ) {
+		FWP()->indexer->index();
+	}
 }
 
 /**
