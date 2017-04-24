@@ -29,17 +29,33 @@
 		margin-top: 0;
 		margin-bottom: rem(50);
 
-		@include breakpoint( $tablet ) {
-			width: rem(250);
-			margin-left: rem(55);
-			margin-right: rem(55);
-			padding: 0;
-		}
-
 		img {
 			display: block;
 			margin: 0 auto rem(30);
 			border-radius: 50%;
+		}
+	}
+
+	.grid-item-3 {
+		@include breakpoint( $tablet ) {
+			width: rem(250);
+			margin-right: rem(55);
+			margin-left: rem(55);
+			padding: 0;
+		}
+	}
+
+	.grid-item-4 {
+		@include breakpoint( $tablet ) {
+			@include nested( 12 ) {
+				width: 21%;
+				margin-right: 5%;
+				margin-left: 0;
+
+				&:nth-child(4) {
+					margin-right: 0;
+				}
+			}
 		}
 	}
 
@@ -63,5 +79,43 @@
 
 	.grid-item-heading ~ .grid-item-blurb {
 		font-weight: normal;
+	}
+}
+
+/**
+ * Alternative version: Summer Challenge.
+ */
+.section-summer-challenge {
+	// Override .circle-grid's z-index of -1 (not sure why that's a thing, but it
+	// prevent clicks from actually going through to the section).
+	z-index: 0;
+
+	/**
+	 * Adjust top of blue background overlay so that, between mobile and desktop,
+	 * it's always just about at the middle of the circular images.
+	 */
+	@include breakpoint( $tablet ) {
+		&:before {
+			top: 0;
+			margin-top: 10.5%;
+		}
+	}
+
+	/**
+	 * Use a fixed offset for the blue background overlay on desktop (not relative
+	 * to window width, since on desktop the size of the images is fixed).
+	 */
+	@include breakpoint( $desktop ) {
+		&:before {
+			top: rem(130);
+			margin-top: 0;
+		}
+	}
+
+	/**
+	 * Use slightly larger headings.
+	 */
+	h3 {
+		font-size: rem(18);
 	}
 }

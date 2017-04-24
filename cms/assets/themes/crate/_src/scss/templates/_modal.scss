@@ -218,6 +218,15 @@
 		text-transform: uppercase;
 	}
 
+	// Disclaimer text.
+	small {
+		// Calculate line-height relative to <small>'s font size, not parent's.
+		display: block;
+		color: $gray-dark;
+		font-size: rem(14);
+		font-family: $sans;
+	}
+
 	.field {
 		display: block;
 		width: rem(200);
@@ -250,6 +259,46 @@
 		// left-aligned input fields.
 		@include breakpoint( $medium ) {
 			margin-left: rem(58);
+		}
+	}
+}
+
+.cta-summer-challenge {
+	// Don't use the background image from .cta-huge.
+	background: transparent;
+
+	@include breakpoint( $tablet ) {
+		// There's more copy in these modals, so use a smaller font size than
+		// the standard .cta-huge.
+		font-size: rem(38);
+	}
+
+	form {
+		@include breakpoint( $tablet ) {
+			// Reduce form margin too, also to make room for extra copy.
+			margin-top: 1rem;
+		}
+	}
+
+	.cta-image {
+		// Hide image on mobile.
+		display: none;
+
+		@include breakpoint( $medium ) {
+			display: flex;
+			position: absolute;
+			top: 0;
+			right: auto;
+			bottom: 0;
+			left: 0;
+			align-items: center;
+			justify-content: center;
+		}
+
+		img {
+			width: rem(300);
+			margin: rem(108) 0 0 rem(36);
+			border-radius: 50%;
 		}
 	}
 }

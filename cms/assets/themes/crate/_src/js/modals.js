@@ -1,7 +1,21 @@
 var featherlight = require( 'featherlight' );
 var storage = require( 'localstorage.js' );
 var moment = require( 'moment' );
+
 module.exports = function( $ ) {
+
+	// Disable Featherlight's irritating anti-tabindex behavior.
+	// See http://stackoverflow.com/q/42234790/470749.
+	$.featherlight._callbackChain.beforeOpen = function (event) { };
+	$.featherlight._callbackChain.afterClose = function (event) { };
+	$.featherlight.defaults.afterContent = function (event) {
+		var firstInput = $('.featherlight-content #firstname');
+		console.log('Considering whether to focus on input depending on window size...', $(window).width(), $(window).height(), firstInput);
+		if (Math.min($(window).width(), $(window).height()) > 736) {//if the smallest dimension of the device is larger than iPhone6+
+			console.log('yes, focus');
+			firstInput.attr('autofocus', true);
+		}
+	};
 
 	// Set a default signup modal tracking context. This global variable will
 	// change when the signup modal is opened. Storing the modal context in a
@@ -12,7 +26,10 @@ module.exports = function( $ ) {
 	/**
 	 * Track a lightbox-related event in GA.
 	 */
-	var trackInteraction = function( action, label ) {
+	var trackInteraction = function( action, label, extraOpts ) {
+
+		// Initialize additional options to send to GA.
+		var opts = extraOpts || {};
 
 		// If no label was provided, use the global modal context variable.
 		if ( ! label ) {
@@ -20,10 +37,14 @@ module.exports = function( $ ) {
 		}
 
 		if ( typeof ga === 'function' ) {
-			ga( 'send', 'event', 'lightbox', action, label );
+			ga( 'send', 'event', 'lightbox', action, label, opts );
 			console.log( 'tracking ' + action + ' + ' + label );
 		}	else {
 			console.log( 'ga undefined, no tracking will occur' );
+			// Call hitCallback immediately, since GA's not around to call it.
+			if ( 'hitCallback' in opts ) {
+				opts.hitCallback.call( window );
+			}
 		}
 	};
 
@@ -266,6 +287,44 @@ module.exports = function( $ ) {
 			modalType = 'share-thanks';
 		}
 		trackInteraction( 'close', modalType );
+	});
+
+	// When the user clicks a button in the Summer Challenge section, open its
+	// sibling modal form.
+	$('.section-summer-challenge').on('click', '.button-challenge', function(e) {
+		e.preventDefault();
+		openModal(
+			$(this).closest('.grid-item').find('.modal'),
+			'summer-challenge-' + $(this).attr('data-challenge'),
+			{ variant: 'modalform' }
+		);
+	});
+
+	// When the BSD form is submitted to the iframe, toggle lightboxes
+	$('.signup-summer-challenge').on('submit.ga', function(e) {
+
+		var $this = $( this );
+
+		// Cancel submission for now, so we can log a GA event first.
+		e.preventDefault();
+
+		// Set up a callback to redirect the user to the Get Equipped page.
+		var submit = function() {
+			// Detach this event handler so we don't cause an infinite loop!
+			$this.off( 'submit.ga' );
+			// Submit the form.
+			$this.submit();
+		};
+
+		// Track that the form was completed.
+		trackInteraction( 'submit', false, {
+			hitCallback: submit
+		});
+
+		// trackInteraction() should call the hitCallback set above immediately if
+		// GA didn't load, but _just_ in case something else went wrong, call it
+		// again in 1 second.
+		setTimeout( submit, 1000 );
 	});
 
 	// Set up the automatic lightbox functionality.
