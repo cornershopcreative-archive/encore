@@ -20,7 +20,6 @@ var gulp           = require('gulp'),                  // https://github.com/gul
 		sourcemaps     = require('gulp-sourcemaps'),       // https://www.npmjs.com/package/gulp-sourcemaps
 		postcss        = require('gulp-postcss'),          // https://www.npmjs.com/package/gulp-postcss
 		browserSync    = require('browser-sync').create(), // https://www.browsersync.io/
-		reload         = browserSync.reload;               // Turns reload function into variable
 		path           = require('path'),                  // https://www.npmjs.com/package/path
 		userpath       = path.resolve().split(path.sep),   // splits path
 		svgcss         = require('gulp-svg-css'),          // https://www.npmjs.com/package/gulp-svg-css
@@ -29,7 +28,7 @@ var gulp           = require('gulp'),                  // https://github.com/gul
 		inject         = require('gulp-inject'),           // https://www.npmjs.com/package/gulp-inject
 		del            = require('del'),                   // https://www.npmjs.com/package/del
 		imagemin       = require('gulp-imagemin'),         // https://www.npmjs.com/package/gulp-imagemin
-		exec           = require('child_process').exec;    // https://nodejs.org/api/child_process.html
+		exec           = require('child_process').exec,    // https://nodejs.org/api/child_process.html
 		imageDataURI   = require('gulp-image-inline'),     // https://www.npmjs.com/package/gulp-inline-image
 		concat         = require('gulp-concat'),           // https://www.npmjs.com/package/gulp-concat
 		debowerify     = require('debowerify'),            // https://www.npmjs.com/package/debowerify
@@ -38,6 +37,20 @@ var gulp           = require('gulp'),                  // https://github.com/gul
 
 // Generates Port Number When First Run ( Numbers 3000 through 4000 In Increments Of 10)
 var portGenerator = Math.round((Math.random()*(4000-3000)+3000)/10)*10;
+
+// All-purpose reload task/callback.
+var reload = function() {
+	if ( 'function' === typeof arguments[0] ) {
+		// Called with a 'done' callback (gulp.series( ..., reload ) does this).
+		browserSync.reload();
+		arguments[0]();
+	} else {
+		// Called with other arguments, usually a filename or array of filenames
+		// (gulp.watch( ... ).on( ..., reload ) does this). Pass arguments through
+		// to browserSync.reload().
+		browserSync.reload.apply( this, arguments );
+	}
+};
 
 /*
 # Path Variables
@@ -123,13 +136,13 @@ function serve(cb) {
 var processors = [
 	require('postcss-short')({ /* options */ }),
 	require('postcss-sorting')({ /* options */ }),
-	require('autoprefixer')({ browsers: ['last 7 versions'] })
+	require('autoprefixer')({ browsers: ['last 3 versions'] })
 ];
 
 var processorsProd = [
 	require('postcss-short')({ /* options */ }),
 	require('postcss-sorting')({ /* options */ }),
-	require('autoprefixer')({ browsers: ['last 7 versions'] }),
+	require('autoprefixer')({ browsers: ['last 3 versions'] }),
 	require('cssnano')({ /* options */ })
 ];
 
@@ -163,18 +176,6 @@ function lint() {
 		.pipe(eslint.format('stylish'));
 }
 
-// Scripts Task
-
-function scripts(cb) {
-	bundle();
-	cb();
-}
-
-function scripts(cb) {
-	bundle();
-	cb();
-}
-
 // browserify options
 var browserifyOpts = {
 	cache: {},
@@ -190,7 +191,8 @@ var b = watchify(browserify(opts));
 function bundle() {
 	return b.bundle()
 		.on('error', function( error ) {
-			gutil.log( 'Browserify Error', error.trace || error.message );
+			// Log stack trace if available, or plain error message.
+			gutil.log( error.stack || error.message );
 		})
 		.pipe(source('crate.js'))
 		.pipe(buffer())
@@ -213,15 +215,20 @@ function scriptsProd(cb) {
 	.transform(debowerify);
 
 	return bundleProd.bundle()
-		.on('error', gutil.log.bind(gutil, 'Browserify Error'))
+		.on('close', function() {
+			// Signal completion when Browserify's readable stream closes.
+			cb();
+		})
+		.on('error', function( error ) {
+			// Log stack trace if available, or plain error message.
+			gutil.log( error.stack || error.message );
+		})
 		.pipe(source('crate.min.js'))
 		.pipe(buffer())
 		.pipe(sourcemaps.init({loadMaps: true}))
 		.pipe(uglify().on('error', gutil.log))
 		.pipe(sourcemaps.write('./maps', {includeContent: false, sourceRoot: '/_src/js'}))
 		.pipe(gulp.dest('./js'));
-
-	cb();
 }
 
 ///////////////////
@@ -240,7 +247,7 @@ function optimizesvg() {
 						minify: true
 					}
 				}]
-			}
+			};
 		}));
 }
 
@@ -315,7 +322,6 @@ var media = gulp.series(mediaupload, cleanmedia);
 // Watch Task
 function watch() {
 
-	gulp.watch(paths.scripts.src, scripts);
 	gulp.watch(paths.styles.src, styles);
 	gulp.watch(paths.sprite.src, sprite);
 	gulp.watch(paths.imgs.template, optimizetemplate);
@@ -335,7 +341,7 @@ exports.clean = cleanmedia;
 exports.lint = lint;
 exports.styles = styles;
 exports.stylesProd = stylesProd;
-exports.scripts = scripts;
+exports.scripts = bundle;
 exports.scriptsProd = scriptsProd;
 exports.sprite = sprite;
 exports.mediaupload = mediaupload;
@@ -347,10 +353,10 @@ exports.serve = serve;
 exports.watch = watch;
 
 b.transform(debowerify);
-b.on('update', gulp.series(lint, bundle, reload));
+b.on('update', gulp.series(bundle, reload));
 b.on('log', gutil.log);
 
-var build = gulp.series(clean, svginline, svgstyle, gulp.parallel(styles, scripts, sprite, optimizetemplate));
+var build = gulp.series(clean, svginline, svgstyle, gulp.parallel(styles, bundle, sprite, optimizetemplate));
 var dev = gulp.series(build, serve);
 var prod = gulp.series(clean, svginline, svgstyle, gulp.parallel(stylesProd, scriptsProd, sprite, optimizetemplate));
 
