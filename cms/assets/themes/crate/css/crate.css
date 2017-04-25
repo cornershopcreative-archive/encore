@@ -2129,12 +2129,14 @@ input[type='search'] {
 .section-circle-grid {
   position: relative;
   z-index: -1;
+  padding-top: 2.5rem;
   background-color: #0047c1;
   color: #fff;
   text-align: center;
   line-height: 1.75rem; }
   @media (min-width: 640px) {
     .section-circle-grid {
+      padding-top: 0;
       background-color: transparent; }
       .section-circle-grid:before {
         position: absolute;
@@ -2198,7 +2200,7 @@ input[type='search'] {
   @media (min-width: 640px) {
     .section-summer-challenge:before {
       top: 0;
-      margin-top: 10.5%; } }
+      margin-top: 11%; } }
   @media (min-width: 1280px) {
     .section-summer-challenge:before {
       top: 8.125rem;

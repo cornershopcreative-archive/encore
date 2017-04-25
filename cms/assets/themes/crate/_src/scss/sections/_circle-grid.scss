@@ -4,6 +4,7 @@
 
 .section-circle-grid {
 	position: relative; // So we can position the :before pseudo-element.
+	padding-top: rem(40);
 	background-color: $deep-blue;
 	color: $white;
 	text-align: center;
@@ -11,6 +12,7 @@
 	z-index: -1;
 
 	@include breakpoint( $tablet ) {
+		padding-top: 0;
 		background-color: transparent;
 
 		&:before {
@@ -97,7 +99,7 @@
 	@include breakpoint( $tablet ) {
 		&:before {
 			top: 0;
-			margin-top: 10.5%;
+			margin-top: 11%;
 		}
 	}
 
