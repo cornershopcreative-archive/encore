@@ -178,8 +178,11 @@
 	@include breakpoint( $medium ) {
 		text-align: right;
 		width: rem(800);
-		background: url('../images/cta-huge-bg-2.jpg') no-repeat center center transparent;
-		background-size: contain;
+
+		&.cta-has-background-image {
+			background: url('../images/cta-huge-bg-2.jpg') no-repeat center center transparent;
+			background-size: contain;
+		}
 	}
 
 	.logo {
@@ -271,7 +274,11 @@
 
 .cta-summer-challenge {
 	// Don't use the background image from .cta-huge.
-	background: transparent;
+	// @extend .icon-bubbles-7-modal-background;
+	// width: auto;
+	height: auto;
+	background-repeat: no-repeat;
+	background-position: center center;
 	font-size: rem(20);
 
 	@include breakpoint( $tablet ) {
@@ -284,12 +291,32 @@
 		@include breakpoint( $tablet ) {
 			// Reduce form margin too, also to make room for extra copy.
 			margin-top: 1rem;
+			// Reduce max-width to make room for larger bubble image.
+			max-width: 450px;
 		}
 	}
 
 	.cta-image {
 		// Hide image on mobile.
 		display: none;
+
+		&:before,
+		&:after {
+			position: relative;
+			left: 2.5rem;
+			// top: 10.4rem;
+			content: '';
+		}
+
+		&:before {
+			@extend .icon-bubbles-7-modal-image;
+			margin-right: rem(-181);
+		}
+
+		&:after {
+			@extend .icon-bubbles-8-modal-image;
+			margin-left: rem(-300);
+		}
 
 		@include breakpoint( $medium ) {
 			display: flex;
@@ -299,12 +326,15 @@
 			bottom: 0;
 			left: 0;
 			align-items: center;
-			justify-content: center;
+			justify-content: flex-start;
+			width: rem(300);
+			margin: rem(108) 0 0 rem(36);
 		}
 
 		img {
-			width: rem(300);
-			margin: rem(108) 0 0 rem(36);
+			position: relative; // Draw on top of ::before but below ::after.
+			flex: 0 0 auto;
+			width: 100%;
 			border-radius: 50%;
 		}
 	}

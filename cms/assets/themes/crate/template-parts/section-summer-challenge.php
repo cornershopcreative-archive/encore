@@ -77,7 +77,7 @@ $challenges = array(
 									</span><span class="field">
 										<input name="lastname" type="text" tabindex="0" required placeholder="Last Name">
 									</span>
-									<?php echo esc_html( $challenge['statement'] ); ?>
+									<strong><?php echo esc_html( $challenge['statement'] ); ?></strong>
 								</p>
 
 								<p>

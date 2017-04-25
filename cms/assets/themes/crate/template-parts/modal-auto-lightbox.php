@@ -1,5 +1,5 @@
 <div class="totallyhidden">
-	<aside id="auto-lightbox-modal" class="modal cta-huge">
+	<aside id="auto-lightbox-modal" class="modal cta-huge cta-has-background-image">
 		<header>
 			<svg class="logo" viewBox="0 0 50 50">
 				<use xlink:href="#icon-logo"></use>

@@ -48,15 +48,31 @@
 	}
 
 	.grid-item-4 {
-		@include breakpoint( $tablet ) {
-			@include nested( 12 ) {
-				width: 21%;
-				margin-right: 5%;
-				margin-left: 0;
 
-				&:nth-child(4) {
-					margin-right: 0;
-				}
+		// Use a two-column layout between tablet and medium.
+		@include breakpoint( $tablet ) {
+			width: 40%;
+			margin-right: 10%;
+			margin-left: 0;
+
+			&:nth-child(2n) {
+				margin-right: 0;
+			}
+		}
+
+		// Use a four-column layout for medium and up.
+		@include breakpoint( $medium ) {
+			width: 21%;
+			margin-right: 5%;
+			margin-left: 0;
+
+			&:nth-child(2n) {
+				// Cancel out the nth-child margin rule from the tablet breakpoint.
+				margin-right: 5%;
+			}
+
+			&:nth-child(4n) {
+				margin-right: 0;
 			}
 		}
 	}
@@ -99,6 +115,11 @@
 	@include breakpoint( $tablet ) {
 		&:before {
 			top: 0;
+			margin-top: 19%;
+		}
+	}
+	@include breakpoint( $medium ) {
+		&:before {
 			margin-top: 11%;
 		}
 	}
@@ -115,9 +136,9 @@
 	}
 
 	/**
-	 * Use slightly larger headings.
+	 * Use larger headings.
 	 */
 	h3 {
-		font-size: rem(18);
+		font-size: 2.5rem;
 	}
 }
