@@ -274,8 +274,6 @@
 
 .cta-summer-challenge {
 	// Don't use the background image from .cta-huge.
-	// @extend .icon-bubbles-7-modal-background;
-	// width: auto;
 	height: auto;
 	background-repeat: no-repeat;
 	background-position: center center;
@@ -300,19 +298,17 @@
 		// Hide image on mobile.
 		display: none;
 
+		// Add bubbles behind AND in front of image.
 		&:before,
 		&:after {
 			position: relative;
 			left: 2.5rem;
-			// top: 10.4rem;
 			content: '';
 		}
-
 		&:before {
 			@extend .icon-bubbles-7-modal-image;
 			margin-right: rem(-181);
 		}
-
 		&:after {
 			@extend .icon-bubbles-8-modal-image;
 			margin-left: rem(-300);

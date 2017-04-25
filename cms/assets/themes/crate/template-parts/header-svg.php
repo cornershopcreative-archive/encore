@@ -75,15 +75,6 @@
             </g>
         </g>
     </g>
-</symbol><symbol id="icon-bubbles-7-modal-background" viewBox="0 0 649 399">
-    <!-- Generator: Sketch 43.1 (39012) - http://www.bohemiancoding.com/sketch -->
-    <desc>Created with Sketch.</desc>
-    
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <ellipse id="Oval-2" fill="#0047C1" cx="9" cy="390" rx="9" ry="9"/>
-        <circle id="Oval" fill="#00C7F5" cx="170.5" cy="94.5" r="10.5"/>
-        <ellipse id="Oval-Copy" fill="#0047C1" cx="640" cy="9" rx="9" ry="9"/>
-    </g>
 </symbol><symbol id="icon-bubbles-7-modal-image" viewBox="0 0 181 354">
     <!-- Generator: Sketch 43.1 (39012) - http://www.bohemiancoding.com/sketch -->
     <desc>Created with Sketch.</desc>
