@@ -3534,9 +3534,12 @@ input[type='search'] {
   @media (min-width: 1145px) {
     .cta-huge .button-group, .cta-huge .facetwp-pager {
       margin-left: 3.625rem; } }
+  .cta-huge .button {
+    white-space: normal; }
 
 .cta-summer-challenge {
-  background: transparent; }
+  background: transparent;
+  font-size: 1.25rem; }
   @media (min-width: 640px) {
     .cta-summer-challenge {
       font-size: 2.375rem; } }

@@ -261,11 +261,18 @@
 			margin-left: rem(58);
 		}
 	}
+
+	.button {
+		// Allow line breaks -- otherwise buttons with long text may cause modals to
+		// become too wide for phone screens.
+		white-space: normal;
+	}
 }
 
 .cta-summer-challenge {
 	// Don't use the background image from .cta-huge.
 	background: transparent;
+	font-size: rem(20);
 
 	@include breakpoint( $tablet ) {
 		// There's more copy in these modals, so use a smaller font size than
