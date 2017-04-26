@@ -6,19 +6,19 @@
 $challenges = array(
 	'jobs' => array(
 		'url' => 'https://generation.cp.bsd.net/page/s/gen2gen-summer-challenge-jobs',
-		'statement' => 'am taking a stand for youth this summer to support summer employment opportunities.',
+		'statement' => 'am taking a stand for<br> youth to <strong>support<br> summer employment opportunities.</strong>',
 	),
 	'learning' => array(
 		'url' => 'https://generation.cp.bsd.net/page/s/gen2gen-summer-challenge-learning',
-		'statement' => 'am taking a stand for youth this summer to combat learning loss.',
+		'statement' => 'am taking a stand for youth this summer<br> to <strong>combat learning loss.</strong>',
 	),
 	'play' => array(
 		'url' => 'https://generation.cp.bsd.net/page/s/gen2gen-summer-challenge-play',
-		'statement' => 'am taking a stand for youth this summer to increase access to safe places to play.',
+		'statement' => 'am taking a stand for youth this summer<br> to <strong>increase access to safe places to play.</strong>',
 	),
 	'meals' => array(
 		'url' => 'https://generation.cp.bsd.net/page/s/gen2gen-summer-challenge-meals',
-		'statement' => 'am taking a stand for youth this summer to increase access to healthy meals.',
+		'statement' => 'am taking a stand for youth this summer<br> to <strong>increase access to healthy meals.</strong>',
 	),
 );
 ?>
@@ -41,7 +41,7 @@ $challenges = array(
 						<?php echo wp_kses_post( get_sub_field( 'item_blurb' ) ); ?>
 					</div>
 					<div clas="button-group">
-						<a href="#" class="button button-solid button-bright-blue button-challenge" data-challenge="<?php echo esc_attr( $challenge_name ); ?>">
+						<a href="#" class="button button-solid button-gold button-challenge" data-challenge="<?php echo esc_attr( $challenge_name ); ?>">
 							<?php the_sub_field( 'button_text' ); ?>
 						</a>
 					</div>
@@ -77,7 +77,7 @@ $challenges = array(
 									</span><span class="field">
 										<input name="lastname" type="text" tabindex="0" required placeholder="Last Name">
 									</span>
-									<strong><?php echo esc_html( $challenge['statement'] ); ?></strong>
+									<?php echo $challenge['statement']; ?>
 								</p>
 
 								<p>
