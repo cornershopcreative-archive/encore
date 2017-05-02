@@ -303,17 +303,22 @@ module.exports = function( $ ) {
 	// When the BSD form is submitted to the iframe, toggle lightboxes
 	$('.signup-summer-challenge').on('submit.ga', function(e) {
 
-		var $this = $( this );
+		var $this = $( this ),
+			hasSubmitted = false;
 
 		// Cancel submission for now, so we can log a GA event first.
 		e.preventDefault();
 
 		// Set up a callback to redirect the user to the Get Equipped page.
 		var submit = function() {
+			// If the form has already been submitted, bail.
+			if ( hasSubmitted ) return;
 			// Detach this event handler so we don't cause an infinite loop!
 			$this.off( 'submit.ga' );
 			// Submit the form.
 			$this.submit();
+			// Don't submit again.
+			hasSubmitted = true;
 		};
 
 		// Track that the form was completed.
