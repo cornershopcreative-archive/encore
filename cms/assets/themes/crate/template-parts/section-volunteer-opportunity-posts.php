@@ -187,7 +187,11 @@ $section_query = crate_section_query( $query_args );
 				</div>
 			</article>
 
-		<?php endwhile; ?>
+		<?php
+		endwhile;
+		// Restore the global $post variable.
+		wp_reset_postdata();
+		?>
 	</div>
 
 	<?php if ( get_sub_field( 'show_pager' ) ) :
