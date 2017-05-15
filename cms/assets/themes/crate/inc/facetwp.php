@@ -120,3 +120,18 @@ function crate_facetwp_facet_render_args( $args ) {
 	return $args;
 }
 add_filter( 'facetwp_facet_render_args', 'crate_facetwp_facet_render_args' );
+
+/**
+ * Show more results for search facets. By default, FacetWP uses a SearchWP
+ * query that only returns up to 200 results, but we want more sometimes.
+ */
+function crate_facetwp_searchwp_query_args( $args ) {
+	// If this looks like the query that FacetWP generates (in
+	// plugins/facetwp/includes/integrations/searchwp/searchwp.php), increase the
+	// posts_per_page value to something we're less likely to actually run into.
+	if ( isset( $args['facetwp'] ) && $args['facetwp'] && 200 === $args['posts_per_page'] ) {
+		$args['posts_per_page'] = 1000;
+	}
+	return $args;
+}
+add_filter( 'searchwp_swp_query_args', 'crate_facetwp_searchwp_query_args' );
