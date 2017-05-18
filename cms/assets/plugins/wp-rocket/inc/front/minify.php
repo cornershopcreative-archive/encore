@@ -83,7 +83,7 @@ function __rocket_insert_minify_js_in_footer() {
 		$home_host      = parse_url( home_url(), PHP_URL_HOST );
 		$files          = get_rocket_minify_js_in_footer();
 		$ordered_files  = array();
-		
+
 		// Get host of CNAMES
 		$cnames_host = get_rocket_cnames_host( array( 'all', 'css_and_js', 'js' ) );
 
@@ -253,7 +253,7 @@ function rocket_minify_css( $buffer )
     $wp_content_dirname   = ltrim( str_replace( home_url(), '', WP_CONTENT_URL ), '/' ) . '/';
 
     // Get all css files with this regex
-    preg_match_all( apply_filters( 'rocket_minify_css_regex_pattern', '/<link\s*.+href=[\'|"]([^\'|"]+\.css?.+)[\'|"]?(.+)>/iU' ), $buffer, $tags_match );
+    preg_match_all( apply_filters( 'rocket_minify_css_regex_pattern', '/<link\s*.+href=[\'|"]([^\'|"]+\.css?.+)[\'|"](.+)>/iU' ), $buffer, $tags_match );
 
 	$i=0;
     foreach ( $tags_match[0] as $tag ) {
@@ -300,6 +300,11 @@ function rocket_minify_css( $buffer )
             	$buffer = str_replace( $tag, '', $buffer );
             }
 
+            if ( $excluded_tag && get_rocket_option( 'remove_query_strings' ) ) {
+                $tag_cache_busting = str_replace( $tags_match[1][ $i ], get_rocket_browser_cache_busting( $tags_match[1][ $i ], 'style_loader_src' ), $tag );
+                $buffer = str_replace( $tag, $tag_cache_busting, $buffer );
+            }
+
         }
 		$i++;
     }
@@ -329,7 +334,7 @@ function rocket_minify_js( $buffer )
 	$excluded_external_js = get_rocket_minify_excluded_external_js();
 
     // Get all JS files with this regex
-    preg_match_all( apply_filters( 'rocket_minify_js_regex_pattern', '#<script[^>]+?src=[\'|"]([^\'|"]+\.js?)[\'|"]?.*>(?:<\/script>)#i' ), $buffer, $tags_match );
+    preg_match_all( apply_filters( 'rocket_minify_js_regex_pattern', '#<script[^>]+?src=[\'|"]([^\'|"]+\.js?.+)[\'|"].*>(?:<\/script>)#i' ), $buffer, $tags_match );
 
 	$i=0;
     foreach ( $tags_match[0] as $tag ) {
@@ -383,6 +388,11 @@ function rocket_minify_js( $buffer )
 			// Remove the tag
             if ( ! $excluded_tag ) {
             	$buffer = str_replace( $tag, '', $buffer );
+            }
+
+            if ( $excluded_tag && get_rocket_option( 'remove_query_strings' ) ) {
+                $tag_cache_busting = str_replace( $tags_match[1][ $i ], get_rocket_browser_cache_busting( $tags_match[1][ $i ], 'script_loader_src' ), $tag );
+                $buffer = str_replace( $tag, $tag_cache_busting, $buffer );
             }
 		}
 		$i++;
@@ -568,7 +578,7 @@ function __rocket_extract_js_files_from_footer() {
 		$script_src  = ( strstr( $script_src, '/wp-includes/js/') ) ? $wp_scripts->base_url . $script_src : $script_src;
 		$script_src_cleaned = str_replace( array( 'http:', 'https:', '//' . $home_host ), '', $script_src );
 
-		if( in_array( $handle, $wp_scripts->queue ) && ! in_array( parse_url( $script_src, PHP_URL_HOST ), $excluded_external_js ) && ! in_array( $script_src, $deferred_js_files ) && ! in_array( parse_url( $script_src, PHP_URL_PATH ), $excluded_js ) && ! in_array( parse_url( $script_src_cleaned, PHP_URL_PATH ), $excluded_js ) ) {			
+		if( in_array( $handle, $wp_scripts->queue ) && ! in_array( parse_url( $script_src, PHP_URL_HOST ), $excluded_external_js ) && ! in_array( $script_src, $deferred_js_files ) && ! in_array( parse_url( $script_src, PHP_URL_PATH ), $excluded_js ) && ! in_array( parse_url( $script_src_cleaned, PHP_URL_PATH ), $excluded_js ) ) {
 			
 			// Dequeue JS files without extension
 			if( pathinfo( $script_src, PATHINFO_EXTENSION ) == '' ) {
@@ -585,7 +595,9 @@ function __rocket_extract_js_files_from_footer() {
 				if( in_array( $handle_dep, $wp_scripts->in_footer ) ) {
 					$src = $wp_scripts->registered[ $handle_dep ]->src;
 					$src = ( strstr( $src, '/wp-includes/js/') ) ? $wp_scripts->base_url . $src : $src;
-					$rocket_enqueue_js_in_footer[ $handle_dep ] = rocket_set_internal_url_scheme( $src );
+					if ( ! in_array( parse_url( $src, PHP_URL_HOST), $excluded_external_js, true ) ) {
+						$rocket_enqueue_js_in_footer[ $handle_dep ] = rocket_set_internal_url_scheme( $src );
+					}
 				}
 			}
 			

@@ -4,14 +4,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/**
+ * Class SearchWP_Extensions
+ */
 class SearchWP_Extensions {
 
 	private $extensions;
 
+	/**
+	 * SearchWP_Extensions constructor.
+	 */
 	function __construct() {
 		add_action( 'init', array( $this, 'back_compat' ) );
 	}
 
+	/**
+	 * Initialize Extensions
+	 */
 	function init() {
 
 		add_action( 'searchwp_load', array( $this, 'prime_extensions' ) );
@@ -22,6 +31,9 @@ class SearchWP_Extensions {
 		add_action( 'searchwp_settings_footer', array( $this, 'render_extensions_dropdown' ) );
 	}
 
+	/**
+	 * Output the Extensions tab on the settings screen
+	 */
 	function render_tab_extensions() {
 		if ( ! empty( $this->extensions ) ) {
 			searchwp_get_nav_tab( array(
@@ -31,6 +43,9 @@ class SearchWP_Extensions {
 		}
 	}
 
+	/**
+	 * Render the view for the extension
+	 */
 	function render_view_extension() {
 		// check to see if we need to display an extension settings page
 		if ( ! empty( $this->extensions ) && isset( $_GET['extension'] ) ) {
@@ -41,11 +56,11 @@ class SearchWP_Extensions {
 						<div class="wrap" id="searchwp-<?php echo esc_attr( $attributes->slug ); ?>-wrapper">
 							<div id="icon-options-general" class="icon32"><br /></div>
 							<div class="<?php echo esc_attr( $attributes->slug ); ?>-container">
-								<h2><?php _e( 'SearchWP', 'searchwp' ); ?> <?php echo esc_html( $attributes->name ); ?></h2>
+								<h2>SearchWP <?php echo esc_html( $attributes->name ); ?></h2>
 								<?php $this->extensions[ $extension ]->view(); ?>
 							</div>
 							<p class="searchwp-extension-back">
-								<a href="<?php echo esc_url( admin_url( 'options-general.php?page=searchwp' ) ); ?>"><?php _e( 'Back to SearchWP Settings', 'searchwp' ); ?></a>
+								<a href="<?php echo esc_url( admin_url( 'options-general.php?page=searchwp' ) ); ?>"><?php esc_html_e( 'Back to SearchWP Settings', 'searchwp' ); ?></a>
 							</p>
 						</div>
 					<?php
@@ -116,10 +131,11 @@ class SearchWP_Extensions {
 			</div>
 			<script type="text/javascript">
 				jQuery(document).ready(function($){
-					var $extensions_toggler = $('.nav-tab-extensions'),
-						$extensions_dropdown = $('#searchwp-extensions-dropdown'),
-						offset_y = 0,
-						offset_x = 0;
+					var $extensions_toggler, $extensions_dropdown, offset_y, offset_x;
+					$extensions_toggler = $('.nav-tab-extensions');
+					$extensions_dropdown = $('#searchwp-extensions-dropdown');
+					offset_y = 0;
+					offset_x = 0;
 
 					// prep the UI
 					$extensions_dropdown.hide();
@@ -134,7 +150,7 @@ class SearchWP_Extensions {
 							$extensions_toggler.removeClass('searchwp-showing-dropdown');
 							$extensions_dropdown.removeClass('searchwp-sub-menu-active');
 						}else{
-							offset_y = $extensions_toggler.position().top + $extensions_toggler.height() - 1; // border
+							offset_y = $extensions_toggler.position().top + $extensions_toggler.outerHeight() - 1; // border
 							offset_x = $extensions_toggler.position().left - parseInt( $extensions_toggler.css('paddingLeft').replace('px',''),10) - 7; // 7px offset
 
 							if($extensions_toggler.hasClass('nav-tab-active')){

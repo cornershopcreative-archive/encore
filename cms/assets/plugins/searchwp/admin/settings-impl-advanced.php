@@ -5,12 +5,207 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Class SearchWP_Settings_Implementation_Advanced
+ */
 class SearchWP_Settings_Implementation_Advanced {
 
 	/**
 	 * @var array Verified action names
 	 */
 	private $pending_actions = array();
+
+	private $available_toggles = array();
+
+	private $toggle_nonce_prefix = 'swp_settings_t_';
+
+	private $settings_name = 'advanced';
+
+	/**
+	 * SearchWP_Settings_Implementation_Advanced constructor.
+	 */
+	function __construct() {
+
+		// implement our toggles and handling of those toggles
+		add_action( 'wp_ajax_searchwp_advanced_setting_toggle', array( $this, 'handle_ajax_advanced_setting_toggle' ) );
+
+		$this->implement_toggle( array(
+			'name'              => 'debugging',
+			'description'       => __( 'Debugging enabled', 'searchwp' )
+		), array( $this, 'when_toggle_debugging_enabled' ) );
+
+		$this->implement_toggle( array(
+			'name'              => 'indexer_alternate',
+			'description'       => __( 'Use alternate indexer', 'searchwp' )
+		), array( $this, 'when_toggle_indexer_alternate_enabled' ) );
+
+		$this->implement_toggle( array(
+			'name'              => 'indexer_aggressiveness',
+			'description'       => __( 'Reduced indexer aggressiveness', 'searchwp' )
+		), array( $this, 'when_toggle_indexer_aggressiveness_enabled' ) );
+
+		$this->implement_toggle( array(
+			'name'              => 'min_word_length',
+			'description'       => __( 'Disable minimum word length', 'searchwp' )
+		), array( $this, 'when_toggle_min_word_length_enabled' ) );
+
+		$this->implement_toggle( array(
+			'name'              => 'admin_search',
+			'description'       => __( 'Use SearchWP for Admin/Dashboard searches', 'searchwp' )
+		), array( $this, 'when_toggle_admin_search_enabled' ) );
+
+		$this->implement_toggle( array(
+			'name'              => 'disable_indexer',
+			'description'       => __( 'Prevent the indexer from automatically running', 'searchwp' )
+		), array( $this, 'when_toggle_disable_indexer_enabled' ) );
+
+		$this->implement_toggle( array(
+			'name'              => 'exclusive_regex_matches',
+			'description'       => __( 'Exclusive regex matches', 'searchwp' )
+		), array( $this, 'when_toggle_exclusive_regex_matches_enabled' ) );
+
+		$this->implement_toggle( array(
+			'name'              => 'toggle_nuke_on_delete',
+			'description'       => __( 'Remove <strong>all traces</strong> of SearchWP upon plugin deletion (including index)', 'searchwp' )
+		), array( $this, 'when_toggle_toggle_nuke_on_delete_enabled' ) );
+	}
+
+	/**
+	 * Callback for debugging toggle; enables debugging
+	 *
+	 * @since 2.8
+	 */
+	function when_toggle_debugging_enabled() {
+		add_filter( 'searchwp_debug', '__return_true', 20 );
+	}
+
+	/**
+	 * Callback for alternate indexer toggle; enables alternate indexer
+	 *
+	 * @since 2.8
+	 */
+	function when_toggle_indexer_alternate_enabled() {
+		add_filter( 'searchwp_alternate_indexer', '__return_true', 20 );
+	}
+
+	/**
+	 * Callback for indexer aggressiveness toggle; scales back how fast the indexer runs
+	 *
+	 * @since 2.8
+	 */
+	function when_toggle_indexer_aggressiveness_enabled() {
+		add_filter( 'searchwp_index_chunk_size', array( $this, 'modify_searchwp_index_chunk_size' ), 20 );
+		add_filter( 'searchwp_process_term_limit', array( $this, 'modify_searchwp_process_term_limit' ), 20 );
+	}
+
+	/**
+	 * Callback for searchwp_index_chunk_size hook in when_toggle_indexer_aggressiveness_enabled() method
+	 *
+	 * @since 2.8
+	 *
+	 * @return int
+	 */
+	function modify_searchwp_index_chunk_size() {
+		return 3;
+	}
+
+	/**
+	 * Callback for searchwp_process_term_limit hook in when_toggle_indexer_aggressiveness_enabled() method
+	 *
+	 * @since 2.8
+	 *
+	 * @return int
+	 */
+	function modify_searchwp_process_term_limit() {
+		return 250;
+	}
+
+	/**
+	 * Callback for minimum word length toggle; disables minimum word length
+	 *
+	 * @since 2.8
+	 */
+	function when_toggle_min_word_length_enabled() {
+		add_filter( 'searchwp_minimum_word_length', array( $this, 'modify_searchwp_minimum_word_length' ), 20 );
+	}
+
+	/**
+	 * Callback for modify_searchwp_minimum_word_length hook in when_toggle_min_word_length_enabled() method
+	 *
+	 * @since 2.8
+	 *
+	 * @return int
+	 */
+	function modify_searchwp_minimum_word_length() {
+		return 1;
+	}
+
+	/**
+	 * Callback for admin search toggle; enables SearchWP in the WP Admin/Dashboard
+	 *
+	 * @since 2.8
+	 */
+	function when_toggle_admin_search_enabled() {
+		add_filter( 'searchwp_in_admin', '__return_true', 20 );
+	}
+
+	/**
+	 * Callback for indexer toggle; disables indexer
+	 *
+	 * @since 2.8
+	 */
+	function when_toggle_disable_indexer_enabled() {
+		add_filter( 'searchwp_indexer_enabled', '__return_false', 20 );
+	}
+
+	/**
+	 * Callback for exclusive regex matches toggle; enables exclusive regex matches
+	 *
+	 * @since 2.8
+	 */
+	function when_toggle_exclusive_regex_matches_enabled() {
+		add_filter( 'searchwp_exclusive_regex_matches', '__return_true', 20 );
+	}
+
+	/**
+	 * Callback for Nuke on Delete toggle; enables Nuke on Delete
+	 *
+	 * @since 2.8
+	 */
+	function when_toggle_toggle_nuke_on_delete_enabled() {
+		add_filter( 'searchwp_nuke_on_delete', '__return_true', 20 );
+	}
+
+	/**
+	 * Callback for toggle AJAX request
+	 *
+	 * @since 2.8
+	 */
+	function handle_ajax_advanced_setting_toggle() {
+		$name = isset( $_REQUEST['toggle_name'] ) ? $_REQUEST['toggle_name'] : 0;
+
+		check_ajax_referer( $this->toggle_nonce_prefix . $name, 'nonce' );
+
+		if ( ! array_key_exists( $name, $this->available_toggles ) ) {
+			die('-1');
+		}
+
+		// get the existing value
+		$existing_settings = searchwp_get_option( $this->settings_name );
+		if ( ! is_array( $existing_settings ) ) {
+			$existing_settings = array();
+		}
+
+		if ( ! array_key_exists( $name, $existing_settings ) ) {
+			$existing_settings[ $name ] = 0;
+		}
+
+		// swap it
+		$existing_settings[ $name ] = empty( $existing_settings[ $name ] ) ? 1 : 0;
+
+		// save the updated value
+		searchwp_update_option( $this->settings_name, $existing_settings );
+	}
 
 	/**
 	 * Initializer; hook navigation tab (and corresponding view) and any custom functionality
@@ -34,11 +229,11 @@ class SearchWP_Settings_Implementation_Advanced {
 	 */
 	function check_for_db_tables() {
 		$valid_database_environment = SWP()->custom_db_tables_exist();
-		if ( ! $valid_database_environment && ( ! isset( $_GET['action'] ) || 'recreate_db_tables' != $_GET['action'] ) ) {
+		if ( ! $valid_database_environment && ( ! isset( $_GET['action'] ) || 'recreate_db_tables' !== $_GET['action'] ) ) {
 			?>
 			<div id="setting-error-swp_custom_tables" class="error notice">
 				<p>
-					<strong><?php _e( 'Database tables missing! Recreate them on the Advanced Settings screen.', 'searchwp' ); ?></strong>
+					<strong><?php esc_html_e( 'Database tables missing! Recreate them on the Advanced Settings screen.', 'searchwp' ); ?></strong>
 				</p>
 			</div>
 		<?php
@@ -55,16 +250,6 @@ class SearchWP_Settings_Implementation_Advanced {
 				'label' => __( 'Advanced', 'searchwp' ),
 			) );
 		}
-	}
-
-	/**
-	 * Fully implements an option in the UI. An option is a checkbox that when toggled (and verified) fires the passed $callback.
-	 *
-	 * @param $args
-	 * @param $callback
-	 */
-	function implement_option( $args, $callback ) {
-
 	}
 
 	/**
@@ -95,7 +280,7 @@ class SearchWP_Settings_Implementation_Advanced {
 			if ( wp_verify_nonce( sanitize_text_field( $_GET['nonce'] ), $nonce_prefix . sanitize_text_field( $args['name'] ) ) && current_user_can( SWP()->settings_cap ) ) {
 				$this->pending_actions[] = sanitize_text_field( $args['name'] );
 				// fire the callback
-				call_user_func_array( $callback , array() );
+				call_user_func_array( $callback, array() );
 				?>
 				<?php if ( ! empty( $args['results_message'] ) ) : ?>
 					<div class="<?php echo esc_attr( $args['results_classes'] ); ?>"><p><?php echo wp_kses_post( $args['results_message'] ); ?></p></div>
@@ -106,7 +291,7 @@ class SearchWP_Settings_Implementation_Advanced {
 					return true;
 				}
 			} else {
-				wp_die( __( 'Invalid request', 'searchwp' ) );
+				wp_die( esc_html__( 'Invalid request', 'searchwp' ) );
 			}
 		}
 
@@ -125,110 +310,201 @@ class SearchWP_Settings_Implementation_Advanced {
 		);
 
 		?>
-			<div class="postbox swp-meta-box metabox-holder searchwp-settings-action">
-				<h3 class="hndle">
-					<span><?php echo wp_kses_post( $args['heading'] ); ?></span>
-				</h3>
-				<div class="inside">
-					<p><?php echo wp_kses_post( $args['description'] ); ?></p>
-					<p><a class="button" style="vertical-align:middle;" id="swp-indexer-<?php echo esc_attr( $args['name'] ); ?>" href="<?php echo esc_url( $the_link ); ?>"><?php echo esc_html( $args['label'] ); ?></a></p>
-				</div>
-			</div>
+			<a class="button searchwp-action-trigger" style="vertical-align:middle;" id="swp-indexer-<?php echo esc_attr( $args['name'] ); ?>" href="<?php echo esc_url( $the_link ); ?>"><?php echo esc_html( $args['label'] ); ?></a>
 		<?php
 
 		return true;
 	}
 
 	/**
+	 * Fully implements a toggle (checkbox) in the UI. Also implements the callback for each
+	 * toggle, fired when the toggle is enabled.
+	 *
+	 * @param $args
+	 * @param $callback
+	 *
+	 * @since 2.8
+	 *
+	 * @return bool
+	 */
+	function implement_toggle( $args, $callback ) {
+		$defaults = array(
+			'name'                  => '',
+			'description'           => '',
+		);
+
+		$args = wp_parse_args( $args, $defaults );
+
+		$field_name = sanitize_text_field( $args['name'] );
+
+		// make our (valid) callback for this toggle available, it'll get called based on the field name
+		$this->available_toggles[ $field_name ] = array(
+			'name'      => $field_name,
+			'args'      => $args,
+			'callback'  => $callback,
+		);
+
+		// get the stored options
+		$saved_settings = searchwp_get_option( $this->settings_name );
+
+		// if toggle is enabled, fire the callback
+		if (
+			is_array( $saved_settings)
+			&& array_key_exists( $field_name, $saved_settings )
+			&& ! empty( $saved_settings[ $field_name ] )
+		) {
+			call_user_func_array( $callback, array() );
+		}
+
+	}
+
+	/**
+	 * Output the toggle form element
+	 *
+	 * @param $toggle
+	 */
+	private function output_toggle( $toggle ) {
+
+		$saved_settings = searchwp_get_option( $this->settings_name );
+
+		if ( ! is_array( $saved_settings ) ) {
+			$saved_settings = array();
+		}
+
+		if ( ! array_key_exists( $toggle['name'], $saved_settings ) ) {
+			$saved_settings[ $toggle['name'] ] = 0;
+		}
+
+		$nonce = wp_create_nonce( $this->toggle_nonce_prefix . sanitize_text_field( $toggle['name'] ) ); // already prefixed
+
+		?>
+		<div class="searchwp-checkbox">
+			<input type="checkbox" data-toggle_name="<?php echo esc_attr( $toggle['name'] ); ?>" data-nonce="<?php echo esc_attr( $nonce ); ?>" name="<?php echo esc_attr( $toggle['name'] ); ?>" id="<?php echo esc_attr( $toggle['name'] ); ?>" value="1" <?php checked( $saved_settings[ $toggle['name'] ], 1 ); ?>/>
+			<label for="<?php echo esc_attr( $toggle['name'] ); ?>">
+				<?php echo wp_kses( $toggle['args']['description'], array( 'a', array( 'href' => array() ), 'strong' => array() ) ); ?>
+			</label>
+		</div>
+		<?php
+	}
+
+	/**
 	 * Render view callback
 	 */
-	function render_view_advanced() {
-		global $wpdb;
-		?>
+	function render_view_advanced() { ?>
 		<div class="searchwp-advanced-settings-wrapper swp-group">
 			<div class="searchwp-advanced-settings-actions">
-				<div class="searchwp-emergency-actions swp-group">
-					<?php
-					$valid_database_environment = SWP()->custom_db_tables_exist();
-					if ( ! $valid_database_environment ) {
+				<div class="postbox swp-meta-box metabox-holder searchwp-settings-action">
+					<h3 class="hndle">
+						<span><?php esc_html_e( 'Actions', 'searchwp' ); ?></span>
+						<a class="searchwp-trigger-help" href="https://searchwp.com/docs/settings/#advanced" target="_blank">Help &raquo;</a>
+					</h3>
+					<div class="inside">
+						<?php
+
+						$valid_database_environment = SWP()->custom_db_tables_exist();
+						if ( ! $valid_database_environment ) {
+							$this->implement_action( array(
+								'name'               => 'recreate_db_tables',
+								'label'              => __( 'Recreate Database Tables', 'searchwp' ),
+								'description'        => __( "SearchWP's database tables cannot be found. This may happen if a site migration was incomplete. Recreate the tables and initiate an index build.", 'searchwp' ),
+								'results_message'    => sprintf( __( 'Database tables created! <a href="%s">Rebuild index &raquo;</a>', 'searchwp' ), admin_url( 'options-general.php?page=searchwp' ) ),
+								'hide_after_trigger' => true,
+							), array( $this, 'recreate_db_tables' ) );
+						}
+
 						$this->implement_action( array(
-							'name'                  => 'recreate_db_tables',
-							'label'                 => __( 'Recreate Database Tables', 'searchwp' ),
-							'description'           => __( "SearchWP's database tables cannot be found. This may happen if a site migration was incomplete. Recreate the tables and initiate an index build.", 'searchwp' ),
-							'results_message'       => sprintf( __( 'Database tables created! <a href="%s">Rebuild index &raquo;</a>', 'searchwp' ), admin_url( 'options-general.php?page=searchwp' ) ),
-							'hide_after_trigger'    => true,
-						), array( $this, 'recreate_db_tables' ) );
+							'name'              => 'index_reset',
+							'label'             => __( 'Reset Index', 'searchwp' ),
+							'description'       => __( '<strong>Completely</strong> empty the index. <em>Search statistics will be left as is.</em>', 'searchwp' ),
+							'results_message'   => sprintf( __( 'The index <strong>has been emptied</strong>. <a href="%s">Rebuild index &raquo;</a>', 'searchwp' ), admin_url( 'options-general.php?page=searchwp' ) ),
+						), array( $this, 'reset_index' ) );
+
+						$this->implement_action( array(
+							'name'              => 'indexer_wake',
+							'label'             => __( 'Wake Up Indexer', 'searchwp' ),
+							'description'       => __( 'If the indexer appears to have stalled, try waking it up.', 'searchwp' ),
+							'results_message'   => sprintf( __( 'Attempted to wake up the indexer. <a href="%s">View progress &raquo;</a>', 'searchwp' ), admin_url( 'options-general.php?page=searchwp' ) ),
+						), array( $this, 'indexer_wake' ) );
+
+						$this->implement_action( array(
+							'name'              => 'stats_reset',
+							'label'             => __( 'Reset Statistics', 'searchwp' ),
+							'description'       => __( '<strong>Completely</strong> reset your Search Statistics. <em>Existing index will be left as is.</em>', 'searchwp' ),
+							'results_message'   => __( 'Search statistics reset', 'searchwp' ),
+						), array( $this, 'reset_stats' ) );
+
+						$this->implement_action( array(
+							'name'              => 'conflict_notices_reset',
+							'label'             => __( 'Restore Conflict Notices', 'searchwp' ),
+							'description'       => __( 'Restore all dismissed conflict notifications.', 'searchwp' ),
+							'results_message'   => __( 'Conflict notices restored', 'searchwp' ),
+						), array( $this, 'conflict_notices_reset' ) );
+
 						?>
-					<?php } ?>
+					</div>
 				</div>
-				<div class="searchwp-common-actions swp-group">
-					<?php
-					$this->implement_action( array(
-						'name'              => 'index_reset',
-						'label'             => __( 'Reset Index', 'searchwp' ),
-						'description'       => __( '<strong>Completely</strong> empty the index. <em>Search statistics will be left as is.</em>', 'searchwp' ),
-						'results_message'   => sprintf( __( 'The index <strong>has been reset</strong>. <a href="%s">Rebuild index &raquo;</a>', 'searchwp' ), admin_url( 'options-general.php?page=searchwp' ) ),
-					), array( $this, 'reset_index' ) );
+				<div class="postbox swp-meta-box metabox-holder searchwp-settings-action">
+					<h3 class="hndle">
+						<span><?php esc_html_e( 'Settings', 'searchwp' ); ?></span>
+						<b class="searchwp-tag searchwp-tag-success" id="searchwp-tag-settings-saved"><?php esc_html_e( 'Saved!', 'searchwp' ); ?></b>
+						<a class="searchwp-trigger-help" href="https://searchwp.com/docs/settings/#advanced" target="_blank">Help &raquo;</a>
+					</h3>
+					<div class="inside">
+						<?php
+							foreach ( $this->available_toggles as $toggle ) {
+								$this->output_toggle( $toggle );
+							}
+						?>
 
-					$this->implement_action( array(
-						'name'              => 'indexer_wake',
-						'label'             => __( 'Wake Up Indexer', 'searchwp' ),
-						'description'       => __( 'If the indexer appears to have stalled, try waking it up.', 'searchwp' ),
-						'results_message'   => sprintf( __( 'Attempted to wake up the indexer. <a href="%s">View progress &raquo;</a>', 'searchwp' ), admin_url( 'options-general.php?page=searchwp' ) ),
-					), array( $this, 'indexer_wake' ) );
-					?>
-				</div>
-				<p class="searchwp-show-less-common-actions">
-					<a class="button" href="#"><?php _e( 'Show More', 'searchwp' ); ?></a>
-				</p>
-				<div class="searchwp-less-common-actions swp-group">
-				<?php
-				$this->implement_action( array(
-					'name'              => 'stats_reset',
-					'label'             => __( 'Reset Statistics', 'searchwp' ),
-					'description'       => __( '<strong>Completely</strong> reset your Search Statistics. <em>Existing index will be left as is.</em>', 'searchwp' ),
-					'results_message'   => __( 'Search statistics reset', 'searchwp' ),
-				), array( $this, 'reset_stats' ) );
+						<!--suppress JSUnusedLocalSymbols -->
+						<script type="text/javascript">
+							jQuery(document).ready(function($){
 
-				$this->implement_action( array(
-					'name'              => 'indexer_toggle',
-					'label'             => __( 'Toggle Indexer', 'searchwp' ),
-					'description'       => __( 'Toggle the indexer status. It will pick up where it left off when re-enabled.', 'searchwp' ),
-					'results_message'   => false,
-				), array( $this, 'indexer_toggle' ) );
+								var $tag = $('#searchwp-tag-settings-saved');
+								$tag.css('opacity',0.01);
 
-				$this->implement_action( array(
-					'name'              => 'conflict_notices_reset',
-					'label'             => __( 'Restore Conflict Notices', 'searchwp' ),
-					'description'       => __( 'Restore all dismissed conflict notifications.', 'searchwp' ),
-					'results_message'   => __( 'Conflict notices restored', 'searchwp' ),
-				), array( $this, 'conflict_notices_reset' ) );
+								$(document).on('change','.searchwp-checkbox input',function(){
+									var data = {
+										action: 'searchwp_advanced_setting_toggle',
+										toggle_name: $(this).data('toggle_name'),
+										nonce: $(this).data('nonce'),
+										time: new Date().getTime()
+									};
 
-				$nuke_on_delete = searchwp_get_setting( 'nuke_on_delete' );
-				$nuke_on_delete = empty( $nuke_on_delete ) ? false : true;
-				$this->implement_action( array(
-					'name'              => 'toggle_nuke_on_delete',
-					'label'             => __( 'Toggle Nuke on Delete' ),
-					'heading'           => $nuke_on_delete && ! isset( $_GET['action'] ) ? __( 'Nuke on Delete' ) . '<span class="description" style="display:inline-block;padding-left:0.5em;padding-right:1em;color:red;text-transform:uppercase;">' . __( 'Enabled' ) . '</span>' : __( 'Nuke on Delete' ),
-					'description'       => __( 'Remove <strong>all traces</strong> of SearchWP upon plugin deletion (including index).', 'searchwp' ),
-					'results_message'   => false,
-				), array( $this, 'toggle_nuke_on_delete' ) );
-				?>
+									// fire off the toggle request
+									$.post(ajaxurl + '?' + data.time, data, function(response) {
+										$tag.fadeTo('fast', 1, function(){
+											setTimeout(function(){
+												$tag.fadeTo('slow',0.01);
+											},600);
+										});
+									});
+								});
+							});
+						</script>
+
+					</div>
 				</div>
 			</div>
 			<div class="searchwp-advanced-settings-stats">
 				<div class="postbox swp-meta-box metabox-holder searchwp-settings-stats">
 					<h3 class="hndle">
-						<span><?php _e( 'Index Statistics', 'searchwp' ); ?></span>
+						<span><?php esc_html_e( 'Index Statistics', 'searchwp' ); ?></span>
 					</h3>
 					<?php $stats = SWP()->settings['stats']; ?>
 					<div class="inside">
-						<p><?php echo sprintf( __( 'The indexer reacts to edits made and will apply updates accordingly. <a href="%s" target="_BLANK">More information &raquo;</a>', 'searchwp' ), 'https://searchwp.com/docs/kb/how-searchwp-works/' ); ?></p>
+						<p><?php echo wp_kses( sprintf( __( 'The indexer reacts to edits made and will apply updates accordingly. <a href="%s" target="_blank">More information &raquo;</a>', 'searchwp' ), 'https://searchwp.com/docs/kb/how-searchwp-works/' ), array( 'a' => array( 'href' => array(), 'target' => array() ) ) ); ?></p>
+						<?php
+						$advanced_settings = searchwp_get_option( 'advanced' );
+						if ( ! empty( $advanced_settings['admin_search'] ) ) :
+							?>
+							<p class="description"><?php esc_html_e( 'Admin/Dashboard searching has been enabled, which requires additional resources. Disabled post types will ONLY be utilized when searching in the Admin/Dashboard, not the front end.', 'searchwp' ); ?></p>
+						<?php endif; ?>
 						<table class="searchwp-data-vis" cellpadding="0" cellspacing="0">
 							<tbody>
 								<?php if ( isset( $stats['last_activity'] ) ) : ?>
 									<tr>
-										<th><?php _e( 'Last Activity', 'searchwp' ); ?></th>
+										<th><?php esc_html_e( 'Last Activity', 'searchwp' ); ?></th>
 										<td>
 											<?php echo esc_html( date_i18n( get_option( 'date_format' ), $stats['last_activity'] ) ); ?>
 											<?php echo esc_html( date( 'H:i:s', $stats['last_activity'] ) ); ?>
@@ -237,14 +513,14 @@ class SearchWP_Settings_Implementation_Advanced {
 								<?php endif; ?>
 								<?php if ( isset( $stats['done'] ) ) : ?>
 									<tr>
-										<th><?php _e( 'Indexed', 'searchwp' ); ?></th>
-										<td><code><?php echo absint( $stats['done'] ); ?></code> <?php echo 1 == absint( $stats['done'] ) ? __( 'entry', 'searchwp' ) : __( 'entries', 'searchwp' ); ?></td>
+										<th><?php esc_html_e( 'Indexed', 'searchwp' ); ?></th>
+										<td><code><?php echo absint( $stats['done'] ); ?></code> <?php echo 1 === absint( $stats['done'] ) ? esc_html__( 'entry', 'searchwp' ) : esc_html__( 'entries', 'searchwp' ); ?></td>
 									</tr>
 								<?php endif; ?>
 								<?php if ( isset( $stats['remaining'] ) ) : ?>
 									<tr>
-										<th><?php _e( 'Unindexed', 'searchwp' ); ?></th>
-										<td><code><?php echo absint( $stats['remaining'] ); ?></code> <?php echo 1 == absint( $stats['remaining'] ) ? __( 'entry', 'searchwp' ) : __( 'entries', 'searchwp' ); ?></td>
+										<th><?php esc_html_e( 'Unindexed', 'searchwp' ); ?></th>
+										<td><code><?php echo absint( $stats['remaining'] ); ?></code> <?php echo 1 === absint( $stats['remaining'] ) ? esc_html__( 'entry', 'searchwp' ) : esc_html__( 'entries', 'searchwp' ); ?></td>
 									</tr>
 								<?php endif; ?>
 								<?php
@@ -252,12 +528,12 @@ class SearchWP_Settings_Implementation_Advanced {
 									$row_count = $indexer->get_main_table_row_count();
 								?>
 								<tr>
-									<th><?php _e( 'Main row count', 'searchwp' ); ?></th>
-									<td><code><?php echo absint( $row_count ); ?></code> <?php echo 1 == absint( $row_count ) ? __( 'row', 'searchwp' ) : __( 'rows', 'searchwp' ); ?></td>
+									<th><?php esc_html_e( 'Main row count', 'searchwp' ); ?></th>
+									<td><code><?php echo absint( $row_count ); ?></code> <?php echo 1 === absint( $row_count ) ? esc_html__( 'row', 'searchwp' ) : esc_html__( 'rows', 'searchwp' ); ?></td>
 								</tr>
 							</tbody>
 						</table>
-						<p class="description"><?php _e( 'Note: the index is always kept as small as possible.', 'searchwp' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Note: the index is always kept as small as possible.', 'searchwp' ); ?></p>
 					</div>
 				</div>
 			</div>
@@ -303,7 +579,7 @@ class SearchWP_Settings_Implementation_Advanced {
 	 * @return bool
 	 */
 	function is_valid_action_request( $action_name ) {
-		return in_array( $action_name, $this->pending_actions );
+		return in_array( $action_name, $this->pending_actions, true );
 	}
 
 	/**
@@ -381,7 +657,7 @@ class SearchWP_Settings_Implementation_Advanced {
 			?><?php
 		} else {
 			searchwp_set_setting( 'nuke_on_delete', true );
-			?><div class="updated notice"><p><?php _e( 'Nuke on Delete <strong>enabled</strong>', 'searchwp' ); ?></p></div><?php
+			?><div class="updated notice"><p><?php echo wp_kses( __( 'Nuke on Delete <strong>enabled</strong>', 'searchwp' ), array( 'strong' => array() ) ); ?></p></div><?php
 		}
 	}
 
@@ -416,7 +692,7 @@ class SearchWP_Settings_Implementation_Advanced {
 		if ( ! $database_tables_recreated ) {
 			?>
 			<div class="error notice">
-				<p><?php echo __( 'There was an error recreating the database tables.', 'searchwp' ); ?></p>
+				<p><?php esc_html_e( 'There was an error recreating the database tables.', 'searchwp' ); ?></p>
 			</div>
 			<?php
 		}
@@ -427,16 +703,16 @@ class SearchWP_Settings_Implementation_Advanced {
 	 */
 	function maybe_import_settings() {
 		if ( isset( $_POST['searchwp_action'] )
-		     && 'import_engine_config' === $_POST['searchwp_action']
 		     && isset( $_REQUEST['_wpnonce'] )
 		     && wp_verify_nonce( $_REQUEST['_wpnonce'], 'searchwp_import_engine_config' )
+		     && 'import_engine_config' === $_POST['searchwp_action']
 		     && isset( $_REQUEST['searchwp_import_source'] )
 		) {
 			$settings_to_import = stripslashes( $_REQUEST['searchwp_import_source'] );
 			SWP()->import_settings( $settings_to_import );
 			?>
 			<div class="updated">
-				<p><?php _e( 'Settings imported', 'searchwp' ); ?></p>
+				<p><?php esc_html_e( 'Settings imported', 'searchwp' ); ?></p>
 			</div>
 		<?php
 		}

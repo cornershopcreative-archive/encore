@@ -4,6 +4,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/**
+ * Class SWP_Query
+ */
 class SWP_Query {
 
 	/**
@@ -212,7 +215,7 @@ class SWP_Query {
 		}
 
 		// support for fields argument
-		if ( 'ids' == $args['fields'] ) {
+		if ( 'ids' === $args['fields'] ) {
 			$args['load_posts'] = false;
 		}
 
@@ -297,6 +300,18 @@ class SWP_Query {
 
 		$this->post_type = (array) $this->post_type;
 		add_filter( 'searchwp_engine_settings_' . $this->engine, array( $this, 'set_post_types' ) );
+
+		// clean up once this query runs
+		add_action( 'searchwp_swp_query_shutdown', array( $this, 'unset_post_type' ) );
+	}
+
+	/**
+	 * Callback to unset engine settings customization
+	 *
+	 * @since 2.7.1
+	 */
+	function unset_post_type() {
+		remove_filter( 'searchwp_engine_settings_' . $this->engine, array( $this, 'set_post_types' ) );
 	}
 
 	/**
@@ -309,7 +324,13 @@ class SWP_Query {
 	 */
 	function set_post_types( $engine_settings ) {
 		foreach ( $engine_settings as $post_type => $post_type_settings ) {
-			$engine_settings[ $post_type ]['enabled'] = in_array( $post_type, $this->post_type );
+
+			// account for (i.e. skip) the search engine label storage
+			if ( 'searchwp_engine_label' === $post_type ) {
+				continue;
+			}
+
+			$engine_settings[ $post_type ]['enabled'] = in_array( $post_type, $this->post_type, true );
 		}
 
 		return $engine_settings;
@@ -337,6 +358,9 @@ class SWP_Query {
 		$this->post__in = array_filter( $this->post__in );
 
 		add_filter( 'searchwp_include', array( $this, 'searchwp_include' ), 10, 3 );
+
+		// clean up once this query runs
+		add_action( 'searchwp_swp_query_shutdown', array( $this, 'unset_include' ) );
 	}
 
 	/**
@@ -351,14 +375,28 @@ class SWP_Query {
 	 * @return array
 	 */
 	function searchwp_include( $ids, $engine, /** @noinspection PhpUnusedParameterInspection */ $terms ) {
-		if ( $this->engine == $engine && ! empty( $this->post__in ) && is_array( $this->post__in ) ) {
-			$ids = array_merge( $ids, $this->post__in );
-			$ids = array_unique( $ids );
+		if ( $this->engine === $engine && ! empty( $this->post__in ) && is_array( $this->post__in ) ) {
+
+			// Assume post__in overrides other filters expicitly
+			if ( apply_filters( 'searchwp_swp_query_post__in_explicit', true ) ) {
+				$ids = $this->post__in;
+			} else {
+				$ids = array_merge( $ids, $this->post__in );
+				$ids = array_unique( $ids );
+			}
+
 		}
 
-		remove_filter( 'searchwp_include', array( $this, 'searchwp_include' ), 10 );
-
 		return $ids;
+	}
+
+	/**
+	 * Callback to unset searchwp_include hook put in place
+	 *
+	 * @since 2.7.1
+	 */
+	function unset_include() {
+		remove_filter( 'searchwp_include', array( $this, 'searchwp_include' ), 10 );
 	}
 
 	/**
@@ -383,6 +421,9 @@ class SWP_Query {
 		$this->post__not_in = array_filter( $this->post__not_in );
 
 		add_filter( 'searchwp_exclude', array( $this, 'searchwp_exclude' ), 10, 3 );
+
+		// clean up once this query runs
+		add_action( 'searchwp_swp_query_shutdown', array( $this, 'unset_exclude' ) );
 	}
 
 	/**
@@ -397,14 +438,28 @@ class SWP_Query {
 	 * @return array
 	 */
 	function searchwp_exclude( $ids, $engine, /** @noinspection PhpUnusedParameterInspection */ $terms ) {
-		if ( $this->engine == $engine && ! empty( $this->post__not_in ) && is_array( $this->post__not_in ) ) {
-			$ids = array_merge( $ids, $this->post__not_in );
-			$ids = array_unique( $ids );
+		if ( $this->engine === $engine && ! empty( $this->post__not_in ) && is_array( $this->post__not_in ) ) {
+
+			// Assume post__not_in overrides other filters expicitly
+			if ( apply_filters( 'searchwp_swp_query_post__not_in_explicit', true ) ) {
+				$ids = $this->post__not_in;
+			} else {
+				$ids = array_merge( $ids, $this->post__not_in );
+				$ids = array_unique( $ids );
+			}
+
 		}
 
-		remove_filter( 'searchwp_exclude', array( $this, 'searchwp_exclude' ), 10 );
-
 		return $ids;
+	}
+
+	/**
+	 * Callback to remove searchwp_exclude hook
+	 *
+	 * @since 2.7.1
+	 */
+	function unset_exclude() {
+		remove_filter( 'searchwp_exclude', array( $this, 'searchwp_exclude' ), 10 );
 	}
 
 	/**
@@ -422,6 +477,9 @@ class SWP_Query {
 
 		// we also need to utilize the main WHERE of the the SearchWP main algorithm query
 		add_filter( 'searchwp_where', array( $this, 'tax_where' ), 10, 2 );
+
+		// clean up once this query runs
+		add_action( 'searchwp_swp_query_shutdown', array( $this, 'unset_tax_query' ) );
 	}
 
 	/**
@@ -436,7 +494,7 @@ class SWP_Query {
 	 * @return string
 	 */
 	function tax_query( $sql, $engine ) {
-		if ( $engine != $this->engine || empty( $this->tax_query ) || ! is_array( $this->tax_query ) ) {
+		if ( $engine !== $this->engine || empty( $this->tax_query ) || ! is_array( $this->tax_query ) ) {
 			return $sql;
 		}
 
@@ -463,7 +521,7 @@ class SWP_Query {
 	 * @return string
 	 */
 	function tax_where( $sql, $engine ) {
-		if ( $engine != $this->engine || empty( $this->tax_query ) || ! is_array( $this->tax_query ) ) {
+		if ( $engine !== $this->engine || empty( $this->tax_query ) || ! is_array( $this->tax_query ) ) {
 			return $sql;
 		}
 
@@ -477,6 +535,16 @@ class SWP_Query {
 		);
 
 		return $sql . $tq_sql['where'];
+	}
+
+	/**
+	 * Callback to unset the tax_query hooks
+	 *
+	 * @since 2.7.1
+	 */
+	function unset_tax_query() {
+		remove_filter( 'searchwp_query_main_join', array( $this, 'tax_query' ), 10 );
+		remove_filter( 'searchwp_where', array( $this, 'tax_where' ), 10 );
 	}
 
 	/**
@@ -494,6 +562,9 @@ class SWP_Query {
 
 		// we also need to utilize the main WHERE of the the SearchWP main algorithm query
 		add_filter( 'searchwp_where', array( $this, 'meta_where' ), 10, 2 );
+
+		// clean up once this query runs
+		add_action( 'searchwp_swp_query_shutdown', array( $this, 'unset_meta_query' ) );
 	}
 
 	/**
@@ -508,7 +579,7 @@ class SWP_Query {
 	 * @return string
 	 */
 	function meta_query( $sql, $engine ) {
-		if ( $engine != $this->engine || empty( $this->meta_query ) || ! is_array( $this->meta_query ) ) {
+		if ( $engine !== $this->engine || empty( $this->meta_query ) || ! is_array( $this->meta_query ) ) {
 			return $sql;
 		}
 
@@ -537,7 +608,7 @@ class SWP_Query {
 	 * @return string
 	 */
 	function meta_where( $sql, $engine ) {
-		if ( $engine != $this->engine || empty( $this->meta_query ) || ! is_array( $this->meta_query ) ) {
+		if ( $engine !== $this->engine || empty( $this->meta_query ) || ! is_array( $this->meta_query ) ) {
 			return $sql;
 		}
 
@@ -556,6 +627,16 @@ class SWP_Query {
 	}
 
 	/**
+	 * Callback to unset the meta_query hooks
+	 *
+	 * @since 2.7.1
+	 */
+	function unset_meta_query() {
+		remove_filter( 'searchwp_query_main_join', array( $this, 'meta_query' ), 10 );
+		remove_filter( 'searchwp_where', array( $this, 'meta_where' ), 10 );
+	}
+
+	/**
 	 * Convert date_query to something SearchWP understands
 	 *
 	 * @since 2.6
@@ -567,6 +648,9 @@ class SWP_Query {
 
 		// we need to utilize the main WHERE of the the SearchWP main algorithm query
 		add_filter( 'searchwp_where', array( $this, 'date_where' ), 10, 2 );
+
+		// clean up once this query runs
+		add_action( 'searchwp_swp_query_shutdown', array( $this, 'unset_date_query' ) );
 	}
 
 	/**
@@ -580,7 +664,7 @@ class SWP_Query {
 	 * @return string
 	 */
 	function date_where( $sql, $engine ) {
-		if ( $engine != $this->engine || empty( $this->date_query ) || ! is_array( $this->date_query ) ) {
+		if ( $engine !== $this->engine || empty( $this->date_query ) || ! is_array( $this->date_query ) ) {
 			return $sql;
 		}
 
@@ -589,6 +673,15 @@ class SWP_Query {
 		$dq_sql = $date_query->get_sql();
 
 		return $sql . $dq_sql;
+	}
+
+	/**
+	 * Callback to unset the date query hook
+	 *
+	 * @since 2.7.1
+	 */
+	function unset_date_query() {
+		remove_filter( 'searchwp_where', array( $this, 'date_where' ), 10 );
 	}
 
 	/**
@@ -627,7 +720,7 @@ class SWP_Query {
 		$this->max_num_pages    = intval( $swp_query->maxNumPages );
 		$this->posts_weights    = $swp_query->results_weights;
 
-		if ( empty( $this->posts ) || 0 == count( $this->posts ) ) {
+		if ( empty( $this->posts ) || 0 === count( $this->posts ) ) {
 			$this->found_posts      = 0;
 			$this->post_count       = 0;
 			$this->max_num_pages    = 0;
@@ -639,6 +732,8 @@ class SWP_Query {
 		if ( ! $this->load_posts ) {
 			remove_filter( 'searchwp_load_posts', '__return_false' );
 		}
+
+		do_action( 'searchwp_swp_query_shutdown' );
 	}
 
 }

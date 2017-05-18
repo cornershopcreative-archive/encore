@@ -5,6 +5,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Which option names should be autoloaded
+ *
+ * @return array
+ *
+ * @since 2.8.3
+ */
+function searchwp_get_autoload_options() {
+	return array(
+		'settings',
+		'advanced'
+	);
+}
+
+/**
  * Remove an option from the database
  *
  * @param $option string The option name
@@ -18,7 +32,15 @@ function searchwp_delete_option( $option ) {
 		return false;
 	}
 
-	return delete_option( SEARCHWP_PREFIX . $option );
+	$result = delete_option( SEARCHWP_PREFIX . $option );
+
+	$force_cache_clear = array( 'indexnonce' );
+
+	if ( in_array( $option, $force_cache_clear ) ) {
+		wp_cache_delete( SEARCHWP_PREFIX . $option, 'options' );
+	}
+
+	return $result;
 }
 
 
@@ -37,7 +59,9 @@ function searchwp_add_option( $option, $value = false ) {
 		return false;
 	}
 
-	return add_option( SEARCHWP_PREFIX . $option, $value, '', 'no' );
+	$autoload = in_array( $option, searchwp_get_autoload_options(), true ) ? 'yes' : 'no';
+
+	return add_option( SEARCHWP_PREFIX . $option, $value, '', $autoload );
 }
 
 
@@ -56,7 +80,9 @@ function searchwp_update_option( $option, $value = false ) {
 		return false;
 	}
 
-	update_option( SEARCHWP_PREFIX . $option, $value );
+	$autoload = in_array( $option, searchwp_get_autoload_options(), true ) ? 'yes' : 'no';
+
+	update_option( SEARCHWP_PREFIX . $option, $value, $autoload );
 
 	return true;
 }
@@ -71,7 +97,26 @@ function searchwp_update_option( $option, $value = false ) {
  * @since 1.9.1
  */
 function searchwp_get_option( $option ) {
+
+	searchwp_maybe_clear_cache( $option );
+
 	return get_option( SEARCHWP_PREFIX . $option );
+}
+
+
+/**
+ * Forcefully purge the object cache for certain options
+ *
+ * @param $option
+ * @since 2.8.3
+ */
+function searchwp_maybe_clear_cache( $option ) {
+	$keys = array( 'progress', 'transient', 'indexer', 'indexnonce' );
+
+	if ( in_array( $option, $keys, true ) ) {
+		// manually clear the cache
+		wp_cache_delete( SEARCHWP_PREFIX . $option, 'options' );
+	}
 }
 
 
@@ -165,10 +210,14 @@ function searchwp_set_setting( $setting, $value, $group = false ) {
 	);
 
 	// check the setting name to see whether we need to retrieve a searchwp setting or an indexer setting
-	if ( in_array( $setting, $indexer_names ) || in_array( $group, $indexer_names ) ) {
+	if ( in_array( $setting, $indexer_names, true ) || in_array( $group, $indexer_names, true ) ) {
 
 		// it's an indexer setting
 		$indexer_settings = get_option( SEARCHWP_PREFIX . 'indexer' );
+
+		if ( ! is_array( $indexer_settings ) ) {
+			$indexer_settings = array();
+		}
 
 		// set the setting locally and in the singleton
 		if ( false !== $group ) {
@@ -276,7 +325,7 @@ if ( ! function_exists( 'searchwp_get_indexer_progress' ) ) {
 	function searchwp_get_indexer_progress() {
 		$progress   = searchwp_get_option( 'progress' );
 		$waiting    = searchwp_get_option( 'waiting' );
-		echo json_encode( array(
+		echo wp_json_encode( array(
 				'progress'  => ( ! empty( $progress ) ) ? floatval( $progress ) : '100',
 				'waiting'   => $waiting,
 			) );
@@ -284,13 +333,13 @@ if ( ! function_exists( 'searchwp_get_indexer_progress' ) ) {
 	}
 }
 
-
-/**
- * Determines whether the indexer has stalled based on the time of last activity
- *
- * @since 1.0
- */
 if ( ! function_exists( 'searchwp_check_for_stalled_indexer' ) ) {
+	/**
+	 * Determines whether the indexer has stalled based on the time of last activity
+	 *
+	 * @param int $threshold
+	 * @since 1.0
+	 */
 	function searchwp_check_for_stalled_indexer( $threshold = 180 ) {
 		$last_activity  = searchwp_get_setting( 'last_activity', 'stats' );
 		$running        = searchwp_get_setting( 'running' );
@@ -326,36 +375,44 @@ if ( ! function_exists( 'searchwp_check_for_stalled_indexer' ) ) {
 	}
 }
 
-/**
- * Extracts PDF content from a PDF within the Media library
- *
- * @since 2.5
- */
 if ( ! function_exists( 'searchwp_extract_pdf_text' ) && class_exists( 'SearchWPIndexer' ) ) {
+	/**
+	 * Extracts PDF content from a PDF within the Media library
+	 *
+	 * @since 2.5
+	 *
+	 * @param $post_id
+	 *
+	 * @return string
+	 */
 	function searchwp_extract_pdf_text( $post_id ) {
 		$indexer = new SearchWPIndexer();
 		return $indexer->extract_pdf_text( absint( $post_id ) );
 	}
 }
 
-/**
- * Extracts PDF metadata from a PDF within the Media library
- *
- * @since 2.5
- */
 if ( ! function_exists( 'searchwp_extract_pdf_metadata' ) && class_exists( 'SearchWPIndexer' ) ) {
+	/**
+	 * Extracts PDF metadata from a PDF within the Media library
+	 *
+	 * @since 2.5
+	 *
+	 * @param $post_id
+	 *
+	 * @return array
+	 */
 	function searchwp_extract_pdf_metadata( $post_id ) {
 		$indexer = new SearchWPIndexer();
 		return $indexer->extract_pdf_metadata( absint( $post_id ) );
 	}
 }
 
-/**
- * Retrieve SearchWP's license key
- *
- * @since 2.6.2
- */
 if ( ! function_exists( 'searchwp_get_license_key' ) ) {
+	/**
+	 * Retrieve SearchWP's license key
+	 *
+	 * @since 2.6.2
+	 */
 	function searchwp_get_license_key() {
 		$license_key = defined( 'SEARCHWP_LICENSE_KEY' ) ? SEARCHWP_LICENSE_KEY : get_option( SEARCHWP_PREFIX . 'license_key' );
 		$license_key = apply_filters( 'searchwp_license_key', $license_key );
@@ -364,4 +421,32 @@ if ( ! function_exists( 'searchwp_get_license_key' ) ) {
 
 		return $license_key;
 	}
+}
+
+/**
+ * Check whether an engine is valid
+ * 
+ * @since 2.8
+ * 
+ * @param $engine
+ *
+ * @return bool
+ */
+function searchwp_is_valid_engine( $engine ) {
+
+	if ( ! isset( SWP()->settings['engines'] ) ) {
+		return false;
+	}
+
+	$engines = SWP()->settings['engines'];
+
+	if ( ! is_array( $engines ) ) {
+		return false;
+	}
+
+	if ( ! array_key_exists( $engine, $engines ) ) {
+		return false;
+	}
+
+	return true;
 }

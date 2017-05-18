@@ -5,8 +5,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Class SearchWP_Settings_Implementation_License
+ */
 class SearchWP_Settings_Implementation_License {
 
+	/**
+	 *
+	 */
 	function init() {
 
 		// render the 'License' tab on the settings screen
@@ -30,7 +36,7 @@ class SearchWP_Settings_Implementation_License {
 		if ( current_user_can( apply_filters( 'searchwp_settings_cap', 'manage_options' ) ) ) {
 			$searchwp = SWP();
 			$status = $searchwp->status;
-			$classes = ( false == $status || 'valid' !== $status ) ? 'searchwp-tab-license-inactive' : '';
+			$classes = ( false === $status || 'valid' !== $status ) ? 'searchwp-tab-license-inactive' : '';
 			searchwp_get_nav_tab( array(
 				'tab'       => 'license',
 				'label'     => __( 'License', 'searchwp' ),
@@ -46,8 +52,8 @@ class SearchWP_Settings_Implementation_License {
 		$searchwp = SWP();
 		if ( ( false !== $searchwp->license && '' !== $searchwp->license ) && 'valid' !== $searchwp->status ) : ?>
 			<div id="setting-error-settings_updated" class="error settings-error updated notice">
-				<p><?php _e( 'A license key was found, but it is <strong>inactive</strong>. Automatic updates <em>will not be available</em> until your license is activated.', 'searchwp' ); ?> <a href="<?php echo esc_url( add_query_arg( array( 'page' => 'searchwp', 'tab' => 'license' ), admin_url( 'options-general.php' ) ) ); ?>"><?php _e( 'Manage License', 'searchwp' ); ?> &raquo;</a></p>
-				<p><?php echo sprintf( __( 'Having trouble activating your license? Please see <a href="%s">this KB article &raquo;</a>' , 'searchwp' ), 'https://searchwp.com/?p=29213' ); ?></p>
+				<p><?php echo wp_kses( __( 'A license key was found, but it is <strong>inactive</strong>. Automatic updates <em>will not be available</em> until your license is activated.', 'searchwp' ), array( 'strong' => array(), 'em' => array() ) ); ?> <a href="<?php echo esc_url( add_query_arg( array( 'page' => 'searchwp', 'tab' => 'license' ), admin_url( 'options-general.php' ) ) ); ?>"><?php esc_html_e( 'Manage License', 'searchwp' ); ?> &raquo;</a></p>
+				<p><?php echo wp_kses( sprintf( __( 'Having trouble activating your license? Please see <a href="%s">this KB article &raquo;</a>' , 'searchwp' ), 'https://searchwp.com/?p=29213' ), array( 'a' => array( 'href' => array() ) ) ); ?></p>
 			</div>
 		<?php endif;
 	}
@@ -77,10 +83,10 @@ class SearchWP_Settings_Implementation_License {
 			<div class="postbox swp-meta-box metabox-holder searchwp-settings-license">
 				<h3 class="hndle">
 					<span><?php esc_html_e( 'Manage Your SearchWP License', 'searchwp' ); ?>
-						<?php if ( false !== $status && 'valid' == $status ) : ?> <b class="active"><?php _e( 'Active', 'searchwp' ); ?></b><?php else : ?><b class="inactive"><?php _e( 'Inactive', 'searchwp' ); ?></b><?php endif; ?>
+						<?php if ( false !== $status && 'valid' === $status ) : ?> <b class="active"><?php esc_html_e( 'Active', 'searchwp' ); ?></b><?php else : ?><b class="inactive"><?php esc_html_e( 'Inactive', 'searchwp' ); ?></b><?php endif; ?>
 					</span></h3>
 				<div class="inside">
-					<?php if ( false !== $status && 'valid' == $status ) : ?>
+					<?php if ( false !== $status && 'valid' === $status ) : ?>
 						<p><?php esc_html_e( 'Your SearchWP license is currently active.', 'searchwp' ); ?></p>
 					<?php else : ?>
 						<p><?php esc_html_e( 'SearchWP requires an active license to receive automatic upates and support. Enter your license key to activate it.', 'searchwp' ); ?></p>
@@ -90,19 +96,19 @@ class SearchWP_Settings_Implementation_License {
 						<p>
 							<!--suppress HtmlFormInputWithoutLabel -->
 							<input id="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>license_key" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>license_key" type="text" class="regular-text" value="<?php echo esc_attr( $license ); ?>" />
-							<?php if ( false !== $status && 'valid' == $status ) { ?>
+							<?php if ( false !== $status && 'valid' === $status ) { ?>
 								<?php wp_nonce_field( 'searchwp_edd_license_deactivate_nonce', 'searchwp_edd_license_deactivate_nonce' ); ?>
-								<input type="submit" class="button-secondary" name="edd_license_deactivate" value="<?php _e( 'Deactivate', 'searchwp' ); ?>"/>
+								<input type="submit" class="button-secondary" name="edd_license_deactivate" value="<?php esc_html_e( 'Deactivate', 'searchwp' ); ?>"/>
 							<?php } else {
 								wp_nonce_field( 'searchwp_edd_license_activate_nonce', 'searchwp_edd_license_activate_nonce' ); ?>
-								<input type="submit" class="button-secondary" name="edd_license_activate" value="<?php _e( 'Activate', 'searchwp' ); ?>"/>
+								<input type="submit" class="button-secondary" name="edd_license_activate" value="<?php esc_html_e( 'Activate', 'searchwp' ); ?>"/>
 							<?php } ?>
 						</p>
 					</form>
-					<?php if ( false !== $status && 'valid' == $status ) : ?>
-						<p class="description"><?php echo sprintf( __( 'Active for another %s', 'searchwp' ), $this->get_time_until_expiration() ); ?></p>
+					<?php if ( false !== $status && 'valid' === $status ) : ?>
+						<p class="description"><?php echo esc_html( sprintf( __( 'Active for another %s', 'searchwp' ), $this->get_time_until_expiration() ) ); ?></p>
 					<?php else : ?>
-						<p class="description"><?php echo sprintf( __( 'Your license key is available both on your payment receipt and in your <a href="%s">Account</a>', 'searchwp' ), 'https://searchwp.com/account/' ); ?></p>
+						<p class="description"><?php echo wp_kses( sprintf( __( 'Your license key is available both on your payment receipt and in your <a href="%s">Account</a>', 'searchwp' ), 'https://searchwp.com/account/' ), array( 'a' => array( 'href' => array() ) ) ); ?></p>
 					<?php endif; ?>
 				</div>
 			</div>
@@ -264,7 +270,7 @@ class SearchWP_Settings_Implementation_License {
 		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
 		// $license_data->license will be either "deactivated" or "failed"
-		if ( 'deactivated' == $license_data->license ) {
+		if ( 'deactivated' === $license_data->license ) {
 			delete_option( SEARCHWP_PREFIX . 'license_status' );
 			delete_option( SEARCHWP_PREFIX . 'license_expiration' );
 		}
@@ -294,7 +300,7 @@ class SearchWP_Settings_Implementation_License {
 	function sanitize_license( $new ) {
 		$old = searchwp_get_license_key();
 
-		if ( $old && $old != $new ) {
+		if ( $old && $old !== $new ) {
 			delete_option( SEARCHWP_PREFIX . 'license_status' ); // new license has been entered, so must reactivate
 			delete_option( SEARCHWP_PREFIX . 'license_expiration' );
 		}
@@ -333,7 +339,7 @@ class SearchWP_Settings_Implementation_License {
 
 		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
-		if ( 'valid' != $license_data->license ) {
+		if ( 'valid' !== $license_data->license ) {
 			do_action( 'searchwp_log', 'License not valid' );
 			delete_option( SEARCHWP_PREFIX . 'license_status' );
 			delete_option( SEARCHWP_PREFIX . 'license_expiration' );

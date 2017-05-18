@@ -15,7 +15,7 @@ class pdf_readstream
 	var $size;
 	var $allow_references;
 
-	function pdf_readstream( &$data, $offset=0 )
+	function __construct( &$data, $offset=0 )
 	{
 		$this->data = trim($data);
 		$this->offset = $offset;
@@ -255,7 +255,11 @@ class pdf_readstream
 
 				if( $this->expect('>>') ) break;
 
-				$value[ $this->read_object() ] = $this->read_object();
+				$obj = $this->read_object();
+
+				if ( is_string( $obj ) ) {
+					$value[ $obj ] = $this->read_object();
+				}
 			}
 
 			return $value;
@@ -356,13 +360,13 @@ class pdf extends pdf_readstream
 	var $catalog;
 	var $xref_table;
 
-	function pdf($filename)
+	function __construct($filename)
 	{
 		global $wp_filesystem;
 		WP_Filesystem();
 		$infile = $wp_filesystem->exists( $filename ) ? $wp_filesystem->get_contents( $filename ) : '';
 
-		parent::pdf_readstream( $infile);
+		parent::__construct( $infile);
 
 		$this->xref_table = array();
 		$this->objects_at_offsets = array();
@@ -427,7 +431,9 @@ class pdf extends pdf_readstream
 	{
 		$pages = array();
 
-		$this->add_pages( $this->catalog['Pages']->resolve(), $pages );
+		if ( isset( $this->catalog['Pages'] ) && is_object( $this->catalog['Pages'] ) ) {
+			$this->add_pages( $this->catalog['Pages']->resolve(), $pages );
+		}
 
 		return $pages;
 	}
@@ -479,7 +485,7 @@ class pdf_page
 {
 	var $props;
 
-	function pdf_page( $props )
+	function __construct( $props )
 	{
 		$this->props = $props;
 	}
@@ -561,9 +567,9 @@ class pdf_content_stream extends pdf_readstream
 {
 	var $operators;
 
-	function pdf_content_stream( &$data )
+	function __construct( &$data )
 	{
-		parent::pdf_readstream( $data );
+		parent::__construct( $data );
 
 		$this->allow_references = false;
 
@@ -688,7 +694,7 @@ class pdf_object
 	var $parent;
 	var $value;
 
-	function pdf_object($value)
+	function __construct($value)
 	{
 		$this->value = $value;
 	}
@@ -728,7 +734,7 @@ class pdf_reference extends pdf_object
 class pdf_stream extends pdf_object
 {
 	var $data;
-	function pdf_stream($value,&$data)
+	function __construct($value,&$data)
 	{
 		$this->value = $value;
 		$this->data = $data;

@@ -42,7 +42,7 @@ function __rocket_add_admin_css_js() {
 		'successSupportText'  => __( 'We\'ve received your ticket and will reply back within a few hours!', 'rocket' ) . '<br/>' . __( 'We answer every ticket so check your spam if you don\'t hear from us.', 'rocket' ),
 
 		'badSupportTitle'      => __( 'Oh dear, someone\'s been naughty...', 'rocket' ),
-		'badSupportText'       => __( 'Well, well, looks like you\'ve got yourself a "nulled" version! We don\'t provide support to hackers or pirates, so you will need a valid license to proceed.', 'rocket' ) . '<br/>' . __( 'Click below to buy a license with a 20% discount automatically applied.', 'rocket' ),
+		'badSupportText'       => __( 'Well, well, looks like you\'ve got yourself a "nulled" version! We don\'t provide support to crackers or pirates, so you will need a valid license to proceed.', 'rocket' ) . '<br/>' . __( 'Click below to buy a license with a 20% discount automatically applied.', 'rocket' ),
 		'badConfirmButtonText' => __( 'Buy It Now!', 'rocket' ),
 
 		'expiredSupportTitle'      => __( 'Uh-oh, you\'re out of fuel!', 'rocket' ),
@@ -89,9 +89,9 @@ add_action( 'admin_print_styles-media-new.php', '__rocket_enqueue_modal_plugin' 
 add_action( 'admin_print_styles-upload.php', '__rocket_enqueue_modal_plugin' );
 add_action( 'admin_print_styles-settings_page_' . WP_ROCKET_PLUGIN_SLUG, '__rocket_enqueue_modal_plugin' );
 function __rocket_enqueue_modal_plugin() {
-    wp_enqueue_style( 'thickbox' );
     wp_enqueue_style( 'plugin-install' );
     
     wp_enqueue_script( 'plugin-install' );
-    wp_enqueue_script( 'tgm-modal-wp-rocket', WP_ROCKET_ADMIN_UI_JS_URL . 'vendors/tgm-modal.min.js', array( 'jquery' ), WP_ROCKET_VERSION, true );
+    wp_enqueue_script( 'updates' );
+    add_thickbox();
 }

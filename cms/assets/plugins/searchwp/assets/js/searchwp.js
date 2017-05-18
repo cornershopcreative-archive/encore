@@ -56,18 +56,112 @@ var searchwp_settings_handler = function(){
 		});
 
 		var excludeSelects = function() {
+
+			function format_term (term) {
+				var markup = "<div class='select2-result-repository clearfix'>" +
+					"<div class='select2-result-tax__name'>" + $("<div>").text(term.text).html() + "</div></div>";
+
+				return markup;
+			}
+
+			function format_term_selection (term) {
+				return term.text;
+			}
+
 			$('select.swp-exclude-select').each(function(){
-				$(this).select2({
-					placeholder: $(this).data('placeholder')
-				});
+				var $el = $(this),
+					options = {};
+
+				if( $el.data('searchable') ) {
+					options = {
+						ajax: {
+							url: ajaxurl,
+							dataType: 'json',
+							delay: 250,
+							data: function (params) {
+								return {
+									q: params.term, // search term
+									_ajax_nonce: $el.data('nonce'),
+									tax: $el.data('tax'),
+									engine: $el.data('engine'),
+									action: 'searchwp_get_tax_terms'
+								};
+							},
+							processResults: function (data, params) {
+								return {
+									results: data.items
+								};
+							},
+							cache: true
+						},
+						escapeMarkup: function (markup) { return markup; },
+						minimumInputLength: 1,
+						language: {
+							inputTooShort: function () {
+								return $('#swp-search-placeholder').text();
+							}
+						},
+						templateResult: format_term,
+						templateSelection: format_term_selection
+					}
+				}
+
+				$el.select2(options);
 			});
 		};
 
 		excludeSelects();
 
 		var customFieldSelects = function() {
+
+			function format_key (term) {
+				var markup = "<div class='select2-result-repository clearfix'>" +
+					"<div class='select2-result-tax__name'>" + $("<div>").text(term.text).html() + "</div></div>";
+
+				return markup;
+			}
+
+			function format_key_selection (term) {
+				return term.text;
+			}
+
 			$('.swp-custom-field-select select').each(function(){
-				$(this).select2({});
+				var $el = $(this),
+					options = {};
+
+				if( $el.data('searchable') ) {
+					options = {
+						ajax: {
+							url: ajaxurl,
+							dataType: 'json',
+							delay: 250,
+							data: function (params) {
+								return {
+									q: params.term, // search term
+									_ajax_nonce: $el.data('nonce'),
+									action: 'searchwp_get_meta_keys'
+								};
+							},
+							processResults: function (data, params) {
+								return {
+									results: data.items
+								};
+							},
+							cache: true
+						},
+						escapeMarkup: function (markup) { return markup; },
+						minimumInputLength: 1,
+						language: {
+							inputTooShort: function () {
+								return $('#swp-search-placeholder').text();
+							}
+						},
+						templateResult: format_key,
+						templateSelection: format_key_selection
+					}
+				}
+
+				$el.select2(options);
 			});
 		};
 

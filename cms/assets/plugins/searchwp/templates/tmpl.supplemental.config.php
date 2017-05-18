@@ -32,7 +32,7 @@ function searchwp_supplemental_engine_settings_template( $engineName = null, $en
 				?>" />
 			</div>
 			<div class="swp-supplemental-engine-delete">
-				<a href="#" class="button swp-del-supplemental-engine"><?php _e( 'Remove', 'searchwp' ); ?></a>
+				<a href="#" class="button swp-del-supplemental-engine"><?php esc_html_e( 'Remove', 'searchwp' ); ?></a>
 			</div>
 		</div>
 		<div class="swp-supplemental-engine-settings"><?php

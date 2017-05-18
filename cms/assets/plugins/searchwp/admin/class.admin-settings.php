@@ -4,11 +4,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/**
+ * Class SearchWP_Admin_Settings
+ */
 class SearchWP_Admin_Settings {
 
 	function init() {
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'assets' ), 999 );
 		add_action( 'wp_ajax_swp_lazy_settings', array( $this, 'view_settings' ) );
 
 		// register internal tabs (default (engine settings) has hard-coded as first)
@@ -21,47 +24,62 @@ class SearchWP_Admin_Settings {
 		do_action( 'searchwp_settings_init' );
 	}
 
+	/**
+	 * Enqueue all the stats needed for the settings page
+	 *
+	 * @param $hook
+	 */
 	function assets( $hook ) {
+
+		// we only want our assets on our Settings page
+		if ( ! in_array( $hook, array( 'settings_page_searchwp' ), true ) ) {
+			return;
+		}
 
 		$parent = SWP();
 		$base_url = trailingslashit( $parent->url );
 
-		wp_register_style( 'select2', $base_url . 'assets/vendor/select2/select2.css', null, '3.4.1', 'screen' );
-		wp_register_style( 'swp_admin_css', $base_url . 'assets/css/searchwp.css', false, SEARCHWP_VERSION );
-		wp_register_style( 'swp_settings_css', $base_url . 'assets/css/searchwp-settings.css', false, SEARCHWP_VERSION );
+		// some plugins bundle old versions of libraries we need, we might need to handle that (by undoing the registration)
+		if ( wp_script_is( 'select2', 'registered' ) ) {
+			wp_dequeue_style( 'select2' );
+			wp_deregister_style( 'select2' );
+			wp_dequeue_script( 'select2');
+			wp_deregister_script('select2');
+		}
+
+		wp_register_style( 'select2',               $base_url . 'assets/vendor/select2/css/select2.min.css', null, '4.0.2', 'screen' );
+		wp_register_style( 'swp_admin_css',         $base_url . 'assets/css/searchwp.css', false, SEARCHWP_VERSION );
+		wp_register_style( 'swp_settings_css',      $base_url . 'assets/css/searchwp-settings.css', false, SEARCHWP_VERSION );
 		wp_register_style( 'swp_settings_tabs_css', $base_url . 'assets/css/searchwp-settings-tabs.css', false, SEARCHWP_VERSION );
 
-		wp_register_script( 'select2', $base_url . 'assets/vendor/select2/select2.min.js', array( 'jquery' ), '3.4.1', false );
-		wp_register_script( 'swp_admin_js', $base_url . 'assets/js/searchwp.js', array( 'jquery', 'select2' ), SEARCHWP_VERSION );
-		wp_register_script( 'swp_progress', $base_url . 'assets/js/searchwp-progress.js', array( 'jquery' ),  SEARCHWP_VERSION );
+		wp_register_script( 'select2',              $base_url . 'assets/vendor/select2/js/select2.min.js', array( 'jquery' ), '4.0.2', false );
+		wp_register_script( 'swp_admin_js',         $base_url . 'assets/js/searchwp.js', array( 'jquery', 'select2' ), SEARCHWP_VERSION );
+		wp_register_script( 'swp_progress',         $base_url . 'assets/js/searchwp-progress.js', array( 'jquery' ),  SEARCHWP_VERSION );
 
-		// we only want our assets on our Settings page
-		if ( 'settings_page_searchwp' == $hook ) {
-			add_thickbox();
+		add_thickbox();
 
-			wp_enqueue_style( 'swp_admin_css' );
-			wp_enqueue_style( 'swp_settings_css' );
-			wp_enqueue_style( 'swp_settings_tabs_css' );
-			wp_enqueue_style( 'select2' );
+		wp_enqueue_style( 'swp_admin_css' );
+		wp_enqueue_style( 'swp_settings_css' );
+		wp_enqueue_style( 'swp_settings_tabs_css' );
+		wp_enqueue_style( 'select2' );
 
-			wp_enqueue_script( 'underscore' );
-			wp_enqueue_script( 'jquery' );
-			wp_enqueue_script( 'jquery-ui-tooltip' );
-			wp_enqueue_script( 'select2' );
+		wp_enqueue_script( 'underscore' );
+		wp_enqueue_script( 'jquery' );
+		wp_enqueue_script( 'jquery-ui-tooltip' );
+		wp_enqueue_script( 'select2' );
 
-			// wp_enqueue_script( 'swp_admin_js' ); // this is echo'd directly into the page
+		// wp_enqueue_script( 'swp_admin_js' ); // this is echo'd directly into the page
 
-			// only trigger the progress script if it's not the alternative indexer
-			if ( ! isset( $_GET['nonce'] ) && ! $parent->is_using_alternate_indexer() ) {
-				// if a nonce was set we're dealing with advanced settings which might be purging the index
-				// if this script were included the background process would be invoked, we don't want that right now
-				wp_enqueue_script( 'swp_progress' );
-				wp_localize_script( 'swp_progress', 'ajax_object',
-					array(
-						'ajax_url' => admin_url( 'admin-ajax.php' ),
-						'nonce'    => wp_create_nonce( 'swpprogress' ) )
-				);
-			}
+		// only trigger the progress script if it's not the alternative indexer
+		if ( ! isset( $_GET['nonce'] ) && ! $parent->is_using_alternate_indexer() ) {
+			// if a nonce was set we're dealing with advanced settings which might be purging the index
+			// if this script were included the background process would be invoked, we don't want that right now
+			wp_localize_script( 'swp_progress', 'ajax_object',
+				array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'nonce'    => wp_create_nonce( 'swpprogress' ) )
+			);
+			wp_enqueue_script( 'swp_progress' );
 		}
 	}
 
@@ -93,18 +111,18 @@ class SearchWP_Admin_Settings {
 		</div>
 		<style type="text/css">
 			#swp-header-nav .nav-tab {
-				color:<?php echo $link_normal_color; ?>;
+				color:<?php echo esc_html( $link_normal_color ); ?>;
 			}
 			#swp-header-nav .nav-tab:hover {
-				color:<?php echo $link_hover_color; ?>;
+				color:<?php echo esc_html( $link_hover_color ); ?>;
 			}
 			.searchwp-tab-license-inactive span {
 				color:#fff;
-				background-color:<?php echo $link_hover_color; ?>;
+				background-color:<?php echo esc_html( $link_hover_color ); ?>;
 			}
 			.searchwp-tab-license-inactive:hover span {
 				color:#fff;
-				background-color:<?php echo $link_hover_color; ?>;
+				background-color:<?php echo esc_html( $link_hover_color ); ?>;
 			}
 
 			.searchwp-tab-license-inactive.nav-tab-active span,
@@ -134,15 +152,12 @@ class SearchWP_Admin_Settings {
 	 * Output footer content
 	 */
 	function render_footer() {
-		do_action( 'searchwp_settings_footer' );
-		?>
+		do_action( 'searchwp_settings_footer' ); ?>
 		<script type="text/javascript">
-			jQuery(document).ready(function($){
+			jQuery(document).ready(function($) {
 				var $notices = $('#wpbody .notice, #wpbody .updated, #wpbody-content > .error, #wpbody-content > .info');
-				if($notices.length){
-					$notices.each(function(){
-						$(this).appendTo('.swp-notices').show(); // was hidden by CSS on pageload to prevent jitter
-					});
+				if ($notices.length) {
+					$notices.removeClass('updated').addClass('searchwp-updated').appendTo('.swp-notices');
 				}
 			});
 		</script>
@@ -172,10 +187,10 @@ class SearchWP_Admin_Settings {
 
 		// output a notice for the initial index being built
 		$notices = searchwp_get_setting( 'notices' );
-		$initial_notified = ( is_array( $notices ) && in_array( 'initial', $notices ) ) ? true : false;
+		$initial_notified = ( is_array( $notices ) && in_array( 'initial', $notices, true ) ) ? true : false;
 		if ( searchwp_get_setting( 'initial_index_built' ) && ! $initial_notified ) : ?>
 			<div class="updated">
-				<p><?php _e( 'Initial index has been built, the progress bar will be hidden until it is needed again.', 'searchwp' ); ?></p>
+				<p><?php esc_html_e( 'Initial index has been built, the progress bar will be hidden until it is needed again.', 'searchwp' ); ?></p>
 			</div>
 			<?php
 			if ( is_array( $notices ) ) {

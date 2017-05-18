@@ -46,17 +46,17 @@ class SearchWPUpgrade {
 
 		global $wpdb;
 
+		// WordPress 4.2 added support for utf8mb4
+		if ( $wpdb->has_cap( 'utf8mb4' ) ) {
+			$this->charset = 'utf8mb4';
+			$this->collate_sql = ' COLLATE utf8mb4_unicode_ci ';
+		}
+
 		if ( ! empty( $version ) ) {
 			$this->version      = $version;
 			$this->last_version = get_option( SEARCHWP_PREFIX . 'version' );
 
-			// WordPress 4.2 added support for utf8mb4
-			if ( $wpdb->has_cap( 'utf8mb4' ) ) {
-				$this->charset = 'utf8mb4';
-				$this->collate_sql = ' COLLATE utf8mb4_unicode_ci ';
-			}
-
-			if ( false == $this->last_version ) {
+			if ( false === $this->last_version ) {
 				$this->last_version = 0;
 			}
 
@@ -65,14 +65,14 @@ class SearchWPUpgrade {
 					$this->install();
 
 					// if this is a fresh install it means that the indexer can support utf8mb4
-					if ( 'utf8mb4' == $this->charset ) {
+					if ( 'utf8mb4' === $this->charset ) {
 						add_option( SEARCHWP_PREFIX . 'utf8mb4', true, '', 'no' );
 					}
 				} else {
 					$this->upgrade();
 				}
 
-				update_option( SEARCHWP_PREFIX . 'version', $this->version );
+				update_option( SEARCHWP_PREFIX . 'version', $this->version, 'no' );
 			}
 		}
 
@@ -126,7 +126,7 @@ class SearchWPUpgrade {
 			}
 
 			// set default slug weight if applicable
-			if ( 'page' == $postTypeObject->name || $postTypeObject->publicly_queryable ) {
+			if ( 'page' === $postTypeObject->name || $postTypeObject->publicly_queryable ) {
 				$settings['engines']['default'][ $post_type ]['weights']['slug'] = searchwp_get_engine_weight( null, 'slug' );
 			}
 
@@ -135,7 +135,7 @@ class SearchWPUpgrade {
 			if ( is_array( $taxonomies ) && count( $taxonomies ) ) {
 				$settings['engines']['default'][ $post_type ]['weights']['tax'] = array();
 				foreach ( $taxonomies as $taxonomy ) {
-					if ( 'post_format' != $taxonomy ) { // we don't want Post Formats here
+					if ( 'post_format' !== $taxonomy ) { // we don't want Post Formats here
 						$settings['engines']['default'][ $post_type ]['weights']['tax'][ $taxonomy ] = searchwp_get_engine_weight( null, 'tax' );
 					}
 				}
@@ -166,6 +166,8 @@ class SearchWPUpgrade {
 		searchwp_generate_settings( $settings['engines'] );
 
 		$this->create_tables();
+
+		searchwp_add_option( 'progress', 0 );
 
 	}
 
@@ -200,7 +202,7 @@ class SearchWPUpgrade {
 
 		// if utf8mb4 collation is supported, add it
 		$varchar_collate = '';
-		if ( 'utf8mb4' == $this->charset ) {
+		if ( 'utf8mb4' === $this->charset ) {
 			// normally it's utfmb4_unicode_ci but that is not strict enough for UNIQUE keys
 			$varchar_collate = ' COLLATE utf8mb4_bin ';
 		}
@@ -214,7 +216,7 @@ class SearchWPUpgrade {
 				UNIQUE KEY termunique (term),
 				KEY termindex (term(2)),
   				KEY stemindex (stem(2))
-			) DEFAULT CHARSET=" . $this->charset . $this->collate_sql;
+			) DEFAULT CHARSET=" . $this->charset . $varchar_collate;
 		/** @noinspection PhpInternalEntityUsedInspection */
 		dbDelta( $sql );
 
@@ -384,7 +386,7 @@ class SearchWPUpgrade {
 		}
 
 		if ( version_compare( $this->last_version, '1.9.2.2', '<' ) ) {
-			searchwp_add_option( 'progress', -1 );
+			searchwp_add_option( 'progress', 0 );
 		}
 
 		if ( version_compare( $this->last_version, '1.9.4', '<' ) ) {
@@ -593,6 +595,92 @@ class SearchWPUpgrade {
 		}
 		*/
 
+		if ( version_compare( $this->last_version, '2.8', '<' ) ) {
+			$swp_live_settings = get_option( SEARCHWP_PREFIX . 'settings' );
+			$swp_nuke_on_delete = isset( $swp_live_settings['nuke_on_delete'] ) ? $swp_live_settings['nuke_on_delete'] : false;
+			
+			if ( ! empty( $swp_nuke_on_delete ) ) {
+				// migrate enabled Nuke on Delete setting to new toggle abstraction
+				$existing_settings = searchwp_get_option( 'advanced' );
+
+				if ( ! is_array( $existing_settings ) ) {
+					$existing_settings = array();
+				}
+
+				// swap it
+				$existing_settings['toggle_nuke_on_delete'] = 1;
+
+				// save the updated value
+				searchwp_update_option( 'advanced', $existing_settings );
+			}
+		}
+
+		// Admin Bar option to disable indexer needs to use Advanced tab toggle, not it's own setting
+		if ( version_compare( $this->last_version, '2.8.2', '<' ) ) {
+			$swp_282_maybe_paused = searchwp_get_option( 'paused' );
+
+			if ( ! empty( $swp_282_maybe_paused ) ) {
+				$saved_settings = searchwp_get_option( 'advanced' );
+
+				if ( ! is_array( $saved_settings ) ) {
+					$saved_settings = array();
+				}
+
+				$saved_settings['disable_indexer'] = true;
+
+				searchwp_update_option( 'advanced', $saved_settings );
+			}
+		}
+
+		// Update proper autoload flag for settings
+		if ( version_compare( $this->last_version, '2.8.3', '<' ) ) {
+
+			// these names should be autoloaded, nothing else should be
+			$all_options = array(
+				'settings',
+				'settings_backup',
+				'indexer',
+				'purge_queue',
+				'version',
+				'progress',
+				'doing_delta',
+				'paused',
+				'delta_attempts',
+				'waiting',
+				'busy',
+				'license_key',
+				'advanced',
+				'transient',
+				'utf8mb4',
+			);
+
+			// back up the settings
+			$live_settings = searchwp_get_option( 'settings' );
+			$settings_backups = array();
+			$settings_backups[ current_time( 'timestamp' ) ] = $live_settings;
+			update_option( SEARCHWP_PREFIX . 'settings_backup', $settings_backups, false );
+
+			$autoload_options = searchwp_get_autoload_options();
+
+			// update autoload flag for settings
+			foreach ( $all_options as $option ) {
+
+				// if it's supposed to autoload, forget about it
+				if ( in_array( $option, $autoload_options, true ) ) {
+					continue;
+				}
+
+				$existing = get_option( SEARCHWP_PREFIX . $option );
+
+				// If the option was simply updated, nothing would change because the value is the same
+				// so we need to delete it and then re-add it using the proper autoload flag
+				delete_option( SEARCHWP_PREFIX . $option );
+
+				add_option( SEARCHWP_PREFIX . $option, $existing, null, 'no' );
+				unset( $existing );
+			}
+
+		}
 	}
 
 }

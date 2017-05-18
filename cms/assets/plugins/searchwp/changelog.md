@@ -1,3 +1,100 @@
+### 2.8.9
+- **[Fix]** Fix PHP Fatal Error with `$wp_query`
+- **[Fix]** Fix regression introduced in 2.8.8 that prevented admin searches from working properly in some cases
+
+### 2.8.8
+- **[New]** New filter `searchwp_pre_set_post` allowing for filtration of each post object prior to indexing
+- **[Fix]** Better interoperation with Widgets
+- **[Fix]** Prevent double search logs in certain cases
+- **[Fix]** Properly cancel native search SQL when performing admin search (props Jim)
+- **[Fix]** Repaired application of 'Remove all traces' feature on Advanced settings page
+- **[Fix]** Fixed an issue where incorrect total results counts were logged
+- **[Improvement]** PHP Warning cleanup
+- **[Improvement]** Better accommodation for customization during import routines
+- **[Improvement]** Better accommodation of engine configuration and exclusions when performing AND logic pass
+- **[Change]** Update to `SWP_Query`: `post__in` and `post__not_in` parameters are now explicit (previously behaved like hooks)
+- **[Update]** Updated updater
+
+### 2.8.7
+- **[Fix]** Fixed missing tooltip content
+- **[Improvement]** Using `searchwp_admin_bar` now applies to search modification notices
+- **[Improvement]** License key now included in System Information
+- **[New]** Taxonomy term slugs are now indexed (use `searchwp_indexer_taxonomy_term_index_slug` to disable)
+- **[New]** New filter `searchwp_indexer_taxonomy_term` allowing for filtration on taxonomy terms prior to indexing
+- **[Update]** Updated updater
+
+### 2.8.6
+- **[Fix]** Fixed an issue with imposed engine config implementation for empty searches
+
+### 2.8.5
+- **[New]** Engine settings (e.g. exclusions/inclusions) are now imposed for empty searches
+- **[New]** New filter `searchwp_disable_impose_engine_config` to disable imposed engine settings for empty searches
+- **[Fix]** Fixed an issue that may have triggered unnecessary index update requests 
+- **[Improvement]** Style updates to better match WordPress' implementation of system font
+- **[Improvement]** Better handling of indexer requests
+- **[Improvement]** Better support when Admin/Dashboard searches are enabled
+- **[Improvement]** Better utilization of existing extracted document content when triggering an index rebuild
+- **[Improvement]** Better feedback when document parsing dependencies are not available
+- **[Update]** Added more file type limiters to engine settings
+- **[Update]** Updated translation sources
+- **[Update]** Updated updater
+
+### 2.8.4
+- **[New]** New filter `searchwp_indexer_comment` to filter comment arguments during indexing
+- **[New]** New filter `searchwp_indexer_pre_get_comments` to filter comment arguments during indexing
+- **[New]** New filter `searchwp_indexer_comments_args` to filter comment arguments during indexing
+- **[Fix]** Fixed an issue that prevented searching in the WordPress admin (when enabled)
+
+### 2.8.3
+- **[New]** New filter `searchwp_search_args` to filter search arguments at runtime
+- **[Improvement]** Better handling of object caching
+- **[Improvement]** Better messaging when rebuilding index
+- **[Improvement]** Dequeue/deregister legacy versions of select2 that are imposed upon SearchWP's settings screen
+ - **[Improvement]** Better handling of regex matches
+- **[Fix]** Fixed an issue that sometimes prevented the indexer progress bar from displaying after rebuilding index
+- **[Fix]** Fixed an issue that may have prevented manually edited document content from being fully re-indexed
+- **[Fix]** Fixed PHP Warning during short circuit check
+- **[Fix]** Disabling the minimum character count reduces length to 1 instead of 2
+
+### 2.8.2
+- **[Fix]** Fixed a mime type mismatch that prevented accurate Media limiting using All Documents file type
+- **[Fix]** Admin Bar and Advanced tab indexer pausing now use the same setting
+- **[Fix]** Fixed an issue when checking for `utf8mb4` support
+- **[Improvement]** Improved regex pattern for hyphen-separated matches
+- **[Improvement]** Improved aggressiveness of search algorithm where necessary to prevent unexpected filtration during searches
+- **[Update]** Updated updater
+
+### 2.8.1
+- **[Fix]** Fixed an error with PHP's return context
+
+### 2.8
+- **[New]** Document parsing support added for Office documents (.docx, .xlsx, .pptx)
+- **[New]** Document parsing support added for OpenOffice/LibreOffice documents (.odt, .ods, .odp)
+- **[New]** Document parsing support added for Rich Text documents
+- **[New]** Settings screen update to better accommodate common actions
+- **[New]** Improve settings screen performance by requesting taxonomy terms via AJAX
+- **[Fix]** When `searchwp_in_admin` is enabled searching in Grid view for Media now works as expected
+- **[Improvement]** Better handling of large content (including parsed documents)
+- **[Update]** Updated translation source
+- **[Update]** Updated select2
+
+### 2.7.2
+- **[Improvement]** Better handling of native search query
+- **[Fix]** Fixed a case where `searchwp_show_conflict_notices` was not respected
+- **[Fix]** Fix PHP Warning (`Invalid argument supplied for foreach() in /wp-includes/query.php on line 4890`)
+
+### 2.7.1
+- **[Fix]** Cleaned up PHP Warning in `SWP_Query`
+- **[Fix]** Fixed positioning of Extensions dropdown, other minor style updates
+- **[Fix]** Fixed an issue with `SWP_Query` not resetting set hooks causing inaccurate results
+- **[Fix]** Fixed an issue where Alternate Indexer may report posts left to index when no post types are enabled
+- **[Fix]** Fixed an issue where `AND` logic pass was too restrictive in some circumstances
+- **[Fix]** Fixed an issue when limiting Media results to Images only throwing a PHP Warning
+- **[Fix]** Fixed an issue that caused some WP Admin notices to not display
+- **[Improvement]** Refactored some stats logic into `SearchWP_Stats`
+- **[Change]** Changed PHPCS ruleset which resulted in some additional hardening/formatting
+- **[Update]** Updated translation source
+
 ### 2.7
 - **[New]** New filter `searchwp_weight_mods` allowing for direct manipulation of computed weights within the search algorithm
 - **[New]** New filter `searchwp_license_key` to programmatically define SearchWP license key
@@ -13,6 +110,7 @@
 - **[Fix]** Fixed an issue where a filtered post type could not be enabled in engine settings
 - **[Fix]** Use multibyte string manipulation when possible
 - **[Fix]** PHP Warning cleanup
+- **[Fix]** Fixed an issue where the indexer progress bar may not display in WordPress 4.4+
 - **[Improvement]** Better handling of matches when taking advantage of `searchwp_exclusive_regex_matches`
 - **[Improvement]** Improved handling of deeply serialized meta data
 - **[Improvement]** Reduced indexer query overhead
@@ -41,7 +139,7 @@
 - **[New]** Settings UI has been revamped
 - **[New]** New filter: `searchwp_swp_query_args` to filter SWP_Query args at runtime
 - **[New]** New action: `searchwp_settings_init` fires when the settings utility has been initialized
-- **[New]** New action: `searchwp_load` fires when SearchWP has loaded 
+- **[New]** New action: `searchwp_load` fires when SearchWP has loaded
 - **[New]** New action: `searchwp_settings_before_header` fires before the settings header is output
 - **[New]** New action: `searchwp_settings_nav_tab` to implement settings tabs
 - **[New]** New action: `searchwp_settings_after_header` fires after the settings header is output
@@ -52,12 +150,12 @@
 - **[New]** Results weights are included in HTML comment block when debugging is enabled
 - **[New]** New filter: `searchwp_debug_append_weights_to_titles` whether weights should be included in HTML comment block debug information
 - **[New]** New filter: `searchwp_show_filter_conflict_notices` whether filter conflicts should be shown when debugging is enabled (defaults to `false`)
-- **[Improvement]** Better license activation UX 
+- **[Improvement]** Better license activation UX
 - **[Improvement]** Reduction of index overhead by way of pairing to engine settings
 - **[Improvement]** Refined list of default common (stop) words
 - **[Improvement]** Better handling of Greek keywords when using `searchwp_lenient_accents`
-- **[New]** New filter: `searchwp_leinent_accents_conversions` to manipulate which accents are handled leniently when enabled
-- **[New]** New filter: `searchwp_leinent_accent_result` allowing fine-grained control over lenient accents per term
+- **[New]** New filter: `searchwp_lenient_accents_conversions` to manipulate which accents are handled leniently when enabled
+- **[New]** New filter: `searchwp_lenient_accent_result` allowing fine-grained control over lenient accents per term
 - **[Fix]** Clear out delta ceiling update check when waking up the indexer
 - **[Fix]** Fixed an issue that may have caused the indexer to loop when a post has no content to index after tokenizing/processing
 - **[Fix]** Fixed an issue where the settings screen spinner would not display

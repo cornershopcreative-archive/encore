@@ -6,14 +6,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/**
+ * Class SearchWP_System_Info
+ */
 class SearchWP_System_Info {
 
 	private $searchwp;
 
+	/**
+	 * SearchWP_System_Info constructor.
+	 */
 	function __construct() {
 		$this->searchwp = SWP();
 	}
 
+	/**
+	 * Output System Info
+	 */
 	function output() {
 		global $wpdb;
 
@@ -25,6 +34,11 @@ class SearchWP_System_Info {
 		$host = false;
 		if ( defined( 'WPE_APIKEY' ) ) {
 			$host = 'WP Engine';
+			if ( defined( 'WPE_GOVERNOR' ) && false === WPE_GOVERNOR ) {
+				$host .= ' (WPE_GOVERNOR disabled)';
+			} else {
+				$host .= ' (WPE_GOVERNOR enabled)';
+			}
 		} elseif ( defined( 'PAGELYBIN' ) ) {
 			$host = 'Pagely';
 		}
@@ -36,7 +50,7 @@ class SearchWP_System_Info {
 
 		?>
 	<form action="" method="post" dir="ltr">
-		<textarea readonly="readonly" onclick="this.focus();this.select()" class="searchwp-system-info-textarea" name="searchwp-sysinfo" title="<?php _e( 'To copy the system info, click below then press CTRL + C (PC) or CMD + C (Mac).', 'searchwp' ); ?>">
+		<textarea readonly="readonly" onclick="this.focus();this.select()" class="searchwp-system-info-textarea" name="searchwp-sysinfo" title="<?php esc_attr_e( 'To copy the system info, click below then press CTRL + C (PC) or CMD + C (Mac).', 'searchwp' ); ?>">
 ### Begin System Info ###
 
 ## Please include this information when posting support requests ##
@@ -45,12 +59,13 @@ class SearchWP_System_Info {
 Failed utf8mb4 upgrade:   Yes
 <?php endif; ?>
 
-Multisite:                <?php echo is_multisite() ? 'Yes' . "\n" : 'No' . "\n" ?>
+Multisite:                <?php echo esc_textarea( is_multisite() ? 'Yes' : 'No' ) . "\n"; ?>
 
 SITE_URL:                 <?php echo esc_url( site_url() ) . "\n"; ?>
 HOME_URL:                 <?php echo esc_url( home_url() ) . "\n"; ?>
 
 SearchWP Version:         <?php echo esc_textarea( $this->searchwp->version ) . "\n"; ?>
+SearchWP License:         <?php echo esc_textarea( searchwp_get_license_key() ) . "\n"; ?>
 WordPress Version:        <?php echo esc_textarea( get_bloginfo( 'version' ) ) . "\n"; ?>
 Permalink Structure:      <?php echo esc_textarea( get_option( 'permalink_structure' ) ) . "\n"; ?>
 Active Theme:             <?php echo esc_textarea( $theme ) . "\n"; ?>
@@ -58,30 +73,20 @@ Active Theme:             <?php echo esc_textarea( $theme ) . "\n"; ?>
 Host:                     <?php echo esc_textarea( $host ) . "\n"; ?>
 <?php endif; ?>
 
-Registered Post Stati:    <?php echo esc_textarea( implode( ', ', get_post_stati() ) ) . "\n\n"; ?>
+Registered Post Stati:    <?php echo esc_textarea( implode( ', ', get_post_stati() ) ) . "\n"; ?>
 
 PHP Version:              <?php echo esc_textarea( PHP_VERSION ) . "\n"; ?>
 MySQL Version:            <?php echo esc_textarea( $wpdb->db_version() ) . "\n"; ?>
 Web Server Info:          <?php echo esc_textarea( $_SERVER['SERVER_SOFTWARE'] ) . "\n"; ?>
 
-WordPress Memory Limit:   <?php echo esc_textarea( WP_MEMORY_LIMIT ); ?><?php echo "\n"; ?>
-PHP Safe Mode:            <?php echo ini_get( 'safe_mode' ) ? 'Yes' : 'No'; ?><?php echo "\n"; ?>
+WordPress Memory Limit:   <?php echo esc_textarea( WP_MEMORY_LIMIT ) . "\n"; ?>
+PHP Safe Mode:            <?php echo esc_textarea( ini_get( 'safe_mode' ) ? 'Yes' : 'No' ) . "\n"; ?>
 PHP Memory Limit:         <?php echo esc_textarea( ini_get( 'memory_limit' ) ) . "\n"; ?>
-PHP Upload Max Size:      <?php echo esc_textarea( ini_get( 'upload_max_filesize' ) ) . "\n"; ?>
-PHP Post Max Size:        <?php echo esc_textarea( ini_get( 'post_max_size' ) ) . "\n"; ?>
-PHP Upload Max Filesize:  <?php echo esc_textarea( ini_get( 'upload_max_filesize' ) ) . "\n"; ?>
 PHP Time Limit:           <?php echo esc_textarea( ini_get( 'max_execution_time' ) ) . "\n"; ?>
-PHP Max Input Vars:       <?php echo esc_textarea( ini_get( 'max_input_vars' ) ) . "\n"; ?>
-PHP Arg Separator:        <?php echo esc_textarea( ini_get( 'arg_separator.output' ) ) . "\n"; ?>
-PHP Allow URL File Open:  <?php echo ini_get( 'allow_url_fopen' ) ? 'Yes' : 'No'; ?><?php echo "\n"; ?>
 
-WP_DEBUG:                 <?php echo defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" : 'Not set' . "\n" ?>
+WP_DEBUG:                 <?php echo esc_textarea( ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? 'Enabled' : 'Disabled' ) . "\n"; ?>
 
-WP Table Prefix:          <?php echo 'Length: '. strlen( $wpdb->prefix ); echo ' Status:'; if ( strlen( $wpdb->prefix ) > 16 ) { echo ' ERROR: Too Long'; } else { echo ' Acceptable'; } echo "\n"; ?>
-
-Show On Front:            <?php echo esc_textarea( get_option( 'show_on_front' ) ) . "\n" ?>
-Page On Front:            <?php $id = get_option( 'page_on_front' ); echo esc_textarea( get_the_title( $id ) . ' (#' . $id . ')' ) . "\n" ?>
-Page For Posts:           <?php $id = get_option( 'page_for_posts' ); echo esc_textarea( get_the_title( $id ) . ' (#' . $id . ')' ) . "\n" ?>
+WP Table Prefix:          <?php echo 'Length: '. absint( strlen( $wpdb->prefix ) ); echo ' Status:'; if ( strlen( $wpdb->prefix ) > 16 ) { echo ' ERROR: Too Long'; } else { echo ' Acceptable'; } echo "\n"; ?>
 
 <?php
 $request['cmd'] = '_notify-validate';
@@ -102,19 +107,6 @@ if ( ! is_wp_error( $response ) && $response['response']['code'] >= 200 && $resp
 }
 ?>
 WP Remote Post:           <?php echo esc_textarea( $WP_REMOTE_POST ); ?>
-
-Session:                  <?php echo isset( $_SESSION ) ? 'Enabled' : 'Disabled'; ?><?php echo "\n"; ?>
-Session Name:             <?php echo esc_html( ini_get( 'session.name' ) ); ?><?php echo "\n"; ?>
-Cookie Path:              <?php echo esc_html( ini_get( 'session.cookie_path' ) ); ?><?php echo "\n"; ?>
-Save Path:                <?php echo esc_html( ini_get( 'session.save_path' ) ); ?><?php echo "\n"; ?>
-Use Cookies:              <?php echo ini_get( 'session.use_cookies' ) ? 'On' : 'Off'; ?><?php echo "\n"; ?>
-Use Only Cookies:         <?php echo ini_get( 'session.use_only_cookies' ) ? 'On' : 'Off'; ?><?php echo "\n"; ?>
-
-DISPLAY ERRORS:           <?php echo ( ini_get( 'display_errors' ) ) ? 'On (' . ini_get( 'display_errors' ) . ')' : 'N/A'; ?><?php echo "\n"; ?>
-FSOCKOPEN:                <?php echo ( function_exists( 'fsockopen' ) ) ? 'Your server supports fsockopen.' : 'Your server does not support fsockopen.'; ?><?php echo "\n"; ?>
-cURL:                     <?php echo ( function_exists( 'curl_init' ) ) ? 'Your server supports cURL.' : 'Your server does not support cURL.'; ?><?php echo "\n"; ?>
-SOAP Client:              <?php echo ( class_exists( 'SoapClient' ) ) ? 'Your server has the SOAP Client enabled.' : 'Your server does not have the SOAP Client enabled.'; ?><?php echo "\n"; ?>
-SUHOSIN:                  <?php echo ( extension_loaded( 'suhosin' ) ) ? 'Your server has SUHOSIN installed.' : 'Your server does not have SUHOSIN installed.'; ?><?php echo "\n"; ?>
 
 TEMPLATES:
 
@@ -156,7 +148,7 @@ $active_plugins = get_option( 'active_plugins', array() );
 
 foreach ( $plugins as $plugin_path => $plugin ) {
 	// if the plugin isn't active, don't show it.
-	if ( ! in_array( $plugin_path, $active_plugins ) ) {
+	if ( ! in_array( $plugin_path, $active_plugins, true ) ) {
 		continue;
 	}
 

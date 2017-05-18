@@ -48,7 +48,7 @@ class SearchWP_Dashboard {
 	 */
 	function assets( $hook ) {
 		if (
-			is_admin() && 'index.php' == $hook // only on the Dashboard
+			is_admin() && 'index.php' === $hook // only on the Dashboard
 			&& apply_filters( 'searchwp_dashboard_widget', true )
 			&& apply_filters( 'searchwp_dashboard_widget_cap',
 			apply_filters( 'searchwp_settings_cap', 'manage_options' ) )
@@ -105,18 +105,18 @@ class SearchWP_Dashboard {
 									}
 									?>
 									<div class="searchwp-stats-segment searchwp-stats-today">
-										<h4><?php _e( 'Today', 'searchwp' ); ?></h4>
+										<h4><?php esc_html_e( 'Today', 'searchwp' ); ?></h4>
 										<?php $this->echo_stats( $popular_searches_today ); ?>
 									</div>
 									<div class="searchwp-stats-segment searchwp-stats-month">
-										<h4><?php _e( 'Past 30 Days', 'searchwp' ); ?></h4>
+										<h4><?php esc_html_e( 'Past 30 Days', 'searchwp' ); ?></h4>
 										<?php $this->echo_stats( $popular_searches_month ); ?>
 									</div>
 									<div class="searchwp-stats-segment-next">
 										<?php
 											$the_link = admin_url( 'index.php?page=searchwp-stats' ) . '&tab=' . esc_attr( $engine );
 										?>
-										<p><a href="<?php echo esc_url( $the_link ); ?>" class="button"><?php _e( 'View Full Stats', 'searchwp' ); ?></a></p>
+										<p><a href="<?php echo esc_url( $the_link ); ?>" class="button"><?php esc_html_e( 'View Full Stats', 'searchwp' ); ?></a></p>
 									</div>
 								</div>
 							<?php endforeach; ?>
@@ -134,28 +134,10 @@ class SearchWP_Dashboard {
 	 *
 	 * @since 2.8
 	 */
-	function echo_stats( $stats ) { ?>
-		<?php if ( ! empty( $stats ) ) : ?>
-			<table cellpadding="0" cellspacing="0">
-				<thead>
-					<tr>
-						<th><?php _e( 'Query', 'searchwp' ); ?></th>
-						<th><?php _e( 'Count', 'searchwp' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach ( $stats as $stat ) : ?>
-						<tr>
-							<td><div title="<?php echo esc_attr( $stat->query ); ?>"><?php echo esc_html( $stat->query ); ?></div></td>
-							<td><?php echo absint( $stat->searchcount ); ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		<?php else : ?>
-			<p class="description"><?php _e( 'No searches for this time period.', 'searchwp' ); ?></p>
-		<?php endif; ?>
-	<?php }
+	function echo_stats( $stats ) { 
+		$stats_obj = new SearchWP_Stats();
+		$stats_obj->display( $stats );
+	}
 }
 
 // liftoff

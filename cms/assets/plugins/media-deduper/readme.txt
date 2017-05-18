@@ -3,7 +3,7 @@ Contributors: drywallbmb, kenjigarland
 Tags: media, attachments, admin, upload
 Requires at least: 4.3
 Tested up to: 4.7.2
-Stable tag: 1.3
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,6 +55,9 @@ The git repository should be publicly available at https://bitbucket.org/corners
 
 
 == Changelog ==
+= 1.3.1 =
+* Bugfix: Fixing an issue that caused attachments to be listed as "duplicates" even after all identical attachments had been deleted.
+
 = 1.3 =
 * Refactoring PHP to take advantage of WP 4.7's new hooks for handling bulk actions.
 * Minor improvements to 'success' messages displayed after a bulk action has been performed on a set of duplicate attachments.
