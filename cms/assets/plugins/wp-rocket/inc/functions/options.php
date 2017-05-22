@@ -29,7 +29,7 @@ function get_rocket_option( $option, $default = false ) {
 		return WP_ROCKET_EMAIL;
 	}
 	$value = isset( $options[ $option ] ) && $options[ $option ] !== '' ? $options[ $option ] : $default;
-	
+
 	/**
 	 * Filter any WP Rocket option after read
 	 *
@@ -52,7 +52,7 @@ function get_rocket_option( $option, $default = false ) {
 function update_rocket_option( $key, $value ) {
 	$options         = get_option( WP_ROCKET_SLUG );
 	$options[ $key ] = $value;
-	
+
 	update_option( WP_ROCKET_SLUG, $options );
 }
 
@@ -66,15 +66,19 @@ function update_rocket_option( $key, $value ) {
  */
 function is_rocket_post_excluded_option( $option ) {
 	global $post;
-	
+
+    if ( ! is_object( $post ) ) {
+        return false;
+    }
+
 	if( is_home() ) {
 		$post_id = get_queried_object_id();
 	}
-	
+
 	if ( is_singular() && isset( $post ) ) {
 		$post_id = $post->ID;
 	}
-	
+
 	return ( isset( $post_id ) ) ? get_post_meta( $post_id, '_rocket_exclude_' . $option, true ) : false;
 }
 
@@ -134,6 +138,34 @@ function is_rocket_cdn_on_ssl() {
 }
 
 /**
+ * Get the domain names to DNS prefetch from WP Rocket options
+ *
+ * @since 2.8.9
+ * @author Remy Perona
+ *
+ * return Array An array of domain names to DNS prefetch
+ */
+function rocket_get_dns_prefetch_domains() {
+	$cdn_cnames    = get_rocket_cdn_cnames( array( 'all', 'images', 'css_and_js', 'css', 'js' ) );
+
+	// Don't add CNAMES if CDN is disabled HTTPS pages or on specific posts
+	if ( ! is_rocket_cdn_on_ssl() || is_rocket_post_excluded_option( 'cdn' ) ) {
+		$cdn_cnames = array();
+	}
+
+	$domains = array_merge( $cdn_cnames, (array) get_rocket_option( 'dns_prefetch' ) );
+
+	/**
+	 * Filter list of domains to prefetch DNS
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $domains List of domains to prefetch DNS
+	 */
+	return apply_filters( 'rocket_dns_prefetch', $domains );
+}
+
+/**
  * Get the interval task cron purge in seconds
  * This setting can be changed from the options page of the plugin
  *
@@ -159,10 +191,10 @@ function get_rocket_purge_cron_interval() {
  */
 function get_rocket_cache_reject_uri() {
 	$uri = get_rocket_option( 'cache_reject_uri', array() );
-	
+
 	// Exclude cart & checkout pages from e-commerce plugins
 	$uri = array_merge( $uri, get_rocket_ecommerce_exclude_pages() );
-		
+
 	// Exclude hide login plugins
 	$uri = array_merge( $uri, get_rocket_logins_exclude_pages() );
 
@@ -170,7 +202,7 @@ function get_rocket_cache_reject_uri() {
     if ( ! is_rocket_cache_feed() ) {
         $uri[] = '.*/' . $GLOBALS['wp_rewrite']->feed_base . '/?';
     }
-	
+
 	/**
 	 * Filter the rejected uri
 	 *
@@ -221,7 +253,7 @@ function get_rocket_cache_reject_cookies() {
  */
 function get_rocket_cache_mandatory_cookies() {
 	$cookies = array();
-	
+
 	/**
 	 * Filter list of mandatory cookies
 	 *
@@ -231,7 +263,7 @@ function get_rocket_cache_mandatory_cookies() {
 	 */
 	$cookies = apply_filters( 'rocket_cache_mandatory_cookies', $cookies );
 	$cookies = array_filter( $cookies );
-	
+
 	$cookies = implode( '|', $cookies );
 	return $cookies;
 }
@@ -245,7 +277,7 @@ function get_rocket_cache_mandatory_cookies() {
  */
 function get_rocket_cache_dynamic_cookies() {
 	$cookies = array();
-		
+
 	/**
 	 * Filter list of dynamic cookies
 	 *
@@ -255,7 +287,7 @@ function get_rocket_cache_dynamic_cookies() {
 	 */
 	$cookies = apply_filters( 'rocket_cache_dynamic_cookies', $cookies );
 	$cookies = array_filter( $cookies );
-	
+
 	return $cookies;
 }
 
@@ -269,9 +301,6 @@ function get_rocket_cache_dynamic_cookies() {
 function get_rocket_cache_reject_ua() {
 	$ua   = get_rocket_option( 'cache_reject_ua', array() );
 	$ua[] = 'facebookexternalhit';
-	$ua[] = 'FB_IAB';
-	$ua[] = 'FB4A';
-	$ua[] = 'FBAV';
 
 	/**
 	 * Filter the rejected User-Agent
@@ -281,10 +310,10 @@ function get_rocket_cache_reject_ua() {
 	 * @param array $ua List of rejected User-Agent
 	*/
 	$ua = apply_filters( 'rocket_cache_reject_ua', $ua );
-	
+
 	$ua = implode( '|', array_filter( $ua ) );
 	$ua = str_replace( array( ' ', '\\\\ ' ), '\\ ', $ua );
-	
+
 	return $ua;
 }
 
@@ -297,7 +326,7 @@ function get_rocket_cache_reject_ua() {
  */
 function get_rocket_cdn_reject_files() {
 	$files = get_rocket_option( 'cdn_reject_files', array() );
-	
+
 	/**
 	 * Filter the rejected files
 	 *
@@ -306,9 +335,9 @@ function get_rocket_cdn_reject_files() {
 	 * @param array $files List of rejected files
 	*/
 	$files = apply_filters( 'rocket_cdn_reject_files', $files );
-	
-	$files = implode( '|', array_filter( $files ) );	
-	
+
+	$files = implode( '|', array_filter( $files ) );
+
 	return $files;
 }
 
@@ -340,7 +369,7 @@ function get_rocket_cdn_cnames( $zone = 'all' ) {
 			}
 		}
 	}
-	
+
 	/**
 	 * Filter all CNAMES.
 	 *
@@ -350,7 +379,7 @@ function get_rocket_cdn_cnames( $zone = 'all' ) {
 	*/
 	$hosts = apply_filters( 'rocket_cdn_cnames', $hosts );
 	$hosts = array_filter( $hosts );
-	
+
 	return $hosts;
 }
 
@@ -363,7 +392,7 @@ function get_rocket_cdn_cnames( $zone = 'all' ) {
  */
 function get_rocket_cache_query_string() {
 	$query_strings = get_rocket_option( 'cache_query_strings', array() );
-	
+
 	/**
 	 * Filter query strings which can be cached.
 	 *
@@ -385,10 +414,10 @@ function get_rocket_cache_query_string() {
  */
 function get_rocket_exclude_css() {
 	global $rocket_excluded_enqueue_css;
-	
+
 	$css_files = get_rocket_option( 'exclude_css', array() );
 	$css_files = array_unique( array_merge( $css_files, (array) $rocket_excluded_enqueue_css ) );
-	
+
 	/**
 	 * Filter CSS files to exclude to the minification.
 	 *
@@ -397,7 +426,7 @@ function get_rocket_exclude_css() {
 	 * @param array $css_files List of excluded CSS files.
 	*/
 	$css_files = apply_filters( 'rocket_exclude_css', $css_files );
-	
+
 	return $css_files;
 }
 
@@ -408,12 +437,12 @@ function get_rocket_exclude_css() {
  *
  * @return array List of excluded JS files.
  */
-function get_rocket_exclude_js() {	
+function get_rocket_exclude_js() {
 	global $rocket_excluded_enqueue_js;
-	
+
 	$js_files = get_rocket_option( 'exclude_js', array() );
 	$js_files = array_unique( array_merge( $js_files, (array) $rocket_excluded_enqueue_js ) );
-	
+
 	/**
 	 * Filter JS files to exclude to the minification.
 	 *
@@ -422,7 +451,7 @@ function get_rocket_exclude_js() {
 	 * @param array $css_files List of excluded JS files.
 	*/
 	$js_files = apply_filters( 'rocket_exclude_js', $js_files );
-	
+
 	return $js_files;
 }
 
@@ -435,15 +464,15 @@ function get_rocket_exclude_js() {
  */
 function get_rocket_minify_js_in_footer() {
 	global $rocket_enqueue_js_in_footer, $wp_scripts;
-	
+
 	$js_files = get_rocket_option( 'minify_js_in_footer', array() );
 	$js_files = array_map( 'rocket_set_internal_url_scheme', $js_files );
 	$js_files = array_unique( array_merge( $js_files, (array) $rocket_enqueue_js_in_footer ) );
-	
+
 	if ( rocket_is_plugin_active('sitepress-multilingual-cms/sitepress.php') && isset( $wp_scripts->registered['sitepress'] ) ) {
 		$js_files[] = $wp_scripts->registered['sitepress']->src;
 	}
-	
+
 	/**
 	 * Filter JS files to move in the footer during the minification.
 	 *
@@ -452,7 +481,7 @@ function get_rocket_minify_js_in_footer() {
 	 * @param array $js_files List of JS files.
 	*/
 	$js_files = apply_filters( 'rocket_minify_js_in_footer', $js_files );
-	
+
 	return $js_files;
 }
 
@@ -472,74 +501,68 @@ function get_rocket_deferred_js_files() {
 	 * @param array List of Deferred JavaScript files
 	 */
 	$deferred_js_files = apply_filters( 'rocket_minify_deferred_js', get_rocket_option( 'deferred_js_files', array() ) );
-	
+
 	return $deferred_js_files;
 }
 
 /**
  * Determine if the key is valid
  *
+ * @since 2.9 use hash_equals() to compare the hash values
  * @since 1.0
+ *
+ * @return bool true if everything is ok, false otherwise
  */
 function rocket_valid_key() {
-	return 8 == strlen( get_rocket_option( 'consumer_key' ) ) && get_rocket_option( 'secret_key' ) == hash( 'crc32', get_rocket_option( 'consumer_email' ) );
+    if ( ! $rocket_secret_key = get_rocket_option( 'secret_key' ) ) {
+        return false;
+    }
+
+	return 8 == strlen( get_rocket_option( 'consumer_key' ) ) && hash_equals( $rocket_secret_key, hash( 'crc32', get_rocket_option( 'consumer_email' ) ) );
 }
 
 /**
- * Determine if the key is valid
+ * Determine if the key is valid.
  *
- * @since 2.2 The function do the live check and update the option
+ * @since 2.9.7 Remove arguments ($type & $data).
+ * @since 2.9.7 Stop to auto-check the validation each 1 & 30 days.
+ * @since 2.2 The function do the live check and update the option.
  */
-function rocket_check_key( $type = 'transient_1', $data = null ) {
+function rocket_check_key() {
 	// Recheck the license
 	$return = rocket_valid_key();
 
-	if ( ! rocket_valid_key()
-		|| ( 'transient_1' == $type && ! get_transient( 'rocket_check_licence_1' ) )
-		|| ( 'transient_30' == $type && ! get_transient( 'rocket_check_licence_30' ) )
-		|| 'live' == $type ) {
-
-		$response = wp_remote_get( WP_ROCKET_WEB_VALID, array( 'timeout'=>30 ) );
+	if ( ! rocket_valid_key() ) {
+		$response = wp_remote_get( WP_ROCKET_WEB_VALID, array( 'timeout' => 30 ) );
 
 		$json = ! is_wp_error( $response ) ? json_decode( $response['body'] ) : false;
 		$rocket_options = array();
 
 		if ( $json ) {
-
 			$rocket_options['consumer_key'] 	= $json->data->consumer_key;
 			$rocket_options['consumer_email']	= $json->data->consumer_email;
 
 			if( $json->success ) {
-
 				$rocket_options['secret_key'] = $json->data->secret_key;
+
 				if ( ! get_rocket_option( 'license' ) ) {
 					$rocket_options['license'] = '1';
 				}
-				
-				if ( 'live' != $type ) {
-					if ( 'transient_1' == $type ) {
-						set_transient( 'rocket_check_licence_1', true, DAY_IN_SECONDS );
-					} elseif ( 'transient_30' == $type ) {
-						set_transient( 'rocket_check_licence_30', true, DAY_IN_SECONDS*30 );
-					}
-				}
-
 			} else {
 
-				$messages = array( 	'BAD_LICENSE'	=> __( 'Your license is not valid.', 'rocket' ),
-									'BAD_NUMBER'	=> __( 'You cannot add more websites. Upgrade your account.', 'rocket' ),
-									'BAD_SITE'		=> __( 'This website is not allowed.', 'rocket' ),
-									'BAD_KEY'		=> __( 'This license key is not accepted.', 'rocket' ),
-								);
+				$messages = array(
+					'BAD_LICENSE' => __( 'Your license is not valid.', 'rocket' ),
+					'BAD_NUMBER'  => __( 'You cannot add more websites. Upgrade your account.', 'rocket' ),
+					'BAD_SITE'	  => __( 'This website is not allowed.', 'rocket' ),
+					'BAD_KEY'	  => __( 'This license key is not accepted.', 'rocket' ),
+				);
 				$rocket_options['secret_key'] = '';
 
 				add_settings_error( 'general', 'settings_updated', $messages[ $json->data->reason ], 'error' );
-
 			}
 
 			set_transient( WP_ROCKET_SLUG, $rocket_options );
 			$return = (array) $rocket_options;
-
 		}
 	}
 

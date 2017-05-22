@@ -123,6 +123,11 @@ class SearchWPIndexer {
 	 */
 	public $hash;
 
+	/**
+	 * @var int Threshold (in characters) to trigger big data handling
+	 */
+	private $big_data_trigger = 10000;
+
 
 	/**
 	 * Constructor
@@ -138,6 +143,7 @@ class SearchWPIndexer {
 		$this->postTypesToIndex = $searchwp->get_enabled_post_types_across_all_engines();
 
 		// make sure we've got a valid request to index
+		wp_cache_delete( 'searchwp_transient', 'options' );
 		if ( get_option( 'searchwp_transient' ) !== $hash ) {
 			if ( ! empty( $hash ) ) {
 				do_action( 'searchwp_log', 'Invalid index request ' . $hash );
@@ -150,12 +156,14 @@ class SearchWPIndexer {
 			// init
 			$this->common = $searchwp->common;
 
+			$this->big_data_trigger = absint( apply_filters( 'searchwp_term_count_limit', $this->big_data_trigger ) );
+
 			$this->lenient_accents = apply_filters( 'searchwp_leinant_accents', $this->lenient_accents ); // deprecated
 			$this->lenient_accents = apply_filters( 'searchwp_lenient_accents', $this->lenient_accents );
 
 			// dynamically decide whether we're going to index Attachments based on whether Media is enabled for any search engine
 			$index_attachments_from_settings = false;
-			if ( in_array( 'attachment', $this->postTypesToIndex ) ) {
+			if ( in_array( 'attachment', $this->postTypesToIndex, true ) ) {
 				$index_attachments_from_settings = true;
 			}
 
@@ -186,11 +194,11 @@ class SearchWPIndexer {
 			if ( is_array( $this->postTypesToIndex ) ) {
 				foreach ( $this->postTypesToIndex as $key => $postType ) {
 					$post_type_lower = function_exists( 'mb_strtolower' ) ? mb_strtolower( $postType, 'UTF-8' ) : strtolower( $postType );
-					if ( 'attachment' == $post_type_lower ) {
+					if ( 'attachment' === $post_type_lower ) {
 						unset( $this->postTypesToIndex[ $key ] );
 					}
 				}
-			} elseif ( 'attachment' == strtolower( $this->postTypesToIndex ) ) {
+			} elseif ( 'attachment' === strtolower( $this->postTypesToIndex ) ) {
 				$this->postTypesToIndex = 'any';
 			}
 
@@ -231,7 +239,7 @@ class SearchWPIndexer {
 			$memoryUse = size_format( memory_get_usage() );
 			do_action( 'searchwp_log', 'Memory usage: ' . $memoryUse . ' - sleeping for ' . $waitTime . 's' );
 
-			if ( 1 == $waitTime ) {
+			if ( 1 === $waitTime ) {
 				// wait time was not adjusted, so we're just going to usleep because 1 second is an eternity
 				usleep( 750000 );
 			} else {
@@ -281,7 +289,7 @@ class SearchWPIndexer {
 
 					// reset the transient
 					$this->hash = sprintf( '%.22F', microtime( true ) ); // inspired by $doing_wp_cron
-					update_option( 'searchwp_transient', $this->hash );
+					update_option( 'searchwp_transient', $this->hash, 'no' );
 
 					$destination = esc_url_raw( $searchwp->endpoint . '?swpnonce=' . $this->hash );
 
@@ -403,7 +411,7 @@ class SearchWPIndexer {
 	 * @since 1.0
 	 */
 	function set_post( $post ) {
-		$this->post = $post;
+		$this->post = apply_filters( 'searchwp_pre_set_post', $post );
 
 		// append Custom Field data
 		$this->post->custom = get_post_custom( $post->ID );
@@ -430,7 +438,7 @@ class SearchWPIndexer {
 			}
 		}
 
-		// allow developer the abilitiy to manually manipulate the post content or Custom Field data
+		// allow developer the ability to manually manipulate the post content or Custom Field data
 		$this->post = apply_filters( 'searchwp_set_post', $this->post );
 	}
 
@@ -488,7 +496,7 @@ class SearchWPIndexer {
 		}
 
 		$totalMedia = 0;  // in case Attachment indexing is disabled
-		if ( $this->indexAttachments ) {
+		if ( ! empty( $this->postTypesToIndex ) && $this->indexAttachments ) {
 			// also check for media
 			$args = array(
 				'posts_per_page'    => 1,
@@ -511,7 +519,7 @@ class SearchWPIndexer {
 			$totalMedia = absint( $totalMediaRef->found_posts );
 		}
 
-		return $totalPosts + $totalMedia;
+		return absint( $totalPosts ) + absint( $totalMedia );
 	}
 
 
@@ -677,8 +685,8 @@ class SearchWPIndexer {
 			}
 
 			// check the index too
-			$ids_to_index_sql = implode( ',', $ids_to_index );
 			$ids_to_index = array_map( 'absint', $ids_to_index );
+			$ids_to_index_sql = implode( ',', $ids_to_index );
 			$index_table = $wpdb->prefix . SEARCHWP_DBPREFIX . 'index';
 			$ids_to_index_sql = "SELECT post_id FROM {$index_table} WHERE post_id IN ({$ids_to_index_sql}) GROUP BY post_id LIMIT 100";
 			$already_indexed = $wpdb->get_col( $ids_to_index_sql );
@@ -714,173 +722,30 @@ class SearchWPIndexer {
 	/**
 	 * Extract PDF meta (PHP 5.3+)
 	 *
-	 * @since 2.5
-	 * @param $post_id integer The post ID of the PDF in the Media library
+	 * @deprecated in version 2.8
 	 *
-	 * @return array The metadata of the PDF
+	 * @param $post_id
+	 *
+	 * @return array
 	 */
 	function extract_pdf_metadata( $post_id ) {
-		global $searchwp;
-
-		$pdf_post = get_post( absint( $post_id ) );
-
-		// make sure it's a PDF
-		if ( 'application/pdf' !== $pdf_post->post_mime_type ) {
-			return '';
-		}
-
-		// grab the filename of the PDF
-		$filename = get_attached_file( absint( $post_id ) );
-
-		// make sure the file exists locally
-		if ( ! file_exists( $filename ) ) {
-			return '';
-		}
-
-		$details = array();
-
-		if ( apply_filters( 'searchwp_skip_vendor_libs', false ) ) {
-			// skip loading any files and just return an empty array
-			return $details;
-		}
-
-		// PdfParser runs only on 5.3+ but SearchWP runs on 5.2+
-		if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
-
-			/** @noinspection PhpIncludeInspection */
-			include_once( $searchwp->dir . '/vendor/pdfparser-bootloader.php' );
-
-			// a wrapper class was conditionally included if we're running PHP 5.3+ so let's try that
-			if ( class_exists( 'SearchWP_PdfParser' ) ) {
-
-				/** @noinspection PhpIncludeInspection */
-				include_once( $searchwp->dir . '/vendor/pdfparser/vendor/autoload.php' );
-
-				// try PdfParser first
-				$parser = new SearchWP_PdfParser();
-				$parser = $parser->init();
-
-				try {
-					$pdf = $parser->parseFile( $filename );
-					$details = $pdf->getDetails();
-				} catch (Exception $e) {
-					do_action( 'searchwp_log', 'PDF metadata parsing failed: ' . $e->getMessage() );
-					return false;
-				}
-			}
-		}
-
-		return $details;
+		$parser = new SearchWPDocumentParser( $post_id );
+		return $parser->extract_pdf_metadata( $post_id );
 	}
-
 
 	/**
 	 * Extract plain text from PDF
 	 *
-	 * @since 2.5
-	 * @param $post_id integer The post ID of the PDF in the Media library
+	 * @deprecated in version 2.8
 	 *
-	 * @return string The contents of the PDF
+	 * @param $post_id
+	 *
+	 * @return string
 	 */
 	function extract_pdf_text( $post_id ) {
-		global $wp_filesystem, $searchwp;
-
-		$pdf_post = get_post( absint( $post_id ) );
-
-		// make sure it's a PDF
-		if ( 'application/pdf' !== $pdf_post->post_mime_type ) {
-			return '';
-		}
-
-		// grab the filename of the PDF
-		$filename = get_attached_file( absint( $post_id ) );
-
-		// make sure the file exists locally
-		if ( ! file_exists( $filename ) ) {
-			return '';
-		}
-
-		if ( apply_filters( 'searchwp_skip_vendor_libs', false ) ) {
-			// skip loading any files and just return an empty string
-			return '';
-		}
-
-		// PdfParser runs only on 5.3+ but SearchWP runs on 5.2+
-		if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
-
-			/** @noinspection PhpIncludeInspection */
-			include_once( $searchwp->dir . '/vendor/pdfparser-bootloader.php' );
-
-			// a wrapper class was conditionally included if we're running PHP 5.3+ so let's try that
-			if ( class_exists( 'SearchWP_PdfParser' ) ) {
-
-				/** @noinspection PhpIncludeInspection */
-				include_once( $searchwp->dir . '/vendor/pdfparser/vendor/autoload.php' );
-
-				// try PdfParser first
-				$parser = new SearchWP_PdfParser();
-				$parser = $parser->init();
-				try {
-					$pdf = $parser->parseFile( $filename );
-					$pdfContent = $pdf->getText();
-				} catch (Exception $e) {
-					do_action( 'searchwp_log', 'PDF parsing failed: ' . $e->getMessage() );
-					return false;
-				}
-			}
-		}
-
-		// try PDF2Text
-		if ( empty( $pdfContent ) ) {
-			if ( ! class_exists( 'PDF2Text' ) ) {
-				/** @noinspection PhpIncludeInspection */
-				include_once( $searchwp->dir . '/vendor/class.pdf2text.php' );
-			}
-			$pdfParser = new PDF2Text();
-			$pdfParser->setFilename( $filename );
-			$pdfParser->decodePDF();
-			$pdfContent = $pdfParser->output();
-		}
-
-		// check to see if the first pass produced nothing or concatenated strings
-		$pdfContent = trim( preg_replace( '/\\n|\\R/uiU', ' ', $pdfContent ) );
-		$fullContentLength = strlen( $pdfContent );
-		$numberOfSpaces = count( preg_split( '/(\\s{1,})/iu', $pdfContent ) );
-		$spaces_percentage = floatval( apply_filters( 'searchwp_pdf_spaces_to_content_percentage', 5 ) );
-		if ( empty( $pdfContent ) || ( ( $numberOfSpaces / $fullContentLength ) * 100 < $spaces_percentage ) ) {
-			WP_Filesystem();
-
-			if ( method_exists( $wp_filesystem, 'exists' ) && method_exists( $wp_filesystem, 'get_contents' ) ) {
-				$filecontent = $wp_filesystem->exists( $filename ) ? $wp_filesystem->get_contents( $filename ) : '';
-			} else {
-				$filecontent = '';
-			}
-
-			if ( false != strpos( $filecontent, 'trailer' ) ) {
-				if ( ! class_exists( 'pdf_readstream' ) ) {
-					/** @noinspection PhpIncludeInspection */
-					include_once( $searchwp->dir . '/vendor/class.pdfreadstream.php' );
-				}
-				$pdfContent = '';
-				$pdf = new pdf( get_attached_file( $this->post->ID ) );
-				$pages = $pdf->get_pages();
-				if ( ! empty( $pages ) ) {
-					/** @noinspection PhpUnusedLocalVariableInspection */
-					while ( list( $nr, $page ) = each( $pages ) ) {
-						if ( method_exists( $page, 'get_text' ) ) {
-							$pdfContent .= $page->get_text();
-						}
-					}
-				}
-			} else {
-				// empty out the content so wacky concatenations are not indexed
-				$pdfContent = false;
-			}
-		}
-
-		return $pdfContent;
+		$parser = new SearchWPDocumentParser( $post_id );
+		return $parser->extract_pdf_text( $post_id );
 	}
-
 
 	/**
 	 * Index posts stored in $this->unindexedPosts
@@ -888,8 +753,6 @@ class SearchWPIndexer {
 	 * @since 1.0
 	 */
 	function index() {
-		global $wp_filesystem;
-
 		$this->check_for_parallel_indexer();
 
 		if ( is_array( $this->unindexedPosts ) && count( $this->unindexedPosts ) ) {
@@ -902,7 +765,7 @@ class SearchWPIndexer {
 
 				// log the attempt
 				$count = get_post_meta( $this->post->ID, '_' . SEARCHWP_PREFIX . 'attempts', true );
-				if ( false == $count ) {
+				if ( false === $count ) {
 					$count = 0;
 				} else {
 					$count = intval( $count );
@@ -925,97 +788,83 @@ class SearchWPIndexer {
 				} else {
 
 					// check to see if we're running a second pass on terms
-					$termCache = get_post_meta( $this->post->ID, '_' . SEARCHWP_PREFIX . 'terms', true );
+					$termCache = false;
+					$term_cache_chunks = get_post_meta( $this->post->ID, '_' . SEARCHWP_PREFIX . 'terms', false );
+
+					// the term cache is chunked in case of big data so put it back together
+					if ( is_array( $term_cache_chunks ) && ! empty( $term_cache_chunks ) ) {
+						$termCache = array();
+						foreach ( $term_cache_chunks as $term_cache_chunk ) {
+							$termCache = array_merge( $termCache, $term_cache_chunk );
+						}
+					}
 
 					if ( ! is_array( $termCache ) ) {
 
 						do_action( 'searchwp_index_post', $this->post );
 
 						// if it's an attachment, we want the permalink
-						$slug = $this->post->post_type == 'attachment' ? str_replace( get_bloginfo( 'wpurl' ), '', get_permalink( $this->post->ID ) ) : '';
+						$slug = 'attachment' === $this->post->post_type ? str_replace( get_bloginfo( 'wpurl' ), '', get_permalink( $this->post->ID ) ) : '';
 
 						// we allow users to override the extracted content from documents, if they have done so this flag is set
 						$skipDocProcessing = get_post_meta( $this->post->ID, '_' . SEARCHWP_PREFIX . 'skip_doc_processing', true );
 						$omitDocProcessing = apply_filters( 'searchwp_omit_document_processing', false );
 
 						// storage
-						$pdf_metadata = array();
+						$pdf_metadata = '';
 
-						if ( ! $skipDocProcessing && ! $omitDocProcessing ) {
-							// if it's a PDF we need to populate our Custom Field with it's content
-							if ( 'application/pdf' == $this->post->post_mime_type ) {
+						if ( 'attachment' === $this->post->post_type && ! $skipDocProcessing && ! $omitDocProcessing ) {
 
-								// grab the filename of the PDF
-								$filename = get_attached_file( $this->post->ID );
+							$parser = new SearchWPDocumentParser( $this->post->ID );
 
-								// as of 2.6.2 stored PDF content is not removed when the index is purged
-								// so as to save all of the time it takes to parse that content (also
-								// to be considerate of PDF content that was painstakingly manually populated)
-								$stored_pdf_content = get_post_meta( $this->post->ID, SEARCHWP_PREFIX . 'content', true );
+							// Check for existing document content in case this is an index rebuilt and the PDF
+							// parsing already happened, we can use that here instead and save the trouble
+							$document_content = get_post_meta( $this->post->ID, SEARCHWP_PREFIX . 'content', true );
 
-								if ( empty( $stored_pdf_content ) ) {
-									$stored_pdf_content = '';
-								}
+							if ( empty( $document_content ) ) {
+								$document_content = $parser->extract_document_content();
+							}
 
-								// allow for external PDF content extraction
-								$pdfContent = apply_filters( 'searchwp_external_pdf_processing', $stored_pdf_content, $filename, $this->post->ID );
+							if ( false === $document_content ) {
+								// flag it for further review
+								update_post_meta( $this->post->ID, '_' . SEARCHWP_PREFIX . 'review', true );
+								update_post_meta( $this->post->ID, '_' . SEARCHWP_PREFIX . 'skip', true );
+							} else {
+								$document_content = trim( $document_content );
 
-								// only try to extract content if the external processing has not provided the PDF content we're looking for
-								if ( file_exists( $filename ) && empty( $pdfContent ) ) {
-									$pdfContent = $this->extract_pdf_text( $this->post->ID );
-									if ( false !== $pdfContent && apply_filters( 'searchwp_index_pdf_metadata', true ) ) {
-										$pdf_metadata = $this->extract_pdf_metadata( $this->post->ID );
+								if ( ! empty( $document_content ) ) {
 
-										if ( false !== $pdf_metadata ) {
-											// allow developers to filter the metadata
-											$pdf_metadata = apply_filters( 'searchwp_pdf_metadata', $pdf_metadata, $this->post->ID );
-
-											// allow developers to store metadata as they wish
-											do_action( 'searchwp_index_pdf_metadata', $pdf_metadata, $this->post->ID );
-										}
-									}
-									if ( false === $pdfContent ) {
-										// flag it for further review
-										update_post_meta( $this->post->ID, '_' . SEARCHWP_PREFIX . 'review', true );
-										update_post_meta( $this->post->ID, '_' . SEARCHWP_PREFIX . 'skip', true );
-									}
-								}
-								$pdfContent = trim( $pdfContent );
-
-								if ( ! empty( $pdfContent ) ) {
-									// sometimes PDFs have crazy characters
 									if ( function_exists( 'mb_convert_encoding' ) ) {
-										$is_utf8 = in_array( get_option( 'blog_charset' ), array( 'utf8', 'utf-8', 'UTF8', 'UTF-8' ) );
+
+										$is_utf8 = in_array( get_option( 'blog_charset' ), array( 'utf8', 'utf-8', 'UTF8', 'UTF-8' ), true );
+
 										if ( $is_utf8 ) {
-											$pdfContent = mb_convert_encoding( $pdfContent, 'UTF-8' );
+											$document_content = mb_convert_encoding( $document_content, 'UTF-8' );
 										}
+
 									}
-									$pdfContent = sanitize_text_field( $pdfContent );
+
+									$document_content = sanitize_text_field( $document_content );
 									delete_post_meta( $this->post->ID, SEARCHWP_PREFIX . 'content' );
-									update_post_meta( $this->post->ID, SEARCHWP_PREFIX . 'content', $pdfContent );
+									update_post_meta( $this->post->ID, SEARCHWP_PREFIX . 'content', $document_content );
 								}
-								if ( ! empty( $pdf_metadata ) ) {
+							}
+
+							// if it's a PDF, document the PDF metadata
+							if ( 'application/pdf' === $this->post->post_mime_type ) {
+
+								$pdf_metadata = $parser->extract_pdf_metadata( $this->post->ID );
+
+								if ( false !== $pdf_metadata ) {
+									// allow developers to filter the metadata
+									$pdf_metadata = apply_filters( 'searchwp_pdf_metadata', $pdf_metadata, $this->post->ID );
+
+									// allow developers to store metadata as they wish
+									do_action( 'searchwp_index_pdf_metadata', $pdf_metadata, $this->post->ID );
+
 									delete_post_meta( $this->post->ID, SEARCHWP_PREFIX . 'pdf_metadata' );
 									update_post_meta( $this->post->ID, SEARCHWP_PREFIX . 'pdf_metadata', $pdf_metadata );
 								}
-							} elseif ( 'text/plain' == $this->post->post_mime_type ) {
-								// if it's plain text, index it's content
-								WP_Filesystem();
-								$filename = get_attached_file( $this->post->ID );
-
-								if ( method_exists( $wp_filesystem, 'exists' ) && method_exists( $wp_filesystem, 'get_contents' ) ) {
-									$textContent = $wp_filesystem->exists( $filename ) ? $wp_filesystem->get_contents( $filename ) : '';
-								} else {
-									$textContent = '';
-								}
-
-								$textContent = str_replace( "\n", ' ', $textContent );
-								if ( ! empty( $textContent ) ) {
-									$textContent = sanitize_text_field( $textContent );
-									update_post_meta( $this->post->ID, SEARCHWP_PREFIX . 'content', $textContent );
-								}
-							} else {
-								// all other file types
 							}
 						}
 
@@ -1051,18 +900,16 @@ class SearchWPIndexer {
 						$customFields = apply_filters( 'searchwp_get_custom_fields', $this->post->custom, $this->post->ID );
 
 						// if it was a PDF let's ensure that our content is in the list
-						if ( ! empty( $pdfContent ) && is_array( $customFields ) && ! array_key_exists( 'searchwp_content', $customFields ) ) {
-							$customFields['searchwp_content'] = $pdfContent;
+						if ( ! empty( $document_content ) && is_array( $customFields ) && ! array_key_exists( 'searchwp_content', $customFields ) ) {
+							$customFields['searchwp_content'] = $document_content;
 						}
 
 						if ( ! empty( $pdf_metadata ) ) {
 							$customFields['searchwp_pdf_metadata'] = $pdf_metadata;
 						}
 
-						// reset PDF content and text content to prevent it from being used on subsequent index calls for this chunk
-						$pdfContent = '';
-						/** @noinspection PhpUnusedLocalVariableInspection */
-						$textContent  = '';
+						// reset document content and text content to prevent it from being used on subsequent index calls for this chunk
+						$document_content = '';
 						/** @noinspection PhpUnusedLocalVariableInspection */
 						$pdf_metadata = '';
 
@@ -1102,7 +949,7 @@ class SearchWPIndexer {
 								$omit_this_custom_field = apply_filters( 'searchwp_omit_meta_key', false, $customFieldName, $this->post );
 								$omit_this_custom_field = apply_filters( "searchwp_omit_meta_key_{$customFieldName}", $omit_this_custom_field, $this->post );
 
-								if ( ! in_array( $customFieldName, $excluded_meta_keys ) && ! $omit_this_custom_field ) {
+								if ( ! in_array( $customFieldName, $excluded_meta_keys, true ) && ! $omit_this_custom_field ) {
 									// allow devs to swap out their own content
 									// e.g. parsing ACF Relationship fields (that store only post IDs) to actually retrieve that content at runtime
 									$customFieldValue = apply_filters( 'searchwp_custom_fields', $customFieldValue, $customFieldName, $this->post );
@@ -1222,8 +1069,8 @@ class SearchWPIndexer {
 					// try to set a better default based on php.ini's memory_limit
 					$memoryLimit = ini_get( 'memory_limit' );
 					if ( preg_match( '/^(\d+)(.)$/', $memoryLimit, $matches ) ) {
-						if ( 'M' == $matches[2] ) {
-							$termChunkMax = ( (int) $matches[1] ) * 15;  // 15 terms per MB RAM
+						if ( 'M' === $matches[2] ) {
+							$termChunkMax = ( (int) $matches[1] ) * 7;  // 7 terms per MB RAM
 						} else {
 							// memory was set in K...
 							$termChunkMax = 100;
@@ -1241,11 +1088,25 @@ class SearchWPIndexer {
 
 							// save the term breakout so we don't have to do it again
 							$remainingTerms = array_slice( $termCountBreakout, $termChunkLimit, null, true );
-							update_post_meta( $this->post->ID, '_' . SEARCHWP_PREFIX . 'terms', $remainingTerms );
+
+							// we could be dealing with big data (i.e. parsed document) so we need to chunk
+							// the array of remaining terms as well, else we hit limits in update_post_meta()
+							$remaining_terms_chunks = array_chunk( $remainingTerms, $termChunkLimit, true );
+							unset( $remainingTerms );
+
+							// clear out any existing cache
+							delete_post_meta( $this->post->ID, '_' . SEARCHWP_PREFIX . 'terms' );
+
+							// add our chunks
+							foreach ( $remaining_terms_chunks as $key => $remaining_terms_chunk ) {
+								add_post_meta( $this->post->ID, '_' . SEARCHWP_PREFIX . 'terms', $remaining_terms_chunk );
+								unset( $remaining_terms_chunks[ $key ] );
+							}
 						}
 
 						// set the acceptable breakout as the main breakout
 						$termCountBreakout = $acceptableTermCountBreakout;
+						unset( $acceptableTermCountBreakout );
 					}
 
 					// there's a chance that all of the terms were filtered out and if there
@@ -1328,7 +1189,7 @@ class SearchWPIndexer {
 			$maybeStemmed = apply_filters( 'searchwp_custom_stemmer', $unstemmed );
 
 			// if the term was stemmed via the filter use it, else generate our own
-			$stem = ( $unstemmed == $maybeStemmed ) ? $stemmer->stem( $termToAdd ) : $maybeStemmed;
+			$stem = ( $unstemmed === $maybeStemmed ) ? $stemmer->stem( $termToAdd ) : $maybeStemmed;
 
 			// store the record
 			$terms[] = $wpdb->prepare( '%s', $termToAdd );
@@ -1341,13 +1202,19 @@ class SearchWPIndexer {
 		// insert all of the terms into the terms table so each gets an ID
 		$attemptCount = 1;
 		$maxAttempts = absint( apply_filters( 'searchwp_indexer_max_attempts', 4 ) ) + 1;  // try to recover 5 times
+
 		$insert_sql = $wpdb->prepare( "INSERT IGNORE INTO {$termsTable} (term,reverse,stem) VALUES " . implode( ',', $newTermsSQL ), $newTerms );
+
 		$insert_result = $wpdb->query( $insert_sql );
+
 		while ( ( is_wp_error( $insert_result ) || false === $insert_result ) && $attemptCount < $maxAttempts ) {
 			// sometimes a deadlock can happen, wait a second then try again
 			do_action( 'searchwp_log', 'INSERT Deadlock ' . $attemptCount . '/' . $maxAttempts );
 			sleep( 3 );
 			$attemptCount++;
+
+			// try the insert again
+			$insert_result = $wpdb->query( $insert_sql );
 		}
 
 		// deadlocking could be a red herring, there's a remote chance the database table
@@ -1381,7 +1248,7 @@ class SearchWPIndexer {
 				// append the term ID to the original $termsArray
 				while ( ( $counts = current( $termsArray ) ) !== false ) {
 					$termsArrayTerm = (string) $counts['term'];
-					if ( $termsArrayTerm == $termIDMeta->term ) {
+					if ( $termsArrayTerm === $termIDMeta->term ) {
 						$term_id = '_' . md5( $termIDMeta->term );
 						if ( isset( $termIDMeta->id ) ) {
 							$termsArray[ $term_id ]['id'] = absint( $termIDMeta->id );
@@ -1551,14 +1418,20 @@ class SearchWPIndexer {
 			'Ά' => 'Α', 'ά' => 'α', 'Έ' => 'Ε', 'έ' => 'ε', 'Ή' => 'Η', 'ή' => 'η', 'Ί' => 'Ι', 'ί' => 'ι', 'Ό' => 'Ο', 'ό' => 'ο', 'Ύ' => 'Υ', 'ύ' => 'υ', 'Ώ' => 'Ω', 'ώ' => 'ω', 'ϊ' => 'ι', 'ϋ' => 'υ', 'Ϊ' => 'ι', 'Ϋ' => 'Υ',
 		);
 
+		// this spelling mistake made it to release... ugh
+		$conversions = apply_filters( 'searchwp_leinent_accents_conversions', $conversions );
+
 		$string = strtr(
 			$string,
 			// let developers customize the conversion table
-			apply_filters( 'searchwp_leinent_accents_conversions', $conversions )
+			apply_filters( 'searchwp_lenient_accents_conversions', $conversions )
 		);
 
-		// let developers 'fix' an incorrect conversion
+		// also a spelling mistake that made it to release
 		$string = apply_filters( 'searchwp_leinent_accent_result', $string, $original_string );
+
+		// let developers 'fix' an incorrect conversion
+		$string = apply_filters( 'searchwp_lenient_accent_result', $string, $original_string );
 
 		return $string;
 	}
@@ -1617,7 +1490,7 @@ class SearchWPIndexer {
 						if ( $this->lenient_accents ) {
 							$without_accent = $this->remove_accents( $term_term );
 							$without_accent = function_exists( 'mb_strtolower' ) ? mb_strtolower( $without_accent, 'UTF-8' ) : strtolower( $without_accent );
-							if ( $without_accent != $term_term ) {
+							if ( $without_accent !== $term_term ) {
 								// "duplicate" the term with this accent-less version
 								$exploded[] = $without_accent;
 							}
@@ -1649,7 +1522,7 @@ class SearchWPIndexer {
 		$minLength = apply_filters( 'searchwp_minimum_word_length', 3 );
 
 		while ( ( $term = current( $arr ) ) !== false ) {
-			if ( ! in_array( $term, $this->common ) && ( strlen( $term ) >= absint( $minLength ) ) ) {
+			if ( ! in_array( $term, $this->common, true ) && ( strlen( $term ) >= absint( $minLength ) ) ) {
 				$key = md5( $term );
 				if ( ! isset( $newarr[ $key ] ) ) {
 					$newarr[ $key ] = array(
@@ -1679,7 +1552,7 @@ class SearchWPIndexer {
 	 * @return string The content without markup or character encoding
 	 * @since 1.0
 	 */
-	function clean_content( $content = '' ) {
+	function clean_content( $content = '', $skip_extra_processing = false ) {
 
 		$searchwp = SWP();
 
@@ -1725,7 +1598,7 @@ class SearchWPIndexer {
 					$node = $node_list->item( $i );
 					if ( $node->hasAttributes() ) {
 						foreach ( $node->attributes as $attr ) {
-							if ( isset( $attr->name ) && in_array( $attr->name, $attributes ) ) {
+							if ( isset( $attr->name ) && in_array( $attr->name, $attributes, true ) ) {
 								$attribute_content[] = sanitize_text_field( $attr->nodeValue );
 							}
 						}
@@ -1750,10 +1623,10 @@ class SearchWPIndexer {
 		// when taking into consideration the use of LIKE Terms or another extension)
 
 		// there may be times however, that the developer does in fact want matches to be exclusively kept together
-		if ( apply_filters( 'searchwp_exclusive_regex_matches', false ) && ! empty( $whitelisted_terms ) ) {
+		if ( ! $skip_extra_processing && apply_filters( 'searchwp_exclusive_regex_matches', false ) && ! empty( $whitelisted_terms ) ) {
 
 			// add the buffer the entire string so we can whole-word replace
-			$content = str_replace( ' ', '  ', $content );
+			$content = '  ' . $content . '  ';
 
 			// also need to buffer the whitelisted terms to prevent replacement overrun
 			foreach ( $whitelisted_terms as $key => $val ) {
@@ -1771,11 +1644,13 @@ class SearchWPIndexer {
 		}
 
 		// buffer tags with spaces before removing them
-		$content = preg_replace( '/<[\w ]+>/', "\\0 ", $content );
-		$content = preg_replace( '/<\/[\w ]+>/', "\\0 ", $content );
+		$content = preg_replace ( '/<[^>]*>/', ' \\0 ', $content );
+
 		$content = preg_replace( '/&nbsp;/', ' ', $content );
 
-		$content = function_exists( 'mb_strtolower' ) ? mb_strtolower( $content, 'UTF-8' ) : strtolower( $content );
+		if ( ! $skip_extra_processing ) {
+			$content = function_exists( 'mb_strtolower' ) ? mb_strtolower( $content, 'UTF-8' ) : strtolower( $content );
+		}
 
 		// <br> tags can be problematic on their own if there's no whitespace surrounding
 		// what should be separate lines of text, so we'll manually do that prior to stripping
@@ -1794,7 +1669,7 @@ class SearchWPIndexer {
 		$content = preg_replace( '/\\n|\\R/uiU', ' ', $content );
 
 		// append our whitelist
-		if ( is_array( $whitelisted_terms ) && ! empty( $whitelisted_terms ) ) {
+		if ( ! $skip_extra_processing && is_array( $whitelisted_terms ) && ! empty( $whitelisted_terms ) ) {
 			$whitelisted_terms = array_map( 'trim', $whitelisted_terms );
 			$whitelisted_terms = array_filter( $whitelisted_terms, 'strlen' );
 			$content .= ' ' . implode( ' ' , $whitelisted_terms );
@@ -1928,10 +1803,11 @@ class SearchWPIndexer {
 	 */
 	function index_content( $content = '' ) {
 		$content = ( ! is_string( $content ) || empty( $content ) ) && ! empty( $this->post->post_content ) ? $this->post->post_content : $content;
+
 		$content = $this->clean_content( $content );
 
 		if ( ! empty( $content ) && is_string( $content ) ) {
-			return $this->get_term_counts( $content );
+			return $this->get_big_data_term_count( $content );
 		} else {
 			return false;
 		}
@@ -1948,14 +1824,21 @@ class SearchWPIndexer {
 		// TODO: short circuit on pingback/trackback?
 
 		// index comments
-		$comments = get_comments( array(
+		$comments_args = array(
 			'status'	=> 'approve',
 			'post_id'	=> $this->post->ID,
-		) );
+		);
+
+		do_action( 'searchwp_indexer_pre_get_comments' );
+
+		$comments = get_comments( apply_filters( 'searchwp_indexer_comments_args', $comments_args ) );
 
 		$commentTerms = array();
 		if ( ! empty( $comments ) ) {
 			while ( ( $comment = current( $comments ) ) !== false ) {
+
+				$comment = apply_filters( 'searchwp_indexer_comment', $comment );
+
 				$author   = isset( $comment->comment_author ) && ! empty( $comment->comment_author ) ? $comment->comment_author : null;
 				$email    = isset( $comment->comment_author_email ) && ! empty( $comment->comment_author_email ) ? $comment->comment_author_email : null;
 
@@ -1982,7 +1865,7 @@ class SearchWPIndexer {
 			reset( $comments );
 		}
 
-		$commentTerms = $this->get_term_counts( implode( ' ', $commentTerms ) );
+		$commentTerms = $this->get_big_data_term_count( implode( ' ', $commentTerms ) );
 
 		return $commentTerms;
 	}
@@ -2003,7 +1886,22 @@ class SearchWPIndexer {
 			while ( ( $term = current( $terms ) ) !== false ) {
 				/** @noinspection PhpUnusedLocalVariableInspection */
 				$termsKey = key( $terms );
-				$cleanTerms[] = $this->clean_content( $term->name );
+				$term_string_to_index = $term->name;
+
+				$context = array(
+					'SWP'       => $this,
+					'taxonomy'  => $taxonomy,
+					'term'      => $term,
+				);
+
+				if ( apply_filters( 'searchwp_indexer_taxonomy_term_index_slug', false, $context ) ) {
+					$term_string_to_index .= ' ' . $term->slug;
+				}
+
+				$term_string_to_index = apply_filters( 'searchwp_indexer_taxonomy_term', $term_string_to_index, $context );
+				$term_string_to_index = $this->clean_content( $term_string_to_index );
+
+				$cleanTerms[] = $term_string_to_index;
 				next( $terms );
 			}
 			reset( $terms );
@@ -2039,6 +1937,61 @@ class SearchWPIndexer {
 
 
 	/**
+	 * Extract term counts from potentially big data
+	 *
+	 * @since 2.8
+	 *
+	 * @param $string
+	 *
+	 * @return array
+	 */
+	function get_big_data_term_count( $string ) {
+		if ( $this->big_data_trigger < strlen( $string ) ) {
+
+			$counts = array();
+
+			// chunk
+			$parts = explode( "\n", wordwrap( $string, $this->big_data_trigger ) );
+			$total_parts = count( $parts );
+
+			// count terms in each chunk
+			for ( $i = 0; $i < $total_parts; $i++ ) {
+
+				$part_term_counts = $this->get_term_counts( $parts[ $i ] );
+
+				if ( 0 === $i ) {
+					// on the first pass this count chunk is it
+					$counts = $part_term_counts;
+				} else {
+					// we need to merge this count chunk with the counts;
+					// begin by looping through this count chunk
+					foreach ( $part_term_counts as $key => $part_term_count ) {
+
+						$term_hash = md5( $part_term_count['term'] );
+						if ( array_key_exists( $term_hash, $counts ) ) {
+							// this term was already counted, so we need to increment the count
+							$counts[ $term_hash ]['count'] += $part_term_count['count'];
+						} else {
+							// this term has not been counted yet, so append it
+							$counts[] = $part_term_count;
+						}
+
+						unset( $part_term_counts[ $key ] );
+					}
+				}
+
+				unset( $parts[ $i ] );
+			}
+
+		} else {
+			$counts = $this->get_term_counts( $string );
+		}
+
+		return array_values( $counts );
+	}
+
+
+	/**
 	 * Index a Custom Field, no matter what format
 	 *
 	 * @param null $customFieldName Custom Field meta key
@@ -2051,7 +2004,7 @@ class SearchWPIndexer {
 		$customFieldValue = $this->parse_variable_for_terms( $customFieldValue );
 
 		if ( ! empty( $customFieldName ) && is_string( $customFieldName ) && ! empty( $customFieldValue ) && is_string( $customFieldValue ) ) {
-			return $this->get_term_counts( $customFieldValue );
+			return $this->get_big_data_term_count( $customFieldValue );
 		} else {
 			return false;
 		}
@@ -2086,13 +2039,13 @@ class SearchWPIndexer {
 			$output = $this->clean_content( $input );
 		} elseif ( is_array( $input ) || is_object( $input ) ) {
 			foreach ( (array) $input as $key => $val ) {
-				$array_output = self::parse_variable_for_terms( $val );
-				if ( ! is_object( $array_output ) && 'object' == gettype( $array_output ) ) {
+				$array_output = $this->parse_variable_for_terms( $val );
+				if ( ! is_object( $array_output ) && 'object' === gettype( $array_output ) ) {
 					// we hit a __PHP_Incomplete_Class Object because a serialized object was unserialized
 					$incomplete_class_output = '';
 					/** @noinspection PhpWrongForeachArgumentTypeInspection */
 					foreach ( $array_output as $array_output_key => $array_output_val ) {
-						$incomplete_class_output .= ' ' . self::parse_variable_for_terms( $array_output_val );
+						$incomplete_class_output .= ' ' . $this->parse_variable_for_terms( $array_output_val );
 					}
 					$array_output = $incomplete_class_output;
 				}

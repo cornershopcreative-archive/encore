@@ -9,10 +9,10 @@ if ( ! defined( 'ABSPATH' ) || ! class_exists( 'SearchWP_System_Info' ) || ! cla
 ?>
 
 <div class="searchwp-create-support-ticket">
-	<h2><?php _e( 'SearchWP Help', 'searchwp' ); ?></h2>
+	<h2><?php esc_html_e( 'SearchWP Help', 'searchwp' ); ?></h2>
 	<?php if ( 'valid' !== SWP()->status ) { ?>
-		<p><?php _e( 'Support is available only to <strong>active license holders</strong>. You must activate your license to receive support. If you do not have a license you may purchase one at any time.', 'searchwp' ); ?></p>
-		<p><a class="button" href="<?php echo esc_url( add_query_arg( array( 'page' => 'searchwp', 'tab' => 'license' ) ), admin_url( 'options-general.php' ) ); ?>"><?php _e( 'Activate License', 'searchwp' ); ?></a> <a class="button-primary" href="https://searchwp.com/buy/"><?php _e( 'Purchase License', 'searchwp' ); ?></a></p>
+		<p><?php echo wp_kses( __( 'Support is available only to <strong>active license holders</strong>. You must activate your license to receive support. If you do not have a license you may purchase one at any time.', 'searchwp' ), array( 'strong' => array() ) ); ?></p>
+		<p><a class="button" href="<?php echo esc_url( add_query_arg( array( 'page' => 'searchwp', 'tab' => 'license' ) ), admin_url( 'options-general.php' ) ); ?>"><?php esc_html_e( 'Activate License', 'searchwp' ); ?></a> <a class="button-primary" href="https://searchwp.com/buy/"><?php esc_html_e( 'Purchase License', 'searchwp' ); ?></a></p>
 		<style type="text/css">
 			.swpnotice {
 				text-align:center;
@@ -48,6 +48,7 @@ if ( ! defined( 'ABSPATH' ) || ! class_exists( 'SearchWP_System_Info' ) || ! cla
 		'email'         => urlencode( $current_user->user_email ),
 		'url'           => urlencode( home_url() ),
 		'env'           => defined( 'WPE_APIKEY' ) ? 'wpe' : 0, // WP Engine has it's own set of problems so it's good to know right away
+		'wpegov'        => defined( 'WPE_GOVERNOR' ) && false === WPE_GOVERNOR ? 1 : 0, // whether WPE governor has been disabled
 		'conflicts'     => urlencode( $conflicts_var ),
 		'searchwp_v'    => urlencode( get_option( 'searchwp_version' ) ),
 		'wp_v'          => urlencode( get_bloginfo( 'version' ) ),
@@ -64,11 +65,11 @@ if ( ! defined( 'ABSPATH' ) || ! class_exists( 'SearchWP_System_Info' ) || ! cla
 <hr />
 
 <div class="searchwp-system-info">
-	<h3><?php _e( 'System Information', 'searchwp' ); ?></h3>
+	<h3><?php esc_html_e( 'System Information', 'searchwp' ); ?></h3>
 	<?php $search_template = locate_template( 'search.php' ) ? locate_template( 'search.php' ) : locate_template( 'index.php' ); ?>
-	<p><?php echo sprintf( __( 'When submitting this information to support staff it will also be helpful if you can create a <a href="%s">Gist</a> of your search results template which is found here:', 'searchwp' ), 'https://gist.github.com' ); ?></p>
+	<p><?php echo wp_kses( sprintf( __( 'When submitting this information to support staff it will also be helpful if you can create a <a href="%s">Gist</a> of your search results template which is found here:', 'searchwp' ), 'https://gist.github.com' ), array( 'a' => array( 'href' => array() ) ) ); ?></p>
 	<p><code><?php echo esc_html( $search_template ); ?></code></p>
-	<p class="description"><?php echo sprintf( __( 'Please provide this information (ideally as a link to a <a href="%s">Gist</a>) when requested by support staff', 'searchwp' ), 'https://gist.github.com' ); ?></p>
+	<p class="description"><?php echo wp_kses( sprintf( __( 'Please provide this information (ideally as a link to a <a href="%s">Gist</a>) when requested by support staff', 'searchwp' ), 'https://gist.github.com' ), array( 'a' => array( 'href' => array() ) ) ); ?></p>
 	<?php
 	$searchwp_system_info = new SearchWP_System_Info();
 	$searchwp_system_info->output();

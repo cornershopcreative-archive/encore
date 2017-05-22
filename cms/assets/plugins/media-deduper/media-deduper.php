@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Media Deduper
-Version: 1.3
+Version: 1.3.1
 Description: Save disk space and bring some order to the chaos of your media library by removing and preventing duplicate files.
 Plugin URI: https://cornershopcreative.com/
 Author: Cornershop Creative
@@ -72,8 +72,15 @@ class Media_Deduper {
 		add_action( 'admin_menu',                 array( $this, 'add_admin_menu' ) );
 		add_action( 'admin_enqueue_scripts',      array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_notices',              array( $this, 'admin_notices' ), 11 );
+
+		// When an attachment is created or edited, (re)calculate its hash.
 		add_action( 'add_attachment',             array( $this, 'upload_calc_media_meta' ) );
 		add_action( 'edit_attachment',            array( $this, 'upload_calc_media_meta' ) );
+
+		// When an attachment is deleted, invalidate the cached list of duplicate
+		// IDs, because there may be another attachment that would previously have
+		// been considered a duplicate, but is now unique.
+		add_action( 'delete_attachment',          array( 'Media_Deduper', 'delete_transients' ) );
 
 		add_filter( 'set-screen-option',          array( $this, 'save_screen_options' ), 10, 3 );
 		add_filter( 'wp_handle_upload_prefilter', array( $this, 'block_duplicate_uploads' ) );
@@ -766,7 +773,7 @@ class Media_Deduper {
 	/**
 	 * Clears out cached IDs and counts.
 	 */
-	private static function delete_transients() {
+	static function delete_transients() {
 		delete_transient( 'mdd_duplicate_ids' ); // Attachments that share hashes.
 		delete_transient( 'mdd_sharedfile_ids' ); // Attachments that share files.
 		delete_transient( 'mdd_count_all' ); // All attachments, period.

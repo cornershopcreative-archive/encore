@@ -3,8 +3,8 @@
 Plugin Name: WP Rocket
 Plugin URI: https://wp-rocket.me
 Description: The best WordPress performance plugin.
-Version: 2.8.23
-Code Name: Ilum
+Version: 2.9.11
+Code Name: Iridonia
 Author: WP Media
 Contributors: Jonathan Buttigieg, Julio Potier, Remy Perona
 Author URI: http://wp-media.me
@@ -19,10 +19,10 @@ Copyright 2013-2016 WP Rocket
 defined( 'ABSPATH' ) or die( 'Cheatin&#8217; uh?' );
 
 // Rocket defines
-define( 'WP_ROCKET_VERSION'             , '2.8.23' );
+define( 'WP_ROCKET_VERSION'             , '2.9.11' );
 define( 'WP_ROCKET_PRIVATE_KEY'         , '80f4d38c0aa3d11cfb13468dc00f924d');
 define( 'WP_ROCKET_SLUG'                , 'wp_rocket_settings' );
-define( 'WP_ROCKET_WEB_MAIN'            , 'http://support.wp-rocket.me/' );
+define( 'WP_ROCKET_WEB_MAIN'            , 'https://wp-rocket.me/');
 define( 'WP_ROCKET_WEB_API'             , WP_ROCKET_WEB_MAIN . 'api/wp-rocket/' );
 define( 'WP_ROCKET_WEB_CHECK'           , WP_ROCKET_WEB_MAIN . 'check_update.php' );
 define( 'WP_ROCKET_WEB_VALID'           , WP_ROCKET_WEB_MAIN . 'valid_key.php' );
@@ -44,6 +44,7 @@ define( 'WP_ROCKET_3RD_PARTY_PATH'   	, realpath( WP_ROCKET_INC_PATH . '3rd-part
 define( 'WP_ROCKET_CONFIG_PATH'         , WP_CONTENT_DIR . '/wp-rocket-config/' );
 define( 'WP_ROCKET_CACHE_PATH'          , WP_CONTENT_DIR . '/cache/wp-rocket/' );
 define( 'WP_ROCKET_MINIFY_CACHE_PATH'   , WP_CONTENT_DIR . '/cache/min/' );
+define( 'WP_ROCKET_CACHE_BUSTING_PATH'  , WP_CONTENT_DIR . '/cache/busting/' );
 define( 'WP_ROCKET_URL'                 , plugin_dir_url( WP_ROCKET_FILE ) );
 define( 'WP_ROCKET_INC_URL'             , WP_ROCKET_URL . 'inc/' );
 define( 'WP_ROCKET_FRONT_URL'           , WP_ROCKET_INC_URL . 'front/' );
@@ -57,11 +58,12 @@ define( 'WP_ROCKET_ADMIN_UI_CSS_URL'    , WP_ROCKET_ADMIN_UI_URL . 'css/' );
 define( 'WP_ROCKET_ADMIN_UI_IMG_URL'    , WP_ROCKET_ADMIN_UI_URL . 'img/' );
 define( 'WP_ROCKET_CACHE_URL'           , WP_CONTENT_URL . '/cache/wp-rocket/' );
 define( 'WP_ROCKET_MINIFY_CACHE_URL'    , WP_CONTENT_URL . '/cache/min/' );
+define( 'WP_ROCKET_CACHE_BUSTING_URL'   , WP_CONTENT_URL . '/cache/busting/' );
 if ( ! defined( 'CHMOD_WP_ROCKET_CACHE_DIRS' ) ) {
     define( 'CHMOD_WP_ROCKET_CACHE_DIRS', 0755 );
 }
 if ( ! defined( 'WP_ROCKET_LASTVERSION' ) ) {
-    define( 'WP_ROCKET_LASTVERSION', '2.7.4' );
+    define( 'WP_ROCKET_LASTVERSION', '2.8.23' );
 }
 
 require( WP_ROCKET_INC_PATH	. 'compat.php' );
@@ -87,6 +89,11 @@ function rocket_init()
     if ( defined( 'DOING_AUTOSAVE' ) ) {
         return;
     }
+
+	// Nothing to do if XMLRPC request
+	if ( defined( 'XMLRPC_REQUEST' ) ) {
+		return;
+	}
 
     // Necessary to call correctly WP Rocket Bot for cache json
     global $do_rocket_bot_cache_json;
@@ -173,7 +180,7 @@ function rocket_init()
         if ( ! rocket_is_plugin_active( 'rocket-lazy-load/rocket-lazy-load.php' ) ) {
 	       require( WP_ROCKET_FRONT_PATH . 'lazyload.php' );
         }
-        
+
         require( WP_ROCKET_FRONT_PATH . 'protocol.php' );
     }
 
@@ -262,6 +269,10 @@ function rocket_activation()
     require( WP_ROCKET_FUNCTIONS_PATH . 'i18n.php' );
     require( WP_ROCKET_FUNCTIONS_PATH . 'htaccess.php' );
 
+    if ( version_compare( phpversion(), '5.3.0', '>=' ) ) {
+    	require( WP_ROCKET_3RD_PARTY_PATH . 'hosting/godaddy.php' );
+    }
+
 	if ( rocket_valid_key() ) {
 	    // Add All WP Rocket rules of the .htaccess file
 	    flush_rocket_htaccess();
@@ -278,7 +289,7 @@ function rocket_activation()
 
 	// Create advanced-cache.php file
 	rocket_generate_advanced_cache_file();
-	
+
 	// Update customer key & licence.
 	wp_remote_get( WP_ROCKET_WEB_API . 'activate-licence.php', array( 'blocking' => false ) );
 }

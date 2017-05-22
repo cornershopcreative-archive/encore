@@ -11,6 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class SearchWP_Nags {
 
+	/**
+	 * SearchWP_Nags constructor.
+	 */
 	function __construct() {}
 
 	function init() {
@@ -24,6 +27,13 @@ class SearchWP_Nags {
 		add_action( 'searchwp_settings_after_header', array( $this, 'settings_mysql_version_nag' ) );
 	}
 
+	/**
+	 * Implement a nag
+	 *
+	 * @param array $args
+	 *
+	 * @return array|bool
+	 */
 	function implement_nag( $args = array() ) {
 
 		$defaults = array(
@@ -69,7 +79,7 @@ class SearchWP_Nags {
 		}
 
 		$nags = searchwp_get_setting( 'nags', 'dismissed' );
-		$nag_dismissed = is_array( $nags ) && in_array( $nag_name, $nags );
+		$nag_dismissed = is_array( $nags ) && in_array( $nag_name, $nags, true );
 
 		$dismissal_link = add_query_arg(
 			array(
@@ -86,6 +96,9 @@ class SearchWP_Nags {
 		);
 	}
 
+	/**
+	 * Output the indexer aggressiveness nag
+	 */
 	function settings_indexer_nag() {
 		$nag = $this->implement_nag( array(
 			'name'      => 'indexer',
@@ -94,11 +107,14 @@ class SearchWP_Nags {
 
 		if ( ! $nag['dismissed'] ) : ?>
 			<div class="updated swp-progress-notes">
-				<p class="description"><?php echo sprintf( __( 'The SearchWP indexer runs as fast as it can without overloading your server; there are filters to customize it\'s aggressiveness. <a href="%s">Find out more &raquo;</a> <a class="swp-dismiss" href="%s">Dismiss</a>', 'searchwp' ), 'http://searchwp.com/?p=11818', esc_url( $nag['dismissal_link'] ) ); ?></p>
+				<p class="description"><?php echo wp_kses( sprintf( __( 'The SearchWP indexer runs as fast as it can without overloading your server; there are filters to customize it\'s aggressiveness. <a href="%s">Find out more &raquo;</a> <a class="swp-dismiss" href="%s">Dismiss</a>', 'searchwp' ), 'http://searchwp.com/?p=11818', esc_url( $nag['dismissal_link'] ) ) , array( 'a' => array( 'class' => array(), 'href' => array() ) ) ); ?></p>
 			</div>
 		<?php endif;
 	}
 
+	/**
+	 * Output the license nag
+	 */
 	function settings_license_nag() {
 		$nag = $this->implement_nag( array(
 			'name'      => 'license',
@@ -108,21 +124,24 @@ class SearchWP_Nags {
 		$searchwp = SWP();
 
 		$notices = searchwp_get_setting( 'notices' );
-		$initial_notified = ( is_array( $notices ) && in_array( 'initial', $notices ) ) ? true : false;
+		$initial_notified = ( is_array( $notices ) && in_array( 'initial', $notices, true ) ) ? true : false;
 
 		if (
-			false == $initial_notified // don't show unless the initial index has been built
+			false === $initial_notified // don't show unless the initial index has been built
 			&& ! empty( $searchwp->license ) // only show if a license has been entered
 			&& ( isset( $searchwp->status ) && 'valid' !== $searchwp->status ) // and the license is not valid
 			&& ! $nag['dismissed'] // and the nag hasn't been dismissed
 			&& apply_filters( 'searchwp_initial_license_nag', true ) // and let devs hide it anyway
 		) : ?>
 			<div id="setting-error-settings_updated" class="updated settings-error swp-license-nag">
-				<p><?php _e( 'In order to receive updates and support, you must have an active license.', 'searchwp' ); ?> <a href="<?php echo esc_url( add_query_arg( array( 'page' => 'searchwp', 'tab' => 'license' ), admin_url( 'options.php' ) ) ); ?>"><?php _e( 'Manage License', 'searchwp' ); ?></a> <a href="<?php echo esc_url( SEARCHWP_EDD_STORE_URL ); ?>"><?php _e( 'Purchase License', 'searchwp' ); ?></a> <a href="<?php echo esc_url( $nag['dismissal_link'] ); ?>"><?php _e( 'Dismiss', 'searchwp' ); ?></a></p>
+				<p><?php esc_html_e( 'In order to receive updates and support, you must have an active license.', 'searchwp' ); ?> <a href="<?php echo esc_url( add_query_arg( array( 'page' => 'searchwp', 'tab' => 'license' ), admin_url( 'options.php' ) ) ); ?>"><?php esc_html_e( 'Manage License', 'searchwp' ); ?></a> <a href="<?php echo esc_url( SEARCHWP_EDD_STORE_URL ); ?>"><?php esc_html_e( 'Purchase License', 'searchwp' ); ?></a> <a href="<?php echo esc_url( $nag['dismissal_link'] ); ?>"><?php esc_html_e( 'Dismiss', 'searchwp' ); ?></a></p>
 			</div>
 		<?php endif;
 	}
 
+	/**
+	 * Output MySQL buggy version nag
+	 */
 	function settings_mysql_version_nag() {
 		global $wpdb;
 
@@ -133,7 +152,7 @@ class SearchWP_Nags {
 
 		if ( ! version_compare( '5.2', $wpdb->db_version(), '<' )  && ! $nag['dismissed'] ) : ?>
 			<div class="updated settings-error">
-				<p><?php echo sprintf( __( 'Your server is running MySQL version %1$s which may prevent search results from appearing due to <a href="http://bugs.mysql.com/bug.php?id=41156">bug 41156</a>. Please update MySQL to a more recent version (at least 5.2).', 'searchwp' ), $wpdb->db_version() ); ?> <a href="<?php echo esc_url( $nag['dismissal_link'] ); ?>"><?php _e( 'Dismiss', 'searchwp' ); ?></a></p>
+				<p><?php echo wp_kses( sprintf( __( 'Your server is running MySQL version %1$s which may prevent search results from appearing due to <a href="http://bugs.mysql.com/bug.php?id=41156">bug 41156</a>. Please update MySQL to a more recent version (at least 5.2).', 'searchwp' ), $wpdb->db_version() ), array( 'a' => array( 'href' => array() ) ) ); ?> <a href="<?php echo esc_url( $nag['dismissal_link'] ); ?>"><?php esc_html_e( 'Dismiss', 'searchwp' ); ?></a></p>
 			</div>
 		<?php endif;
 	}

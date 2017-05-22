@@ -2,7 +2,7 @@
 defined( 'ABSPATH' ) or die( 'Cheatin\' uh?' );
 
 if ( defined( 'SCCSS_FILE' ) ) :
-	add_action( 'wp_enqueue_scripts', 'rocket_cache_sccss', 1 );
+	add_action( 'wp_enqueue_scripts', 'rocket_cache_sccss', 98 );
 	add_action( 'update_option_sccss_settings', 'rocket_delete_sccss_cache_file' );
 	add_filter( 'rocket_cache_busting_filename', 'rocket_sccss_cache_busting_filename' );
 endif;
@@ -20,8 +20,10 @@ function rocket_cache_sccss() {
 		rocket_sccss_create_cache_file( $sccss['bustingpath'], $sccss['filepath'] );
 	}
 
-	wp_enqueue_style( 'scss', $sccss['url'] );
-	remove_action( 'wp_enqueue_scripts', 'sccss_register_style', 99 );
+	if ( file_exists( $sccss['filepath'] ) ) {
+		wp_enqueue_style( 'scss', $sccss['url'], '', filemtime( $sccss['filepath'] ) );
+		remove_action( 'wp_enqueue_scripts', 'sccss_register_style', 99 );
+	}
 }
 
 /**
@@ -33,7 +35,8 @@ function rocket_cache_sccss() {
 function rocket_delete_sccss_cache_file() {
 	$sccss = rocket_get_cache_busting_paths( 'sccss.css', 'css' );
 
-	@unlink( $sccss['filepath'] );
+	array_map( 'unlink', glob( $sccss['bustingpath'] . 'sccss*.css' ) );
+	rocket_clean_domain();
 	rocket_sccss_create_cache_file( $sccss['bustingpath'], $sccss['filepath'] );
 }
 
@@ -48,7 +51,7 @@ function rocket_delete_sccss_cache_file() {
  */
 function rocket_sccss_cache_busting_filename( $filename ) {
 	if ( false !== strpos( $filename, 'sccss' ) ) {
-		return 'sccss.css';
+		return preg_replace( '/(?:.*)(sccss(?:.*))/i', '$1', $filename );
 	}
 
 	return $filename;

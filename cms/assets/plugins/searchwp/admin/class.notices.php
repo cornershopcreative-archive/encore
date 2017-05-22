@@ -6,6 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/** @noinspection PhpIncludeInspection */
 include_once ABSPATH . 'wp-admin/includes/file.php';
 
 /**
@@ -40,7 +41,7 @@ class SearchWPAdminNotices extends SearchWP {
 
 		// check to see if the credentials are already provided
 		$http_basic_auth_creds = apply_filters( 'searchwp_basic_auth_creds', false );
-		if ( true == $basic_auth && is_array( $http_basic_auth_creds ) && isset( $http_basic_auth_creds['username'] ) && isset( $http_basic_auth_creds['password'] ) ) {
+		if ( true === $basic_auth && is_array( $http_basic_auth_creds ) && isset( $http_basic_auth_creds['username'] ) && isset( $http_basic_auth_creds['password'] ) ) {
 			return;
 		}
 
@@ -50,7 +51,7 @@ class SearchWPAdminNotices extends SearchWP {
 			searchwp_set_setting( 'basic_auth', true );
 			?>
 			<div class="error" id="searchwp-http-basic-auth">
-				<p><?php echo sprintf( __( 'SearchWP has detected HTTP Basic Authentication, in order for the indexer to operate as expected you must provide credentials via the <a href="%s"><code>searchwp_basic_auth_creds</code></a> hook, or disable HTTP Basic Authentication.', 'searchwp' ), 'https://searchwp.com/docs/hooks/searchwp_basic_auth_creds/' ); ?></p>
+				<p><?php echo wp_kses( sprintf( __( 'SearchWP has detected HTTP Basic Authentication, in order for the indexer to operate as expected you must provide credentials via the <a href="%s"><code>searchwp_basic_auth_creds</code></a> hook, or disable HTTP Basic Authentication.', 'searchwp' ), 'https://searchwp.com/docs/hooks/searchwp_basic_auth_creds/' ), array( 'a' => array( 'href' => array() ), 'code' => array() ) ); ?></p>
 			</div>
 		<?php
 		} else {
@@ -66,14 +67,15 @@ class SearchWPAdminNotices extends SearchWP {
 	 * If the debug log is over 2MB
 	 */
 	function log_file_size_warning() {
-		$searchwp = SWP();
-		$logfile = trailingslashit( $searchwp->dir ) . 'debug.log';
+		$wp_upload_dir = wp_upload_dir();
+
+		$logfile = trailingslashit( $wp_upload_dir['basedir'] ) . 'searchwp-debug.txt';
 
 		// if the logfile is over a 2MB it's likely the developer forgot to disable debugging
 		if ( file_exists( $logfile ) && absint( filesize( $logfile ) ) > 2097151 ) :
 		?>
 			<div class="error" id="searchwp-log-file-size">
-				<p><?php _e( 'Your SearchWP debug log is quite large. Please remember to disable debugging and delete <code>~/wp-content/plugins/searchwp/debug.log</code> when you are done.', 'searchwp' ); ?></p>
+				<p><?php echo wp_kses( __( 'Your SearchWP debug log is quite large. Please remember to disable debugging and delete <code>~/wp-content/uploads/searchwp-debug.text</code> when you are done.', 'searchwp' ), array( 'code' => array() ) ); ?></p>
 			</div>
 		<?php endif;
 	}
@@ -177,7 +179,7 @@ class SearchWPAdminNotices extends SearchWP {
 			}
 			if ( isset( $integration_extension['theme'] ) ) {
 				$theme = wp_get_theme();
-				if ( $integration_extension['theme']['file'] == $theme->get( 'Template' ) ) {
+				if ( $integration_extension['theme']['file'] === $theme->get( 'Template' ) ) {
 					$missing_integrations[] = $integration_extension_key;
 				}
 			}
@@ -191,7 +193,7 @@ class SearchWPAdminNotices extends SearchWP {
 				$integration    = $integration_extensions[ $missing_integration ]['integration']['name'];
 				?>
 				<div class="error" id="searchwp-missing-integrations-notice">
-					<p><strong><?php _e( 'Missing SearchWP integration', 'searchwp' ); ?>:</strong> <?php echo sprintf( __( 'In order for SearchWP to work with %s you will need to install and activate the <a href="%s">%s</a> Extension.', 'searchwp' ), esc_html( $plugin ), esc_url( $url ), esc_html( $integration ) ); ?> <?php echo sprintf( __( 'To dismiss this notice please see <a href="%s">these docs</a>.', 'searchwp' ), 'https://searchwp.com/?p=31517' ); ?></p>
+					<p><strong><?php esc_html_e( 'Missing SearchWP integration', 'searchwp' ); ?>:</strong> <?php echo wp_kses( sprintf( __( 'In order for SearchWP to work with %s you will need to install and activate the <a href="%s">%s</a> Extension.', 'searchwp' ), esc_html( $plugin ), esc_url( $url ), esc_html( $integration ) ), array( 'a' => array( 'href' => array() ) ) ); ?> <?php echo wp_kses( sprintf( __( 'To dismiss this notice please see <a href="%s">these docs</a>.', 'searchwp' ), 'https://searchwp.com/?p=31517' ), array( 'a' => array( 'href' => array() ) ) ); ?></p>
 				</div>
 			<?php endforeach; ?>
 		<?php }
@@ -238,7 +240,7 @@ class SearchWPAdminNotices extends SearchWP {
 				<?php
 					$the_link = admin_url( 'options-general.php?page=searchwp' ) . '&nonce=' . esc_attr( wp_create_nonce( 'swperroneous' ) );
 				?>
-				<p><?php _e( 'SearchWP failed to index', 'searchwp' ); ?> <strong><?php echo count( $erroneousPosts ); ?></strong> <?php if ( 1 == count( $erroneousPosts ) ) { _e( 'post', 'searchwp' ); } else { _e( 'posts', 'searchwp' ); } ?>. <a href="<?php echo esc_url( $the_link ); ?>"><?php _e( 'View details', 'searchwp' ); ?> &raquo;</a></p>
+				<p><?php esc_html_e( 'SearchWP failed to index', 'searchwp' ); ?> <strong><?php echo absint( count( $erroneousPosts ) ); ?></strong> <?php if ( 1 === count( $erroneousPosts ) ) { esc_html_e( 'post', 'searchwp' ); } else { esc_html_e( 'posts', 'searchwp' ); } ?>. <a href="<?php echo esc_url( $the_link ); ?>"><?php esc_html_e( 'View details', 'searchwp' ); ?> &raquo;</a></p>
 			</div>
 		<?php endif;
 	}
@@ -247,11 +249,13 @@ class SearchWPAdminNotices extends SearchWP {
 	 * If the indexer is disabled
 	 */
 	function indexer_disabled() {
-		$paused = searchwp_get_option( 'paused' );
+		$saved_settings = searchwp_get_option( 'advanced' );
+		$paused = isset( $saved_settings['disable_indexer'] ) && ! empty( $saved_settings['disable_indexer'] );
+
 		if ( $paused ) {
 			?>
 			<div class="updated">
-				<p><?php _e( 'The SearchWP indexer is currently <strong>disabled</strong>', 'searchwp' ); ?></p>
+				<p><?php echo wp_kses( __( 'The SearchWP indexer is currently <strong>disabled</strong>', 'searchwp' ), array( 'strong' => array() ) ); ?></p>
 			</div>
 		<?php
 		}
@@ -298,7 +302,7 @@ class SearchWPAdminNotices extends SearchWP {
 		$maybe_debugging = apply_filters( 'searchwp_debug', false );
 		$show_conflict_notices = apply_filters( 'searchwp_show_conflict_notices', $maybe_debugging );
 
-		if ( ! class_exists( 'SearchWP_Conflicts' ) ) {
+		if ( false === $show_conflict_notices || ! class_exists( 'SearchWP_Conflicts' ) ) {
 			return;
 		}
 
@@ -308,28 +312,28 @@ class SearchWPAdminNotices extends SearchWP {
 		$javascript_deployed = false;
 
 		// output a notification if there are potential query_posts or WP_Query conflicts in search.php
-		if ( $conflicts->search_template && apply_filters( 'searchwp_show_conflict_notices', true ) ) {
+		if ( $conflicts->search_template && $show_conflict_notices ) {
 			if ( ! empty( $conflicts->search_template_conflicts ) ) {
 				add_action( 'admin_footer', array( $this, 'filter_conflict_javascript' ) );
 				$javascript_deployed = true;
 				?>
 				<div class="updated">
-					<p><?php _e( 'SearchWP has detected a <strong>theme conflict</strong> with the active theme.', 'searchwp' ); ?> <a class="swp-conflict-toggle swp-theme-conflict-show" href="#searchwp-conflict-theme"><?php _e( 'More info &raquo;', 'searchwp' ); ?></a></p>
+					<p><?php wp_kses( __( 'SearchWP has detected a <strong>theme conflict</strong> with the active theme.', 'searchwp' ), array( 'strong' => array() ) ); ?> <a class="swp-conflict-toggle swp-theme-conflict-show" href="#searchwp-conflict-theme"><?php esc_html_e( 'More info &raquo;', 'searchwp' ); ?></a></p>
 					<div id="searchwp-conflict-theme" style="background:#fafafa;border:1px solid #eaeaea;padding:0.6em 1.2em;border-radius:2px;margin-bottom:1em;display:none;">
-						<p><?php _e( "In order for SearchWP to display it's results, occurrences of <code>new WP_Query</code> and <code>query_posts()</code> must be removed from your search results template.", 'searchwp' ); ?></p>
+						<p><?php echo wp_kses( __( "In order for SearchWP to display it's results, occurrences of <code>new WP_Query</code> and <code>query_posts()</code> must be removed from your search results template.", 'searchwp' ), array( 'code' => array() ) ); ?></p>
 						<p>
-							<strong><?php _e( 'File location', 'searchwp' ); ?>:</strong>
+							<strong><?php esc_html_e( 'File location', 'searchwp' ); ?>:</strong>
 							<code><?php echo esc_html( $conflicts->search_template ); ?></code>
 						</p>
 						<?php foreach ( $conflicts->search_template_conflicts as $line_number => $conflicts ) : ?>
 							<?php $conflicts = array_map( 'esc_html', $conflicts ); ?>
 							<p>
-								<strong><?php _e( 'Line', 'searchwp' ); ?>: <?php echo absint( $line_number ); ?></strong>
-								<code><?php echo implode( '</code>, <code>', $conflicts ); ?></code>
+								<strong><?php esc_html_e( 'Line', 'searchwp' ); ?>: <?php echo absint( $line_number ); ?></strong>
+								<code><?php echo wp_kses( implode( '</code>, <code>', $conflicts ), array( 'code' => array() ) ); ?></code>
 							</p>
 						<?php endforeach; ?>
-						<p><?php _e( 'Please ensure the offending lines are removed from the theme template to avoid conflicts with SearchWP. When removed, this notice will disappear. You may also dismiss this message using', 'searchwp' ); ?></p>
-						<p class="description"><?php _e( "You may dismiss this (and all like this) message by adding <code>add_filter( 'searchwp_show_conflict_notices', '__return_false' );</code> to your theme's <code>functions.php</code>.", 'searchwp' ); ?></p>
+						<p><?php esc_html_e( 'Please ensure the offending lines are removed from the theme template to avoid conflicts with SearchWP. When removed, this notice will disappear. You may also dismiss this message using', 'searchwp' ); ?></p>
+						<p class="description"><?php echo wp_kses( __( "You may dismiss this (and all like this) message by adding <code>add_filter( 'searchwp_show_conflict_notices', '__return_false' );</code> to your theme's <code>functions.php</code>.", 'searchwp' ), array( 'code' => array() ) ); ?></p>
 					</div>
 				</div>
 			<?php
@@ -346,13 +350,13 @@ class SearchWPAdminNotices extends SearchWP {
 				$existing_dismissals = searchwp_get_setting( 'dismissed' );
 
 				// dismissals are stored as hashes of the hooks as they were when the dismissal was enabled
-				$conflict_hash = md5( json_encode( $potential_conflict ) );
+				$conflict_hash = md5( wp_json_encode( $potential_conflict ) );
 				$conflict_nonce = wp_create_nonce( 'swpconflict_' . $filter_name );
 
 				// check to see if this particular filter conflict was already dismissed
 				if ( is_array( $existing_dismissals ) ) {
 					if ( isset( $existing_dismissals['filter_conflicts'] ) && is_array( $existing_dismissals['filter_conflicts'] ) ) {
-						if ( in_array( $conflict_hash, $existing_dismissals['filter_conflicts'] ) ) {
+						if ( in_array( $conflict_hash, $existing_dismissals['filter_conflicts'], true ) ) {
 							$show_conflict = false;
 						}
 					}
@@ -366,10 +370,10 @@ class SearchWPAdminNotices extends SearchWP {
 					}
 					?>
 					<div class="updated">
-						<p><?php echo sprintf( __( 'SearchWP has detected a <strong>potential (<em>not guaranteed</em>)</strong> action/filter conflict with <code>%s</code> caused by an active plugin or the active theme.', 'searchwp' ), esc_html( $filter_name ) ); ?> <a class="swp-conflict-toggle swp-filter-conflict-show" href="#searchwp-conflict-<?php echo esc_attr( $filter_name ); ?>"><?php _e( 'More info &raquo;', 'searchwp' ); ?></a></p>
+						<p><?php echo wp_kses( sprintf( __( 'SearchWP has detected a <strong>potential (<em>not guaranteed</em>)</strong> action/filter conflict with <code>%s</code> caused by an active plugin or the active theme.', 'searchwp' ), esc_html( $filter_name ) ), array( 'strong' => array(), 'em' => array(), 'code' => array() ) ); ?> <a class="swp-conflict-toggle swp-filter-conflict-show" href="#searchwp-conflict-<?php echo esc_attr( $filter_name ); ?>"><?php esc_html_e( 'More info &raquo;', 'searchwp' ); ?></a></p>
 						<div id="searchwp-conflict-<?php echo esc_attr( $filter_name ); ?>" style="background:#fafafa;border:1px solid #eaeaea;padding:0.6em 1.2em;border-radius:2px;margin-bottom:1em;display:none;">
-							<p><?php _e( '<strong>This is simply a <em>preliminary</em> detection of a <em>possible</em> conflict.</strong> Many times these detections can be <strong>safely dismissed</strong>', 'searchwp' ); ?></p>
-							<p><?php _e( '<em>If (and only if) you are experiencing issues</em> with search results not changing or not appearing, the following Hooks (put in place by other plugins or your active theme) <em>may be</em> contributing to the problem:', 'searchwp' ); ?></p>
+							<p><?php echo wp_kses( __( '<strong>This is simply a <em>preliminary</em> detection of a <em>possible</em> conflict.</strong> Many times these detections can be <strong>safely dismissed</strong>', 'searchwp' ), array( 'strong' => array(), 'em' => array() ) ); ?></p>
+							<p><?php wp_kses( __( '<em>If (and only if) you are experiencing issues</em> with search results not changing or not appearing, the following Hooks (put in place by other plugins or your active theme) <em>may be</em> contributing to the problem:', 'searchwp' ), array( 'em' => array() ) ); ?></p>
 							<ol>
 								<?php foreach ( $potential_conflict as $conflict ) : ?>
 									<?php
@@ -381,7 +385,7 @@ class SearchWPAdminNotices extends SearchWP {
 										$conflict = '<code>' . esc_html( $conflict ) . '</code> ' . __( '(function)', 'searchwp' );
 									}
 									?>
-									<li><?php echo $conflict; ?></li>
+									<li><?php echo wp_kses( $conflict, array( 'code' => array() ) ); ?></li>
 								<?php endforeach; ?>
 							</ol>
 							<?php
@@ -390,8 +394,8 @@ class SearchWPAdminNotices extends SearchWP {
 								$filter_resolution_url = esc_url( $conflicts->filter_checklist[ $filter_name ] );
 							}
 							?>
-							<p><?php echo sprintf( __( '<strong>If you believe there to be a conflict (e.g. search results not showing up):</strong> use this information you can determine how to best disable this interference. For more information please see <a href="%s">this Knowledge Base article</a>.', 'searchwp' ), esc_url( $filter_resolution_url ) ); ?></p>
-							<p><a class="button swp-dismiss-conflict" href="#" data-hash="<?php echo esc_attr( $conflict_hash ); ?>" data-nonce="<?php echo esc_attr( $conflict_nonce ); ?>" data-filter="<?php echo esc_attr( $filter_name ); ?>"><?php _e( 'Dismiss this message', 'searchwp' ); ?></a></p>
+							<p><?php echo wp_kses( sprintf( __( '<strong>If you believe there to be a conflict (e.g. search results not showing up):</strong> use this information you can determine how to best disable this interference. For more information please see <a href="%s">this Knowledge Base article</a>.', 'searchwp' ), esc_url( $filter_resolution_url ) ), array( 'strong' => array(), 'a' => array( 'href' => array() ) ) ); ?></p>
+							<p><a class="button swp-dismiss-conflict" href="#" data-hash="<?php echo esc_attr( $conflict_hash ); ?>" data-nonce="<?php echo esc_attr( $conflict_nonce ); ?>" data-filter="<?php echo esc_attr( $filter_name ); ?>"><?php esc_html_e( 'Dismiss this message', 'searchwp' ); ?></a></p>
 						</div>
 					</div>
 				<?php }
@@ -410,7 +414,7 @@ class SearchWPAdminNotices extends SearchWP {
 			$current_screen = get_current_screen();
 			if ( $current_screen instanceof WP_Screen ) {
 				if ( isset( $current_screen->id ) ) {
-					if ( is_search() && 'upload' == $current_screen->id ) {
+					if ( is_search() && 'upload' === $current_screen->id ) {
 
 						// we're on the search results of the Media page in the WP admin, as a result of that the
 						// search engine settings have been hijacked and limited to Media only, so we need to retrieve
@@ -421,7 +425,7 @@ class SearchWPAdminNotices extends SearchWP {
 						$index_attachments_from_settings = false;
 						if ( isset( $live_engine_settings['engines'] ) && is_array( $live_engine_settings['engines'] ) ) {
 							foreach ( $live_engine_settings['engines'] as $engine ) {
-								if ( isset( $engine['attachment'] ) && isset( $engine['attachment']['enabled'] ) && true == $engine['attachment']['enabled'] ) {
+								if ( isset( $engine['attachment'] ) && isset( $engine['attachment']['enabled'] ) && true === $engine['attachment']['enabled'] ) {
 									$index_attachments_from_settings = true;
 									break;
 								}
@@ -435,7 +439,7 @@ class SearchWPAdminNotices extends SearchWP {
 						// the search results screen for Media, tell the user that results might be incomplete
 						if ( ! $maybe_index_attachments && $maybe_search_in_admin ) {
 							?><div class="updated">
-								<p><?php _e( '<strong>Potentially incomplete results:</strong> Since you <em>do not have Media enabled</em> for any search engine, you should implement the <code>searchwp_index_attachments</code> hook to ensure Media is properly indexed by SearchWP. Once attachment indexing has been enabled, ensure there is no progress bar on the SearchWP Settings screen, confirming all Media is indexed.', 'searchwp' ); ?></p>
+								<p><?php echo wp_kses( __( '<strong>Potentially incomplete results:</strong> Since you <em>do not have Media enabled</em> for any search engine, you should implement the <code>searchwp_index_attachments</code> hook to ensure Media is properly indexed by SearchWP. Once attachment indexing has been enabled, ensure there is no progress bar on the SearchWP Settings screen, confirming all Media is indexed.', 'searchwp' ), array( 'strong' => array(), 'em' => array(), 'code' => array() ) ); ?></p>
 							</div>
 						<?php }
 					}

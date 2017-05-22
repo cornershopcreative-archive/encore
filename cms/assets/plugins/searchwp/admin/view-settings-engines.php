@@ -17,17 +17,17 @@ if ( ! $parent->is_using_alternate_indexer() && ( ! is_bool( $remainingPostsToIn
 	?>
 	<div class="postbox swp-in-progress<?php if ( 0 === $remainingPostsToIndex ) : ?> swp-in-progress-done<?php endif; ?>">
 		<div class="swp-progress-wrapper">
-			<p class="swp-label"><?php _e( 'Indexing is', 'searchwp' ); ?>
-				<span><?php _e( 'almost', 'searchwp' ); ?></span> <?php _e( 'complete', 'searchwp' ); ?>
+			<p class="swp-label"><?php esc_html_e( 'Indexing is', 'searchwp' ); ?>
+				<span><?php esc_html_e( 'almost', 'searchwp' ); ?></span> <?php esc_html_e( 'complete', 'searchwp' ); ?>
 				<a class="swp-tooltip" href="#swp-tooltip-progress">?</a></p>
 
 			<div class="swp-tooltip-content" id="swp-tooltip-progress">
-				<?php _e( 'This process is running in the background. You can leave this page and the index will continue to be built until completion.', 'searchwp' ); ?>
+				<?php esc_html_e( 'This process is running in the background. You can leave this page and the index will continue to be built until completion.', 'searchwp' ); ?>
 			</div>
 			<div class="swp-progress-track">
 				<div class="swp-progress-bar"></div>
 			</div>
-			<p class="description" style="margin:1em 0 0.4em;"><?php echo sprintf( __( 'The indexer has been <strong>temporarily scaled back</strong> to reduce server load. This is monitored automatically. <a href="%s">More information &raquo;</a>', 'searchwp' ), 'http://searchwp.com/?p=11818' ); ?></p>
+			<p class="description" style="margin:1em 0 0.4em;"><?php echo wp_kses( sprintf( __( 'The indexer has been <strong>temporarily scaled back</strong> to reduce server load. This is monitored automatically. <a href="%s">More information &raquo;</a>', 'searchwp' ), 'http://searchwp.com/?p=11818' ), array( 'strong' => array(), 'a' => array( 'href' => array() ) ) ); ?></p>
 		</div>
 	</div>
 <?php } ?>
@@ -41,12 +41,12 @@ if ( ! $parent->is_using_alternate_indexer() && ( ! is_bool( $remainingPostsToIn
 				<td class="swp-custom-field-select">
 					<!--suppress HtmlFormInputWithoutLabel -->
 					<select name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][{{ swp.engine }}][{{ swp.postType }}][weights][cf][{{ swp.arrayFlag }}][metakey]" style="width:80%;">
-						<option value="searchwp cf default"><?php _e( 'Any', 'searchwp' ); ?></option>
+						<option value="searchwp cf default"><?php esc_html_e( 'Any', 'searchwp' ); ?></option>
 						<?php if ( ! empty( $parent->keys ) ) : foreach ( $parent->keys as $key ) : ?>
 							<option value="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $key ); ?></option>
 						<?php endforeach; endif; ?>
 					</select>
-					<a class="swp-delete" href="#">X</a>
+					<a class="swp-delete" href="#">&times;</a>
 				</td>
 				<td>
 					<!--suppress HtmlFormInputWithoutLabel -->

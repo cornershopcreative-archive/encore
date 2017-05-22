@@ -6,6 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/** @noinspection PhpIncludeInspection */
 include_once ABSPATH . 'wp-admin/includes/file.php';
 
 /**
@@ -16,6 +17,9 @@ class SearchWPDebug {
 	public $active;
 	private $logfile;
 
+	/**
+	 * @param $dir
+	 */
 	function init( $dir ) {
 		global $wp_filesystem;
 
@@ -38,6 +42,12 @@ class SearchWPDebug {
 		}
 	}
 
+	/**
+	 * @param string $message
+	 * @param string $type
+	 *
+	 * @return bool
+	 */
 	function log( $message = '', $type = 'notice' ) {
 		global $wp_filesystem;
 		WP_Filesystem();

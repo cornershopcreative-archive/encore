@@ -94,6 +94,15 @@
 					$(this).hide();
 				});
 
+				$(window).bind("scroll", function() {
+					$(this).scrollTop() > 200 ? $(".wf-scrollTop").fadeIn() : $(".wf-scrollTop").fadeOut()
+				});
+				$(".wf-scrollTop").click(function(e) {
+					return e.stopPropagation(), $("body,html").animate({
+						scrollTop: 0
+					}, 800), !1;
+				});
+
 				var tabs = jQuery('#wordfenceTopTabs').find('a');
 				if (tabs.length > 0) {
 					tabs.click(function() {
@@ -511,7 +520,7 @@
 				}, parseInt(WordfenceAdminVars.actUpdateInterval));
 			},
 			updateActivityLog: function() {
-				if (this.activityLogUpdatePending || !this.windowHasFocus()) {
+				if (this.activityLogUpdatePending || (!this.windowHasFocus() && WordfenceAdminVars.allowsPausing == '1')) {
 					if (!jQuery('body').hasClass('wordfenceLiveActivityPaused') && !this.activityLogUpdatePending) {
 						jQuery('body').addClass('wordfenceLiveActivityPaused');
 					}
@@ -700,7 +709,7 @@
 				}
 			},
 			updateTicker: function(forceUpdate) {
-				if ((!forceUpdate) && (this.tickerUpdatePending || !this.windowHasFocus())) {
+				if ((!forceUpdate) && (this.tickerUpdatePending || (!this.windowHasFocus() && WordfenceAdminVars.allowsPausing == '1'))) {
 					if (!jQuery('body').hasClass('wordfenceLiveActivityPaused') && !this.tickerUpdatePending) {
 						jQuery('body').addClass('wordfenceLiveActivityPaused');
 					}
@@ -2708,7 +2717,12 @@
 						if (typeof onSuccess === 'function') {
 							return onSuccess.apply(this, arguments);
 						}
-					} else {
+					}
+					else if (typeof res === 'object' && res.errorMsg) {
+						self.colorbox((self.isSmallScreen ? '300px' : '400px'), 'Error saving Firewall configuration', 'There was an error saving the ' +
+							'Web Application Firewall configuration settings: ' + res.errorMsg);
+					}
+					else {
 						self.colorbox((self.isSmallScreen ? '300px' : '400px'), 'Error saving Firewall configuration', 'There was an error saving the ' +
 							'Web Application Firewall configuration settings.');
 					}
