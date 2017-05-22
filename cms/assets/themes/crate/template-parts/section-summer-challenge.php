@@ -45,6 +45,11 @@ $challenges = array(
 							<?php the_sub_field( 'button_text' ); ?>
 						</a>
 					</div>
+					<p>
+						<a href="<?php the_sub_field( 'link_url' ); ?>" class="item-link">
+							<?php the_sub_field( 'link_text' ); ?>
+						</a>
+					</p>
 
 					<?php
 					/**

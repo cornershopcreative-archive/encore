@@ -2215,6 +2215,9 @@ input[type='search'] {
 	 */
   /**
 	 * Use larger headings.
+	 */
+  /**
+	 * Make links bold.
 	 */ }
   @media (min-width: 640px) {
     .section-summer-challenge:before {
@@ -2229,6 +2232,8 @@ input[type='search'] {
       margin-top: 0; } }
   .section-summer-challenge h3 {
     font-size: 2.5rem; }
+  .section-summer-challenge .item-link {
+    font-weight: 800; }
 
 .hero + .section-action-slider {
   margin-top: 0; }
