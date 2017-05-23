@@ -13,8 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) { die( 'Direct access not allowed' ); }
 function crate_enqueue() {
 
   if ( ! is_admin() ) {
-		wp_enqueue_style( 'crate_style', get_template_directory_uri() . '/css/crate.css', array(), '4.4.17' );
-		wp_enqueue_script( 'crate', get_template_directory_uri() . '/js/crate.js', array('jquery'), '4.4.17', true );
+		wp_enqueue_style( 'crate_style', get_template_directory_uri() . '/css/crate.css', array(), '4.4.18' );
+		wp_enqueue_script( 'crate', get_template_directory_uri() . '/js/crate.js', array('jquery'), '4.4.18', true );
 
 		// put the AJAX endpoint URL into theme.ajaxurl
 		wp_localize_script( 'crate', 'crate', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
@@ -41,7 +41,7 @@ add_action( 'init', 'crate_disable_emoji', 99 );
 function crate_enqueue_admin() {
   $screen = get_current_screen();
   if ( 'toplevel_page_crate-site-options' === $screen->id ) {
-    wp_enqueue_script( 'crate_admin', get_template_directory_uri() . '/admin.js', array( 'jquery' ), '4.4.17' );
+    wp_enqueue_script( 'crate_admin', get_template_directory_uri() . '/admin.js', array( 'jquery' ), '4.4.18' );
   }
 }
 add_action( 'admin_enqueue_scripts', 'crate_enqueue_admin' );
