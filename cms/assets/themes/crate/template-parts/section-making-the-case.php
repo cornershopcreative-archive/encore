@@ -5,8 +5,8 @@
 ?>
 
 <div class="content-section"<?php crate_section_id_attr(); ?>>
-		<h2 class="section-title">Making the Case</h3>
-		<p class="section-subtitle">Read the latest research and thinking behind Generation to Generation</p>
+		<h2 class="section-title"><?php the_sub_field('heading'); ?></h3>
+		<p class="section-subtitle"><?php the_sub_field('sub_heading'); ?></p>
 		<div class="content-section-grid container making-the-case" style="padding-left: 0px; padding-right: 0px;">
 				<?php while ( have_rows( 'items' ) ) : the_row(); ?>
 					<a class="remove-underline" href="<?php the_sub_field('url'); ?>" target="_blank">
