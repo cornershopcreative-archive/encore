@@ -57,23 +57,26 @@ endif;
 	</div>
 
 	<div class="content-section-grid container">
-		<?php foreach ( $opportunities as $opp ): ?>
+		<?php foreach ( $opportunities as $opp ):
+			// Add UTM query args to the URL.
+			$vm_url = vmatch_add_utm_args( urldecode( $opp['vmUrl'] ) );
+			?>
 			<article class="grid-item grid-item-4">
 
 				<div class="entry-image">
 					<?php if ( ! empty( $opp['imageUrl'] ) ) : ?>
-						<a href="<?php echo esc_url( urldecode( $opp['vmUrl'] ) ); ?>" target="_blank"><img src="<?php echo esc_url( urldecode( $opp['imageUrl'] ) ); ?>" alt="Logo for <?php echo esc_attr( $opp['title'] ) ; ?>"></a>
+						<a href="<?php echo esc_url( $vm_url ); ?>" target="_blank"><img src="<?php echo esc_url( $opp['imageUrl'] ); ?>" alt="Logo for <?php echo esc_attr( $opp['title'] ) ; ?>"></a>
 					<?php else : ?>
 						<div class="no-image"></div>
 					<?php endif; ?>
 				</div>
 
 				<h3 class="grid-item-heading">
-					<a href="<?php echo esc_url( urldecode( $opp['vmUrl'] ) ); ?>" target="_blank"><?php echo wp_kses_post( $opp['title'] ); ?></a>
+					<a href="<?php echo esc_url( $vm_url ); ?>" target="_blank"><?php echo wp_kses_post( $opp['title'] ); ?></a>
 				</h3>
 
 				<div class="grid-item-blurb">
-					<p><?php echo wp_trim_words( stripslashes( wp_kses_post( $opp['plaintextDescription'] ) ), 30 ); ?>&nbsp;<a href="<?php echo esc_url( urldecode( $opp['vmUrl'] ) ); ?>" class="more" target="_blank">More</a></p>
+					<p><?php echo wp_trim_words( stripslashes( wp_kses_post( $opp['plaintextDescription'] ) ), 30 ); ?>&nbsp;<a href="<?php echo esc_url( $vm_url ); ?>" class="more" target="_blank">More</a></p>
 				</div>
 
 				<div class="grid-item-meta">

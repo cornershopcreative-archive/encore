@@ -389,7 +389,7 @@ function format_vmatch_results( $results ) {
 
 	foreach ( $results['opportunities'] as &$opp ) {
 		$opp = array(
-			'url'       => esc_url( urldecode( $opp['vmUrl'] ) ),
+			'url'       => esc_url( vmatch_add_utm_args( urldecode( $opp['vmUrl'] ) ) ),
 			'imagehtml' => _get_vmatch_opp_image_html( $opp ),
 			'name'      => $opp['title'],	// dangerous but neccesarry
 			'summary'   => wp_trim_words( stripslashes( wp_kses_post( $opp['plaintextDescription'] ) ), 30 ),
@@ -409,7 +409,7 @@ function _get_vmatch_opp_image_html( $opp ) {
 	if ( empty( $opp['imageUrl'] ) ) return '<div class="no-image"></div>';
 
 	ob_start(); ?>
-		<a href="<?php echo esc_url( urldecode( $opp['vmUrl'] ) ); ?>" target="_blank"><img src="<?php echo esc_url( urldecode( $opp['imageUrl'] ) ); ?>" alt="Logo for <?php echo esc_attr( $opp['title'] ) ; ?>"></a>
+		<a href="<?php echo esc_url( vmatch_add_utm_args( urldecode( $opp['vmUrl'] ) ) ); ?>" target="_blank"><img src="<?php echo esc_url( urldecode( $opp['imageUrl'] ) ); ?>" alt="Logo for <?php echo esc_attr( $opp['title'] ) ; ?>"></a>
 	<?php
 
 	return ob_get_clean();
@@ -898,12 +898,24 @@ function vmatch_sync_cleanup() {
 function vmatch_post_permalink( $url, $post ) {
 	if ( 'vm-opportunity' === $post->post_type ) {
 		if ( $vm_url = get_post_meta( $post->ID, '_vm_vmUrl', true ) ) {
-			$url = $vm_url;
+			$url = vmatch_add_utm_args( $vm_url );
 		}
 	}
 	return $url;
 }
 add_filter( 'post_type_link', 'vmatch_post_permalink', 10, 2 );
+
+/**
+ * Add UTM query args to a VolunteerMatch URL.
+ */
+function vmatch_add_utm_args( $url ) {
+	return add_query_arg( array(
+		'_sid'         => 'gen2gen',
+		'utm_source'   => 'gen2gen',
+		'utm_medium'   => 'referral',
+		'utm_campaign' => 'gen2gen',
+	), $url );
+}
 
 /**
  * Customize the VolunteerMatch State facet so it displays full state names
