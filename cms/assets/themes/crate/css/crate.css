@@ -1446,9 +1446,6 @@ input[type='search'] {
           flex-grow: 1;
       background: transparent; } }
 
-.home .site-header-secondary {
-  display: none; }
-
 .site-branding {
   display: -ms-flexbox;
   display: flex;
@@ -1648,9 +1645,6 @@ input[type='search'] {
   .nav-primary .subnav-is-open .subnav-toggle {
     -ms-transform: scaleY(-1);
         transform: scaleY(-1); }
-  @media (min-width: 1145px) {
-    .home .nav-primary {
-      padding-right: 11.875rem; } }
 
 .nav-nag {
   width: 100%; }

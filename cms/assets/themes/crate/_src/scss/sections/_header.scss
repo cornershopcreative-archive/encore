@@ -113,14 +113,6 @@
 	}
 }
 
-.site-header-secondary {
-
-	// Hide on homepage.
-	.home & {
-		display: none;
-	}
-}
-
 // Replace .site-branding with logo.
 .site-branding {
 	display: flex;
@@ -421,15 +413,6 @@
 
 		.subnav-toggle {
 			transform: scaleY(-1);
-		}
-	}
-
-	.home & {
-
-		// Add right-hand padding on homepage. This re-centers the menu items when
-		// the 'count me in' button is hidden.
-		@include breakpoint( $medium ) {
-			padding-right: rem(190);
 		}
 	}
 }
