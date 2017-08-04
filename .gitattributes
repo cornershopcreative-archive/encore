@@ -2,5 +2,6 @@
 # or for sourcemaps or minified files in general
 cms/assets/themes/crate/css/*.css -diff
 cms/assets/themes/minerva/css/*.css -diff
+cms/assets/themes/crate/js/crate.js -diff
 *.map -diff
 *.min.* -diff
