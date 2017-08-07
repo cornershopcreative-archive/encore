@@ -70,7 +70,7 @@ class SWP_Query {
 	 * @access public
 	 * @var int
 	 */
-	public $page = 1;
+	public $paged = 1;
 
 	/**
 	 * Post type(s) limiter
@@ -198,7 +198,8 @@ class SWP_Query {
 			'load_posts'        => true,
 			'fields'            => 'all',
 			'nopaging'          => false,
-			'page'              => 1,
+			'page'              => null,
+			'paged'             => 1,
 			'post__in'          => array(),
 			'post__not_in'      => array(),
 			'post_type'         => array(),
@@ -217,6 +218,11 @@ class SWP_Query {
 		// support for fields argument
 		if ( 'ids' === $args['fields'] ) {
 			$args['load_posts'] = false;
+		}
+
+		// WP_Query uses 'paged' so give that precedence
+		if ( ! is_null( $args['page'] ) && is_numeric( $args['page'] ) ) {
+			$args['paged'] = intval( $args['page'] );
 		}
 
 		// set up properties based on arguments
@@ -710,7 +716,7 @@ class SWP_Query {
 			add_filter( 'searchwp_load_posts', '__return_false' );
 		}
 
-		$this->posts = $swp_query->search( $this->engine, $this->s, $this->page );
+		$this->posts = $swp_query->search( $this->engine, $this->s, $this->paged );
 
 		// store the SQL used to get this results set
 		$this->request = $swp_query->get_last_search_sql();

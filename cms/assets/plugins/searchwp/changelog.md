@@ -1,3 +1,11 @@
+### 2.8.10
+- **[Improvement]** Improved main query checks
+- **[Improvement]** Improved invisible character tokenizing
+- **[Fix]** Fixed an issue with AND logic limits given certain engine configurations
+- **[Fix]** Fixed PHP Warnings
+- **[Fix]** Fixed lack of output for two tooltips
+- **[Fix]** Fixed an issue where usage of -1 weights to actively exclude matches overran enabled engine post type(s)
+
 ### 2.8.9
 - **[Fix]** Fix PHP Fatal Error with `$wp_query`
 - **[Fix]** Fix regression introduced in 2.8.8 that prevented admin searches from working properly in some cases
@@ -29,7 +37,7 @@
 ### 2.8.5
 - **[New]** Engine settings (e.g. exclusions/inclusions) are now imposed for empty searches
 - **[New]** New filter `searchwp_disable_impose_engine_config` to disable imposed engine settings for empty searches
-- **[Fix]** Fixed an issue that may have triggered unnecessary index update requests 
+- **[Fix]** Fixed an issue that may have triggered unnecessary index update requests
 - **[Improvement]** Style updates to better match WordPress' implementation of system font
 - **[Improvement]** Better handling of indexer requests
 - **[Improvement]** Better support when Admin/Dashboard searches are enabled

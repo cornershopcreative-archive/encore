@@ -125,20 +125,9 @@ $section_query = crate_section_query( $query_args );
 
 	<?php if ( get_sub_field( 'filtering' ) == 'yes' ) : ?>
 		<div class="section-facets container">
-			<div class="section-facet section-facet-organization">
-				<h3 class="section-facet-label">Organization</h3>
-				<?php echo facetwp_display( 'facet', 'vm-organization' ); ?>
-			</div>
-			<div class="section-facet section-facet-state">
-				<h3 class="section-facet-label">State</h3>
-				<?php echo facetwp_display( 'facet', 'vm-state' ); ?>
-			</div>
-			<div class="section-facet section-facet-city">
-				<h3 class="section-facet-label">City</h3>
-				<?php echo facetwp_display( 'facet', 'vm-city' ); ?>
-				<div class="section-facet-placeholder section-facet-placeholder-city">
-					Please select a state.
-				</div>
+			<div class="location-filters">
+				<h3 class="section-facet-label">Location</h3>
+				<?php echo facetwp_display( 'facet', 'vm-location' ); ?>
 			</div>
 			<span class="flex-space"></span>
 			<div class="section-facet section-facet-search">
@@ -149,7 +138,7 @@ $section_query = crate_section_query( $query_args );
 	<?php endif; ?>
 
 	<div class="content-section-grid container<?php echo ( ( get_sub_field( 'show_pager' ) || 'yes' === get_sub_field( 'filtering' ) ) ? ' facetwp-template' : '' ); ?>">
-		<?php while ( $section_query->have_posts() ) : $section_query->the_post(); ?>
+		<?php if ($section_query->have_posts() ) : while ( $section_query->have_posts() ) : $section_query->the_post(); ?>
 			<article class="grid-item grid-item-4">
 
 				<div class="entry-image">
@@ -188,7 +177,9 @@ $section_query = crate_section_query( $query_args );
 			</article>
 
 		<?php
-		endwhile;
+		endwhile; else : ?>
+        		<p><?php _e( 'No results found. Try expanding your location radius, or check out the suggested do-it-yourself activities below.' ); ?></p>
+		<?php endif;
 		// Restore the global $post variable.
 		wp_reset_postdata();
 		?>

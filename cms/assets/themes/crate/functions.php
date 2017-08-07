@@ -97,3 +97,7 @@ function my_facetwp_is_main_query( $is_main_query, $query ) {
     return $is_main_query;
 }
 add_filter( 'facetwp_is_main_query', 'my_facetwp_is_main_query', 10, 2 );
+
+add_filter( 'facetwp_proximity_store_distance', '__return_true' );
+define( 'GMAPS_API_KEY', 'AIzaSyCs_39jH3aZxdo0MZ5FANzQUfFJqCqGBI8' );
+

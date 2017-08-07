@@ -67,8 +67,9 @@ class SearchWP_Conflicts {
 				// whitelist which functions are acceptable
 				$function_whitelist = array(
 					'_close_comments_for_old_posts',    // WordPress core
-					'SearchWP::wp_search',               // SearchWP search hijack
-					'SearchWP::check_for_main_query',      // SearchWP main query check
+					'SearchWP::wp_search',              // SearchWP search hijack
+					'SearchWP::check_for_main_query',   // SearchWP main query check
+					'SearchWP::impose_engine_config',   // SearchWP engine config
 				);
 
 				foreach ( $this->filter_checklist as $filter_name => $filter_resolution_url ) {

@@ -327,7 +327,9 @@ class SearchWPSearch {
 				$this->posts = $this->query();
 
 				// log this
-				if ( ! empty( $pre_search_original_terms ) && apply_filters( 'searchwp_log_search', true, $engine, $pre_search_original_terms, absint( $this->foundPosts ) ) ) {
+				$log_default = ! $this->doing_admin_column();
+
+				if ( ! empty( $pre_search_original_terms ) && apply_filters( 'searchwp_log_search', $log_default, $engine, $pre_search_original_terms, absint( $this->foundPosts ) ) ) {
 
 					$pre_search_original_terms = sanitize_text_field( $pre_search_original_terms );
 					$pre_search_original_terms = trim( $pre_search_original_terms );
@@ -364,6 +366,31 @@ class SearchWPSearch {
 	}
 
 	/**
+	 * Determine whether we're outputting an admin column
+	 *
+	 * @return bool
+	 */
+	function doing_admin_column() {
+		$doing_admin_column = false;
+
+		if ( ! is_admin() ) {
+			return $doing_admin_column;
+		}
+
+		$post_types = get_post_types();
+
+		foreach( $post_types as $post_type ) {
+			if ( did_action( 'manage_' . $post_type . '_posts_custom_column' )
+				|| doing_action( 'manage_' . $post_type . '_posts_custom_column' ) ) {
+				$doing_admin_column = true;
+				break;
+			}
+		}
+
+		return $doing_admin_column;
+	}
+
+	/**
 	 * Getter for currently excluded IDs
 	 *
 	 * @since 2.8.5
@@ -392,6 +419,13 @@ class SearchWPSearch {
 	 * @since 2.5
 	 */
 	function set_default_include_and_exclude() {
+
+		// We need to ensure that this is in fact the main query, else we can get some
+		// wacky behavior from other functionality e.g. pre_get_posts hook usage that
+		// in turn uses WP_Query can get disastrous results
+		if ( empty( SWP()->isMainQuery ) ) {
+			return;
+		}
 
 		// set default inclusions (based on $wp_query (other plugins likely do their magic by setting this))
 		$wp_query_post__in = get_query_var( 'post__in' );
@@ -643,56 +677,51 @@ class SearchWPSearch {
 		// allow devs to filter which fields should be included for AND checks
 		$andFieldsDefaults = array( 'title', 'content', 'slug', 'excerpt', 'comment', 'tax', 'meta' );
 
+		// Store which AND fields the engine actually uses
+		$theseAndFields = array();
+
 		// If we're doing a search any default AND field has a weight of zero, it doesn't apply
 		if ( did_action( 'searchwp_before_query_index' ) ) {
-			foreach ( $andFieldsDefaults as $key => $val ) {
-				foreach ( $this->settings['engines'][ $this->engine ] as $engine_post_type => $post_type_settings ) {
+			foreach ( $this->settings['engines'][ $this->engine ] as $engine_post_type => $post_type_settings ) {
+				// If the post type is enabled, it doesn't matter
+				if ( empty( $post_type_settings['enabled'] ) ) {
+					continue;
+				}
 
-					// If the post type is enabled, it doesn't matter
-					if ( empty( $post_type_settings['enabled'] ) ) {
-						continue;
-					}
+				if ( isset( $post_type_settings['weights'] ) && is_array( $post_type_settings['weights'] ) ) {
+					foreach ( $post_type_settings['weights'] as $field_type => $weight ) {
 
-					switch ( $val ) {
-						case 'title':
-						case 'content':
-						case 'slug':
-						case 'excerpt':
-						case 'comment':
-							if ( empty( $post_type_settings['weights'][ $val ] ) ) {
-								unset( $andFieldsDefaults[ $key ] );
-							}
-							break;
+						// 'cf' is used for Custom Fields in the Settings but it's confusing; it's meta here
+						if ( 'cf' === $field_type ) {
+							$field_type = 'meta';
+						}
 
-						// If all the taxonomies are zero, remove this
-						case 'tax':
-						    if ( isset( $post_type_settings['weights'][ $val ] ) && ! empty( $post_type_settings['weights'][ $val ] ) ) {
-							    $enabled_taxonomies = array_filter( $post_type_settings['weights'][ $val ] );
-							    if ( empty( $enabled_taxonomies ) ) {
-								    unset( $andFieldsDefaults[ $key ] );
-							    }
-						    }
-							break;
+						if ( in_array( $field_type, $andFieldsDefaults, true ) ) {
 
-						case 'meta':
-							$engine_custom_fields = isset( $post_type_settings['weights']['cf'] ) ? $post_type_settings['weights']['cf'] : false;
-							if ( empty( $engine_custom_fields ) ) {
-								unset( $andFieldsDefaults[ $key ] );
-								break;
-							}
-
-							// If Custom Fields were added but with a zero weight?
-							$weighted_engine_custom_fields = wp_list_pluck( $engine_custom_fields, 'weight' );
-							if ( empty( $weighted_engine_custom_fields ) ) {
-								unset( $andFieldsDefaults[ $key ] );
-							}
-							break;
+						    if ( is_numeric( $weight ) && ! empty( $weight ) ) {
+							    $theseAndFields[] = $field_type;
+                            } elseif ( is_array( $weight) && ! empty( $weight ) ) {
+						        foreach ( $weight as $kweight ) {
+							        if ( is_numeric( $kweight ) && ! empty( $kweight ) ) {
+								        $theseAndFields[] = $field_type;
+								        break;
+                                    } elseif ( is_array( $kweight) && isset( $kweight['weight'] ) ) { // overly complex data model
+								        if ( is_numeric( $kweight['weight'] ) && ! empty( $kweight['weight'] ) ) {
+									        $theseAndFields[] = $field_type;
+									        break;
+								        }
+							        }
+                                }
+                            }
+						}
 					}
 				}
 			}
+
+			$theseAndFields = array_unique( $theseAndFields );
 		}
 
-		$andFields = apply_filters( 'searchwp_and_fields', $andFieldsDefaults );
+		$andFields = apply_filters( 'searchwp_and_fields', $theseAndFields );
 
 		// validate AND fields
 		if ( is_array( $andFields ) && ! empty( $andFields ) ) {
@@ -739,9 +768,9 @@ class SearchWPSearch {
 		$maybeStemmed = apply_filters( 'searchwp_custom_stemmer', $unstemmed );
 
 		// if the term was stemmed via the filter use it, else generate our own
-		$andTerm = ( $unstemmed == $maybeStemmed ) ? $this->stemmer->stem( $andTerm ) : $maybeStemmed;
+		$originalAndTerm = ( $unstemmed == $maybeStemmed ) ? $this->stemmer->stem( $andTerm ) : $maybeStemmed;
 
-		$andTerm = $wpdb->prepare( '%s', $andTerm );
+		$andTerm = $wpdb->prepare( '%s', $originalAndTerm );
 		$andTermLower = function_exists( 'mb_strtolower' ) ? mb_strtolower( $andTerm, 'UTF-8' ) : strtolower( $andTerm );
 		$relevantTermWhere = " {$this->db_prefix}terms.stem = " . $andTermLower;
 
@@ -767,6 +796,8 @@ class SearchWPSearch {
 		}
 
 		$clause_count = 0;
+
+		$post_parents = array();
 
 		// first SQL segment is against the index table
 		if ( ! empty( $andFieldsCoalesce ) ) {
@@ -849,8 +880,36 @@ class SearchWPSearch {
 					$postsWithTermPresent[] = absint( $post_ref->post_id );
 				}
 				if ( isset( $post_ref->post_parent ) && ! empty( $post_ref->post_parent ) ) {
-					$postsWithTermPresent[] = absint( $post_ref->post_parent );
+					$post_parents[] = absint( $post_ref->post_parent );
 				}
+			}
+		}
+
+		if ( ! empty( $post_parents ) ) {
+
+			$post_parents = array_map( 'absint', $post_parents );
+			$post_parents = array_unique( $post_parents );
+
+			// Check to make sure the parents in fact have all terms
+			$searchwp_index_table = $wpdb->prefix . SEARCHWP_DBPREFIX . 'index';
+			$searchwp_terms_table = $wpdb->prefix . SEARCHWP_DBPREFIX . 'terms';
+
+			$sql = "
+				SELECT      {$searchwp_index_table}.id
+				FROM        {$searchwp_index_table}
+				LEFT JOIN   {$searchwp_terms_table}
+				            ON {$searchwp_terms_table}.id = {$searchwp_index_table}.term
+				WHERE       {$searchwp_terms_table}.stem = %s
+							AND {$searchwp_index_table}.id IN ( " . implode( ', ', array_fill( 0, count( $post_parents ), '%d' ) ) . " )
+				";
+
+			$originalAndTermLower = function_exists( 'mb_strtolower' ) ? mb_strtolower( $originalAndTerm, 'UTF-8' ) : strtolower( $originalAndTerm );
+			$parent_values_to_prep = array_merge( array( $originalAndTermLower ), $post_parents );
+			$parent_sql = $wpdb->prepare( trim( $sql ), $parent_values_to_prep );
+			$parents_with_term = $wpdb->get_col( $parent_sql );
+
+			if ( ! empty( $parents_with_term ) ) {
+				$postsWithTermPresent = array_merge( $postsWithTermPresent, $parents_with_term );
 			}
 		}
 
@@ -982,13 +1041,15 @@ class SearchWPSearch {
 
 						$andInternalSQL = "
                             SELECT {$this->db_prefix}index.post_id
-                            FROM {$this->db_prefix}index
+                            	FROM {$this->db_prefix}index
+                            LEFT JOIN {$wpdb->posts}
+                            	ON {$this->db_prefix}index.post_id = {$wpdb->posts}.ID
                             LEFT JOIN {$this->db_prefix}terms
-                            ON {$this->db_prefix}index.term = {$this->db_prefix}terms.id
+                            	ON {$this->db_prefix}index.term = {$this->db_prefix}terms.id
                             LEFT JOIN {$this->db_prefix}cf
-                            ON {$this->db_prefix}index.post_id = {$this->db_prefix}cf.post_id
+                            	ON {$this->db_prefix}index.post_id = {$this->db_prefix}cf.post_id
                             LEFT JOIN {$this->db_prefix}tax
-                            ON {$this->db_prefix}index.post_id = {$this->db_prefix}tax.post_id
+                            	ON {$this->db_prefix}index.post_id = {$this->db_prefix}tax.post_id
                             WHERE {$relavantTermWhere} ";
 
 						if ( ! empty( $this->relevant_post_ids ) ) {
@@ -1052,7 +1113,7 @@ class SearchWPSearch {
 						}
 
 						// trim off the extra OR
-						$andInternalSQL = substr( $andInternalSQL, 0, strlen( $andInternalSQL ) - 4 ) . " ) GROUP BY {$this->db_prefix}index.post_id";
+						$andInternalSQL = substr( $andInternalSQL, 0, strlen( $andInternalSQL ) - 4 ) . " ) AND {$wpdb->posts}.post_type = '{$postType}' GROUP BY {$this->db_prefix}index.post_id";
 
 						// if this exclusion is applicable, grab post IDs that trigger the exclusion
 						if ( $applicableExclusion ) {
