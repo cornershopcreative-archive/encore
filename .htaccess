@@ -1,4 +1,4 @@
-# BEGIN WP Rocket v2.9.11
+# BEGIN WP Rocket v2.10.6
 # Use UTF-8 encoding for anything served text/plain or text/html
 AddDefaultCharset UTF-8
 # Force UTF-8 for a number of file formats
@@ -18,7 +18,7 @@ FileETag None
 <IfModule mod_alias.c>
 <FilesMatch "\.(html|htm|rtf|rtx|txt|xsd|xsl|xml)$">
 <IfModule mod_headers.c>
-Header set X-Powered-By "WP Rocket/2.9.11"
+Header set X-Powered-By "WP Rocket/2.10.6"
 Header unset Pragma
 Header append Cache-Control "public"
 Header unset Last-Modified
@@ -143,7 +143,7 @@ RewriteRule .* - [E=WPR_ENC:_gzip]
 RewriteCond %{REQUEST_METHOD} GET
 RewriteCond %{QUERY_STRING} =""
 RewriteCond %{HTTP:Cookie} !(wordpress_logged_in_|wp-postpass_|wptouch_switch_toggle|comment_author_|comment_author_email_) [NC]
-RewriteCond %{REQUEST_URI} !^(.*/feed/?|/wp-json/(.*))$ [NC]
+RewriteCond %{REQUEST_URI} !^((.*)/feed/?|/wp-json/(.*))$ [NC]
 RewriteCond %{HTTP_USER_AGENT} !^(facebookexternalhit).* [NC]
 RewriteCond "%{DOCUMENT_ROOT}/cms/assets/cache/wp-rocket/%{HTTP_HOST}%{REQUEST_URI}/index%{ENV:WPR_SSL}.html%{ENV:WPR_ENC}" -f
 RewriteRule .* "/cms/assets/cache/wp-rocket/%{HTTP_HOST}%{REQUEST_URI}/index%{ENV:WPR_SSL}.html%{ENV:WPR_ENC}" [L]

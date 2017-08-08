@@ -463,7 +463,7 @@ function searchwp_engine_settings_template( $engine = 'default' ) {
 										<label for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_stem"><?php esc_html_e( 'Enabled', 'searchwp' ); ?></label>
 										<a class="swp-tooltip" href="#swp-tooltip-stem-<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>">?</a>
 										<div class="swp-tooltip-content" id="swp-tooltip-stem-<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>">
-											<?php wp_kses( __( '<em>May increase search latency</em><br />For example: when enabled, searches for <strong>fishing</strong> and <strong>fished</strong> will generate the same results. When disabled, results may be different.', 'searchwp' ), array( 'em' => array(), 'br' => array(), 'strong' => array() ) ); ?>
+											<?php echo wp_kses( __( '<em>May increase search latency</em><br />For example: when enabled, searches for <strong>fishing</strong> and <strong>fished</strong> will generate the same results. When disabled, results may be different.', 'searchwp' ), array( 'em' => array(), 'br' => array(), 'strong' => array() ) ); ?>
 										</div>
 									</td>
 								</tr>

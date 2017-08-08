@@ -318,7 +318,7 @@ class SearchWPAdminNotices extends SearchWP {
 				$javascript_deployed = true;
 				?>
 				<div class="updated">
-					<p><?php wp_kses( __( 'SearchWP has detected a <strong>theme conflict</strong> with the active theme.', 'searchwp' ), array( 'strong' => array() ) ); ?> <a class="swp-conflict-toggle swp-theme-conflict-show" href="#searchwp-conflict-theme"><?php esc_html_e( 'More info &raquo;', 'searchwp' ); ?></a></p>
+					<p><?php echo wp_kses( __( 'SearchWP has detected a <strong>theme conflict</strong> with the active theme.', 'searchwp' ), array( 'strong' => array() ) ); ?> <a class="swp-conflict-toggle swp-theme-conflict-show" href="#searchwp-conflict-theme"><?php esc_html_e( 'More info &raquo;', 'searchwp' ); ?></a></p>
 					<div id="searchwp-conflict-theme" style="background:#fafafa;border:1px solid #eaeaea;padding:0.6em 1.2em;border-radius:2px;margin-bottom:1em;display:none;">
 						<p><?php echo wp_kses( __( "In order for SearchWP to display it's results, occurrences of <code>new WP_Query</code> and <code>query_posts()</code> must be removed from your search results template.", 'searchwp' ), array( 'code' => array() ) ); ?></p>
 						<p>
@@ -373,7 +373,7 @@ class SearchWPAdminNotices extends SearchWP {
 						<p><?php echo wp_kses( sprintf( __( 'SearchWP has detected a <strong>potential (<em>not guaranteed</em>)</strong> action/filter conflict with <code>%s</code> caused by an active plugin or the active theme.', 'searchwp' ), esc_html( $filter_name ) ), array( 'strong' => array(), 'em' => array(), 'code' => array() ) ); ?> <a class="swp-conflict-toggle swp-filter-conflict-show" href="#searchwp-conflict-<?php echo esc_attr( $filter_name ); ?>"><?php esc_html_e( 'More info &raquo;', 'searchwp' ); ?></a></p>
 						<div id="searchwp-conflict-<?php echo esc_attr( $filter_name ); ?>" style="background:#fafafa;border:1px solid #eaeaea;padding:0.6em 1.2em;border-radius:2px;margin-bottom:1em;display:none;">
 							<p><?php echo wp_kses( __( '<strong>This is simply a <em>preliminary</em> detection of a <em>possible</em> conflict.</strong> Many times these detections can be <strong>safely dismissed</strong>', 'searchwp' ), array( 'strong' => array(), 'em' => array() ) ); ?></p>
-							<p><?php wp_kses( __( '<em>If (and only if) you are experiencing issues</em> with search results not changing or not appearing, the following Hooks (put in place by other plugins or your active theme) <em>may be</em> contributing to the problem:', 'searchwp' ), array( 'em' => array() ) ); ?></p>
+							<p><?php echo wp_kses( __( '<em>If (and only if) you are experiencing issues</em> with search results not changing or not appearing, the following Hooks (put in place by other plugins or your active theme) <em>may be</em> contributing to the problem:', 'searchwp' ), array( 'em' => array() ) ); ?></p>
 							<ol>
 								<?php foreach ( $potential_conflict as $conflict ) : ?>
 									<?php

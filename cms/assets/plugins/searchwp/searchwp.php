@@ -3,7 +3,7 @@
 Plugin Name: SearchWP
 Plugin URI: https://searchwp.com/
 Description: The best WordPress search you can find
-Version: 2.8.9
+Version: 2.8.14
 Author: SearchWP, LLC
 Author URI: https://searchwp.com/
 Text Domain: searchwp
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SEARCHWP_VERSION', '2.8.9' );
+define( 'SEARCHWP_VERSION', '2.8.14' );
 define( 'SEARCHWP_PREFIX', 'searchwp_' );
 define( 'SEARCHWP_DBPREFIX', 'swp_' );
 define( 'SEARCHWP_EDD_STORE_URL', 'https://searchwp.com' );
@@ -201,7 +201,7 @@ class SearchWP {
 		'cannot', 'cant', 'co', 'con', 'could', "couldn't", 'couldnt', 'de', 'did', 'do', 'does', "don't", 'done', 'dont',
 		'down', 'due', 'during', 'each', 'eg', 'eight', 'either', 'eleven', 'else', 'elsewhere', 'empty', 'enough', 'etc',
 		'etc.', 'even', 'ever', 'every', 'everyone', 'everything', 'everywhere', 'except', 'few', 'fifteen', 'fify',
-		'fill', 'find', 'fire', 'first', 'five', 'for', 'former', 'formerly', 'forty', 'found', 'four', 'from', 'front',
+		'fill', 'find', 'first', 'five', 'for', 'former', 'formerly', 'forty', 'found', 'four', 'from', 'front',
 		'full', 'further', 'get', 'give', 'go', 'got', 'had', 'has', "hasn't", 'hasnt', 'have', 'he', 'hence', 'her',
 		'here', 'hereafter', 'hereby', 'herein', 'hereupon', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'however',
 		'hundred', 'i', 'i.e.', 'ie', 'if', 'in', 'inc', 'inc.', 'indeed', 'into', 'is', "isn't", 'it', "it's", 'its',
@@ -1487,11 +1487,13 @@ if ( is_array( $diagnostics['posts'] ) && isset( $diagnostics['posts'][0] ) ) {
 	 * @since 1.0
 	 */
 	function check_for_main_query( $query ) {
-		if ( $this->force_run || ( ! is_admin() && $query->is_main_query() ) ) {
+		if ( $query->is_main_query() || $this->force_run ) {
 			if ( ! isset( $_GET['swpjumpstart'] ) ) {
 				do_action( 'searchwp_log', 'check_for_main_query(): It is the main query' );
 			}
 			$this->isMainQuery = true;
+		} else {
+			$this->isMainQuery = false;
 		}
 
 		return $query;
@@ -1795,19 +1797,21 @@ if ( is_array( $diagnostics['posts'] ) && isset( $diagnostics['posts'][0] ) ) {
 			$termString = $this->replace_4_byte( $termString );
 		}
 
-		$termString = sanitize_text_field( $termString );
 		$termString = function_exists( 'mb_strtolower' ) ? mb_strtolower( $termString, 'UTF-8' ) : strtolower( $termString );
 		$termString = stripslashes( $termString );
 
 		// remove punctuation
 		$termString = str_replace( $punctuation, ' ', $termString );
 		$termString = preg_replace( '/[[:punct:]]/uiU', ' ', $termString );
+		$termString = preg_replace( '/[\x00-\x1F\x7F\xA0]/u', ' ', $termString );
+		$termString = preg_replace( '/[\x{0300}-\x{036f}]+/u', ' ', $termString );
+		$termString = preg_replace( '/[^\P{C}\n]+/u', ' ', $termString );
 
 		// remove spaces
 		$termString = preg_replace( '/[[:space:]]/uiU', ' ', $termString );
 
+		// final pass
 		$termString = sanitize_text_field( $termString );
-
 		$termString = trim( $termString );
 
 		return $termString;
@@ -2205,26 +2209,52 @@ if ( is_array( $diagnostics['posts'] ) && isset( $diagnostics['posts'][0] ) ) {
 	function wp_search( $posts ) {
 		global $wp_query;
 
-		// Short circuit if it's not the main query
-        // The main query check is a bit weird, returns a false positive if in Widget context
-        // so that's why we're checking both. On the other hand if you have admin searches enabled
-        // and manually enter in a page number in Media, our main query check fails. Check both.
-        // TODO: this logic check is ridiculous
-        if (
-                ! is_admin() &&
-                (
-                    (
-                        'object' === strtolower( gettype( $wp_query ) )
-                        && method_exists( $wp_query, 'is_main_query' )
-                        && ! $wp_query->is_main_query()
-                    )
-                    || ! $this->isMainQuery
-                )
-                && ! $this->force_run
-                ) {
-            return $posts;
-        }
+		// On the front end SearchWP searches run before any output so if 'wp' fired we don't want to run anyway
+		if ( ! is_admin() && did_action( 'wp' ) ) {
+			return $posts;
+		}
 
+		// If SearchWP is already active, don't run
+		if ( $this->active ) {
+			return $posts;
+		}
+
+		// Allow developers to NOT use SearchWP if another plugin is using $_GET['s'] for specific functionality
+		if ( apply_filters( 'searchwp_short_circuit', $this->maybe_short_circuit(), $this ) ) {
+			do_action( 'searchwp_log', 'Short circuiting at this time' );
+
+			return $posts;
+		}
+
+		/**
+		 * We need to check for the main query here, but the process of acurately checking
+		 * for the main query has proven to be FULL of edge cases and that is why this is
+		 * ridiculous.
+		 */
+		$do_we_run = false;
+
+		$wp_query_is_search = is_search();
+
+		if ( empty( $wp_query_is_search ) ) {
+			$wp_query_is_search = ! empty( $wp_query->is_search ) ? true : false;
+		}
+
+		if ( ( $wp_query_is_search || is_admin() && ! empty( $_REQUEST['s'] ) ) && // What's up, admin?
+			( (
+				$this->isMainQuery // This is _usually_ correct
+				|| ( ! $this->isMainQuery && is_main_query() ) // but sometimes it's not!
+			)
+			|| $this->force_run )
+		) {
+			$do_we_run = true;
+		}
+
+		// Short circuit if it's not the main query
+		if ( ! $do_we_run ) {
+			return $posts;
+		}
+
+		// TODO: This nested conditional nest has become crazy
 		if ( ! $this->force_run ) {
 			// make sure we're not in the admin, that we are searching, that it is the main query, and that SearchWP is not active
 			$proceedIfInAdmin = apply_filters( 'searchwp_in_admin', false );
@@ -2272,20 +2302,6 @@ if ( is_array( $diagnostics['posts'] ) && isset( $diagnostics['posts'][0] ) ) {
 						}
 					}
 				}
-			}
-
-			// allow developers to NOT use SearchWP if another plugin is using $_GET['s'] for specific functionality
-			if ( apply_filters( 'searchwp_short_circuit', $this->maybe_short_circuit(), $this ) ) {
-				do_action( 'searchwp_log', 'Short circuiting at this time' );
-
-				return $posts;
-			}
-
-			// make sure we do in fact want to proceed
-			$force_search = apply_filters( 'searchwp_outside_main_query', $this->force_run );
-			$wp_query_is_search = ! empty( $wp_query->is_search ) ? true : false;
-			if ( ! $proceedIfInAdmin && ( ! $wp_query_is_search || ( ! $this->isMainQuery && ! $force_search ) || $this->active ) ) {
-				return $posts;
 			}
 		}
 

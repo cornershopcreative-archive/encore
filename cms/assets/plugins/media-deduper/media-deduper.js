@@ -5,6 +5,7 @@ jQuery(document).ready(function() {
 
 	MDD_Help( jQuery );
 	MDD_Sharing( jQuery );
+	MDD_SmartDeleteWarning( jQuery );
 
 	if ( typeof mdd_config === 'object' ) {
 		MDD_Indexer( jQuery );
@@ -41,10 +42,8 @@ function MDD_Sharing( $ ) {
 		// Initialize the singleton
 		init: function() {
 			this.buttons = $('.share a');
-			console.log('running init...');
 			if ( this.buttons.length == 0 ) {
 				// Abort if no buttons
-				console.log('no buttons!');
 				return;
 			}
 
@@ -185,6 +184,25 @@ function MDD_Sharing( $ ) {
 
 
 /**
+ * Show a warning when the user attempts to smartdelete attachment(s).
+ */
+function MDD_SmartDeleteWarning( $ ) {
+	// Analogous to wp-admin/js/media.js, line 100 as of WP 4.7.5.
+	$( '#doaction, #doaction2' ).click( function( event ) {
+		$( 'select[name^="action"]' ).each( function() {
+			var optionValue = $( this ).val();
+
+			if ( 'smartdelete' === optionValue ) {
+				if ( ! window.confirm( mdd_l10n.warning_delete ) ) {
+					event.preventDefault();
+				}
+			}
+		});
+	});
+}
+
+
+/**
  * Indexer handler
  */
 function MDD_Indexer( $ ) {
@@ -205,7 +223,7 @@ function MDD_Indexer( $ ) {
 	$("#mdd-stop").on('click', function() {
 		mdd_active = false;
 		mdd_bad = 'aborted';
-		$(this).val( mdd_config.stopping );
+		$(this).val( mdd_l10n.stopping );
 	});
 
 	// Listen for manage.
@@ -236,11 +254,11 @@ function MDD_Indexer( $ ) {
 
 		// @todo: i18n of these strings.
 		if ( mdd_bad === 'aborted' ) {
-			$("#message").html( mdd_config.complete.aborted );
+			$("#message").html( mdd_l10n.index_complete.aborted );
 		} else if ( mdd_bad > 0 ) {
-			$("#message").html( mdd_config.complete.issues.replace('{NUM}', mdd_bad) );
+			$("#message").html( mdd_l10n.index_complete.issues.replace('{NUM}', mdd_bad) );
 		} else {
-			$("#message").html( mdd_config.complete.perfect );
+			$("#message").html( mdd_l10n.index_complete.perfect );
 		}
 
 		$("#message").show();
@@ -253,7 +271,7 @@ function MDD_Indexer( $ ) {
 			if ( typeof response !== 'object' || ( typeof response.success === "undefined" && typeof response.error === "undefined" ) ) {
 				response = {
 					success: false,
-					error: mdd_config.ajax_fail
+					error: mdd_l10n.ajax_fail
 				};
 			} else if ( typeof response === 'object' && typeof response.data.error !== 'undefined' ) {
 				$('.error-files').append('<li>' + response.data.error + '</li>');
