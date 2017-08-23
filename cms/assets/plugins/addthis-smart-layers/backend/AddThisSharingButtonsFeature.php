@@ -105,18 +105,55 @@ if (!class_exists('AddThisSharingButtonsFeature')) {
          */
         public function getInlineLayersAttributes(&$track = false)
         {
-            $dataUrlTemplate = 'data-url="%1$s"';
-            $dataTitleTemplate = 'data-title="%1$s"';
+            $url = $this->getShareUrl($track);
+            $title = $this->getShareTitle($track);
+            $attrString = self::buildDataAttrString($url, $title);
+            return $attrString;
+        }
+
+        /**
+         * Builds string for data attributes that can be included on AddThis
+         * inline share buttons
+         *
+         * @param string|boolean $url         Optional. URL to put in data
+         * attributes
+         * @param string|boolean $title       Optional. Title to put in data
+         * attributes
+         * @param string|boolean $description Optional. Description to put in
+         * data attributes
+         * @param string|boolean $media       Optional. Media url to put in
+         * data attributes
+         *
+         * @return string HTML attributes for telling AddThis what share
+         * attributes to use on some inline share buttons
+         */
+        public static function buildDataAttrString(
+            $url = false,
+            $title = false,
+            $description = false,
+            $media = false
+        ) {
 
             $attrs = array();
-            $url = $this->getShareUrl($track);
+
             if (!empty($url)) {
-                $attrs[] = sprintf($dataUrlTemplate, $url);
+                $url = str_replace('"', '', $url);
+                $attrs[] = 'data-url="' . $url . '"';
             }
 
-            $title = $this->getShareTitle($track);
             if (!empty($title)) {
-                $attrs[] = sprintf($dataTitleTemplate, $title);
+                $title = str_replace('"', '', $title);
+                $attrs[] = 'data-title="' . $title . '"';
+            }
+
+            if (!empty($description)) {
+                $description = str_replace('"', '', $description);
+                $attrs[] = 'data-description="' . $description . '"';
+            }
+
+            if (!empty($media)) {
+                $media = str_replace('"', '', $media);
+                $attrs[] = 'data-media="' . $media . '"';
             }
 
             $attrString = implode(' ', $attrs);
@@ -167,7 +204,7 @@ if (!class_exists('AddThisSharingButtonsFeature')) {
                         $toolOutput = $toolObject->sanitizeSettings($toolSettings);
                         $output[$toolOutput['widgetId']] = $toolOutput;
                     } elseif ($key === 'startUpgradeAt') {
-                        $output['startUpgradeAt'] = $toolSettings['startUpgradeAt'];
+                        $output['startUpgradeAt'] = $toolSettings;
                     }
                 }
             }
@@ -197,9 +234,11 @@ if (!class_exists('AddThisSharingButtonsFeature')) {
                             $toolObject = new AddThisSharingButtonsMobileToolbarTool();
                         }
 
-                        $toolLayers = $toolObject->getAddThisLayers($toolSettings);
-                        if (!empty($toolLayers)) {
-                            $allToolLayers[] = $toolLayers;
+                        if (is_object($toolObject)) {
+                            $toolLayers = $toolObject->getAddThisLayers($toolSettings);
+                            if (!empty($toolLayers)) {
+                                $allToolLayers[] = $toolLayers;
+                            }
                         }
                     }
                 }
@@ -524,6 +563,414 @@ if (!class_exists('AddThisSharingButtonsFeature')) {
             }
 
             $this->saveConfigs($newConfigs);
+        }
+
+        /**
+         * Upgrade from Share Buttons by AddThis 4/5.*.* to 6.0.0
+         *
+         * Reformats the old 4.0/5.0 Widgets that used client API
+         *
+         * @return null
+         */
+        protected function upgradeIterative4()
+        {
+            if ($this->globalOptionsObject->inRegisteredMode()) {
+                // This widget is only visible in Anonymous mode.
+                // Do nothing if the user is registered
+                return;
+            }
+
+            $gooConfigs = $this->globalOptionsObject->getConfigs();
+            $gooConfigs['filter_get_the_excerpt'] = true;
+            $gooConfigs['filter_the_excerpt'] = false;
+            $gooConfigs['filter_wp_trim_excerpt'] = false;
+
+            //
+            // MIGRATE WIDGETS
+            //
+            $oldWidgetName = 'addthis-widget';
+            $oldWidgets = get_option('widget_' . $oldWidgetName);
+            $newWidgets = array();
+
+            if (!is_array($oldWidgets) || empty($oldWidgets)) {
+                return;
+            }
+
+            foreach ($oldWidgets as $key => $widget) {
+                if ($key == '_multiwidget') {
+                    continue;
+                }
+
+                $oldWidgetKey = $oldWidgetName . '-' . $key;
+                $newWidgets[$oldWidgetKey] = array();
+                $newWidgets[$oldWidgetKey]['title'] = $widget['title'];
+                $newWidgets[$oldWidgetKey]['conflict'] = true;
+
+                // save the old client api HTML for this tool
+                switch ($widget['style']) {
+                    case 'large_toolbox':
+                        //32x32 px square buttons, top services, 5 buttons with counter on the + only
+                        $newWidgets[$oldWidgetKey]['html'] = ''.
+                            '<div class="addthis_toolbox addthis_default_style addthis_32x32_style">'.
+                                '<a class="addthis_button_preferred_1"></a>'.
+                                '<a class="addthis_button_preferred_2"></a>'.
+                                '<a class="addthis_button_preferred_3"></a>'.
+                                '<a class="addthis_button_preferred_4"></a>'.
+                                '<a class="addthis_button_compact"></a>'.
+                                '<a class="addthis_counter addthis_bubble_style"></a>'.
+                            '</div>';
+                        break;
+                    case 'small_toolbox':
+                        //16x16 px square buttons, top services, 5 buttons with counter on the + only
+                        $newWidgets[$oldWidgetKey]['html'] = ''.
+                            '<div class="addthis_toolbox addthis_default_style addthis_">'.
+                                '<a class="addthis_button_preferred_1"></a>'.
+                                '<a class="addthis_button_preferred_2"></a>'.
+                                '<a class="addthis_button_preferred_3"></a>'.
+                                '<a class="addthis_button_preferred_4"></a>'.
+                                '<a class="addthis_button_compact"></a>'.
+                                '<a class="addthis_counter addthis_bubble_style"></a>'.
+                            '</div>';
+                        break;
+                    case 'button':
+                        // that weird super compact thing / bn3
+                        $newWidgets[$oldWidgetKey]['html'] = ''.
+                            '<div>'.
+                                '<a class="addthis_button" href="//addthis.com/bookmark.php?v=300">'.
+                                    '<img src="//cache.addthis.com/cachefly/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/>'.
+                                '</a>'.
+                            '</div>';
+                        break;
+                    default:
+                        //fb_tw_p1_sc
+                        // third party/original buttons: facebook like with counter, tweet, pinteres, addthis with counter
+                        $newWidgets[$oldWidgetKey]['html'] = ''.
+                            '<div class="addthis_toolbox addthis_default_style ">'.
+                                '<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>'.
+                                '<a class="addthis_button_tweet"></a>'.
+                                '<a class="addthis_button_pinterest_pinit"></a>'.
+                                '<a class="addthis_counter addthis_pill_style"></a>'.
+                            '</div>';
+                        break;
+                }
+            }
+
+            //
+            // MIGRATE GENERAL SETTINGS
+            //
+            $widgetIdMapping = self::upgradeIterative2SaveWidgets($newWidgets);
+            AddThisFollowButtonsFeature::upgradeIterative1MigrateSidebarWidgetIds($widgetIdMapping);
+
+            $oldConfigs = $this->getConfigs();
+            if (isset($oldConfigs['addthis_sidebar_count'])) {
+                $newConfigs = array();
+            } else {
+                $newConfigs  = $oldConfigs;
+            }
+
+
+            $defaultSettingsPill = array(
+                'id'       => 'html',
+                'html'     => '<div><a class="addthis_button" href="//addthis.com/bookmark.php?v='.$oldConfigs['atversion'].'" %1$s><img src="//cache.addthis.com/cachefly/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a></div>',
+                'elements' => array(),
+            );
+
+            $defaultSettingsOldButtons = array(
+                'id'                   => 'shin',
+                'style'                => 'original',
+                'originalServices'     => array(
+                    'facebook_like',
+                    'tweet',
+                    'pinterest_pinit',
+                    'counter',
+                ),
+                'elements'             => array(),
+            );
+
+            $defaultSettingsNewButtons = array(
+                'id'                    => 'shin',
+                'style'                 => 'fixed',
+                'counts'                => 'one',
+                'numPreferredServices'  => 5,
+                'services'              => array(),
+                'elements'              => array(),
+            );
+
+            //
+            // ABOVE BUTTON SETTINGS MIGRATION
+            //
+            if (!empty($oldConfigs['above'])) {
+                $toolSettings = array();
+                if ($oldConfigs['above'] === 'fb_tw_p1_sc') {
+                    $toolSettings = $defaultSettingsOldButtons;
+                    if (!empty($oldConfigs['above_custom_services'])) {
+                        $toolSettings['originalServices'] = explode(',', $oldConfigs['above_custom_services']);
+                        foreach ($toolSettings['originalServices'] as $key => $service) {
+                            $toolSettings['originalServices'][$key] = trim($service);
+                        }
+                    }
+                } elseif ($oldConfigs['above'] === 'large_toolbox'
+                    || $oldConfigs['above'] === 'small_toolbox'
+                ) {
+                    $toolSettings = $defaultSettingsNewButtons;
+
+                    if ($oldConfigs['above'] === 'large_toolbox') {
+                        $toolSettings['size'] = '32px';
+                    } else {
+                        $toolSettings['size'] = '16px';
+                    }
+
+                    if (!empty($oldConfigs['above_custom_services'])) {
+                        $toolSettings['services'] = explode(',', $oldConfigs['above_custom_services']);
+                        foreach ($toolSettings['services'] as $key => $service) {
+                            $toolSettings['services'][$key] = trim($service);
+                        }
+                    }
+                } elseif ($oldConfigs['above'] === 'button') {
+                    $toolSettings = $defaultSettingsPill;
+                } elseif ($oldConfigs['above'] === 'custom_string') {
+                    $toolSettings = array(
+                        'id'       => 'html',
+                        'html'     => $oldConfigs['above_custom_string'],
+                        'elements' => array(),
+                    );
+                }
+
+                if ($oldConfigs['above'] !== 'custom_string') {
+                    $toolSettings['elements'][] = '.addthis_inline_share_toolbox_above';
+                }
+
+                if (!empty($oldConfigs['addthis_above_showon_excerpts'])) {
+                    if (!empty($oldConfigs['addthis_above_showon_home'])) {
+                        $toolSettings['elements'][] = '.at-above-post-homepage';
+                    }
+                    if (!empty($oldConfigs['addthis_above_showon_archives'])) {
+                        $toolSettings['elements'][] = '.at-above-post-arch-page';
+                    }
+                    if (!empty($oldConfigs['addthis_above_showon_categories'])) {
+                        $toolSettings['elements'][] = '.at-above-post-cat-page';
+                    }
+                }
+                if (!empty($oldConfigs['addthis_above_showon_posts'])) {
+                    $toolSettings['elements'][] = '.at-above-post';
+                }
+                if (!empty($oldConfigs['addthis_above_showon_pages'])) {
+                    $toolSettings['elements'][] = '.at-above-post-page';
+                }
+
+                $toolSettings['enabled'] = (boolean)$oldConfigs['addthis_above_enabled'];
+                $toolSettings['auto_personalization'] = (boolean)$oldConfigs['above_auto_services'];
+                $toolSettings['toolName'] = 'Sharing Buttons Above Content';
+                $toolSettings['widgetId'] = 'above';
+
+                if ($oldConfigs['above'] === 'custom_string') {
+                    $gooConfigs['html'][$toolSettings['widgetId']] = $toolSettings;
+                } else {
+                    $newConfigs[$toolSettings['widgetId']] = $toolSettings;
+                }
+            }
+
+            //
+            // BELOW BUTTON SETTINGS MIGRATION
+            //
+            if (!empty($oldConfigs['below'])) {
+                $toolSettings = array();
+                if ($oldConfigs['below'] === 'fb_tw_p1_sc') {
+                    $toolSettings = $defaultSettingsOldButtons;
+                    if (!empty($oldConfigs['below_custom_services'])) {
+                        $toolSettings['originalServices'] = explode(',', $oldConfigs['below_custom_services']);
+                        foreach ($toolSettings['originalServices'] as $key => $service) {
+                            $toolSettings['originalServices'][$key] = trim($service);
+                        }
+                    }
+                } elseif ($oldConfigs['below'] === 'large_toolbox' | $oldConfigs['below'] === 'small_toolbox') {
+                    $toolSettings = $defaultSettingsNewButtons;
+
+                    if ($oldConfigs['below'] === 'large_toolbox') {
+                        $toolSettings['size'] = '32px';
+                    } else {
+                        $toolSettings['size'] = '16px';
+                    }
+
+                    if (!empty($oldConfigs['below_custom_services'])) {
+                        $toolSettings['services'] = explode(',', $oldConfigs['below_custom_services']);
+                        foreach ($toolSettings['services'] as $key => $service) {
+                            $toolSettings['services'][$key] = trim($service);
+                        }
+                    }
+                } elseif ($oldConfigs['below'] === 'button') {
+                    $toolSettings = $defaultSettingsPill;
+                } elseif ($oldConfigs['below'] === 'custom_string') {
+                    $toolSettings = array(
+                        'id'       => 'html',
+                        'html'     => $oldConfigs['below_custom_string'],
+                        'elements' => array(),
+                    );
+                }
+
+                if ($oldConfigs['below'] !== 'custom_string') {
+                    $toolSettings['elements'][] = '.addthis_inline_share_toolbox_below';
+                }
+
+                if (!empty($oldConfigs['addthis_below_showon_excerpts'])) {
+                    if (!empty($oldConfigs['addthis_below_showon_home'])) {
+                        $toolSettings['elements'][] = '.at-below-post-homepage';
+                    }
+                    if (!empty($oldConfigs['addthis_below_showon_archives'])) {
+                        $toolSettings['elements'][] = '.at-below-post-arch-page';
+                    }
+                    if (!empty($oldConfigs['addthis_below_showon_categories'])) {
+                        $toolSettings['elements'][] = '.at-below-post-cat-page';
+                    }
+                }
+                if (!empty($oldConfigs['addthis_below_showon_posts'])) {
+                    $toolSettings['elements'][] = '.at-below-post';
+                }
+                if (!empty($oldConfigs['addthis_below_showon_pages'])) {
+                    $toolSettings['elements'][] = '.at-below-post-page';
+                }
+
+                $toolSettings['enabled'] = (boolean)$oldConfigs['addthis_below_enabled'];
+                $toolSettings['auto_personalization'] = (boolean)$oldConfigs['below_auto_services'];
+                $toolSettings['toolName'] = 'Sharing Buttons Below Content';
+                $toolSettings['widgetId'] = 'below';
+                if ($oldConfigs['below'] === 'custom_string') {
+                    $gooConfigs['html'][$toolSettings['widgetId']] = $toolSettings;
+                } else {
+                    $newConfigs[$toolSettings['widgetId']] = $toolSettings;
+                }
+            }
+
+            //
+            // SIDEBAR SETTINGS MIGRATION
+            //
+            if (!empty($oldConfigs['addthis_sidebar_count'])) {
+                $toolSettings = array(
+                    'id' => 'shfs',
+                    'auto_personalization' => true,
+                    'toolName'             => 'Sharing Sidebar',
+                    'widgetId'             => 'sidebar',
+                    'mobilePosition'       => 'hide',
+                    'mobileButtonSize'     => 'large',
+                    'style'                => 'modern',
+                    'counts'               => 'none',
+                    'enabled'              => (boolean)$oldConfigs['addthis_sidebar_enabled'],
+                    'theme'                => strtolower($oldConfigs['addthis_sidebar_theme']),
+                    'desktopPosition'      => strtolower($oldConfigs['addthis_sidebar_position']),
+                    'numPreferredServices' => (int)$oldConfigs['addthis_sidebar_count'],
+                    'templates'            => array(),
+                );
+
+                if (!empty($oldConfigs['addthis_sidebar_showon_home'])) {
+                    $toolSettings['templates'][] = 'home';
+                }
+                if (!empty($oldConfigs['addthis_sidebar_showon_posts'])) {
+                    $toolSettings['templates'][] = 'posts';
+                }
+                if (!empty($oldConfigs['addthis_sidebar_showon_pages'])) {
+                    $toolSettings['templates'][] = 'pages';
+                }
+                if (!empty($oldConfigs['addthis_sidebar_showon_archives'])) {
+                    $toolSettings['templates'][] = 'archives';
+                }
+                if (!empty($oldConfigs['addthis_sidebar_showon_categories'])) {
+                    $toolSettings['templates'][] = 'categories';
+                }
+                $sidebarTemplates = $toolSettings['templates'];
+
+                $newConfigs[$toolSettings['widgetId']] = $toolSettings;
+            }
+
+            //
+            // MOBILE SHARING TOOLBAR SETTINGS MIGRATION
+            //
+            if (!empty($oldConfigs['addthis_mobile_toolbar_numPreferredServices'])) {
+                $toolSettings = array(
+                    'id'                   => 'shfs',
+                    'auto_personalization' => true,
+                    'toolName'             => 'Mobile Sharing Toolbar',
+                    'widgetId'             => 'mobileshare',
+                    'desktopPosition'      => 'hide',
+                    'mobileButtonSize'     => 'large',
+                    'style'                => 'modern',
+                    'enabled'              => (boolean)$oldConfigs['addthis_mobile_toolbar_enabled'],
+                    'theme'                => 'transparent',
+                    'mobilePosition'       => strtolower($oldConfigs['addthis_mobile_toolbar_position']),
+                    'numPreferredServices' => (int)$oldConfigs['addthis_mobile_toolbar_numPreferredServices'],
+                    'templates'            => array(),
+                );
+
+                if (!empty($oldConfigs['addthis_mobile_toolbar_counts'])) {
+                    $toolSettings['counts'] = 'one';
+                } else {
+                    $toolSettings['counts'] = 'none';
+                }
+
+                if (!empty($oldConfigs['addthis_mobile_toolbar_showon_home'])) {
+                    $toolSettings['templates'][] = 'home';
+                }
+                if (!empty($oldConfigs['addthis_mobile_toolbar_showon_posts'])) {
+                    $toolSettings['templates'][] = 'posts';
+                }
+                if (!empty($oldConfigs['addthis_mobile_toolbar_showon_pages'])) {
+                    $toolSettings['templates'][] = 'pages';
+                }
+                if (!empty($oldConfigs['addthis_mobile_toolbar_showon_archives'])) {
+                    $toolSettings['templates'][] = 'archives';
+                }
+                if (!empty($oldConfigs['addthis_mobile_toolbar_showon_categories'])) {
+                    $toolSettings['templates'][] = 'categories';
+                }
+
+                $newConfigs[$toolSettings['widgetId']] = $toolSettings;
+            }
+
+            //
+            // OLD MOBILE TOOLBAR SETTINGS MIGRATION
+            //
+            if (!empty($oldConfigs['addthis_sidebar_enabled'])
+                && empty($oldConfigs['addthis_mobile_toolbar_enabled'])
+            ) {
+                $toolSettings = array(
+                    'id'                => 'smlmo',
+                    'widgetId'          => 'mobile',
+                    'enabled'           => true,
+                    'follow'            => 'off',
+                    'buttonBarPosition' => 'bottom',
+                    'templates'         => $sidebarTemplates,
+                );
+
+                if (strtolower($oldConfigs['addthis_sidebar_theme']) === 'transparent') {
+                    $toolSettings['buttonBarTheme'] = 'light';
+                } else {
+                    $toolSettings['buttonBarTheme'] = strtolower($oldConfigs['addthis_sidebar_theme']);
+                }
+
+                $newConfigs[$toolSettings['widgetId']] = $toolSettings;
+            }
+
+            if (!empty($newConfigs)) {
+                $this->saveConfigs($newConfigs);
+            }
+
+            $this->globalOptionsObject->saveConfigs($gooConfigs);
+        }
+
+        /**
+         * Upgrade from Share Buttons by AddThis to 6.1.0,
+         * Follow Buttons by AddThis to 4.1.0,
+         * Related Posts by AddThis to 2.1.0,
+         * Smart Layers by AddThis to 3.1.0 and
+         * Website Tools by AddThis to 3.1.0
+         *
+         * Deletes Share Buttons by WordPress 4.0/5.0 addthis_run_once flag
+         *
+         * @return null
+         */
+        protected function upgradeIterative5() {
+            if (get_option('addthis_run_once')) {
+                delete_option('addthis_run_once');
+            }
         }
     }
 }

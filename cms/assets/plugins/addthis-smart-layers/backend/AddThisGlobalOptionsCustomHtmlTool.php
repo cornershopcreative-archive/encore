@@ -65,6 +65,7 @@ if (!class_exists('AddThisGlobalOptionsCustomHtmlTool')) {
                     switch ($field) {
                         case 'enabled':
                             $output[$field] = (boolean)$value;
+                            break;
                         case 'elements':
                             if (is_array($value) && !empty($value)) {
                                 $output[$field] = array();

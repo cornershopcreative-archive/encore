@@ -1,4 +1,4 @@
-# BEGIN WP Rocket v2.10.6
+# BEGIN WP Rocket v2.10.7
 # Use UTF-8 encoding for anything served text/plain or text/html
 AddDefaultCharset UTF-8
 # Force UTF-8 for a number of file formats
@@ -18,7 +18,7 @@ FileETag None
 <IfModule mod_alias.c>
 <FilesMatch "\.(html|htm|rtf|rtx|txt|xsd|xsl|xml)$">
 <IfModule mod_headers.c>
-Header set X-Powered-By "WP Rocket/2.10.6"
+Header set X-Powered-By "WP Rocket/2.10.7"
 Header unset Pragma
 Header append Cache-Control "public"
 Header unset Last-Modified
@@ -220,6 +220,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 </IfModule>
+
 # END WordPress
 # Created by Redirection
 # Thu, 17 Nov 2016 20:45:21 +0000

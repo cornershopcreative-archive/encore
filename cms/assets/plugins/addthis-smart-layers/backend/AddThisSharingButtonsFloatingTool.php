@@ -81,8 +81,10 @@ if (!class_exists('AddThisSharingButtonsFloatingTool')) {
                 $desktopConfigs['services'] = implode(',', $input['services']);
             }
 
-            if (!isset($input['desktopPosition']) || $input['desktopPosition'] !== 'hide') {
-               $output[$desktopPco] = $desktopConfigs;
+            if (!isset($input['desktopPosition'])
+                || $input['desktopPosition'] !== 'hide'
+            ) {
+                $output[$desktopPco] = $desktopConfigs;
             }
 
             // setting up SmartLayers API confis for mobile version of this tool
@@ -109,8 +111,10 @@ if (!class_exists('AddThisSharingButtonsFloatingTool')) {
                 }
             }
 
-            if (!isset($input['mobilePosition']) || $input['mobilePosition'] !== 'hide') {
-               $output[$mobilePco] = $mobileConfigs;
+            if (!isset($input['mobilePosition'])
+                || $input['mobilePosition'] !== 'hide'
+            ) {
+                $output[$mobilePco] = $mobileConfigs;
             }
 
             return $output;

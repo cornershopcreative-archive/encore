@@ -325,7 +325,16 @@ if (!class_exists('AddThisTool')) {
             return $configs;
         }
 
-        public function enabledOnTemplate($enabledTemplates) {
+        /**
+         * This takes configs a list of templates and returns whether the
+         * current pages matches any of them.
+         *
+         * @param array $enabledTemplates An array of templates types
+         *
+         * @return boolean true for a match, false for a miss
+         */
+        public function enabledOnTemplate($enabledTemplates)
+        {
             $templateType = $this->currentTemplateType();
 
             if (!is_array($enabledTemplates) ||

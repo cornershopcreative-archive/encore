@@ -599,16 +599,12 @@ if (!class_exists('AddThisPlugin')) {
                     $featureConfig = $featureObject->getAddThisConfig();
                     $config = array_replace_recursive($config, $featureConfig);
 
-                    $featureLayers = $featureObject->getAddThisLayers();
                     if ($this->globalOptionsObject->inAnonymousMode()) {
+                        $featureLayers = $featureObject->getAddThisLayers();
                         $layers = array_replace_recursive($layers, $featureLayers);
-                    }
-
-                    $featureLayersTools = $featureObject->getAddThisLayersTools();
-                    if ($this->globalOptionsObject->inAnonymousMode()) {
+                        $featureLayersTools = $featureObject->getAddThisLayersTools();
                         $layersTools = array_merge($layersTools, $featureLayersTools);
                     }
-
                     // save a layers json string for the sharing buttons plugin
                     if (!empty($featureObject->globalLayersJsonField)) {
                         $new = json_encode((object)$featureLayers);
@@ -649,61 +645,62 @@ if (!class_exists('AddThisPlugin')) {
             $configJson = json_encode((object)$config);
             $configJson = apply_filters('addthis_config_json', $configJson, $config);
 
-            if (!empty($gooSettings['addthis_layers_json'])) {
-                $layersFromSettings = json_decode($gooSettings['addthis_layers_json'], true);
-                $layers = array_replace_recursive($layers, $layersFromSettings);
-            }
-            $layers = apply_filters('addthis_layers_array', $layers);
-            $layersJson = json_encode((object)$layers);
-            $layersJson = apply_filters('addthis_layers_json', $layersJson, $layers);
+            if ($this->globalOptionsObject->inAnonymousMode()) {
+                if (!empty($gooSettings['addthis_layers_json'])) {
+                    $layersFromSettings = json_decode($gooSettings['addthis_layers_json'], true);
+                    $layers = array_replace_recursive($layers, $layersFromSettings);
+                }
+                $layers = apply_filters('addthis_layers_array', $layers);
+                $layersJson = json_encode((object)$layers);
+                $layersJson = apply_filters('addthis_layers_json', $layersJson, $layers);
 
-            $layersToolsJson = json_encode((array)$layersTools);
-            $layersToolsAlreadyDefined = '';
-            foreach ($layersTools as $toolLayersConfig) {
-                $toolLayersConfig = json_encode((object)$toolLayersConfig);
-                $layersToolsAlreadyDefined .= 'window.addthis_layers_tools.push('.$toolLayersConfig.'); ';
+                $layersToolsJson = json_encode((array)$layersTools);
+                $layersToolsAlreadyDefined = '';
+                foreach ($layersTools as $toolLayersConfig) {
+                    $toolLayersConfig = json_encode((object)$toolLayersConfig);
+                    $layersToolsAlreadyDefined .= 'window.addthis_layers_tools.push('.$toolLayersConfig.'); ';
+                }
             }
 
             $pluginInfoJson = json_encode((object)$pluginInfo);
 
-            $javaScript = '
-                if (window.addthis_product === undefined) {
-                    window.addthis_product = "' . $this->productPrefix . '";
-                }
+            $javaScript  = 'if (window.addthis_product === undefined) { ';
+            $javaScript .=   'window.addthis_product = "' . $this->productPrefix . '"; ';
+            $javaScript .= '} ';
 
-                if (window.wp_product_version === undefined) {
-                    window.wp_product_version = "' . $this->getProductVersion() . '";
-                }
+            $javaScript .= 'if (window.wp_product_version === undefined) { ';
+            $javaScript .=   'window.wp_product_version = "' . $this->getProductVersion() . '"; ';
+            $javaScript .= '} ';
 
-                if (window.wp_blog_version === undefined) {
-                    window.wp_blog_version = "' . $this->getCmsVersion() . '";
-                }
+            $javaScript .= 'if (window.wp_blog_version === undefined) { ';
+            $javaScript .=   'window.wp_blog_version = "' . $this->getCmsVersion() . '"; ';
+            $javaScript .= '} ';
 
-                if (window.addthis_share === undefined) {
-                    window.addthis_share = ' . $shareJson . ';
-                }
+            $javaScript .= 'if (window.addthis_share === undefined) { ';
+            $javaScript .=   'window.addthis_share = ' . $shareJson . '; ';
+            $javaScript .= '} ';
 
-                if (window.addthis_config === undefined) {
-                    window.addthis_config = ' . $configJson . ';
-                }
+            $javaScript .= 'if (window.addthis_config === undefined) { ';
+            $javaScript .=   'window.addthis_config = ' . $configJson . '; ';
+            $javaScript .= '} ';
 
-                if (window.addthis_layers === undefined) {
-                    window.addthis_layers = ' . $layersJson . ';
-                }
+            if ($this->globalOptionsObject->inAnonymousMode()) {
+                $javaScript .= 'if (window.addthis_layers === undefined) { ';
+                $javaScript .=   'window.addthis_layers = ' . $layersJson . '; ';
+                $javaScript .= '} ';
 
-                if (window.addthis_layers_tools === undefined) {
-                    window.addthis_layers_tools = ' . $layersToolsJson . ';
-                } else {
-                    '.$layersToolsAlreadyDefined.'
-                }
+                $javaScript .= 'if (window.addthis_layers_tools === undefined) { ';
+                $javaScript .= 'window.addthis_layers_tools = ' . $layersToolsJson . '; ';
+                $javaScript .= '} else { ';
+                $javaScript .=   $layersToolsAlreadyDefined . ' ';
+                $javaScript .= '} ';
+            }
 
+            $javaScript .= 'if (window.addthis_plugin_info === undefined) { ';
+            $javaScript .=   'window.addthis_plugin_info = ' . $pluginInfoJson . '; ';
+            $javaScript .= '} ';
 
-                if (window.addthis_plugin_info === undefined) {
-                    window.addthis_plugin_info = ' . $pluginInfoJson . ';
-                }
-
-                '.$this->getJavaScriptToLoadTools().'
-            ';
+            $javaScript .= $this->getJavaScriptToLoadTools();
 
             $javaScript = apply_filters('addthis_config_javascript', $javaScript);
             return $javaScript;
@@ -723,11 +720,13 @@ if (!class_exists('AddThisPlugin')) {
                       var first_load_interval_id = setInterval(function () {
                         if (typeof window.addthis !== \'undefined\') {
                           window.clearInterval(first_load_interval_id);
-                          if (Object.getOwnPropertyNames(window.addthis_layers).length > 0) {
+                          if (typeof window.addthis_layers !== \'undefined\' && Object.getOwnPropertyNames(window.addthis_layers).length > 0) {
                             window.addthis.layers(window.addthis_layers);
                           }
-                          for (i = 0; i < window.addthis_layers_tools.length; i++) {
-                            window.addthis.layers(window.addthis_layers_tools[i]);
+                          if (Array.isArray(window.addthis_layers_tools)) {
+                            for (i = 0; i < window.addthis_layers_tools.length; i++) {
+                              window.addthis.layers(window.addthis_layers_tools[i]);
+                            }
                           }
                         }
                      },1000)
@@ -746,11 +745,13 @@ if (!class_exists('AddThisPlugin')) {
                       var first_load_check = function () {
                         if (typeof window.addthis !== \'undefined\') {
                           window.clearInterval(first_load_interval_id);
-                          if (Object.getOwnPropertyNames(window.addthis_layers).length > 0) {
+                          if (typeof window.addthis_layers !== \'undefined\' && Object.getOwnPropertyNames(window.addthis_layers).length > 0) {
                             window.addthis.layers(window.addthis_layers);
                           }
-                          for (i = 0; i < window.addthis_layers_tools.length; i++) {
-                            window.addthis.layers(window.addthis_layers_tools[i]);
+                          if (Array.isArray(window.addthis_layers_tools)) {
+                            for (i = 0; i < window.addthis_layers_tools.length; i++) {
+                              window.addthis.layers(window.addthis_layers_tools[i]);
+                            }
                           }
 
                           window.atnt = function() {
@@ -834,15 +835,9 @@ if (!class_exists('AddThisPlugin')) {
             $script = '';
 
             if (empty($configs['enqueue_local_settings'])) {
-                $script .= '<script data-cfasync="false" type="text/javascript"';
-                if (!empty($configs['addthis_asynchronous_loading'])) {
-                    $localSettingsUrl = admin_url('admin-ajax.php')
-                        . '?action='.$this->globalOptionsObject->publicJavaScriptAction;
-                    $script .= ' async="async" src="'.$localSettingsUrl.'"></script>';
-                } else {
-                    $script .= '>'.$this->getJavascriptForGlobalVariables()
-                        .'</script>';
-                }
+                $script .= '<script data-cfasync="false" type="text/javascript">'
+                    . $this->getJavascriptForGlobalVariables()
+                    . '</script>';
             }
 
             if (empty($configs['enqueue_client'])) {
@@ -1430,7 +1425,7 @@ if (!class_exists('AddThisPlugin')) {
             );
 
             foreach ($shortCodes as $shortCode => $callback) {
-                if ($this->shortcodeExists($toolObject->shortCode)) {
+                if ($this->shortcodeExists($shortCode)) {
                     continue;
                 }
 

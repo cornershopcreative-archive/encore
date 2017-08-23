@@ -52,7 +52,7 @@ function get_imagify_admin_url( $action = 'options-general', $arg = array() ) {
 		case 'manual-upload':
 			return wp_nonce_url( admin_url( 'admin-post.php?action=imagify_manual_upload&attachment_id=' . $id . '&context=' . $context ), 'imagify-manual-upload' );
 
-		case 'restore-upload' :
+		case 'restore-upload':
 			return wp_nonce_url( admin_url( 'admin-post.php?action=imagify_restore_upload&attachment_id=' . $id . '&context=' . $context ), 'imagify-restore-upload' );
 
 		case 'dismiss-notice':
@@ -61,7 +61,7 @@ function get_imagify_admin_url( $action = 'options-general', $arg = array() ) {
 		case 'bulk-optimization':
 			return admin_url( 'upload.php?page=' . IMAGIFY_SLUG . '-bulk-optimization' );
 
-		default :
+		default:
 			$page = imagify_is_active_for_network() ? network_admin_url( 'settings.php' ) : admin_url( 'options-general.php' );
 			return $page . '?page=' . IMAGIFY_SLUG;
 	}
@@ -156,13 +156,13 @@ function get_imagify_bulk_buffer_size() {
 	$sizes = count( get_imagify_thumbnail_sizes() );
 
 	switch ( true ) {
-		case ( $sizes >= 10 ) :
+		case ( $sizes >= 10 ):
 			return 1;
 
-		case ( $sizes >= 8 ) :
+		case ( $sizes >= 8 ):
 			return 2;
 
-		case ( $sizes >= 6 ) :
+		case ( $sizes >= 6 ):
 			return 3;
 
 		default:
@@ -227,13 +227,18 @@ function imagify_get_wpdb_metas( $metas, $ids ) {
  * The URL is localized and contains some utm_*** parameters.
  *
  * @since  1.6.8
+ * @since  1.6.9 Added $path and $query parameters.
  * @author Grégory Viguier
  *
+ * @param  string $path  A path to add to the URL (URI). Not in use yet.
+ * @param  array  $query An array of query arguments (utm_*).
  * @return string The URL.
  */
-function imagify_get_wp_rocket_url() {
+function imagify_get_wp_rocket_url( $path = false, $query = array() ) {
 	$wprocket_url = 'https://wp-rocket.me/';
-	$locale       = get_locale();
+
+	// Locale.
+	$locale       = function_exists( 'get_user_locale' ) ? get_user_locale() : get_locale();
 	$suffixes     = array(
 		'fr_FR' => 'fr',
 		'es_ES' => 'es',
@@ -245,7 +250,37 @@ function imagify_get_wp_rocket_url() {
 		$wprocket_url .= $suffixes[ $locale ] . '/';
 	}
 
-	$wprocket_url .= '?utm_source=imagify-coupon&utm_medium=plugin&utm_campaign=imagify';
+	// URI.
+	$paths = array(
+		'pricing' => array(
+			'default' => 'pricing',
+			'fr_FR'   => 'offres',
+			'es_ES'   => 'precios',
+			'it_IT'   => 'offerte',
+			'de_DE'   => 'preise',
+		),
+	);
 
-	return $wprocket_url;
+	if ( $path ) {
+		$path = trim( $path, '/' );
+
+		if ( isset( $paths[ $path ] ) ) {
+			if ( isset( $paths[ $path ][ $locale ] ) ) {
+				$wprocket_url .= $paths[ $path ][ $locale ] . '/';
+			} else {
+				$wprocket_url .= $paths[ $path ]['default'] . '/';
+			}
+		} else {
+			$wprocket_url .= $path . '/';
+		}
+	}
+
+	// Query args.
+	$query = array_merge( array(
+		'utm_source'   => 'imagify-coupon',
+		'utm_medium'   => 'plugin',
+		'utm_campaign' => 'imagify',
+	), $query );
+
+	return add_query_arg( $query, $wprocket_url );
 }

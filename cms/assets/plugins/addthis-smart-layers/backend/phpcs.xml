@@ -47,7 +47,6 @@
     <rule ref="Generic.NamingConventions.CamelCapsFunctionName">
         <exclude-pattern>functions.php</exclude-pattern>
     </rule>
-    <rule ref="Generic.Strings.UnnecessaryStringConcat"/>
 
     <rule ref="Zend.Files.ClosingTag"/>
 

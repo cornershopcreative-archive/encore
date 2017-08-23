@@ -71,7 +71,6 @@
             setting-card
             for="setting-card-design-settings"
             expended="designCardExpended"
-            ng-show="toolSettings.style !== 'original'"
         >
             <h2 class="hndle ui-sortable-handle">
                 <span translate>share_tool_edit_design_label</span>
@@ -88,16 +87,17 @@
                 </div>
                 <div class="clear"></div>
 
-                <h3 translate>share_tool_buttons_label</h3>
-                <div
-                    america-icon-size-picker=""
-                    ng-model="toolSettings.size"
-                    field-name="desktopButtonSize.fieldName"
-                    title="desktopButtonSize.title"
-                    size-options="desktopButtonSize.sizeOptions"
-                >
+                <div ng-show="toolSettings.style !== 'original'">
+                    <h3 translate>share_tool_buttons_label</h3>
+                    <div
+                        america-icon-size-picker=""
+                        ng-model="toolSettings.size"
+                        field-name="desktopButtonSize.fieldName"
+                        title="desktopButtonSize.title"
+                        size-options="desktopButtonSize.sizeOptions"
+                    >
+                    </div>
                 </div>
-
             </div>
         </div>
 

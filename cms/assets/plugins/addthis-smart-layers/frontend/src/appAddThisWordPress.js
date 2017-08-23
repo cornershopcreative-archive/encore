@@ -102,7 +102,7 @@ appAddThisWordPress.config(function($stateProvider, $urlRouterProvider) {
     $filter,
     $q
   ) {
-    var mainSettingsPromise = modeHelper.get($wordpress.recommendedContent)
+    var mainSettingsPromise = modeHelper.get($wordpress.relatedPosts)
     .then(function(result) {
       return $filter('toolType')(result, 'relatedposts');
     });
@@ -127,20 +127,20 @@ appAddThisWordPress.config(function($stateProvider, $urlRouterProvider) {
 
     return $q.all([mainSettingsPromise, promoteUrlSettings])
     .then(function(results) {
-      var recommendedContent = results[0];
+      var relatedPosts = results[0];
       var promotedUrls = results[1];
 
       if (promotedUrls !== false) {
         angular.forEach(promotedUrls, function(urls, toolPco) {
-          if (typeof recommendedContent[toolPco] === 'object') {
-            recommendedContent[toolPco].promotedUrl = urls[0];
+          if (typeof relatedPosts[toolPco] === 'object') {
+            relatedPosts[toolPco].promotedUrl = urls[0];
           } else {
-            recommendedContent[toolPco] = { promotedUrl: urls[0] };
+            relatedPosts[toolPco] = { promotedUrl: urls[0] };
           }
         });
       }
 
-      return recommendedContent;
+      return relatedPosts;
     });
   };
 

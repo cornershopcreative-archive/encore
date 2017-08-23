@@ -84,6 +84,7 @@ appAddThisWordPress.controller('NewShareToolCtrl', function(
       toolTypeMsgid: 'share_tool_custom_html_label',
       defaultSettings: {
         id: 'html',
+        enabled: true,
         elements: [
           '.at-above-post-homepage',
           '.at-below-post-homepage',

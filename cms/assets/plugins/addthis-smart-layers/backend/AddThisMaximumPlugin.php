@@ -35,7 +35,7 @@ if (!class_exists('AddThisMaximumPlugin')) {
      */
     class AddThisMaximumPlugin extends AddThisPlugin
     {
-        protected $version = '3.0.0';
+        protected $version = '3.1.0';
         protected $name = 'Smart Layers by AddThis';
         protected $productPrefix = 'wpsl';
         protected $pluginSlug = 'addthis-smart-layers';

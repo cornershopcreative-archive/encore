@@ -1,9 +1,9 @@
 === Smart Layers by AddThis ===
-Contributors: abramsm, jgrodel, bradaddthis.com, addthis_paul, addthis_matt, ribin_addthis, addthis_elsa, AddThis_Mike
+Contributors: abramsm, jgrodel, bradaddthis.com, addthis_paul, addthis_matt, ribin_addthis, addthis_elsa, addthisleland
 Tags: AddThis, bookmark, bookmarking, email sharing, mobile sharing, mobile sharing buttons, plugin, share, share buttons, share buttons plugin, sharing, sharing buttons, sharing sidebar, social buttons, social tools, widget, follow buttons, follow buttons plugin, shortcode, facebook, twitter, pinterest, linkedin, instagram, content recommendations, recommended content, related content, related posts
 Requires at least: 3.0
-Tested up to: 4.7
-Stable tag: 3.0.0
+Tested up to: 4.8.1
+Stable tag: 3.1.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,8 +65,7 @@ AddThis supports over 200 social sharing services, and over 60 follow services.
 
 = Is AddThis free? =
 
-Many of our tools are free, but Pro users get the benefit of exclusive widgets, including mobile­ friendly tools
-and retina icons, priority support and deeper analytics.
+Many of our tools are free, but Pro users get the benefit of exclusive widgets, priority support and deeper analytics.
 
 = Do I need to create an account? =
 
@@ -91,9 +90,10 @@ This plugin requires PHP 5.2.4 or greater and is tested on the following version
 * 5.2.17
 * 5.3.29
 * 5.4.45
-* 5.5.34
-* 5.6.20
-* 7.0.5
+* 5.5.38
+* 5.6.31
+* 7.0.22
+* 7.1.8
 
 = Who else uses AddThis? =
 Over 15,000,000 sites have installed AddThis. With over 2 billion unique users, AddThis is helping share content all over the world, in more than sixty languages.
@@ -124,14 +124,23 @@ See our <a href="https://plugins.svn.wordpress.org/addthis-all/trunk/documentati
 
 
 
-== Screenshots ==
-
-1. AddThis social share and follow tools on a page
-2. Analytics on the AddThis Dashboard
-
-
-
 == Changelog ==
+
+= 3.1.0 =
+* Fix for PHP error from AddThisSharingButtonsMobileToolbarTool.php line 66
+* Fix for PHP error from AddThisSharingButtonsFeature.php line 200
+* Fix for PHP notice from AddThisFeature.php line 652
+* Removing line breaks from HTML added to public pages
+* Not using addthis.layers() json on page when user is using their AddThis account as this creates buggy behavior
+* Disabling the wp_trim_excerpt by default as it's the most likely to cause theme issues
+* Adding error message if browser can't talk to addthis.com and communication with AddThis APIs are required for funtionality.
+* Compatibility updates for version 6.1.0 of <a href="https://wordpress.org/plugins/addthis/">Share Buttons by AddThis</a>.
+* Adding requested AddThisWidgetByDomClass functionality that will allow users adding a widget via PHP to customze the URL, title, description and image used for that share. Please see the <a href="https://plugins.svn.wordpress.org/addthis-all/trunk/documentation.widgets.md">widget documentation</a> for more infromation.
+
+= 3.0.1 =
+* Fixing shortcode bug.
+* Eliminating PHP Notice on AddThisPlugin.php line 1433
+* Compatibility updates for version 6.0.0 of <a href="https://wordpress.org/plugins/addthis/">Share Buttons by AddThis</a>. This plugin is no longer compatible with version before 6.0.0 of <a href="https://wordpress.org/plugins/addthis/">Share Buttons by AddThis</a>.
 
 = 3.0.0 =
 * Adding meta box to allow site editors to disable automatically added tools when editing posts and pages. Compatible with the <a href="https://wordpress.org/support/plugin/addthis">Share Button by AddThis</a> meta box. If disabled in one, auto adding of tools will be disabled in both.
@@ -192,6 +201,12 @@ See our <a href="https://plugins.svn.wordpress.org/addthis-all/trunk/documentati
 
 
 == Upgrade Notice ==
+
+= 3.1.0 =
+Fixs for PHP errors, whitespace issues, changes in default and upgraded settings. Adding requested AddThisWidgetByDomClass functionality that will allow users adding a widget via PHP to customze the URL, title, description and image used for that share.
+
+= 3.0.1 =
+Fixing shortcode bug. Eliminating PHP Notice on AddThisPlugin.php line 1433. Compatibility updates for version 6.0.0 of <a href="https://wordpress.org/plugins/addthis/">Share Buttons by AddThis</a>. This plugin is no longer compatible with version before 6.0.0 of <a href="https://wordpress.org/plugins/addthis/">Share Buttons by AddThis</a>.
 
 = 3.0.0 =
 Fix for PHP Warning on AddThisFollowButtonsToolParent.php line 127. Doing profile ID validation, sharing and follow service list retreival directly in the browser rather than proxying through a WordPress backend AJAX call. This will make this plugin work for "Ignore the tool configurations in this profile" mode in environments where the WordPress server can't talk to AddThis.com. Redesigned the plugin's widgets (including renaming classes) to work with AddThis.com's support of multiple definitions of the same tool type (see changelog for details). Adding meta box support.

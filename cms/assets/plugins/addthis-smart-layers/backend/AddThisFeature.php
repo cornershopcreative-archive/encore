@@ -322,6 +322,13 @@ if (!class_exists('AddThisFeature')) {
                 // check if smart layers is activated
                 $settings = get_option('smart_layer_activated');
             }
+            if (empty($settings)) {
+                // check if smart layers is activated
+                $settings = get_option('addthis_sharing_buttons_settings');
+                if (is_array($settings)) {
+                    $settings = !isset($settings['startUpgradeAt']);
+                }
+            }
 
             if (!empty($settings)) {
                 $upgrade = true;
@@ -349,7 +356,7 @@ if (!class_exists('AddThisFeature')) {
 
             $newStart = $this->recurseUpgrades($oldStart, $freshInstall);
 
-            if ($newStart != $oldStart) {
+            if ($newStart != $oldStart || empty($this->configs['startUpgradeAt'])) {
                 $this->configs['startUpgradeAt'] = $newStart;
                 $this->saveConfigs();
             }
@@ -618,6 +625,7 @@ if (!class_exists('AddThisFeature')) {
 
             $this->checkForEditPermissions(true);
 
+            $input = array();
             if (!empty($_REQUEST['data'])) {
                 $input = json_decode(stripslashes($_REQUEST['data']), true);
             }
@@ -1564,10 +1572,11 @@ if (!class_exists('AddThisFeature')) {
                 $htmlComments[$location] = array();
                 $search = 'AddThis '.$this->name.' '.$location;
                 $comment = '<!-- '.$search.' via filter on '.htmlspecialchars($trigger);
+                $track = array_unique($track);
                 if (!empty($track)) {
                     $comment .= ' using AddThis filters: ' . htmlspecialchars(implode(', ', $track));
                 }
-                $comment .= " -->\n";
+                $comment .= " -->";
 
                 $htmlComments[$location]['search'] = $search;
                 $htmlComments[$location]['comment'] = $comment;
@@ -1695,6 +1704,5 @@ if (!class_exists('AddThisFeature')) {
             $title = htmlspecialchars($title);
             return $title;
         }
-
     }
 }

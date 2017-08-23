@@ -336,6 +336,10 @@ angular.module('addthisDarkseid').factory('$darkseid', function(
             widget.services = [];
           }
         }
+      } else if (angular.isDefined(widget.numPreferredServices) &&
+        !angular.isDefined(widget.auto_personalization)
+      ) {
+        widget.auto_personalization = true;
       }
 
       if (angular.isDefined(widget.originalServices)) {
@@ -661,6 +665,17 @@ angular.module('addthisDarkseid').factory('$darkseid', function(
 
       return output;
     });
+  };
+
+  darkseid.testPing = function() {
+    var url = 'test/ping';
+
+    var promise = darkseidHttp({
+      method: 'GET',
+      url: url
+    });
+
+    return promise;
   };
 
   return darkseid;
