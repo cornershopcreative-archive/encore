@@ -6,7 +6,7 @@
 			</svg>
 		</header>
 
-		<form name="signup" class="bsd-signup-2" action="https://generation.cp.bsd.net/page/signup/join-g2g" method="post" id="signup-generic" target="bsd-target">
+		<form name="signup" class="bsd-signup-2" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="post" id="signup-generic" target="form-target">
 
 			<p>
 				I,
@@ -27,7 +27,7 @@
 				</span>
 			</p>
 
-			<div style="display: none"><label for="best-contact-time">Please leave this field blank:</label> <input id="best-contact-time" name="best-contact-time" type="text"></div>
+			<div style="display: none"><label for="best-contact-time">Please leave this field blank:</label> <input id="best-contact-time" name="best-contact-time" type="text" autocomplete="off"></div>
 
 			<div class="button-group" id="bsd-field-submit-btn">
 		    <div class="input"><input name="submit-btn" value="Count Me In" type="submit" class="button button-solid button-gold aligncenter"></div>
@@ -35,15 +35,17 @@
 
 			<input name="country" type="hidden" value="US">
 			<input name="redirect_url" type="hidden" value="http:<?php echo acf_get_current_url() . "#thankyou" ?>">
-			<input id="_guid" name="_guid" type="hidden" value="">
 			<?php
 			// Note: the 'custom-24' field is used as the lead source in Blue State
 			// Digital. Its value is changed by _src/js/modals.js when the user
 			// clicks a button to open this modal window.
 			?>
 			<input name="custom-24" type="hidden" value="G2G Site Header Button">
+			<input type="hidden" name="action" value="gform_proxy">
+			<input type="hidden" name="gform_id" value="1">
+			<input type="hidden" name="crowdskout" value="1001">
 		</form>
-		<iframe id="bsd-target" width="0" class="totallyhidden" border="0" name="bsd-target"></iframe>
+		<iframe id="form-target" width="0" class="totallyhidden" border="0" name="form-target"></iframe>
 	</aside>
 </div>
 
