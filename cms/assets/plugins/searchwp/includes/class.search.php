@@ -2465,15 +2465,13 @@ class SearchWPSearch {
 	 *
 	 * @param $postTypeWeights
 	 *
-	 * @return array|mixed|string|void
+	 * @return array
 	 */
 	function prep_term( $term, $postTypeWeights ) {
 		global $wpdb;
 
 		$original_prepped_term = $term;
-		$prepared_term_prepared = $wpdb->prepare( '%s', $term );
-		$prepared_term = function_exists( 'mb_strtolower' ) ? mb_strtolower( $prepared_term_prepared, 'UTF-8' ) : strtolower( $prepared_term_prepared );
-		$term = substr( $prepared_term, 1, strlen( $prepared_term ) - 2 );
+		$term = function_exists( 'mb_strtolower' ) ? mb_strtolower( $term, 'UTF-8' ) : strtolower( $term );
 
 		// determine whether we're stemming or not
 		$term_or_stem = 'term';
@@ -2503,7 +2501,7 @@ class SearchWPSearch {
 
 		if ( empty( $term ) ) {
 			// if it got messed with so bad it's no longer an array, we're going to revert
-			$term = array( $prepared_term );
+			$term = array( $original_prepped_term );
 		}
 
 		$term = array_unique( $term );

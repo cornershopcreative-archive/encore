@@ -1,0 +1,98 @@
+/* Mid Tick with Frame */
+.gf_stylespro .gfsp_o_frame.gfsp_shadow_box input[type=checkbox]:not(old) + label,
+.gf_stylespro .gfsp_o_frame.gfsp_shadow_box input[type=radio ]:not(old) + label {
+    padding-bottom: 1.7em;
+    background: none;
+    border: none;
+    background-color: white;
+    margin-bottom: 1em;
+}
+.gf_stylespro .gfsp_o_frame.gfsp_shadow_box input[type=checkbox]:checked + label,
+.gf_stylespro .gfsp_o_frame.gfsp_shadow_box input[type=radio ]:checked + label {
+    box-shadow: 0 0 15px #d4d4d4;
+    transition: .5s all ease;
+}
+.gfsp_o_frame.gfsp_shadow_box input + label .o_text {
+    background-color: white;
+    position: relative;
+}
+.gfsp_o_frame.gfsp_shadow_box input + label .o_img_wr {
+    padding: .7em 1.2em;
+}
+.gfsp_o_frame.gfsp_shadow_box input:checked + label .o_text {
+    color: black;
+}
+.gfsp_o_frame.gfsp_shadow_box .o_text:before {
+    position: absolute;
+    left: 50%;
+    margin-left: -1.25em;
+    padding: .2em;
+    font-size: 1.2em;
+    background: #ff4b3e;
+    height: 2.5em;
+    line-height: 2.1;
+    width: 2.5em;
+    border-radius: 1.5em;
+    transition: .2s all ease;
+    opacity: 0;
+    bottom: -1em;
+    color: white;
+    text-shadow: none;
+}
+.gfsp_o_frame.gfsp_shadow_box input:checked + label .o_text:before{
+    opacity: 1;
+    bottom: -2.8em;
+}
+
+
+
+/* Mid Tick with Shade*/
+.gfsp_mid_tick .o_label {
+    position: relative;
+}
+.gfsp_mid_tick .o_text:before {
+    position: absolute;
+    top: 00%;
+    margin-top: -30px;
+    left: 50%;
+    margin-left: -20px;
+    background: white;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    padding: 0;
+    font-size: 20px;
+    transition: .3s all ease-out;
+    text-shadow: none;
+    color: #62b8ec;
+}
+.gfsp_mid_tick input:checked + label .o_text:before {
+    top: 50%;
+    opacity: 1;
+}
+.gfsp_mid_tick .o_img_wr,
+.gfsp_mid_tick .o_label > i {
+    border: 1px solid white;
+    box-shadow: 0 0 0 white;
+    box-sizing: content-box;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    transition: .2s all;
+}
+.gfsp_mid_tick input:checked + label .o_img_wr,
+.gfsp_mid_tick input:checked + label .o_label > i {
+    border: 10px solid white;
+    box-shadow: 0 0 20px #c1c1c1;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.gfsp_mid_tick .o_img_wr img,
+.gfsp_mid_tick .o_label > i {
+    transition: .2s all;
+}
+.gfsp_mid_tick input:checked + label .o_img_wr img,
+.gfsp_mid_tick input:checked + label .o_label > i {
+    opacity: .7
+}

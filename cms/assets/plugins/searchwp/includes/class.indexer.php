@@ -496,7 +496,7 @@ class SearchWPIndexer {
 		}
 
 		$totalMedia = 0;  // in case Attachment indexing is disabled
-		if ( ! empty( $this->postTypesToIndex ) && $this->indexAttachments ) {
+		if ( ! empty( $this->indexAttachments ) ) {
 			// also check for media
 			$args = array(
 				'posts_per_page'    => 1,
@@ -621,7 +621,7 @@ class SearchWPIndexer {
 		$unindexedPosts = get_posts( $args );
 
 		// also check for media
-		if ( empty( $unindexedPosts ) && false !== $this->indexAttachments ) {
+		if ( ! empty( $this->indexAttachments ) ) {
 			$indexChunk = apply_filters( 'searchwp_index_chunk_size', 10 );
 			$mediaArgs = array(
 				'posts_per_page'    => intval( $indexChunk ),

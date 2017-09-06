@@ -1,3 +1,23 @@
+### 2.8.15
+- **[Improvement]** Better handling of regex pattern matches
+- **[Fix]** Fixes an issue where Media-only default engines did not fully build index
+- **[Update]** Updated updater
+
+### 2.8.14
+- **[Improvement]** Additional checks to prevent overrun with other plugins
+
+### 2.8.13
+- **[Fix]** Fix a regression introduced to `SWP_Query` in 2.8.11 that may have prevented pagination from working as expected
+
+### 2.8.12
+- **[Fix]** Additional main query checks to improve plugin compatibility
+
+### 2.8.11
+- **[Fix]** Fixed an issue with main query check that prevented search results from appearing in some cases
+- **[Fix]** Fixed an issue where default includes/exclusions would be applied outside the main query
+- **[Change]** Updated common words (stopwords)
+- **[Change]** Switch from `page` parameter to `paged` so as to better match WP_Query
+
 ### 2.8.10
 - **[Improvement]** Improved main query checks
 - **[Improvement]** Improved invisible character tokenizing
