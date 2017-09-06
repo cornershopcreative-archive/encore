@@ -8,7 +8,7 @@
 
 		<?php
 		// Get up to 100 most recently added partners with logos.
-		$partner_query = new WP_Query( array(
+		$partner_query = crate_section_query( array(
 			'post_type' => 'partner',
 			'posts_per_page' => 100,
 			'orderby' => 'date',
