@@ -64,7 +64,6 @@
 </div><!-- #page -->
 
 <?php get_template_part( 'template-parts/modal', 'generic' ); ?>
-<?php get_template_part( 'template-parts/modal', 'auto-lightbox' ); ?>
 <?php wp_footer(); ?>
 
 </body>

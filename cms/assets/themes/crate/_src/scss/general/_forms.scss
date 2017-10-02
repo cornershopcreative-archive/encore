@@ -26,6 +26,7 @@ form {
 	width: 100%;
 	border-radius: 3px;
 	border: 1px solid #ccc;
+	background-color: $input-bg-color;
 	padding: 22px 20px 18px;
 
 	.label-inside ~ & {
@@ -34,10 +35,16 @@ form {
 	}
 }
 
-input[type='text'],
-input[type='password'],
-input[type='email'],
-input[type='search'] {
+// Use a placeholder selector to style all text-based inputs simultaneously.
+input[type="email"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="text"],
+input[type="url"],
+select,
+textarea {
 	@extend %text-input;
 }
 
@@ -139,5 +146,419 @@ input[type='search'] {
 		.search-form {
 			opacity: 1.0;
 		}
+	}
+}
+
+.gform_wrapper {
+	max-width: rem(800);
+	margin: rem(48) auto rem(48) 0;
+	// Don't let images float around forms.
+	clear: both;
+
+	// Remove margins when embedded in a modal window.
+	.modal & {
+		margin: 0;
+	}
+}
+
+
+/**
+ * General form + form input styles.
+ */
+
+.gform_body {
+
+	ul,
+	li {
+		padding: 0;
+		list-style: none;
+	}
+}
+
+.gform_fields {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	@include flex-gutter( '> li', rem(16) 0, $gf-input-margin-y $gf-input-margin-x );
+}
+
+.gfield {
+	flex: 1 1 auto;
+
+	&.gfield_visibility_hidden {
+		display: none; // Don't show hidden fields!
+	}
+
+	&,
+	&.field_size_medium {
+		min-width: $gf-input-min-width;
+		width: 45%;
+	}
+
+	&.field_size_small {
+		min-width: $gf-input-min-width * 0.5;
+		width: 20%;
+	}
+
+	&.field_size_large {
+		width: 100%;
+		// min-width: 100%;
+		// width: $gf-input-min-width * 1.5;
+		// min-width: 55%;
+	}
+
+	&.field_complex,
+	&.field_type_html {
+		width: 100%;
+	}
+
+	&.field_type_html_small {
+		width: auto;
+	}
+}
+
+.gfield_label {
+	// Note: it may be useful to @extend %label-block using other selectors as
+	// well, such as `.comment-form label`.
+	@extend %label-block;
+
+	.gfield_hide_label & {
+		@include scut-hide-visually;
+	}
+}
+
+.gfield_description {
+	margin: $gf-secondary-label-margin 0 0;
+}
+
+.gfield_required {
+	color: $input-required-color;
+}
+
+.gform_wrapper {
+
+	// Form-wide error messages.
+	.validation_error {
+		color: $input-error-color;
+	}
+
+	// Error messages for individual fields.
+	.validation_message {
+		color: $input-error-color;
+	}
+
+	%text-input {
+		padding: 1em;
+		color: $black;
+
+		&::placeholder {
+			font-weight: bold;
+		}
+	}
+}
+
+.gform_footer {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	@include flex-gutter( '> input, > a', $gf-input-margin-y 0, $gf-input-margin-y $gf-input-margin-x );
+}
+
+.gform_save_link {
+	@extend .button;
+	@extend .button-gold;
+}
+
+%label-block {
+	display: block;
+	margin: $gf-primary-label-margin 0;
+	font-size: $label-font-size;
+	font-weight: 700;
+}
+
+// Make input elements inherit typographic styles (otherwise most browsers will use a system font).
+%text-input {
+	font-size: inherit;
+	font-family: inherit;
+	line-height: inherit;
+}
+
+// All text inputs.
+%text-input {
+	color: $input-color;
+	transition: background-color 0.2s ease;
+	box-sizing: border-box;
+	appearance: none;
+
+	&::placeholder {
+		color: $input-color;
+		// line-height: normal;
+		font-style: italic;
+		opacity: 1;
+	}
+
+	&:focus {
+		border-color: $input-focus-border-color;
+	}
+
+	.gfield_error & {
+		border-color: $input-error-color;
+	}
+}
+
+
+/**
+ * Input type-specific styles (selects, radios/checkboxes).
+ */
+
+// Single-item selects: add a triangle and extra padding on right side.
+select:not([multiple]) {
+	// Add SVG background image.
+	@extend .icon-dropdown-arrow;
+	// Override size set by .icon-... background image class.
+	width: 100%;
+	height: auto;
+	// Position image near right edge and add padding so text doesn't overlap it.
+	background-position: right 20px center;
+	background-repeat: no-repeat;
+	background-size: rem(18);
+	// Right-hand padding = normal padding + triangle image width.
+	padding-right: rem(31);
+}
+
+.gfield_radio,
+.gfield_checkbox {
+
+	/**
+	 * Set padding on lists. We need an annoyingly specific selector here since
+	 * we've already set padding on .gform_body ul elsewhere.
+	 */
+	.gform_body & {
+		padding: 0 0 0 rem(32);
+	}
+
+	> li {
+		margin: $gf-multi-input-margin-y 0;
+	}
+
+	/**
+	 * Hide the actual input elements -- we're replacing them with label:before
+	 * pseudo-elements.
+	 */
+	input[type="checkbox"],
+	input[type="radio"] {
+		@include scut-hide-visually;
+	}
+
+	label {
+
+		&:before {
+			content: '';
+			display: inline-block;
+			width: rem(23);
+			height: rem(23);
+			margin-right: rem(9);
+			margin-left: -( rem(23) + rem(9) );
+			// Bottom of checkbox should be 4px from baseline.
+			margin-bottom: rem(-5);
+			border: 1px solid $input-border-color;
+			background-color: $input-bg-color;
+			// Cover entire content box with inset box shadows. When an input is checked, the first shadow
+			// value will become the outer gray ring, and the second will become the dot in the middle.
+			box-shadow: inset 0 0 0 rem(12) $input-bg-color, inset 0 0 0 rem(12) $input-bg-color;
+			transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+		}
+	}
+
+	/**
+	 * Add a dot inside checked inputs.
+	 */
+	input:checked + label:before {
+		// border-color: $bright-blue;
+		box-shadow: inset 0 0 0 rem(4) $input-bg-color, inset 0 0 0 rem(12) $deep-blue;
+	}
+
+	/**
+	 * Add glow to focused inputs.
+	 */
+	input:focus,
+	input:active {
+
+		+ label:before {
+			border-color: $input-focus-border-color;
+		}
+
+		&:checked {
+
+			+ label:before {
+				// border-color: $deep-blue;
+				// Make background/ring extra light when checked + focused, to maximize contrast so it's
+				// obvious which input is focused.
+				// box-shadow: inset 0 0 0 rem(4) $deep-blue, inset 0 0 0 rem(12) $input-bg-color;
+			}
+		}
+	}
+
+	input[type="radio"] + label:before {
+		// Radio buttons should be round.
+		width: rem(25);
+		height: rem(25);
+		margin-top: rem(-1);
+		margin-right: rem(7);
+		margin-bottom: rem(-6);
+		border-radius: 50%;
+	}
+
+	input[type="checkbox"] + label:before {
+		// Checkboxes should be less round.
+		border-radius: rem(2);
+	}
+}
+
+.gfield input[type="radio"] {
+	// GF puts white space between checkboxes and their labels, but doesn't do
+	// the same for radio buttons. Adding a 4px margin helps make checkbox fields
+	// and radio button fields line up better with one another.
+	margin-right: rem(4);
+}
+
+
+/**
+ * AJAX spinners.
+ */
+
+.gform_ajax_spinner {
+	display: inline-block;
+	vertical-align: middle;
+	margin-left: rem(10);
+}
+
+
+//-----------------------------------------------------------------------------
+// Multi-field inputs.
+//-----------------------------------------------------------------------------
+
+.ginput_complex,
+.clear-multi {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: top;
+	@include flex-gutter( '> span, > div', 0, $gf-input-margin-y $gf-input-margin-x );
+
+	> span,
+	> div {
+		flex: 0 1 auto;
+
+		&:not(.ginput_container_time) {
+			// Fill available horizontal space, and wrap to a new line if there isn't
+			// enough room for this input (with the exception of time input fields,
+			// which can and should be super narrow).
+			flex-grow: 1;
+			width: $gf-input-min-width;
+		}
+	}
+
+	.ginput_full {
+		width: 100%;
+	}
+
+	label {
+		display: inline;
+
+		&:before {
+			content: '';
+			display: block;
+			margin: $gf-secondary-label-margin 0 0;
+		}
+	}
+
+	.gf_clear {
+		// We're not using floats for layout, so don't bother with this 'clear'
+		// foolishness.
+		display: none;
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+// List inputs (tables of fields with +/- buttons).
+//-----------------------------------------------------------------------------
+
+.gfield_list_container {
+	width: 100%;
+	padding: 0;
+	border-collapse: collapse;
+
+	th {
+		padding: 0 0 $gf-primary-label-margin;
+	}
+
+	td {
+		padding: 0;
+	}
+
+	th,
+	td {
+		&:not(:last-child) {
+			padding-right: $gf-input-margin-x;
+		}
+	}
+
+	.gfield_list_icons {
+		width: rem(37); // Room for 16x16px images with white space between them.
+		text-align: center;
+		vertical-align: middle;
+
+		img {
+			display: inline-block;
+		}
+	}
+
+	.gfield_list_group:not(:last-child) {
+
+		td {
+			padding-bottom: $gf-input-margin-y;
+		}
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+// Time inputs.
+//-----------------------------------------------------------------------------
+
+.ginput_container_time {
+	%text-input {
+		// Arbitrary narrow width. This should be enough for 2 digits or letters.
+		width: rem(80);
+	}
+}
+
+.gfield_time_hour {
+	// The : in 'HH : MM' is wrapped in an <i> tag that comes BEFORE the main
+	// label for the hour field. Why? Who knows. But we'll try to put it in a
+	// sensible place.
+	position: relative;
+
+	i {
+		position: absolute;
+		bottom: 0;
+		// 30px from left edge of the gfield's border-box (its left padding should
+		// be $gf-input-margin-x / 2.
+		left: ( $gf-input-margin-x / 2 ) + rem(30);
+		font-style: normal;
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+// Form for sending yourself a Save & Continue link.
+//-----------------------------------------------------------------------------
+
+.form_saved_message_emailform {
+
+	form {
+		display: flex;
+		@include flex-gutter( '> input', $gf-input-margin-y 0, $gf-input-margin-y $gf-input-margin-x );
 	}
 }

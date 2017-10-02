@@ -83,3 +83,33 @@ $susy: (
 // Minimum desired distance between any (non-bleeding) element and either edge
 // of the viewport.
 $page-padding: rem(16);
+
+
+//-----------------------------------------------------------------------------
+// Form layout options.
+//-----------------------------------------------------------------------------
+
+$label-color: $gray-dark;
+$label-font-size: rem(18);
+
+$input-padding-y: rem(6);
+$input-padding-x: rem(10);
+
+$input-border-color: #ccc;
+$input-bg-color: $white;
+$input-color: $black;
+
+$input-focus-border-color: #aaa;
+
+$input-error-color: $red-orange;
+$input-required-color: $red-orange;
+$input-accent-color: #09f;
+
+$gf-input-margin-y: rem(22);
+$gf-input-margin-x: rem(20);
+$gf-multi-input-margin-y: rem(8);
+
+$gf-primary-label-margin: rem(6);
+$gf-secondary-label-margin: rem(4);
+
+$gf-input-min-width: rem(180);
