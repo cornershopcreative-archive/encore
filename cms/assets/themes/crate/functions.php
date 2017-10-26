@@ -86,7 +86,7 @@ add_filter( 'max_srcset_image_width', 'crate_max_srcset_image_width', 10, 2 );
 /**
  * Include other functions
  */
-foreach ( glob( __DIR__ . "/inc/*" ) as $filename ) {
+foreach ( glob( __DIR__ . '/inc/*.{php,inc}', GLOB_BRACE ) as $filename ) {
 	include $filename;
 }
 
