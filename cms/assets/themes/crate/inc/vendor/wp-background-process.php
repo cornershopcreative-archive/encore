@@ -437,16 +437,18 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		public function handle_cron_healthcheck() {
 			if ( $this->is_process_running() ) {
 				// Background process already running.
-				return;
+				exit;
 			}
 
 			if ( $this->is_queue_empty() ) {
 				// No data to process.
 				$this->clear_scheduled_event();
-				return;
+				exit;
 			}
 
 			$this->handle();
+
+			exit;
 		}
 
 		/**
