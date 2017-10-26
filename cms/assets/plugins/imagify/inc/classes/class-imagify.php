@@ -492,22 +492,11 @@ class Imagify extends Imagify_Deprecated {
 		}
 
 		if ( 200 !== $http_code ) {
+			$error = trim( (string) $error );
 			$error = '' !== $error ? ' - ' . htmlentities( $error ) : '';
-			return new WP_Error( $http_code, "Unknown error occurred ({$http_code} {$error})" );
+			return new WP_Error( $http_code, "Unknown error occurred ({$http_code}{$error})" );
 		}
 
 		return $response;
 	}
-}
-
-/**
- * Returns the main instance of the Imagify class.
- *
- * @since 1.6.5
- * @author Grégory Viguier
- *
- * @return object The Imagify instance.
- */
-function imagify() {
-	return Imagify::get_instance();
 }

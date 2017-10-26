@@ -150,6 +150,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<strong><?php _e( 'Enable AddToCart on add to cart button', 'pys' ); ?></strong>
                 </td>
             </tr>
+
+            <tr class="tall">
+                <td colspan="2" class="narrow">
+                    <?php pys_checkbox( 'edd', 'on_add_to_cart_checkout', 'edd-option' ); ?>
+                    <strong>Enable AddToCart on checkout page</strong>
+                </td>
+            </tr>
 			
 			<tr>
 				<td></td>

@@ -87,7 +87,7 @@ class Imagify_Enable_Media_Replace {
 		}
 
 		// Remove the automatic optimization.
-		remove_filter( 'wp_generate_attachment_metadata', '_imagify_optimize_attachment', PHP_INT_MAX );
+		remove_filter( 'wp_generate_attachment_metadata', '_imagify_optimize_attachment', IMAGIFY_INT_MAX );
 
 		// Store the old backup file path.
 		add_filter( 'emr_unique_filename', array( $this, 'store_old_backup_path' ), 10, 3 );
@@ -197,16 +197,4 @@ class Imagify_Enable_Media_Replace {
 
 		return $this->attachment;
 	}
-}
-
-/**
- * Returns the main instance of the Imagify_Enable_Media_Replace class.
- *
- * @since 1.6.9
- * @author Grégory Viguier
- *
- * @return object The Imagify_Enable_Media_Replace instance.
- */
-function imagify_enable_media_replace() {
-	return Imagify_Enable_Media_Replace::get_instance();
 }

@@ -42,6 +42,32 @@ if ( ! function_exists( 'pys_edd_events' ) ) {
 		 *
 		 * @see pys_edd_purchase_link_args()
 		 */
+        
+        // AddToCart on Checkout page
+        if ( pys_get_option( 'edd', 'on_add_to_cart_checkout' ) && edd_is_checkout() ) {
+            
+            $ids = array();
+            
+            foreach ( edd_get_cart_contents() as $cart_item ) {
+                
+                $download_id = intval( $cart_item['id'] );
+                $ids[]       = pys_get_edd_content_id( $download_id );
+                
+            }
+            
+            $params['content_ids'] = "'[" . implode( "','", $ids ) . "']";
+            
+            // currency, value
+            if ( pys_get_option( 'edd', 'enable_add_to_cart_value' ) ) {
+                
+                $params['value']    = pys_get_option( 'edd', 'add_to_cart_global_value' );
+                $params['currency'] = edd_get_currency();
+                
+            }
+            
+            pys_add_event( 'AddToCart', $params );
+
+        }
 
 		// InitiateCheckout Event
 		if ( pys_get_option( 'edd', 'on_checkout_page' ) && edd_is_checkout() ) {

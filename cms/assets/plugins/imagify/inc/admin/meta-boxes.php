@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || die( 'Cheatin\' uh?' );
 
-add_action( 'attachment_submitbox_misc_actions', '_imagify_attachment_submitbox_misc_actions', PHP_INT_MAX );
+add_action( 'attachment_submitbox_misc_actions', '_imagify_attachment_submitbox_misc_actions', IMAGIFY_INT_MAX );
 /**
  * Add a "Optimize It" button or the Imagify optimization data in the attachment submit area.
  *
@@ -10,11 +10,15 @@ add_action( 'attachment_submitbox_misc_actions', '_imagify_attachment_submitbox_
 function _imagify_attachment_submitbox_misc_actions() {
 	global $post;
 
-	if ( ! current_user_can( imagify_get_capacity( true ) ) ) {
+	if ( ! imagify_current_user_can( 'manual-optimize', $post->ID ) ) {
 		return;
 	}
 
 	if ( ! imagify_is_attachment_mime_type_supported( $post->ID ) ) {
+		return;
+	}
+
+	if ( ! imagify_attachment_has_required_metadata( $post->ID ) ) {
 		return;
 	}
 

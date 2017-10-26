@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) || die( 'Cheatin\' uh?' );
 /**
  * Get the optimization data list for a specific attachment.
  *
- * @since 1.0
+ * @since  1.0
  * @author Jonathan Buttigieg
  *
  * @param  object $attachment The attachment object.
@@ -12,48 +12,61 @@ defined( 'ABSPATH' ) || die( 'Cheatin\' uh?' );
  * @return string             The output to print.
  */
 function get_imagify_attachment_optimization_text( $attachment, $context = 'wp' ) {
-	global $pagenow;
+	global $pagenow, $typenow;
 
-	$output                   = ( 'post.php' !== $pagenow ) ? '<ul class="imagify-datas-list">' : '';
-	$output_before            = ( 'post.php' !== $pagenow ) ? '<li class="imagify-data-item">' : '<div class="misc-pub-section misc-pub-imagify imagify-data-item">';
-	$output_after             = ( 'post.php' !== $pagenow ) ? '</li>' : '</div>';
+	$is_media_page            = 'post.php' === $pagenow && 'attachment' === $typenow;
+	$is_library_page          = 'upload.php' === $pagenow;
+	$output                   = $is_media_page ? '' : '<ul class="imagify-datas-list">';
+	$output_before            = $is_media_page ? '<div class="misc-pub-section misc-pub-imagify imagify-data-item">' : '<li class="imagify-data-item">';
+	$output_after             = $is_media_page ? '</div>' : '</li>';
 	$reoptimize_link          = get_imagify_attachment_reoptimize_link( $attachment, $context );
+	$reoptimize_link         .= get_imagify_attachment_optimize_missing_thumbnails_link( $attachment, $context );
 	$reoptimize_output        = $reoptimize_link ? $reoptimize_link : '';
 	$reoptimize_output_before = '<div class="imagify-datas-actions-links">';
 	$reoptimize_output_after  = '</div><!-- .imagify-datas-actions-links -->';
 	$error                    = get_imagify_attachment_error_text( $attachment, $context );
 
 	if ( $error ) {
-		if ( 'post.php' !== $pagenow && $reoptimize_link && $attachment->has_backup() ) {
+		if ( ! $is_media_page && $reoptimize_link && $attachment->has_backup() ) {
 			$reoptimize_output .= '<span class="attachment-has-backup hidden"></span>';
 		}
 
 		$reoptimize_output = $reoptimize_output_before . $reoptimize_output . $reoptimize_output_after;
 
-		return 'post.php' === $pagenow ? $output_before . $error . $reoptimize_output . $output_after : $error . $reoptimize_output;
+		return $is_media_page ? $output_before . $error . $reoptimize_output . $output_after : $error . $reoptimize_output;
 	}
 
 	$attachment_id      = $attachment->id;
 	$data               = $attachment->get_data();
 	$optimization_level = $attachment->get_optimization_level_label();
 
-	if ( 'post.php' !== $pagenow ) {
+	if ( ! $is_media_page ) {
 		$output .= $output_before . '<span class="data">' . __( 'New Filesize:', 'imagify' ) . '</span> <strong class="big">' . size_format( $data['sizes']['full']['optimized_size'], 2 ) . '</strong>' . $output_after;
 	}
 
-	$chart = '<span class="imagify-chart">
-				<span class="imagify-chart-container">
-					<canvas id="imagify-consumption-chart" width="15" height="15"></canvas>
-				</span>
-			</span>';
+	$chart = '';
+
+	if ( ! $is_media_page ) {
+		if ( ! $is_library_page ) {
+			// No need to print this on the library page, the event whould be triggered before the handler is attached (the JS file is loaded in the footer).
+			$chart = '<script type="text/javascript">jQuery( window ).trigger( "canvasprinted.imagify", [ ".imagify-consumption-chart-' . $attachment_id . '" ] ); </script>';
+		}
+
+		$chart = '<span class="imagify-chart">
+					<span class="imagify-chart-container">
+						<canvas class="imagify-consumption-chart imagify-consumption-chart-' . $attachment_id . '" width="15" height="15"></canvas>
+						' . $chart . '
+					</span>
+				</span>';
+	}
 
 	$output .= $output_before;
 	$output .= '<span class="data">' . __( 'Original Saving:', 'imagify' ) . '</span> ';
-	$output .= '<strong>' . ( 'post.php' !== $pagenow ? $chart : '' ) . '<span class="imagify-chart-value">' . $data['sizes']['full']['percent'] . '</span>%</strong>';
+	$output .= '<strong>' . $chart . '<span class="imagify-chart-value">' . $data['sizes']['full']['percent'] . '</span>%</strong>';
 	$output .= $output_after;
 
 	// More details section.
-	if ( 'post.php' !== $pagenow ) {
+	if ( ! $is_media_page ) {
 		// New list.
 		$output .= '</ul>';
 		$output .= '<p class="imagify-datas-more-action">';
@@ -78,10 +91,10 @@ function get_imagify_attachment_optimization_text( $attachment, $context = 'wp' 
 	}
 
 	// End of list.
-	$output .= ( 'post.php' !== $pagenow ) ? '</ul>' : '';
+	$output .= $is_media_page ? '' : '</ul>';
 
 	// Actions section.
-	$output .= ( 'post.php' !== $pagenow ) ? '' : $output_before;
+	$output .= $is_media_page ? $output_before : '';
 	$output .= $reoptimize_output_before;
 	$output .= $reoptimize_output;
 
@@ -90,12 +103,13 @@ function get_imagify_attachment_optimization_text( $attachment, $context = 'wp' 
 			'attachment_id' => $attachment_id,
 			'context'       => $context,
 		);
-		$class   = ( 'post.php' !== $pagenow ) ? 'button-imagify-restore attachment-has-backup' : '';
-		$output .= '<a id="imagify-restore-' . $attachment_id . '" href="' . get_imagify_admin_url( 'restore-upload', $args ) . '" class="' . $class . '" data-waiting-label="' . esc_attr__( 'Restoring...', 'imagify' ) . '">';
+		$class   = $is_media_page ? '' : ' class="button-imagify-restore attachment-has-backup"';
+		$waiting = $is_media_page ? '' : ' data-waiting-label="' . esc_attr__( 'Optimizing...', 'imagify' ) . '"';
+		$output .= '<a id="imagify-restore-' . $attachment_id . '" href="' . get_imagify_admin_url( 'restore-upload', $args ) . '"' . $class . $waiting . '>';
 			$output .= '<span class="dashicons dashicons-image-rotate"></span>' . __( 'Restore Original', 'imagify' );
 		$output .= '</a>';
 
-		if ( 'upload.php' !== $pagenow ) {
+		if ( ! $is_library_page ) {
 			$image = wp_get_attachment_image_src( $attachment_id, 'full' );
 
 			$output .= '<input id="imagify-original-src" type="hidden" value="' . esc_url( $attachment->get_backup_url() ) . '">';
@@ -107,7 +121,7 @@ function get_imagify_attachment_optimization_text( $attachment, $context = 'wp' 
 	}
 
 	$output .= $reoptimize_output_after;
-	$output .= ( 'post.php' !== $pagenow ) ? '' : $output_after;
+	$output .= $is_media_page ? $output_after : '';
 
 	return $output;
 }
@@ -115,7 +129,7 @@ function get_imagify_attachment_optimization_text( $attachment, $context = 'wp' 
 /**
  * Get the error message for a specific attachment.
  *
- * @since 1.0
+ * @since  1.0
  * @author Jonathan Buttigieg
  *
  * @param  object $attachment The attachement object.
@@ -123,8 +137,9 @@ function get_imagify_attachment_optimization_text( $attachment, $context = 'wp' 
  * @return string             The output to print.
  */
 function get_imagify_attachment_error_text( $attachment, $context = 'wp' ) {
-	global $pagenow;
+	global $pagenow, $typenow;
 
+	$is_media_page = 'post.php' === $pagenow && 'attachment' === $typenow;
 	$attachment_id = $attachment->id;
 	$data          = $attachment->get_data();
 	$output        = '';
@@ -134,9 +149,10 @@ function get_imagify_attachment_error_text( $attachment, $context = 'wp' ) {
 	);
 
 	if ( isset( $data['sizes']['full']['success'] ) && ! $data['sizes']['full']['success'] ) {
-		$class   = ( 'post.php' !== $pagenow ) ? 'button-imagify-manual-upload' : '';
-		$output .= '<strong>' . $data['sizes']['full']['error'] . '</strong><br/>';
-		$output .= '<a id="imagify-upload-' . $attachment_id . '" class="button ' . $class . '" href="' . esc_url( get_imagify_admin_url( 'manual-upload', $args ) ) . '" data-waiting-label="' . esc_attr__( 'Optimizing...', 'imagify' ) . '">' . __( 'Try again', 'imagify' ) . '</a>';
+		$class   = $is_media_page ? '' : ' button-imagify-manual-upload';
+		$waiting = $is_media_page ? '' : ' data-waiting-label="' . esc_attr__( 'Optimizing...', 'imagify' ) . '"';
+		$output .= '<strong>' . imagify_translate_api_message( $data['sizes']['full']['error'] ) . '</strong><br/>';
+		$output .= '<a id="imagify-upload-' . $attachment_id . '" class="button' . $class . '" href="' . esc_url( get_imagify_admin_url( 'manual-upload', $args ) ) . '"' . $waiting . '>' . __( 'Try again', 'imagify' ) . '</a>';
 	}
 
 	return $output;
@@ -145,7 +161,7 @@ function get_imagify_attachment_error_text( $attachment, $context = 'wp' ) {
 /**
  * Get the re-optimize link for a specific attachment.
  *
- * @since 1.0
+ * @since  1.0
  * @author Jonathan Buttigieg
  *
  * @param  object $attachment The attachement object.
@@ -153,7 +169,7 @@ function get_imagify_attachment_error_text( $attachment, $context = 'wp' ) {
  * @return string             The output to print.
  */
 function get_imagify_attachment_reoptimize_link( $attachment, $context = 'wp' ) {
-	global $pagenow;
+	global $pagenow, $typenow;
 
 	// Stop the process if the API key isn't valid.
 	if ( ! imagify_valid_key() ) {
@@ -167,6 +183,7 @@ function get_imagify_attachment_reoptimize_link( $attachment, $context = 'wp' ) 
 		return '';
 	}
 
+	$is_media_page = 'post.php' === $pagenow && 'attachment' === $typenow;
 	$attachment_id = $attachment->id;
 	$level         = $attachment->get_optimization_level();
 	$args          = array(
@@ -174,12 +191,13 @@ function get_imagify_attachment_reoptimize_link( $attachment, $context = 'wp' ) 
 		'context'       => $context,
 	);
 	$output        = '';
-	$class         = ( 'post.php' !== $pagenow ) ? 'button-imagify-manual-override-upload' : '';
+	$class         = $is_media_page ? '' : ' class="button-imagify-manual-override-upload"';
+	$waiting       = $is_media_page ? '' : ' data-waiting-label="' . esc_attr__( 'Optimizing...', 'imagify' ) . '"';
 
 	// Re-optimize to Ultra.
 	if ( 1 === $level || 0 === $level ) {
 		$args['optimization_level'] = 2;
-		$output .= '<a href="' . esc_url( get_imagify_admin_url( 'manual-override-upload', $args ) ) . '" class="' . $class . '" data-waiting-label="' . esc_attr__( 'Optimizing...', 'imagify' ) . '">';
+		$output .= '<a href="' . esc_url( get_imagify_admin_url( 'manual-override-upload', $args ) ) . '"' . $class . $waiting . '>';
 			/* translators: %s is an optimization level. */
 			$output .= '<span class="dashicons dashicons-admin-generic"></span><span class="imagify-hide-if-small">' . sprintf( __( 'Re-Optimize to %s', 'imagify' ), '</span>' . __( 'Ultra', 'imagify' ) . '<span class="imagify-hide-if-small">' ) . '</span>';
 		$output .= '</a>';
@@ -188,7 +206,7 @@ function get_imagify_attachment_reoptimize_link( $attachment, $context = 'wp' ) 
 	// Re-optimize to Aggressive.
 	if ( ( 2 === $level && ! $is_already_optimized ) || 0 === $level ) {
 		$args['optimization_level'] = 1;
-		$output .= '<a href="' . esc_url( get_imagify_admin_url( 'manual-override-upload', $args ) ) . '" class="' . $class . '" data-waiting-label="' . esc_attr__( 'Optimizing...', 'imagify' ) . '">';
+		$output .= '<a href="' . esc_url( get_imagify_admin_url( 'manual-override-upload', $args ) ) . '"' . $class . $waiting . '>';
 			/* translators: %s is an optimization level. */
 			$output .= '<span class="dashicons dashicons-admin-generic"></span><span class="imagify-hide-if-small">' . sprintf( __( 'Re-Optimize to %s', 'imagify' ), '</span>' . __( 'Aggressive', 'imagify' ) . '<span class="imagify-hide-if-small">' ) . '</span>';
 		$output .= '</a>';
@@ -197,7 +215,7 @@ function get_imagify_attachment_reoptimize_link( $attachment, $context = 'wp' ) 
 	// Re-optimize to Normal.
 	if ( ( 2 === $level || 1 === $level ) && ! $is_already_optimized ) {
 		$args['optimization_level'] = 0;
-		$output .= '<a href="' . esc_url( get_imagify_admin_url( 'manual-override-upload', $args ) ) . '" class="' . $class . '" data-waiting-label="' . esc_attr__( 'Optimizing...', 'imagify' ) . '">';
+		$output .= '<a href="' . esc_url( get_imagify_admin_url( 'manual-override-upload', $args ) ) . '"' . $class . $waiting . '>';
 			/* translators: %s is an optimization level. */
 			$output .= '<span class="dashicons dashicons-admin-generic"></span><span class="imagify-hide-if-small">' . sprintf( __( 'Re-Optimize to %s', 'imagify' ), '</span>' . __( 'Normal', 'imagify' ) . '<span class="imagify-hide-if-small">' ) . '</span>';
 		$output .= '</a>';
@@ -207,9 +225,56 @@ function get_imagify_attachment_reoptimize_link( $attachment, $context = 'wp' ) 
 }
 
 /**
+ * Get the link to optimize missing thumbnail sizes for a specific attachment.
+ *
+ * @since  1.6.10
+ * @author Grégory Viguier
+ *
+ * @param  object $attachment The attachement object.
+ * @param  string $context    A context.
+ * @return string             The output to print.
+ */
+function get_imagify_attachment_optimize_missing_thumbnails_link( $attachment, $context = 'wp' ) {
+	/**
+	 * Allow to not display the "Optimize missing thumbnails" link.
+	 *
+	 * @since  1.6.10
+	 * @author Grégory Viguier
+	 *
+	 * @param bool   $display    True to display the link. False to not display it.
+	 * @param object $attachment The attachement object.
+	 * @param string $context    The context.
+	 */
+	$display = apply_filters( 'imagify_display_missing_thumbnails_link', true, $attachment, $context );
+
+	// Stop the process if the filter is false or if the API key isn't valid.
+	if ( ! $display || ! imagify_valid_key() ) {
+		return '';
+	}
+
+	$missing_sizes = $attachment->get_unoptimized_sizes();
+
+	if ( ! $missing_sizes ) {
+		return '';
+	}
+
+	$url = get_imagify_admin_url( 'optimize-missing-sizes', array(
+		'attachment_id' => $attachment->id,
+		'context'       => $context,
+	) );
+
+	$output  = '<a href="' . esc_url( $url ) . '" id="imagify-optimize_missing_sizes-' . $attachment->id . '" class="button-imagify-optimize-missing-sizes" data-waiting-label="' . esc_attr__( 'Optimizing...', 'imagify' ) . '">';
+		/* translators: 1 is the number of thumbnails to optimize, 2 is the opening of a HTML tag that will be hidden on small screens, 3 is the closing tag. */
+		$output .= '<span class="dashicons dashicons-admin-generic"></span>' . sprintf( _n( '%2$sOptimize %3$s%1$d missing thumbnail', '%2$sOptimize %3$s%1$d missing thumbnails', count( $missing_sizes ), 'imagify' ), count( $missing_sizes ), '<span class="imagify-hide-if-small">', '</span>' );
+	$output .= '</a>';
+
+	return $output;
+}
+
+/**
  * Get all data to diplay for a specific attachment.
  *
- * @since 1.2
+ * @since  1.2
  * @author Jonathan Buttigieg
  *
  * @param  object $attachment  The attachement object.
@@ -217,13 +282,21 @@ function get_imagify_attachment_reoptimize_link( $attachment, $context = 'wp' ) 
  * @return string              The output to print.
  */
 function get_imagify_media_column_content( $attachment, $context = 'wp' ) {
-	$attachment_id  = $attachment->id;
-	$attachment_ext = $attachment->get_extension();
+	if ( ! imagify_current_user_can( 'manual-optimize', $attachment->id ) ) {
+		return __( 'You are not allowed to optimize this file.', 'imagify' );
+	}
 
 	// Check if the attachment extension is allowed.
 	if ( ! $attachment->is_mime_type_supported() ) {
+		$attachment_ext = $attachment->get_extension();
+
 		/* translators: %s is a file extension. */
 		return sprintf( __( '%s can\'t be optimized', 'imagify' ), strtoupper( $attachment_ext ) );
+	}
+
+	// Check if the attachment has the required WP metadata.
+	if ( ! $attachment->has_required_metadata() ) {
+		return __( 'This media lacks the required metadata and can\'t be optimized.', 'imagify' );
 	}
 
 	// Check if the API key is valid.
@@ -235,7 +308,7 @@ function get_imagify_media_column_content( $attachment, $context = 'wp' ) {
 	}
 
 	$transient_context = ( 'wp' !== $context ) ? strtolower( $context ) . '-' : '';
-	$transient_name    = 'imagify-' . $transient_context . 'async-in-progress-' . $attachment_id;
+	$transient_name    = 'imagify-' . $transient_context . 'async-in-progress-' . $attachment->id;
 
 	if ( false !== get_transient( $transient_name ) ) {
 		return '<div class="button"><span class="imagify-spinner"></span>' . __( 'Optimizing...', 'imagify' ) . '</div>';
@@ -244,10 +317,10 @@ function get_imagify_media_column_content( $attachment, $context = 'wp' ) {
 	// Check if the image was optimized.
 	if ( ! $attachment->is_optimized() && ! $attachment->has_error() ) {
 		$args = array(
-			'attachment_id' => $attachment_id,
+			'attachment_id' => $attachment->id,
 			'context'       => $context,
 		);
-		$output = '<a id="imagify-upload-' . $attachment_id . '" href="' . esc_url( get_imagify_admin_url( 'manual-upload', $args ) ) . '" class="button-primary button-imagify-manual-upload" data-waiting-label="' . esc_attr__( 'Optimizing...', 'imagify' ) . '">' . __( 'Optimize', 'imagify' ) . '</a>';
+		$output = '<a id="imagify-upload-' . $attachment->id . '" href="' . esc_url( get_imagify_admin_url( 'manual-upload', $args ) ) . '" class="button-primary button-imagify-manual-upload" data-waiting-label="' . esc_attr__( 'Optimizing...', 'imagify' ) . '">' . __( 'Optimize', 'imagify' ) . '</a>';
 
 		if ( $attachment->has_backup() ) {
 			$output .= '<span class="attachment-has-backup hidden"></span>';
@@ -270,7 +343,7 @@ function get_imagify_media_column_content( $attachment, $context = 'wp' ) {
  * @return string HTML.
  */
 function get_imagify_new_to_imagify() {
-	if ( ! imagify_valid_key() ) {
+	if ( ! imagify_current_user_can() || ! imagify_valid_key() ) {
 		return '';
 	}
 
@@ -319,8 +392,8 @@ function get_imagify_price_table_format( $value ) {
 /**
  * Get the payment modal HTML.
  *
- * @since 1.6
- * @since 1.6.3 Include discount banners.
+ * @since  1.6
+ * @since  1.6.3 Include discount banners.
  * @author Geoffrey
  *
  * @todo Make first offers dynamic thanks to consumption estimation.
@@ -632,7 +705,7 @@ function imagify_payment_modal() {
 									</p>
 								</div>
 								<div class="imagify-col imagify-txt-end">
-									<p><a class="button imagify-button-ghost imagify-button-medium imagify-mt1 imagify-mb1 imagify-mr1" href="https://imagify.io/<?php echo ( get_locale() === 'fr_FR' ? 'fr/' : '' ); ?>contact" target="_blank"><i class="dashicons dashicons-email" aria-hidden="true"></i>&nbsp;<?php esc_html_e( 'Contact Us', 'imagify' ); ?></a></p>
+									<p><a class="button imagify-button-ghost imagify-button-medium imagify-mt1 imagify-mb1 imagify-mr1" href="<?php echo esc_html( imagify_get_external_url( 'contact' ) ); ?>" target="_blank"><i class="dashicons dashicons-email" aria-hidden="true"></i>&nbsp;<?php esc_html_e( 'Contact Us', 'imagify' ); ?></a></p>
 								</div>
 							</div>
 
@@ -688,9 +761,7 @@ function imagify_payment_modal() {
 
 				<div class="imagify-modal-views imagify-payment-process-view" id="imagify-payment-process-view" aria-hidden="true">
 
-					<?php $imagify_api_key = get_imagify_option( 'api_key', false ); ?>
-
-					<iframe data-imagify-api="<?php echo $imagify_api_key; ?>" id="imagify-payment-iframe" data-src="<?php echo IMAGIFY_PAYMENT_URL; ?>" name="imagify-payment-iframe" src="" frameborder="0"></iframe>
+					<iframe data-imagify-api="<?php echo esc_attr( get_imagify_option( 'api_key' ) ); ?>" id="imagify-payment-iframe" data-src="<?php echo esc_url( imagify_get_external_url( 'payment' ) ); ?>" name="imagify-payment-iframe" src="" frameborder="0"></iframe>
 
 				</div><!-- .imagify-modal-views -->
 
@@ -763,8 +834,8 @@ function imagify_payment_modal() {
 /**
  * Print the discount banner used inside Payment Modal.
  *
- * @author Geoffrey Crofte
  * @since  1.6.3
+ * @author Geoffrey Crofte
  *
  * @return void
  */

@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) || die( 'Cheatin\' uh?' );
 /**
  * Get WP Direct filesystem object. Also define chmod constants if not done yet.
  *
- * @since 1.6.5
+ * @since  1.6.5
  * @author Grégory Viguier
  *
  * @return object A `$wp_filesystem` object.
@@ -94,18 +94,22 @@ function imagify_get_abspath() {
  * Make an absolute path relative to WordPress' root folder.
  * Also works for files from registered symlinked plugins.
  *
- * @since  1.6.8
+ * @since  1.6.10
  * @author Grégory Viguier
  *
  * @param  string $file_path An absolute path.
- * @return string            A relative path. Can return the absolute path in case of a failure.
+ * @return string|bool       A relative path. Can return the absolute path or false in case of a failure.
  */
-function imagify_make_file_path_replative( $file_path ) {
+function imagify_make_file_path_relative( $file_path ) {
 	static $abspath;
 	global $wp_plugin_paths;
 
 	if ( ! isset( $abspath ) ) {
 		$abspath = wp_normalize_path( ABSPATH );
+	}
+
+	if ( ! $file_path ) {
+		return false;
 	}
 
 	$file_path = wp_normalize_path( $file_path );

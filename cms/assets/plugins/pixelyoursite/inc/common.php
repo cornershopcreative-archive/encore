@@ -1058,13 +1058,14 @@ if( !function_exists( 'pys_get_default_options' ) ) {
 		$options['woo']['view_content_value_option']  = 'price';
 		$options['woo']['view_content_percent_value'] = '';
 		$options['woo']['view_content_global_value']  = '';
-
-		$options['woo']['on_add_to_cart_btn']        = 1;
-		$options['woo']['on_cart_page']              = 1;
-		$options['woo']['enable_add_to_cart_value']  = 1;
-		$options['woo']['add_to_cart_value_option']  = 'price';
-		$options['woo']['add_to_cart_percent_value'] = '';
-		$options['woo']['add_to_cart_global_value']  = '';
+        
+        $options['woo']['on_add_to_cart_btn']        = 1;
+        $options['woo']['on_add_to_cart_page']       = 0;
+        $options['woo']['on_add_to_cart_checkout']   = 0;
+        $options['woo']['enable_add_to_cart_value']  = 1;
+        $options['woo']['add_to_cart_value_option']  = 'price';
+        $options['woo']['add_to_cart_percent_value'] = '';
+        $options['woo']['add_to_cart_global_value']  = '';
 
 		$options['woo']['on_checkout_page']       = 1;
 		$options['woo']['enable_checkout_value']  = 1;
@@ -1116,12 +1117,13 @@ if( !function_exists( 'pys_get_default_options' ) ) {
 		$options['edd']['view_content_value_option']  = 'price';
 		$options['edd']['view_content_percent_value'] = null;
 		$options['edd']['view_content_global_value']  = null;
-		
-		$options['edd']['on_add_to_cart_btn']        = 1;
-		$options['edd']['enable_add_to_cart_value']  = 1;
-		$options['edd']['add_to_cart_value_option']  = 'price';
-		$options['edd']['add_to_cart_percent_value'] = null;
-		$options['edd']['add_to_cart_global_value']  = null;
+        
+        $options['edd']['on_add_to_cart_btn']        = 1;
+        $options['edd']['on_add_to_cart_checkout']   = 0;
+        $options['edd']['enable_add_to_cart_value']  = 1;
+        $options['edd']['add_to_cart_value_option']  = 'price';
+        $options['edd']['add_to_cart_percent_value'] = null;
+        $options['edd']['add_to_cart_global_value']  = null;
 
 		$options['edd']['on_checkout_page']       = 1;
 		$options['edd']['enable_checkout_value']  = 1;
@@ -1262,7 +1264,7 @@ if( ! function_exists( 'pys_woocommerce_events' ) ) {
 		pys_get_woo_code();
 
 		// WooCommerce non-ajax AddToCart Event handler
-		if ( isset( $_REQUEST['add-to-cart'] ) ) {
+		if ( pys_get_option( 'woo', 'on_add_to_cart_btn' ) && isset( $_REQUEST['add-to-cart'] ) ) {
             
 			if ( pys_get_option( 'woo', 'variation_id' ) != 'main' && isset( $_REQUEST['variation_id'] ) ) {
 				$product_id = $_REQUEST['variation_id'];

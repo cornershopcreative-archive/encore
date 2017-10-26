@@ -1,11 +1,67 @@
 jQuery(document).ready(function( $ ) {
 
+    if (typeof pys_fb_pixel_options === 'undefined') {
+        return;
+    }
+
+    var options = pys_fb_pixel_options; // variable shorthand
+
     // load FB pixel
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
         n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
         n.push=n;n.loaded=!0;n.version='2.0';n.agent='dvpixelyoursite';n.queue=[];t=b.createElement(e);t.async=!0;
         t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
         document,'script','https://connect.facebook.net/en_US/fbevents.js');
+
+    /**
+     * Setup Events Handlers
+     */
+    !function setupEventHandlers() {
+
+        /**
+         * WooCommerce Events
+         */
+        if (options.hasOwnProperty('woo')) {
+
+            // WooCommerce single product AddToCart handler on AJAX-ed themes
+            if (options.woo.is_product && options.woo.add_to_cart_enabled ) {
+
+                $(document).on('added_to_cart', function () {
+
+                    var params = {};
+
+                    if (options.woo.single_product.type === 'variable') {
+
+                        var $form = $('form.variations_form.cart'),
+                            variation_id = false,
+                            qty;
+
+                        if ($form.length === 1) {
+                            variation_id = $form.find('input[name="variation_id"]').val();
+                        }
+
+                        if (false === variation_id || false === options.woo.single_product.add_to_cart_params.hasOwnProperty(variation_id)) {
+                            console.error('PYS PRO: product variation ID not found in available product variants.');
+                            return;
+                        }
+
+                        params = clone(options.woo.single_product.add_to_cart_params[variation_id], {});
+                        qty = parseInt($form.find('input[name="quantity"]').val());
+                        params.value = params.value * qty;
+
+                    } else {
+                        params = clone(options.woo.single_product.add_to_cart_params, {});
+                    }
+
+                    fbq('track', 'AddToCart', params);
+
+                });
+
+            }
+
+        }
+
+    }();
 
     regularEvents();
     customCodeEvents();
@@ -127,5 +183,12 @@ jQuery(document).ready(function( $ ) {
         }
 
     }
+
+    var clone = function (src, dest) {
+        for (var key in src) {
+            dest[key] = src[key];
+        }
+        return dest;
+    };
 
 });
