@@ -1,3 +1,14 @@
+### 2.8.17
+- **[Update]** Updated updater
+- **[Fix]** Fixed an issue with database table creation
+
+### 2.8.16
+- **[Fix]** Fixed an issue where exclusionary weight was not properly applied to all Custom Fields
+- **[Fix]** Resolved premature AND logic aggressiveness in some cases
+- **[Fix]** Revised database creation schema to better cooperate with more database environments
+- **[Improvement]** Better assumed sorting of results
+- **[New]** New filter `searchwp_stats_table_class` to control CSS class applied to stats output
+
 ### 2.8.15
 - **[Improvement]** Better handling of regex pattern matches
 - **[Fix]** Fixes an issue where Media-only default engines did not fully build index

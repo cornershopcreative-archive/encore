@@ -165,27 +165,32 @@ if ( ! defined( 'ABSPATH' ) ) {
     
     <hr>
     <h2 class="section-title">AddToCart Event</h2>
-    <p>AddToCart event will be added  on add to cart button click and on cart page. It is required for Facebook Dynamic Product Ads.</p>
+    <p>AddToCart event will be added on add to cart button click and on cart page. It is required for Facebook Dynamic Product Ads.</p>
     <table class="layout">
-      <tr>
-        <td colspan="2" class="narrow">
-          
-          <input type="checkbox" name="pys[woo][on_add_to_cart_btn]" value="1" class="woo-option"
-            <?php pys_checkbox_state( 'woo', 'on_add_to_cart_btn' ); ?> >
-            <strong>Enable AddToCart on add to cart button</strong>
 
-        </td>
-      </tr>
-      
-      <tr class="tall">
-        <td colspan="2" class="narrow">
-          
-          <input type="checkbox" name="pys[woo][on_cart_page]" value="1" class="woo-option"
-            <?php pys_checkbox_state( 'woo', 'on_cart_page' ); ?> >
-            <strong>Enable AddToCart on cart page</strong>
-            
-        </td>
-      </tr>
+        <tr>
+            <td colspan="2" class="narrow">
+                <input type="checkbox" name="pys[woo][on_add_to_cart_btn]" value="1" class="woo-option"
+				    <?php pys_checkbox_state( 'woo', 'on_add_to_cart_btn' ); ?> >
+                <strong>Enable AddToCart on add to cart button</strong>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" class="narrow">
+                <input type="checkbox" name="pys[woo][on_add_to_cart_page]" value="1" class="woo-option"
+                    <?php pys_checkbox_state( 'woo', 'on_add_to_cart_page' ); ?> >
+                <strong>Enable AddToCart on cart page</strong>
+            </td>
+        </tr>
+
+        <tr class="tall">
+            <td colspan="2" class="narrow">
+                <input type="checkbox" name="pys[woo][on_add_to_cart_checkout]" value="1" class="woo-option"
+                    <?php pys_checkbox_state( 'woo', 'on_add_to_cart_checkout' ); ?> >
+                <strong>Enable AddToCart on checkout page</strong>
+            </td>
+        </tr>
       
       <tr>
         <td></td>

@@ -224,7 +224,7 @@ class SearchWPUpgrade {
 		$sql = "
 			CREATE TABLE {$wpdb->prefix}swp_cf (
 				id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-				metakey varchar(255) {$this->collate_sql} NOT NULL DEFAULT '',
+				metakey varchar(190) {$this->collate_sql} NOT NULL DEFAULT '',
 				term int(20) unsigned NOT NULL,
 				count bigint(20) unsigned NOT NULL,
 				post_id bigint(20) unsigned NOT NULL,
@@ -257,10 +257,10 @@ class SearchWPUpgrade {
 			CREATE TABLE {$wpdb->prefix}swp_log (
 				id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 	            event enum('search','action') {$this->collate_sql} NOT NULL DEFAULT 'search',
-	            query varchar(200) {$this->collate_sql} NOT NULL DEFAULT '',
+	            query varchar(191) {$this->collate_sql} NOT NULL DEFAULT '',
 	            tstamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	            hits mediumint(9) unsigned NOT NULL,
-	            engine varchar(200) {$this->collate_sql} NOT NULL DEFAULT 'default',
+	            engine varchar(191) {$this->collate_sql} NOT NULL DEFAULT 'default',
 	            wpsearch tinyint(1) NOT NULL,
 	            PRIMARY KEY (id),
 	            KEY eventindex (event),
@@ -598,7 +598,7 @@ class SearchWPUpgrade {
 		if ( version_compare( $this->last_version, '2.8', '<' ) ) {
 			$swp_live_settings = get_option( SEARCHWP_PREFIX . 'settings' );
 			$swp_nuke_on_delete = isset( $swp_live_settings['nuke_on_delete'] ) ? $swp_live_settings['nuke_on_delete'] : false;
-			
+
 			if ( ! empty( $swp_nuke_on_delete ) ) {
 				// migrate enabled Nuke on Delete setting to new toggle abstraction
 				$existing_settings = searchwp_get_option( 'advanced' );

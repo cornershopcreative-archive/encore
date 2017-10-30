@@ -5,7 +5,7 @@ add_filter( 'ngg_manage_images_number_of_columns', '_imagify_ngg_manage_images_n
 /**
  * Add "Imagify" column in admin.php?page=nggallery-manage-gallery.
  *
- * @since 1.5
+ * @since  1.5
  * @author Jonathan Buttigieg
  *
  * @param  int $count Number of columns.
@@ -22,7 +22,7 @@ function _imagify_ngg_manage_images_number_of_columns( $count ) {
 /**
  * Get the column title.
  *
- * @since 1.5
+ * @since  1.5
  * @author Jonathan Buttigieg
  *
  * @return string
@@ -34,7 +34,7 @@ function _imagify_ngg_manage_media_columns() {
 /**
  * Get the column content.
  *
- * @since 1.5
+ * @since  1.5
  * @author Jonathan Buttigieg
  *
  * @param  string $output The column content.
@@ -42,6 +42,26 @@ function _imagify_ngg_manage_media_columns() {
  * @return string
  */
 function _imagify_ngg_manage_media_custom_column( $output, $image ) {
+	add_filter( 'imagify_capacity', 'imagify_get_ngg_capacity', 10, 2 );
 	$attachment = new Imagify_NGG_Attachment( $image );
-	return get_imagify_media_column_content( $attachment, 'NGG' );
+	$output     = get_imagify_media_column_content( $attachment, 'NGG' );
+	remove_filter( 'imagify_capacity', 'imagify_get_ngg_capacity' );
+
+	return $output;
+}
+
+add_filter( 'imagify_display_missing_thumbnails_link', '_imagify_ngg_hide_missing_thumbnails_link', 10, 3 );
+/**
+ * Hide the "Optimize missing thumbnails" link.
+ *
+ * @since  1.6.10
+ * @author Grégory Viguier
+ *
+ * @param  bool   $display    True to display the link. False to not display it.
+ * @param  object $attachment The attachement object.
+ * @param  string $context    The context.
+ * @return bool
+ */
+function _imagify_ngg_hide_missing_thumbnails_link( $display, $attachment, $context ) {
+	return 'NGG' === $context ? false : $display;
 }

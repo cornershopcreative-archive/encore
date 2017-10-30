@@ -5,7 +5,7 @@
 	Plugin URI: http://www.pixelyoursite.com/facebook-pixel-plugin-help
 	Author: PixelYourSite
 	Author URI: http://www.pixelyoursite.com
-	Version: 5.0.7
+	Version: 5.0.8
 	License: GPLv3
 */
 
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
-define( 'PYS_FREE_VERSION', '5.0.7' );
+define( 'PYS_FREE_VERSION', '5.0.8' );
 
 if ( ! function_exists( 'pys_is_pixelyoursite_pro_active' ) ) {
 

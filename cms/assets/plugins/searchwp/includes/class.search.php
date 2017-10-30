@@ -271,6 +271,12 @@ class SearchWPSearch {
 				$args['order'] = 'DESC';
 			}
 
+			if ( apply_filters( 'searchwp_query_allow_query_string_override_order', true ) ) {
+				if ( ! empty( $_GET['order'] ) ) {
+					$args['order'] = 'ASC' == strtoupper( $_GET['order'] ) ? 'ASC' : 'DESC';
+				}
+			}
+
 			// filter the terms just before querying
 			$terms = apply_filters( 'searchwp_pre_search_terms', $terms, $engine );
 
@@ -812,9 +818,7 @@ class SearchWPSearch {
                 LEFT JOIN {$wpdb->prefix}posts
                 	ON {$wpdb->prefix}posts.ID = {$this->db_prefix}index.post_id
                 WHERE {$relevantTermWhere}
-                	AND {$wpdb->prefix}posts.post_type IN ( " . implode( ', ', array_fill( 0, count( $active_post_types_for_this_engine ), '%s' ) ) . " )
-                GROUP BY {$this->db_prefix}index.post_id
-                HAVING termcount > 0";
+                	AND {$wpdb->prefix}posts.post_type IN ( " . implode( ', ', array_fill( 0, count( $active_post_types_for_this_engine ), '%s' ) ) . " )";
 		}
 
 		// next SQL segment is against the cf table
@@ -834,8 +838,7 @@ class SearchWPSearch {
                 LEFT JOIN {$wpdb->prefix}posts
                 	ON {$wpdb->prefix}posts.ID = {$this->db_prefix}cf.post_id
                 WHERE {$relevantTermWhere}
-                	AND {$wpdb->prefix}posts.post_type IN ( " . implode( ', ', array_fill( 0, count( $active_post_types_for_this_engine ), '%s' ) ) . " )
-                GROUP BY {$this->db_prefix}cf.post_id";
+                	AND {$wpdb->prefix}posts.post_type IN ( " . implode( ', ', array_fill( 0, count( $active_post_types_for_this_engine ), '%s' ) ) . " )";
 		}
 
 		// last SQL segment is against the tax table
@@ -855,9 +858,10 @@ class SearchWPSearch {
                 LEFT JOIN {$wpdb->prefix}posts
                 	ON {$wpdb->prefix}posts.ID = {$this->db_prefix}tax.post_id
                 WHERE {$relevantTermWhere}
-                	AND {$wpdb->prefix}posts.post_type IN ( " . implode( ', ', array_fill( 0, count( $active_post_types_for_this_engine ), '%s' ) ) . " )
-                GROUP BY {$this->db_prefix}tax.post_id";
+                	AND {$wpdb->prefix}posts.post_type IN ( " . implode( ', ', array_fill( 0, count( $active_post_types_for_this_engine ), '%s' ) ) . " )";
 		}
+
+		$andTermSQL .= " GROUP BY post_id HAVING termcount > 0";
 
 		$postsWithTermPresent = array();
 
@@ -1098,15 +1102,26 @@ class SearchWPSearch {
 								}
 							} elseif ( 'cf' == $type ) {
 								foreach ( $weight as $postTypeCustomField ) {
-									foreach ( $postTypeCustomField as $postTypeCustomFieldKey => $postTypeCustomFieldWeight ) {
-										if ( intval( $postTypeCustomFieldWeight ) < 0 ) {
-											$applicableExclusion = true;
 
-											// field name has already been validated by always safest to escape
-											$postTypeCustomFieldKey = $wpdb->prepare( '%s', $postTypeCustomFieldKey );
+									if ( ! is_array( $postTypeCustomField ) ) {
+										continue;
+									}
 
-											$andInternalSQL .= " ( {$this->db_prefix}cf.metakey = {$postTypeCustomFieldKey} AND {$this->db_prefix}cf.count > 0 )  OR ";
-										}
+									if ( isset( $postTypeCustomField['weight'] ) ) {
+										$postTypeCustomFieldWeight = $postTypeCustomField['weight'];
+									}
+
+									if ( isset( $postTypeCustomField['metakey'] ) ) {
+										$postTypeCustomFieldMetakey = $postTypeCustomField['metakey'];
+									}
+
+									if ( intval( $postTypeCustomFieldWeight ) < 0 ) {
+										$applicableExclusion = true;
+
+										// field name has already been validated by always safest to escape
+										$postTypeCustomFieldKey = $wpdb->prepare( '%s', $postTypeCustomFieldMetakey );
+
+										$andInternalSQL .= " ( {$this->db_prefix}cf.metakey = {$postTypeCustomFieldKey} AND {$this->db_prefix}cf.count > 0 )  OR ";
 									}
 								}
 							}
@@ -2299,6 +2314,16 @@ class SearchWPSearch {
 		// allow for arbitrary ORDER BY filtration
 		$finalOrderBySQL = apply_filters( 'searchwp_query_orderby', $finalOrderBySQL, $this->engine );
 
+		if ( apply_filters( 'searchwp_query_allow_query_string_override_orderby', true ) ) {
+			if ( ! empty( $_GET['orderby'] ) ) {
+				$query_orderby = $this->get_query_string_orderby();
+
+				if ( ! empty( $query_orderby ) ) {
+					$finalOrderBySQL = esc_sql( " ORDER BY {$query_orderby} {$order}" );
+				}
+			}
+		}
+
 		// make sure we limit the overall wp_posts pool to what was returned in the subqueries
 		if ( $forceAnd ) {
 			for ( $i = 1; $i <= count( $this->terms ); $i++ ) {
@@ -2400,6 +2425,30 @@ class SearchWPSearch {
 		$this->postIDs = $postIDs;
 
 		return true;
+	}
+
+	/**
+	 * Use query string to force final orderby
+	 */
+	function get_query_string_orderby() {
+	    global $wpdb;
+
+		if ( empty( $_GET['orderby'] ) ) {
+			return '';
+		}
+
+		$this_orderby = strtolower( $_GET['orderby'] );
+
+		// Keys are the query string, values are the database column
+		$allowed_orderbys = array(
+			'title' => 'post_title'
+		);
+
+		if ( ! array_key_exists( $this_orderby, $allowed_orderbys ) ) {
+		    return '';
+        }
+
+		return $wpdb->posts . '.' . $allowed_orderbys[ $this_orderby ];
 	}
 
 	/**

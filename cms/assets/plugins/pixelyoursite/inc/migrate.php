@@ -33,7 +33,6 @@ if( !function_exists( 'pys_migrate_from_22x' ) ) {
 		$options['woo']['enabled']            = isset( $old_free['woocommerce']['activate'] ) ? $old_free['woocommerce']['activate'] : 0;
 		$options['woo']['on_view_content']    = isset( $old_free['woocommerce']['events']['ViewContent'] ) ? $old_free['woocommerce']['events']['ViewContent'] : 0;
 		$options['woo']['on_add_to_cart_btn'] = isset( $old_free['woocommerce']['events']['ProductAddToCart'] ) ? $old_free['woocommerce']['events']['ProductAddToCart'] : 0;
-		$options['woo']['on_cart_page']       = isset( $old_free['woocommerce']['events']['AddToCart'] ) ? $old_free['woocommerce']['events']['AddToCart'] : 0;
 		$options['woo']['on_checkout_page']   = isset( $old_free['woocommerce']['events']['InitiateCheckout'] ) ? $old_free['woocommerce']['events']['InitiateCheckout'] : 0;
 		$options['woo']['on_thank_you_page']  = isset( $old_free['woocommerce']['events']['Purchase'] ) ? $old_free['woocommerce']['events']['Purchase'] : 0;
 

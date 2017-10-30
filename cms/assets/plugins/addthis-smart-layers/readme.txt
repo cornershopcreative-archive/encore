@@ -3,7 +3,7 @@ Contributors: abramsm, jgrodel, bradaddthis.com, addthis_paul, addthis_matt, rib
 Tags: AddThis, bookmark, bookmarking, email sharing, mobile sharing, mobile sharing buttons, plugin, share, share buttons, share buttons plugin, sharing, sharing buttons, sharing sidebar, social buttons, social tools, widget, follow buttons, follow buttons plugin, shortcode, facebook, twitter, pinterest, linkedin, instagram, content recommendations, recommended content, related content, related posts
 Requires at least: 3.0
 Tested up to: 4.8.1
-Stable tag: 3.1.0
+Stable tag: 3.1.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,10 @@ See our <a href="https://plugins.svn.wordpress.org/addthis-all/trunk/documentati
 
 == Changelog ==
 
+= 3.1.1 =
+* Fix for PHP notice from AddThisPlugin.php on line 610
+* Changing the permission capability used for determining when users can edit AddThis settings from activate_plugins to manage_options. This will allow most admins on multi-site instances to edit settings. <a href="https://codex.wordpress.org/Roles_and_Capabilities">More information on WordPress roles and capabilities.</a>
+
 = 3.1.0 =
 * Fix for PHP error from AddThisSharingButtonsMobileToolbarTool.php line 66
 * Fix for PHP error from AddThisSharingButtonsFeature.php line 200
@@ -201,6 +205,9 @@ See our <a href="https://plugins.svn.wordpress.org/addthis-all/trunk/documentati
 
 
 == Upgrade Notice ==
+
+= 3.1.1 =
+Fix for PHP notice from AddThisPlugin.php on line 610. Changing the permission capability used for determining when users can edit AddThis settings from activate_plugins to manage_options. This will allow most admins on multi-site instances to edit settings. <a href="https://codex.wordpress.org/Roles_and_Capabilities">More information on WordPress roles and capabilities.</a>
 
 = 3.1.0 =
 Fixs for PHP errors, whitespace issues, changes in default and upgraded settings. Adding requested AddThisWidgetByDomClass functionality that will allow users adding a widget via PHP to customze the URL, title, description and image used for that share.

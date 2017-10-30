@@ -15,11 +15,8 @@
                 "class": "",
                 "id": ""
             },
-            "button_label": "Add Section",
-            "min": "",
-            "max": "",
-            "layouts": [
-                {
+            "layouts": {
+                "5807723ca14f7": {
                     "key": "5807723ca14f7",
                     "name": "wysiwyg",
                     "label": "Generic WYSIWYG",
@@ -67,7 +64,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "58174a0a89593": {
                     "key": "58174a0a89593",
                     "name": "image-grid",
                     "label": "Image Grid",
@@ -178,7 +175,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "5808c427c1c34": {
                     "key": "5808c427c1c34",
                     "name": "circle-grid",
                     "label": "Circle Grid",
@@ -290,7 +287,7 @@
                                     "key": "field_5808e01450f42",
                                     "label": "Link URL",
                                     "name": "link_url",
-                                    "type": "text",
+                                    "type": "url",
                                     "instructions": "Please enter full URL including http:\/\/ or https:\/\/. If you would like to button to send an email, please use the \"mailto:\" format.",
                                     "required": 0,
                                     "conditional_logic": 0,
@@ -300,10 +297,7 @@
                                         "id": ""
                                     },
                                     "default_value": "",
-                                    "placeholder": "",
-                                    "prepend": "",
-                                    "append": "",
-                                    "maxlength": ""
+                                    "placeholder": ""
                                 },
                                 {
                                     "key": "field_5808e07d50f43",
@@ -321,12 +315,12 @@
                                     "choices": {
                                         "target_blank": "Open link in a new window\/tab"
                                     },
+                                    "allow_custom": 0,
+                                    "save_custom": 0,
                                     "default_value": [],
                                     "layout": "vertical",
                                     "toggle": 0,
-                                    "return_format": "value",
-                                    "allow_custom": 0,
-                                    "save_custom": 0
+                                    "return_format": "value"
                                 }
                             ]
                         }
@@ -334,7 +328,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "587550a65f396": {
                     "key": "587550a65f396",
                     "name": "photo-gallery",
                     "label": "Photo Gallery",
@@ -429,7 +423,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "58090a7929e00": {
                     "key": "58090a7929e00",
                     "name": "callout",
                     "label": "Colorful Callout",
@@ -607,7 +601,7 @@
                             "name": "title_two",
                             "type": "text",
                             "instructions": "",
-                            "required": 1,
+                            "required": 0,
                             "conditional_logic": [
                                 [
                                     {
@@ -724,7 +718,7 @@
                             "key": "field_5809946289d41",
                             "label": "Button URL for Second Column",
                             "name": "button_url_two",
-                            "type": "text",
+                            "type": "url",
                             "instructions": "Please enter full URL including http:\/\/ or https:\/\/. If you would like to button to send an email, please use the \"mailto:\" format.",
                             "required": 0,
                             "conditional_logic": [
@@ -742,10 +736,7 @@
                                 "id": ""
                             },
                             "default_value": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "maxlength": ""
+                            "placeholder": ""
                         },
                         {
                             "key": "field_5809950f89d42",
@@ -790,7 +781,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "5813a2c1d31f3": {
                     "key": "5813a2c1d31f3",
                     "name": "callout-white",
                     "label": "Callout on White",
@@ -878,7 +869,7 @@
                             "key": "field_5813a2c2d31fd",
                             "label": "Button URL",
                             "name": "button_url",
-                            "type": "text",
+                            "type": "url",
                             "instructions": "Please enter full URL including http:\/\/ or https:\/\/. If you would like to button to send an email, please use the \"mailto:\" format.",
                             "required": 0,
                             "conditional_logic": 0,
@@ -888,10 +879,7 @@
                                 "id": ""
                             },
                             "default_value": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "maxlength": ""
+                            "placeholder": ""
                         },
                         {
                             "key": "field_5813a2c2d3200",
@@ -940,7 +928,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "58095ba433a94": {
                     "key": "58095ba433a94",
                     "name": "action-slider",
                     "label": "Action Slider",
@@ -1071,7 +1059,7 @@
                                     "key": "field_58095cd033a99",
                                     "label": "Link URL",
                                     "name": "link_url",
-                                    "type": "text",
+                                    "type": "url",
                                     "instructions": "Please enter full URL including http:\/\/ or https:\/\/. If you would like to button to send an email, please use the \"mailto:\" format.",
                                     "required": 0,
                                     "conditional_logic": 0,
@@ -1081,10 +1069,7 @@
                                         "id": ""
                                     },
                                     "default_value": "",
-                                    "placeholder": "",
-                                    "prepend": "",
-                                    "append": "",
-                                    "maxlength": ""
+                                    "placeholder": ""
                                 },
                                 {
                                     "key": "field_58095ce633a9a",
@@ -1115,7 +1100,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "581747e4f5e61": {
                     "key": "581747e4f5e61",
                     "name": "text-grid",
                     "label": "Text Grid",
@@ -1208,7 +1193,7 @@
                             "key": "field_58174805f5e63",
                             "label": "Button URL",
                             "name": "button_url",
-                            "type": "text",
+                            "type": "url",
                             "instructions": "Please enter full URL including http:\/\/ or https:\/\/. If you would like to button to send an email, please use the \"mailto:\" format.",
                             "required": 0,
                             "conditional_logic": 0,
@@ -1218,10 +1203,7 @@
                                 "id": ""
                             },
                             "default_value": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "maxlength": ""
+                            "placeholder": ""
                         },
                         {
                             "key": "field_5817483cf5e65",
@@ -1302,7 +1284,191 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "59cc053b19860": {
+                    "key": "59cc053b19860",
+                    "name": "column-grid",
+                    "label": "Column Grid",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_59cc053b19861",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
+                        {
+                            "key": "field_59cc053b19862",
+                            "label": "Heading",
+                            "name": "heading",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_59cc053b19863",
+                            "label": "Background Color",
+                            "name": "background_color",
+                            "type": "radio",
+                            "instructions": "",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "gray-background": "Gray",
+                                "white-background": "White"
+                            },
+                            "allow_null": 0,
+                            "other_choice": 0,
+                            "save_other_choice": 0,
+                            "default_value": "",
+                            "layout": "vertical",
+                            "return_format": "value"
+                        },
+                        {
+                            "key": "field_59cc053b19864",
+                            "label": "Button Text",
+                            "name": "button_text",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_59cc053b19865",
+                            "label": "Button URL",
+                            "name": "button_url",
+                            "type": "url",
+                            "instructions": "Please enter full URL including http:\/\/ or https:\/\/. If you would like to button to send an email, please use the \"mailto:\" format.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_59cc053b19866",
+                            "label": "Items",
+                            "name": "grid-items",
+                            "type": "repeater",
+                            "instructions": "",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "collapsed": "",
+                            "min": 1,
+                            "max": 0,
+                            "layout": "block",
+                            "button_label": "Add Row",
+                            "sub_fields": [
+                                {
+                                    "key": "field_59cc053b19867",
+                                    "label": "Name",
+                                    "name": "name",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 1,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "maxlength": ""
+                                },
+                                {
+                                    "key": "field_59cc053b19868",
+                                    "label": "Content",
+                                    "name": "content",
+                                    "type": "wysiwyg",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "tabs": "all",
+                                    "toolbar": "full",
+                                    "media_upload": 1,
+                                    "delay": 0
+                                },
+                                {
+                                    "key": "field_59cc053b19869",
+                                    "label": "URL",
+                                    "name": "url",
+                                    "type": "url",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "placeholder": ""
+                                }
+                            ]
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "580a5233f2e3e": {
                     "key": "580a5233f2e3e",
                     "name": "partner-slider",
                     "label": "Partner Slider",
@@ -1420,7 +1586,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "580fbcbf99ddf": {
                     "key": "580fbcbf99ddf",
                     "name": "news",
                     "label": "News & Media",
@@ -1652,7 +1818,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "58d951a90e16f": {
                     "key": "58d951a90e16f",
                     "name": "blog",
                     "label": "Blog Preview",
@@ -1814,7 +1980,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "581129fc7486c": {
                     "key": "581129fc7486c",
                     "name": "partner-list",
                     "label": "Partner List With Full Content",
@@ -1976,7 +2142,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "58174ba69709a": {
                     "key": "58174ba69709a",
                     "name": "making-the-case",
                     "label": "Making the Case",
@@ -2120,7 +2286,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "581371b2c98a2": {
                     "key": "581371b2c98a2",
                     "name": "volunteer-opportunities",
                     "label": "VolunteerMatch API Results (old format)",
@@ -2170,7 +2336,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "58e3e9335f4cf": {
                     "key": "58e3e9335f4cf",
                     "name": "volunteer-opportunity-posts",
                     "label": "Volunteer Opportunities List (new format)",
@@ -2431,7 +2597,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "581759a294a02": {
                     "key": "581759a294a02",
                     "name": "stories-grid",
                     "label": "Stories Grid",
@@ -2687,7 +2853,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "586bee3a7ce59": {
                     "key": "586bee3a7ce59",
                     "name": "diy-grid",
                     "label": "DIY Opportunities Grid",
@@ -2844,7 +3010,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "581b4d0137b33": {
                     "key": "581b4d0137b33",
                     "name": "partners-grid",
                     "label": "Partner Grid",
@@ -3105,7 +3271,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "58a5bb1300181": {
                     "key": "58a5bb1300181",
                     "name": "partner-ticker",
                     "label": "Partner Ticker",
@@ -3180,7 +3346,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "5818a82f9e909": {
                     "key": "5818a82f9e909",
                     "name": "communities",
                     "label": "Learning Lab Communities",
@@ -3230,7 +3396,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "582b43567ffe0": {
                     "key": "582b43567ffe0",
                     "name": "social-slider",
                     "label": "Social Slider",
@@ -3299,7 +3465,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "587c52ffe774a": {
                     "key": "587c52ffe774a",
                     "name": "dropdown",
                     "label": "Dropdown Section",
@@ -4114,7 +4280,7 @@
                     "min": "",
                     "max": ""
                 },
-                {
+                "58fe061e5e95c": {
                     "key": "58fe061e5e95c",
                     "name": "summer-challenge",
                     "label": "Summer Challenge",
@@ -4307,8 +4473,183 @@
                     ],
                     "min": "",
                     "max": ""
+                },
+                "59b9af0d5cc36": {
+                    "key": "59b9af0d5cc36",
+                    "name": "linked-grid",
+                    "label": "Linked Grid",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_59b9af3c5cc37",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "field_582b7788baabb"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        },
+                        {
+                            "key": "field_59b9af8f5cc38",
+                            "label": "Items",
+                            "name": "items",
+                            "type": "repeater",
+                            "instructions": "",
+                            "required": 1,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "collapsed": "field_59b9afb75cc39",
+                            "min": 1,
+                            "max": 0,
+                            "layout": "block",
+                            "button_label": "Add Row",
+                            "sub_fields": [
+                                {
+                                    "key": "field_59b9afb75cc39",
+                                    "label": "Image",
+                                    "name": "image",
+                                    "type": "image",
+                                    "instructions": "",
+                                    "required": 1,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "return_format": "id",
+                                    "preview_size": "thumbnail",
+                                    "library": "all",
+                                    "min_width": 25,
+                                    "min_height": 25,
+                                    "min_size": "",
+                                    "max_width": "",
+                                    "max_height": "",
+                                    "max_size": "",
+                                    "mime_types": ""
+                                },
+                                {
+                                    "key": "field_59b9b04f5cc3a",
+                                    "label": "Item Heading",
+                                    "name": "item_heading",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "maxlength": ""
+                                },
+                                {
+                                    "key": "field_59b9b0695cc3b",
+                                    "label": "Item Blurb",
+                                    "name": "item_blurb",
+                                    "type": "textarea",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "placeholder": "",
+                                    "maxlength": "",
+                                    "rows": "",
+                                    "new_lines": ""
+                                },
+                                {
+                                    "key": "field_59b9b0c45cc3c",
+                                    "label": "Link Text",
+                                    "name": "link_text",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "maxlength": ""
+                                },
+                                {
+                                    "key": "field_59b9b0d65cc3d",
+                                    "label": "Link URL",
+                                    "name": "link_url",
+                                    "type": "url",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "50",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "placeholder": ""
+                                },
+                                {
+                                    "key": "field_59b9b0e85cc3e",
+                                    "label": "Link Options",
+                                    "name": "link_options",
+                                    "type": "checkbox",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "50",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "choices": {
+                                        "target_blank": "Open link in a new window\/tab"
+                                    },
+                                    "allow_custom": 0,
+                                    "save_custom": 0,
+                                    "default_value": [],
+                                    "layout": "vertical",
+                                    "toggle": 0,
+                                    "return_format": "value"
+                                }
+                            ]
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
                 }
-            ]
+            },
+            "button_label": "Add Section",
+            "min": "",
+            "max": ""
         }
     ],
     "location": [
@@ -4337,5 +4678,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1495657169
+    "modified": 1508272312
 }

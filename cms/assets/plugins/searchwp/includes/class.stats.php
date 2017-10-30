@@ -46,7 +46,7 @@ class SearchWP_Stats {
 	function get_nonce() {
 		return $this->nonce;
 	}
-	
+
 	/**
 	 * Retrieve searches within the past X days for a specific engine, ordered by number of searches
 	 *
@@ -142,7 +142,10 @@ class SearchWP_Stats {
 	 */
 	function display( $stats, $engine = 'default' ) { ?>
 		<?php if ( ! empty( $stats ) ) : ?>
-			<table cellpadding="0" cellspacing="0">
+			<?php
+				$classes = apply_filters( 'searchwp_stats_table_class', array() );
+			?>
+			<table cellpadding="0" cellspacing="0" class="<?php echo esc_attr( implode( ' ', (array) $classes ) ); ?>">
 				<thead>
 					<tr>
 						<th><?php esc_html_e( 'Query', 'searchwp' ); ?></th>
@@ -197,8 +200,8 @@ class SearchWP_Stats {
 		// retrieve our counts for the past 30 days
 		$searchCounts = $wpdb->get_results(
 			$wpdb->prepare( "
-				SELECT DAY({$prefix}swp_log.tstamp) AS day, 
-					MONTH({$prefix}swp_log.tstamp) AS month, 
+				SELECT DAY({$prefix}swp_log.tstamp) AS day,
+					MONTH({$prefix}swp_log.tstamp) AS month,
 					count({$prefix}swp_log.tstamp) AS searches
 				FROM {$prefix}swp_log
 				WHERE tstamp > DATE_SUB(NOW(), INTERVAL %d day)
@@ -265,7 +268,7 @@ class SearchWP_Stats {
 					low: 0,
 					showArea: true
 				};
-	
+
 				function ordinal_suffix_of(i) {
 					var j = i % 10,
 						k = i % 100;
@@ -280,7 +283,7 @@ class SearchWP_Stats {
 					}
 					return i + "th";
 				}
-	
+
 				var chart_responsive_options = [
 					['screen and (min-width: 1251px)', {
 						axisX: {
@@ -414,5 +417,5 @@ class SearchWP_Stats {
 			)
 		);
 	}
-	
+
 }

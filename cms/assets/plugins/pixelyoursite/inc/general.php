@@ -132,6 +132,8 @@ if ( ! function_exists( 'pys_public_scripts' ) ) {
         
         wp_enqueue_script( 'pys-public', plugins_url( 'pixelyoursite/js/public.js' ), array( 'jquery' ), PYS_FREE_VERSION,
             $in_footer );
+
+        wp_localize_script( 'pys-public', 'pys_fb_pixel_options', pys_pixel_options() );
         
     }
     

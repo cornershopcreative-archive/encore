@@ -3,12 +3,12 @@
 Plugin Name: SearchWP
 Plugin URI: https://searchwp.com/
 Description: The best WordPress search you can find
-Version: 2.8.15
+Version: 2.8.17
 Author: SearchWP, LLC
 Author URI: https://searchwp.com/
 Text Domain: searchwp
 
-Copyright 2013-2016 SearchWP, LLC
+Copyright 2013-2017 SearchWP, LLC
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SEARCHWP_VERSION', '2.8.15' );
+define( 'SEARCHWP_VERSION', '2.8.17' );
 define( 'SEARCHWP_PREFIX', 'searchwp_' );
 define( 'SEARCHWP_DBPREFIX', 'swp_' );
 define( 'SEARCHWP_EDD_STORE_URL', 'https://searchwp.com' );
@@ -1177,6 +1177,9 @@ if ( is_array( $diagnostics['posts'] ) && isset( $diagnostics['posts'][0] ) ) {
 			$message .= __( '<p>Please ensure the applicable MySQL user has <code>CREATE</code> permissions and try activating again.</p>', 'searchwp' );
 			$message .= '<p><a href="' . esc_url( trailingslashit( get_admin_url( 'plugins.php' ) ) ) . '">' . __( 'Back to Plugins', 'searchwp' ) . '</a></p>';
 
+			// In order for the installation routine to run again we need to remove the version flag
+			delete_option( SEARCHWP_PREFIX . 'version' );
+
 			// output helpful message and die
 			do_action( 'searchwp_log', 'Shutting down after discovering invalid database environment' );
 			$this->shutdown();
@@ -2193,6 +2196,8 @@ if ( is_array( $diagnostics['posts'] ) && isset( $diagnostics['posts'][0] ) ) {
 			$args['paged'] = absint( $query_args['paged'] );
 		}
 
+
+
 		return $args;
 	}
 
@@ -2367,7 +2372,13 @@ if ( is_array( $diagnostics['posts'] ) && isset( $diagnostics['posts'][0] ) ) {
 
 		// determine the order from WP_Query
 		$wp_query_order = get_query_var( 'order' );
-		$order = ( strtoupper( $wp_query_order ) == 'DESC' ) ? 'DESC' : 'ASC';
+
+		// Sometimes plugins or code will switch this to ASC but by default we want
+		// results sorted DESC by relevancy so we're going to assume that
+		$order = 'DESC';
+		if ( apply_filters( 'searchwp_force_wpquery_order', false ) ) {
+			$order = ( strtoupper( $wp_query_order ) == 'DESC' ) ? 'DESC' : 'ASC';
+		}
 		do_action( 'searchwp_log', '$order = ' . $order );
 
 		// make sure the search isn't overflowing with terms

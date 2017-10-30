@@ -44,6 +44,9 @@ if ( class_exists( 'WC_Facebookcommerce' ) && ! class_exists( 'WC_Facebookcommer
 
 		public function inject_purchase_event( $order_id ) {
 		}
+        
+        public function inject_base_pixel_noscript() {
+        }
 
 	}
 
