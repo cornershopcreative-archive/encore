@@ -437,9 +437,8 @@ class VolunteerMatch_Sync_Process extends WP_Background_Process {
 		// Get current sync status.
 		$sync_status = get_option( 'vmatch_sync_status' );
 
-		// If no sync status record was found, or if the most recent sync has ended,
-		// start anew.
-		if ( ! $sync_status || ( 'complete' === $sync_status['stage'] ) ) {
+		// If no sync status record was found, start anew.
+		if ( ! $sync_status ) {
 
 			// Get batch size option. We'll store this in the sync status because
 			// otherwise, if a user were to change the batch size mid-sync, that would
@@ -481,7 +480,7 @@ class VolunteerMatch_Sync_Process extends WP_Background_Process {
 		if ( $sync_status['previous_page'] === $sync_status['current_page'] ) {
 			if ( $sync_status['retries'] > 2 ) {
 				// Move on to the next page. Who knows what's going on here.
-				$sync_stauts = update_vmatch_sync_status( array(
+				$sync_status = update_vmatch_sync_status( array(
 					'previous_page' => $sync_status['current_page'],
 					'current_page'  => $sync_status['current_page'] + 1,
 					'retries'       => 0,
@@ -555,6 +554,7 @@ class VolunteerMatch_Sync_Process extends WP_Background_Process {
 		// If there aren't any opportunities to sync, call complete().
 		if ( empty( $result['opportunities'] ) ) {
 			$this->complete();
+			return;
 		}
 
 		// Save VM data and start processing it.
@@ -572,7 +572,7 @@ class VolunteerMatch_Sync_Process extends WP_Background_Process {
 	protected function task( $opp ) {
 
 		if ( ! $opp ) {
-			error_log( 'VM SYNC:   falsey opportunity was queued... something is amiss.' );
+			error_log( 'VM SYNC:   Falsey opportunity found in queue... something is amiss.' );
 			return false;
 		}
 
@@ -774,6 +774,7 @@ class VolunteerMatch_Cleanup_Process extends WP_Background_Process {
 		// called!).
 		if ( empty( $unsynced ) ) {
 			$this->complete();
+			return;
 		}
 
 		// Loop over all unsynced posts and delete them.
@@ -862,7 +863,12 @@ $vmatch_cleanup_process = new VolunteerMatch_Cleanup_Process();
 /**
  * Set up the daily VolunteerMatch sync task.
  */
-function vmatch_cron_init() {
+function vmatch_cron_setup( $post_id ) {
+
+	// Bail if the user didn't just update the Options page.
+	if ( 'options' !== $post_id ) {
+		return;
+	}
 
 	global $vmatch_sync_process, $vmatch_cleanup_process;
 
@@ -890,25 +896,19 @@ function vmatch_cron_init() {
 		// Get timestamp for the next scheduled auto-sync.
 		$next_sync = wp_next_scheduled( 'vmatch_sync' );
 
-		// If no auto-sync is scheduled, schedule one.
-		if ( ! $next_sync ) {
+		if ( ! $next_sync || $next_sync !== $sync_timestamp ) {
 
-			// If $sync_time is in the future, subtract one day. This will force sync
-			// to occur immediately (or the next time wp-cron is run); then the NEXT
-			// sync will occur at the time set in the site options.
-			if ( $sync_timestamp > time() ) {
-				$sync_time->sub( new DateInterval( 'P1D' ) );
+			// Clear any previously scheduled sync task.
+			wp_clear_scheduled_hook( 'vmatch_sync' );
+
+			// Check the sync timestamp to make sure that the event we're scheduling will be in the
+			// future, otherwise we can run into awful endless loops.
+			if ( $sync_timestamp < time() ) {
+				$sync_time->add( new DateInterval( 'P1D' ) );
 				$sync_timestamp = $sync_time->getTimestamp();
 			}
+			// Schedule the auto-sync job.
 			wp_schedule_event( $sync_timestamp, 'daily', 'vmatch_sync' );
-
-		} elseif ( $next_sync !== $sync_timestamp ) {
-
-			// If an auto-sync is scheduled for the wrong time, unschedule it and
-			// re-schedule for the correct time.
-			wp_clear_scheduled_hook( 'vmatch_sync' );
-			wp_schedule_event( $sync_timestamp, 'daily', 'vmatch_sync' );
-
 		}
 	} elseif ( wp_next_scheduled( 'vmatch_sync' ) ) {
 
@@ -917,15 +917,22 @@ function vmatch_cron_init() {
 
 	}
 }
-// add_action( 'init', 'vmatch_cron_init' );
-// add_action( 'admin_init', 'vmatch_cron_init' );
+add_action( 'acf/save_post', 'vmatch_cron_setup', 20 );
 
 /**
  * Check the vmatch_sync_status option and launch or continue the sync process.
  */
 function run_vmatch_sync() {
-	global $vmatch_sync_process;
-	$vmatch_sync_process->process_next_page();
+
+	$sync_status = get_option( 'vmatch_sync_status' );
+	if ( ! $sync_status || 'complete' === $sync_status['stage'] ) {
+		// Clear sync status, so that when we call process_next_page() below, the sync process knows it's
+		// supposed to start over completely.
+		delete_option( 'vmatch_sync_status' );
+
+		global $vmatch_sync_process;
+		$vmatch_sync_process->process_next_page();
+	}
 }
 add_action( 'vmatch_sync', 'run_vmatch_sync' );
 
