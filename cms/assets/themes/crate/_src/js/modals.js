@@ -48,8 +48,6 @@ module.exports = function( $ ) {
 		}
 	};
 
-	var featherlightInstances = {};
-
 	/**
 	 * Open a new Featherlight modal, and set the global modal context variable
 	 * for event tracking purposes.
@@ -62,29 +60,17 @@ module.exports = function( $ ) {
 		// Set the modal context variable for future event tracking.
 		trackingContext = context;
 
-		// Check whether we've already set up a Featherlight instance for this content.
-		if ( $content.selector in featherlightInstances ) {
-			// If we have a saved instance, re-open it.
-			featherlightInstances[ $content.selector ].open();
-		} else {
-			// If we don't have a saved instance, create one (it will be opened automatically when it's
-			// created), and save it.
-			featherlightInstances[ $content.selector ] = $.featherlight(
-				$content,
-				$.extend( {
-					// Set a close handler that will track a 'close' event if the user
-					// manually closes the modal window.
-					afterClose: function() {
-						trackInteraction( 'close' );
-					},
-					// When this modal is opened, *move* $content into the featherlight div, instead of
-					// copying it. If we leave 'persist' off, Gravity Forms' AJAX submission breaks, because
-					// we end up with multiple copies of the form with the same ID attribute.
-					persist: 'shared'
-				}, options )
-			);
-		}
-
+		// Open the new modal.
+		$.featherlight(
+			$content,
+			$.extend( {
+				// Set a close handler that will track a 'close' event if the user
+				// manually closes the modal window.
+				afterClose: function() {
+					trackInteraction( 'close' );
+				}
+			}, options )
+		);
 		trackInteraction( 'open' );
 	};
 
@@ -164,7 +150,7 @@ module.exports = function( $ ) {
 
 			if ( alreadyOpened ) return;
 
-			openModal( $('#signup-modal-automatic'), 'automatic', {
+			openModal( $('#auto-lightbox-modal'), 'automatic', {
 				type: 'html'
 			});
 
@@ -184,23 +170,27 @@ module.exports = function( $ ) {
 		} );
 	} );
 
-	// When the user submits a Gravity form, track interactions.
-	$( document ).on( 'gform_confirmation_loaded', function( e, form_id ) {
+	// When the BSD form is submitted to the iframe, toggle lightboxes
+	$('#signup-generic, #signup-auto-lightbox').on('submit', function() {
 
-		// Remember that the user has filled out a signup form (this assumes that all Gravity Forms are
-		// signup forms, but I think that's a safe assumption for the time being).
+		// Remember that the user has filled out a signup form.
 		storage.signup_form_completed = '1';
+		// Save the data that the user submitted for later use.
+		storage.signup_form_data = $( this ).serializeJSON();
 
 		// Track that the form was completed.
 		trackInteraction( 'submit' );
+
+		openModal( $('#signup-modal-thanks'), 'thanks' );
 	});
 
-	// When the user clicks a 'share' button in a thank-you modal, follow the link (whose target is
-	// probably _blank) but close the 'thank you for signing up' modal.
-	$( document ).on( 'click', '.gform_confirmation_wrapper .button', function() {
+	// When the user clicks a 'share' button in a thank-you modal, follow the
+	// link (whose target is probably _blank) but close the 'thank you for
+	// signing up' modal and open the 'thank you for sharing' modal.
+	$('#signup-modal-thanks .button, #opportunity-modal-thanks .button').on('click', function() {
 		trackInteraction( 'share' );
-		closeCurrentModal();
-	});
+		openModal( $('#share-modal-thanks'), 'share-thanks' );
+	} );
 
 	// When the user clicks the 'back to Gen2Gen' button in the 'thank you for
 	// sharing' modal, just close the modal window.
@@ -273,7 +263,6 @@ module.exports = function( $ ) {
 	// link is clicked.
 	$(document).on('click', '.signup-modal-trigger', function( e ) {
 		e.preventDefault();
-		var modalName = $(this).data('modal');
 		// Set the 'trigger' field in the modal form depending on which button was
 		// clicked, for lead tracking within BSD.
 		if ( $( this ).closest( '#masthead' ).length ) {
@@ -282,7 +271,7 @@ module.exports = function( $ ) {
 			$( '#signup-modal input[name="custom-24"]' ).val( 'G2G Hero Button' );
 		}
 		// Open the signup modal window.
-		openModal( $( '#signup-modal-' + modalName ), modalName, {
+		openModal( $('#signup-modal'), $(this).data('modal-tracking-context'), {
 			variant: 'modalform'
 		});
 	});
