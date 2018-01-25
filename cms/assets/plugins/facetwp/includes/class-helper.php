@@ -9,6 +9,9 @@ final class FacetWP_Helper
     /* (array) Associative array of facet objects */
     public $facet_types;
 
+    /* (array) Cached data sources */
+    public $data_sources;
+
 
     /**
      * Backwards-compatibility
@@ -22,6 +25,7 @@ final class FacetWP_Helper
         $this->settings = $this->load_settings();
 
         // custom facet types
+        include( FACETWP_DIR . '/includes/facets/base.php' );
         include( FACETWP_DIR . '/includes/facets/autocomplete.php' );
         include( FACETWP_DIR . '/includes/facets/checkboxes.php' );
         include( FACETWP_DIR . '/includes/facets/date_range.php' );
@@ -93,6 +97,9 @@ final class FacetWP_Helper
         }
         if ( ! isset( $settings['settings']['decimal_separator'] ) ) {
             $settings['settings']['decimal_separator'] = '.';
+        }
+        if ( ! isset( $settings['settings']['prefix'] ) ) {
+            $settings['settings']['prefix'] = 'fwp_';
         }
 
         // Store raw facet & template names
@@ -188,6 +195,7 @@ final class FacetWP_Helper
                 return $facet;
             }
         }
+
         return false;
     }
 
@@ -204,6 +212,7 @@ final class FacetWP_Helper
                 return $template;
             }
         }
+
         return false;
     }
 
@@ -287,6 +296,39 @@ final class FacetWP_Helper
 
 
     /**
+     * Sanitize SQL data
+     * @return mixed The sanitized value(s)
+     * @since 3.0.7
+     */
+    function sanitize( $input ) {
+        global $wpdb;
+
+        if ( is_array( $input ) ) {
+            $output = array();
+
+            foreach ( $input as $key => $val ) {
+                $output[ $key ] = $this->sanitize( $val );
+            }
+        }
+        else {
+            if ( $wpdb->dbh ) {
+                if ( $wpdb->use_mysqli ) {
+                    $output = mysqli_real_escape_string( $wpdb->dbh, $input );
+                }
+                else {
+                    $output = mysql_real_escape_string( $input, $wpdb->dbh );
+                }
+            }
+            else {
+                $output = addslashes( $input );
+            }
+        }
+
+        return $output;
+    }
+
+
+    /**
      * Does an active facet with the specified setting exist?
      * @return boolean
      * @since 1.4.0
@@ -297,6 +339,7 @@ final class FacetWP_Helper
                 return true;
             }
         }
+
         return false;
     }
 
@@ -327,11 +370,12 @@ final class FacetWP_Helper
     function safe_value( $value ) {
         $value = remove_accents( $value );
 
-        if ( preg_match( '/[^a-z0-9.\- ]/i', $value ) ) {
+        if ( preg_match( '/[^a-z0-9_.\- ]/i', $value ) ) {
             if ( ! preg_match( '/^\d{4}-(0[1-9]|1[012])-([012]\d|3[01])/', $value ) ) {
                 $value = md5( $value );
             }
         }
+
         $value = str_replace( ' ', '-', strtolower( $value ) );
         return preg_replace( '/[-]{2,}/', '-', $value );
     }
@@ -348,7 +392,7 @@ final class FacetWP_Helper
 
         $num = str_replace( $sep_thousands, '', $num );
         $num = ( ',' == $sep_decimal ) ? str_replace( ',', '.', $num ) : $num;
-        $num = preg_replace( '/[^0-9.]/', '', $num );
+        $num = preg_replace( '/[^0-9-.]/', '', $num );
 
         return $num;
     }
@@ -360,6 +404,12 @@ final class FacetWP_Helper
      * @since 2.2.1
      */
     function get_data_sources() {
+
+        // Return cached sources
+        if ( ! empty( $this->data_sources ) ) {
+            return $this->data_sources;
+        }
+
         global $wpdb;
 
         // Get excluded meta keys
@@ -413,6 +463,8 @@ final class FacetWP_Helper
 
         uasort( $sources, array( $this, 'sort_by_weight' ) );
 
+        $this->data_sources = $sources;
+
         return $sources;
     }
 
@@ -430,5 +482,16 @@ final class FacetWP_Helper
         }
 
         return ( $a['weight'] < $b['weight'] ) ? -1 : 1;
+    }
+
+
+    /**
+     * Grab the license key
+     * @since 3.0.3
+     */
+    function get_license_key() {
+        $license_key = defined( 'FACETWP_LICENSE_KEY' ) ? FACETWP_LICENSE_KEY : get_option( 'facetwp_license' );
+        $license_key = apply_filters( 'facetwp_license_key', $license_key );
+        return sanitize_text_field( trim( $license_key ) );
     }
 }

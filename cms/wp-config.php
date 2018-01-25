@@ -26,7 +26,7 @@ if ( isset( $dev_site ) && !isset( $configs[ $dev_site ] ) ) {
 }
 
 define( 'FACETWP_DEBUG', true );
-
+define( 'GMAPS_API_KEY', 'AIzaSyAM0mYzsxZNe1H_6PVvhDhMI6ZhzKWD30g' );
 
 // ** YOU SHOULDN'T NEED TO CHANGE ANYTHING BELOW THIS LINE, EVER ** //
 

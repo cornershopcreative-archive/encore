@@ -1,5 +1,12 @@
 (function($) {
 
+    /* ======== IE11 .val() fix ======== */
+
+    $.fn.pVal = function() {
+        var val = $(this).eq(0).val();
+        return val === $(this).attr('placeholder') ? '' : val;
+    }
+
     /* ======== Autocomplete ======== */
 
     wp.hooks.addAction('facetwp/refresh/autocomplete', function($this, facet_name) {
@@ -62,7 +69,7 @@
     $(document).on('click', '.facetwp-type-checkboxes .facetwp-expand', function(e) {
         $wrap = $(this).parent('.facetwp-checkbox').next('.facetwp-depth');
         $wrap.toggleClass('visible');
-        var content = $wrap.hasClass('visible') ? '[-]' : '[+]';
+        var content = $wrap.hasClass('visible') ? FWP_JSON['collapse'] : FWP_JSON['expand'];
         $(this).text(content);
         e.stopPropagation();
     });
@@ -85,23 +92,36 @@
             $el.text($el.text().replace('{num}', num));
         });
 
-        // hierarchy support
-        var show_toggles = wp.hooks.applyFilters( 'facetwp/checkboxes/show_toggles', true );
+        // are children visible?
+        $('.facetwp-type-checkboxes').each(function() {
+            var $facet = $(this);
+            var name = $facet.attr('data-name');
 
-        if (show_toggles && 1 > $('.facetwp-type-checkboxes .facetwp-expand').length) {
-            $('.facetwp-type-checkboxes .facetwp-depth').each(function() {
-                var $parent = $(this).prev('.facetwp-checkbox');
-                $parent.append(' <span class="facetwp-expand">[+]</span>');
-            });
+            // error handling
+            if (Object.keys(FWP.settings).length < 1) {
+                return;
+            }
 
-            // un-hide groups with selected items
-            $('.facetwp-type-checkboxes .facetwp-checkbox.checked').each(function() {
-                $(this).parents('.facetwp-depth').each(function() {
-                    $(this).prev('.facetwp-checkbox').find('.facetwp-expand').text('[-]');
-                    $(this).addClass('visible');
+            // hierarchy toggles
+            if ('yes' === FWP.settings[name]['show_expanded']) {
+                $facet.find('.facetwp-depth').addClass('visible');
+            }
+
+            if (1 > $facet.find('.facetwp-expand').length) {
+                $facet.find('.facetwp-depth').each(function() {
+                    var which = $(this).hasClass('visible') ? 'collapse' : 'expand';
+                    $(this).prev('.facetwp-checkbox').append(' <span class="facetwp-expand">' + FWP_JSON[which] + '</span>');
                 });
-            });
-        }
+
+                // un-hide groups with selected items
+                $facet.find('.facetwp-checkbox.checked').each(function() {
+                    $(this).parents('.facetwp-depth').each(function() {
+                        $(this).prev('.facetwp-checkbox').find('.facetwp-expand').text(FWP_JSON['collapse']);
+                        $(this).addClass('visible');
+                    });
+                });
+            }
+        });
     });
 
     /* ======== Radio ======== */
@@ -139,8 +159,8 @@
     /* ======== Date Range ======== */
 
     wp.hooks.addAction('facetwp/refresh/date_range', function($this, facet_name) {
-        var min = $this.find('.facetwp-date-min').val() || '';
-        var max = $this.find('.facetwp-date-max').val() || '';
+        var min = $this.find('.facetwp-date-min').pVal() || '';
+        var max = $this.find('.facetwp-date-max').pVal() || '';
         FWP.facets[facet_name] = ('' !== min || '' !== max) ? [min, max] : [];
     });
 
@@ -159,7 +179,7 @@
     });
 
     $(document).on('facetwp-loaded', function() {
-        var $dates = $('.facetwp-type-date_range .facetwp-date:not(.ready)');
+        var $dates = $('.facetwp-type-date_range .facetwp-date:not(".ready, .flatpickr-alt")');
         if (0 === $dates.length) {
             return;
         }
@@ -194,7 +214,7 @@
                 'facet_name': facet_name,
                 'element': $this
             });
-            new Flatpickr(this, opts);
+            new flatpickr(this, opts);
             $this.addClass('ready');
         });
     });
@@ -239,18 +259,34 @@
         $('.facetwp-type-fselect select:not(.ready)').each(function() {
             var facet_name = $(this).closest('.facetwp-facet').attr('data-name');
             var settings = FWP.settings[facet_name];
-
-            $(this).fSelect({
+            var opts = wp.hooks.applyFilters('facetwp/set_options/fselect', {
                 placeholder: settings.placeholder,
                 overflowText: settings.overflowText,
-                searchText: settings.searchText
-            });
+                searchText: settings.searchText,
+                optionFormatter: function(row) {
+                    row = row.replace(/{{/g, '<span class="facetwp-counter">');
+                    row = row.replace(/}}/g, '<span>');
+                    return row;
+                }
+            }, { 'facet_name': facet_name });
+
+            $(this).fSelect(opts);
             $(this).addClass('ready');
         });
     });
 
     $(document).on('fs:changed', function(e, wrap) {
-        FWP.autoload();
+        if (wrap.classList.contains('multiple')) {
+            var facet_name = wrap.parentNode.getAttribute('data-name');
+            FWP.static_facet = facet_name;
+            FWP.autoload();
+        }
+    });
+
+    $(document).on('fs:closed', function(e, wrap) {
+        if (! wrap.classList.contains('multiple')) {
+            FWP.autoload();
+        }
     });
 
     /* ======== Hierarchy ======== */
@@ -333,7 +369,7 @@
             $input.wrap('<span class="location-wrap"></span>');
             $input.before('<i class="locate-me"></i>');
 
-            var options = FWP_JSON['autocomplete_options'];
+            var options = FWP_JSON['proximity']['autocomplete_options'];
             var autocomplete = new google.maps.places.Autocomplete(pac_input, options);
 
             google.maps.event.addListener(autocomplete, 'place_changed', function() {
@@ -421,7 +457,7 @@
     });
 
     wp.hooks.addFilter('facetwp/selections/proximity', function(label, params) {
-        return 'Clear location';
+        return FWP_JSON['proximity']['clearText'];
     });
 
     /* ======== Search ======== */

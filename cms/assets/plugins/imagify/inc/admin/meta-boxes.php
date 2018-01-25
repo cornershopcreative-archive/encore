@@ -14,16 +14,15 @@ function _imagify_attachment_submitbox_misc_actions() {
 		return;
 	}
 
-	if ( ! imagify_is_attachment_mime_type_supported( $post->ID ) ) {
+	$attachment = get_imagify_attachment( 'wp', $post->ID, 'attachment_submitbox_misc_actions' );
+
+	if ( ! $attachment->is_mime_type_supported() ) {
 		return;
 	}
 
-	if ( ! imagify_attachment_has_required_metadata( $post->ID ) ) {
+	if ( ! $attachment->has_required_metadata() ) {
 		return;
 	}
-
-	$class_name = get_imagify_attachment_class_name( 'wp', $post->ID, 'attachment_submitbox_misc_actions' );
-	$attachment = new $class_name( $post->ID );
 
 	if ( ! imagify_valid_key() && ! $attachment->is_optimized() ) {
 
@@ -56,6 +55,6 @@ function _imagify_attachment_submitbox_misc_actions() {
 
 	if ( $attachment->is_optimized() ) {
 		echo '<input id="imagify-full-original" type="hidden" value="' . esc_url( $attachment->get_backup_url() ) . '">';
-		echo '<input id="imagify-full-original-size" type="hidden" value="' . esc_attr( $attachment->get_original_size() ) . '">';
+		echo '<input id="imagify-full-original-size" type="hidden" value="' . esc_attr( $attachment->get_original_size( true, 0 ) ) . '">';
 	}
 }

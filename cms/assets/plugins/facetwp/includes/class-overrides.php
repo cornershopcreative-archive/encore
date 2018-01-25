@@ -47,9 +47,6 @@ class FacetWP_Overrides
      * Make sure that numbers are properly formatted
      */
     function format_numbers( $params, $class ) {
-        if ( $class->is_overridden ) {
-            return $params;
-        }
 
         $value = $params['facet_value'];
         $label = $params['facet_display_value'];

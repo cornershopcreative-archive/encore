@@ -5,21 +5,31 @@
 ?>
 
 	<div class="content-section section-partner-ticker"<?php crate_section_id_attr(); ?>>
-
+		
 		<?php
+		// Set up custom query vars.
+		$topics = get_sub_field( 'topic' );
 		// Get up to 100 most recently added partners with logos.
-		$partner_query = crate_section_query( array(
-			'post_type' => 'partner',
-			'posts_per_page' => 100,
-			'orderby' => 'date',
-			'order' => 'DESC',
-			'meta_query' => array(
-				array(
-					'key' => '_thumbnail_id',
-					'compare' => 'EXISTS',
-				),
+		$partner_query_vars = array(
+		'post_type' => 'partner',
+		'posts_per_page' => 100,
+		'meta_query' => array(
+			array(
+				'key' => '_thumbnail_id',
+				'compare' => 'EXISTS',
 			),
-		) );
+		),
+		'tax_query' => array(),
+		);
+		
+		if ( ! empty( $topics ) ) :
+			$partner_query_vars['tax_query']['topic'] = array(
+				'taxonomy' => 'topic',
+				'terms' => $topics,
+			);
+		endif;
+		
+		$partner_query = new WP_Query( $partner_query_vars );
 		?>
 
 		<?php if ( $partner_query->have_posts() ) : ?>
@@ -41,3 +51,4 @@
 		<?php crate_item_link_close(); ?>
 
 	</div>
+

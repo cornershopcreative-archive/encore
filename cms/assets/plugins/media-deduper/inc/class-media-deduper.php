@@ -16,7 +16,7 @@ class Media_Deduper {
 	/**
 	 * Plugin version.
 	 */
-	const VERSION = '1.4.1';
+	const VERSION = '1.4.2';
 
 	/**
 	 * Special hash value used to mark an attachment if its file can't be found.
@@ -110,6 +110,9 @@ class Media_Deduper {
 		add_filter( 'manage_upload_columns',          array( $this, 'media_columns' ) );
 		add_filter( 'manage_upload_sortable_columns', array( $this, 'media_sortable_columns' ) );
 		add_filter( 'manage_media_custom_column',     array( $this, 'media_custom_column' ), 10, 2 );
+
+		// Row actions (view/edit/delete, etc.) for the duplicates list table.
+		add_filter( 'media_row_actions',          array( $this, 'media_row_actions' ), 10, 2 );
 
 		// Allow admin notices to be hidden for the current user via AJAX.
 		add_action( 'wp_ajax_mdd_dismiss_notice', array( $this, 'ajax_dismiss_notice' ) );
@@ -389,7 +392,7 @@ class Media_Deduper {
 		$upload_hash = md5_file( $file['tmp_name'] );
 
 		// Does our hash match?
-		$sql = $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'mdd_hash' AND meta_value = %s LIMIT 1;", $upload_hash );
+		$sql = $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta m JOIN $wpdb->posts p ON p.ID = m.post_id WHERE m.meta_key = 'mdd_hash' AND m.meta_value = %s AND p.post_status != 'trash' LIMIT 1;", $upload_hash );
 		$matches = $wpdb->get_var( $sql );
 		if ( $matches ) {
 				// translators: %d: The ID of the preexisting attachment post.
@@ -786,7 +789,7 @@ class Media_Deduper {
 			array(
 				'post__in'       => $this->duplicate_ids,
 				'post_type'      => 'attachment',
-				'post_status'    => 'inherit',
+				'post_status'    => get_post_stati(),
 				'posts_per_page' => get_user_option( 'mdd_per_page' ),
 			)
 		);
@@ -1085,8 +1088,13 @@ class Media_Deduper {
 		// Get the current action.
 		$doaction = $this->list_table->current_action();
 
-		// If the current action is neither 'smartdelete' nor 'delete', ignore it.
-		if ( 'smartdelete' !== $doaction && 'delete' !== $doaction ) {
+		// Handle stock WP bulk actions (attach/detach).
+		if ( 'detach' === $doaction ) {
+			wp_media_attach_action( $_REQUEST['parent_post_id'], 'detach' );
+		} elseif ( 'attach' === $doaction ) {
+			wp_media_attach_action( $_REQUEST['found_post_id'] );
+		} elseif ( 'smartdelete' !== $doaction && 'delete' !== $doaction ) {
+			// Ignore any bulk actions other than attach, detach, delete, or smartdelete.
 			return;
 		}
 
@@ -1144,7 +1152,9 @@ class Media_Deduper {
 
 				// Handle normal delete action.
 				foreach ( $post_ids as $id ) {
-					if ( wp_delete_post( $id ) ) {
+					// Delete the attachment. See the note in smart_delete_media() about the reasons behind
+					// the second argument ($force_delete).
+					if ( wp_delete_post( $id, true ) ) {
 						$deleted_count++;
 					}
 				}
@@ -1234,8 +1244,14 @@ class Media_Deduper {
 			}
 		}
 
-		// Finally, delete this attachment.
-		if ( wp_delete_attachment( $id ) ) {
+		// Finally, delete this attachment. The second argument here ($force_delete) causes the
+		// attachment to be deleted immediately, regardless of the user's MEDIA_TRASH setting. The
+		// duplicates list table displays trashed and non-trashed attachments together, and allowing the
+		// normal MEDIA_TRASH behavior would make bulk actions affect trashed and non-trashed
+		// attachments differently: non-trashed attachments would be trashed rather than deleted, and
+		// would continue to appear in the list table after being "deleted." in order to fully remove
+		// them, the user would have to "delete" them a second time.
+		if ( wp_delete_attachment( $id, true ) ) {
 			$this->smart_deleted_count++;
 		}
 	}
@@ -1278,6 +1294,82 @@ class Media_Deduper {
 				echo esc_html( size_format( $filesize ) );
 			}
 		}
+	}
+
+	/**
+	 * Change row action links in the Media Deduper list table. This is necessary because the normal
+	 * row actions for a WP_Media_List_Table are different depending on the $is_trash property of the
+	 * list table, which MDD_Media_List_Table ignores. These action links and their URLs are based on
+	 * a selection of those in WP_Media_List_Table::_get_row_actions().
+	 *
+	 * @param array   $actions Row action links.
+	 * @param WP_Post $post    The post being displayed.
+	 */
+	public function media_row_actions( $actions, $post ) {
+
+		// Don't alter actions if we're not on the Media Deduper page.
+		$screen = get_current_screen();
+		if ( static::ADMIN_SCREEN !== $screen->base ) {
+			return $actions;
+		}
+
+		// Initialize actions array (it's a little easier to reconstruct it entirely than to selectively
+		// remove and insert actions).
+		$actions = array();
+
+		// Get the title or 'Auto Draft' text as used in the default row actions by
+		// WP_Media_List_Table::handle_row_actions().
+		$att_title = _draft_or_post_title();
+
+		// If the user can edit this post, and it's not in the trash, show an edit link.
+		if ( current_user_can( 'edit_post', $post->ID ) && 'trash' !== $post->post_status ) {
+			$actions['edit'] = sprintf(
+				'<a href="%s" aria-label="%s">%s</a>',
+				get_edit_post_link( $post->ID ),
+				/* translators: %s: attachment title */
+				esc_attr( sprintf( __( 'Edit &#8220;%s&#8221;' ), $att_title ) ),
+				__( 'Edit' )
+			);
+		}
+
+		if ( current_user_can( 'delete_post', $post->ID ) ) {
+
+			// If this post is trashed, show a Restore from Trash link.
+			if ( 'trash' === $post->post_status ) {
+				$actions['untrash'] = sprintf(
+					'<a href="%s" class="submitdelete aria-button-if-js" aria-label="%s">%s</a>',
+					wp_nonce_url( "post.php?action=untrash&amp;post=$post->ID", 'untrash-post_' . $post->ID ),
+					/* translators: %s: attachment title */
+					esc_attr( sprintf( __( 'Restore &#8220;%s&#8221; from the Trash' ), $att_title ) ),
+					__( 'Restore' )
+				);
+			}
+
+			// If the user can delete this post, show a delete link.
+			$actions['delete'] = sprintf(
+				'<a href="%s" class="submitdelete aria-button-if-js" onclick="return showNotice.warn();" aria-label="%s">%s</a>',
+				// Note: instead of linking to post.php here, like the standard WP media list table does, we
+				// link to the MDD page so we can use our custom delete action handler, which ignores the
+				// MEDIA_TRASH constant and always deletes the attachment in question.
+				wp_nonce_url( "upload.php?page=media-deduper&amp;action=delete&amp;post=$post->ID", 'delete-post_' . $post->ID ),
+				/* translators: %s: attachment title */
+				esc_attr( sprintf( __( 'Delete &#8220;%s&#8221; permanently' ), $att_title ) ),
+				__( 'Delete Permanently' )
+			);
+		}
+
+		// If this post isn't trashed, link to the single attachment template.
+		if ( 'trash' !== $post->post_status ) {
+			$actions['view'] = sprintf(
+				'<a href="%s" aria-label="%s" rel="bookmark">%s</a>',
+				get_permalink( $post->ID ),
+				/* translators: %s: attachment title */
+				esc_attr( sprintf( __( 'View &#8220;%s&#8221;' ), $att_title ) ),
+				__( 'View' )
+			);
+		}
+
+		return $actions;
 	}
 
 	/**

@@ -6,21 +6,20 @@ defined( 'ABSPATH' ) || die( 'Cheatin\' uh?' );
  *
  * @since 1.0
  */
-class Imagify_Abstract_Attachment {
+abstract class Imagify_Abstract_Attachment {
 
 	/**
 	 * Class version.
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.1';
+	const VERSION = '1.2';
 
 	/**
 	 * The attachment ID.
 	 *
-	 * @since 1.0
-	 *
-	 * @var int
+	 * @var    int
+	 * @since  1.0
 	 * @access public
 	 */
 	public $id = 0;
@@ -28,7 +27,8 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * The constructor.
 	 *
-	 * @since 1.0
+	 * @since  1.0
+	 * @access public
 	 *
 	 * @param  int $id The attachment ID.
 	 * @return void
@@ -50,6 +50,17 @@ class Imagify_Abstract_Attachment {
 	}
 
 	/**
+	 * Get the attachment backup file path, even if the file doesn't exist.
+	 *
+	 * @since  1.6.13
+	 * @access public
+	 * @author Grégory Viguier
+	 *
+	 * @return string|bool The file path. False on failure.
+	 */
+	abstract public function get_raw_backup_path();
+
+	/**
 	 * Get the attachment backup file path.
 	 *
 	 * @since  1.0
@@ -58,37 +69,41 @@ class Imagify_Abstract_Attachment {
 	 * @return string|false The file path. False if it doesn't exist.
 	 */
 	public function get_backup_path() {
-		return '';
+		$backup_path = $this->get_raw_backup_path();
+
+		if ( $backup_path && file_exists( $backup_path ) ) {
+			return $backup_path;
+		}
+
+		return false;
 	}
 
 	/**
 	 * Get the attachment backup URL.
 	 *
-	 * @since 1.4
+	 * @since  1.4
 	 * @access public
 	 *
 	 * @return string|false
 	 */
 	public function get_backup_url() {
-		return get_imagify_attachment_url( $this->get_backup_path() );
+		return get_imagify_attachment_url( $this->get_raw_backup_path() );
 	}
 
 	/**
 	 * Get the attachment optimization data.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @return array
 	 */
-	public function get_data() {
-		return array();
-	}
+	abstract public function get_data();
 
 	/**
 	 * Get the attachment extension.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @return string
@@ -102,6 +117,7 @@ class Imagify_Abstract_Attachment {
 	 * Tell if the current file mime type is supported.
 	 *
 	 * @since  1.6.9
+	 * @access public
 	 * @author Grégory Viguier
 	 *
 	 * @return bool
@@ -114,6 +130,7 @@ class Imagify_Abstract_Attachment {
 	 * Tell if the current attachment has the required WP metadata.
 	 *
 	 * @since  1.6.12
+	 * @access public
 	 * @author Grégory Viguier
 	 *
 	 * @return bool
@@ -125,7 +142,7 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Get the attachment error if there is one.
 	 *
-	 * @since 1.1.5
+	 * @since  1.1.5
 	 * @access public
 	 *
 	 * @return string The message error
@@ -134,7 +151,7 @@ class Imagify_Abstract_Attachment {
 		$error = $this->get_size_data( 'full', 'error' );
 
 		if ( is_string( $error ) ) {
-			return $error;
+			return trim( $error );
 		}
 
 		return false;
@@ -143,14 +160,12 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Get the attachment optimization level.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @return int
 	 */
-	public function get_optimization_level() {
-		return -1;
-	}
+	abstract public function get_optimization_level();
 
 	/**
 	 * Delete the 3 metas used by Imagify.
@@ -168,7 +183,7 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Get the attachment optimization level label.
 	 *
-	 * @since 1.2
+	 * @since  1.2
 	 * @access public
 	 *
 	 * @return string
@@ -194,7 +209,7 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Count number of optimized sizes.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @return int
@@ -218,43 +233,40 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Get the attachment optimization status (success or error).
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @return string
 	 */
-	public function get_status() {
-		return '';
-	}
+	abstract public function get_status();
 
 	/**
 	 * Get the original attachment path.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @return string
 	 */
-	public function get_original_path() {
-		return '';
-	}
+	abstract public function get_original_path();
 
 	/**
 	 * Get the original attachment size.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @param  bool $human_format True to display the image human format size (1Mb).
+	 * @param  int  $decimals     Precision of number of decimal places.
 	 * @return string
 	 */
-	public function get_original_size( $human_format = true ) {
+	public function get_original_size( $human_format = true, $decimals = 2 ) {
 		$filesystem    = imagify_get_filesystem();
 		$original_size = $this->get_size_data( 'full', 'original_size' );
 		$original_size = empty( $original_size ) ? $filesystem->size( $this->get_original_path() ) : (int) $original_size;
 
 		if ( true === $human_format ) {
-			$original_size = @size_format( $original_size, 2 );
+			$original_size = @size_format( $original_size, $decimals );
 		}
 
 		return $original_size;
@@ -263,19 +275,17 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Get the original attachment URL.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @return string
 	 */
-	public function get_original_url() {
-		return '';
-	}
+	abstract public function get_original_url();
 
 	/**
 	 * Get the statistics of a specific size.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @param  string $size  The thumbnail slug.
@@ -300,7 +310,7 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Get the global statistics data or a specific one.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @param  string $key The specific data slug.
@@ -324,7 +334,7 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Check if the attachment is already optimized (before Imagify).
 	 *
-	 * @since 1.1.6
+	 * @since  1.1.6
 	 * @access public
 	 *
 	 * @return bool True if the attachment is optimized.
@@ -336,7 +346,7 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Check if the attachment is optimized.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @return bool True if the attachment is optimized.
@@ -348,7 +358,7 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Check if the attachment exceeding the limit size (> 5mo).
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @return bool True if the attachment is skipped.
@@ -367,7 +377,7 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Check if the attachment has a backup of the original size.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @return bool True if the attachment has a backup.
@@ -379,7 +389,7 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Check if the attachment has an error.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @return bool True if the attachment has an error.
@@ -392,17 +402,17 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Update the metadata size of the attachment
 	 *
-	 * @since 1.2
+	 * @since  1.2
 	 * @access public
 	 *
 	 * @return void
 	 */
-	public function update_metadata_size() {}
+	abstract public function update_metadata_size();
 
 	/**
 	 * Delete the backup file.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @return void
@@ -419,6 +429,7 @@ class Imagify_Abstract_Attachment {
 	 * Get the registered sizes.
 	 *
 	 * @since  1.6.10
+	 * @access public
 	 * @author Grégory Viguier
 	 *
 	 * @return array Data for the registered thumbnail sizes.
@@ -437,6 +448,7 @@ class Imagify_Abstract_Attachment {
 	 * Get the unoptimized sizes for a specific attachment.
 	 *
 	 * @since  1.6.10
+	 * @access public
 	 * @author Grégory Viguier
 	 *
 	 * @return array Data for the unoptimized thumbnail sizes.
@@ -509,9 +521,9 @@ class Imagify_Abstract_Attachment {
 	/**
 	 * Fills statistics data with values from $data array.
 	 *
-	 * @since 1.0
-	 * @since 1.6.5 Not static anymore.
-	 * @since 1.6.6 Removed the attachment ID parameter.
+	 * @since  1.0
+	 * @since  1.6.5 Not static anymore.
+	 * @since  1.6.6 Removed the attachment ID parameter.
 	 * @access public
 	 *
 	 * @param  array  $data     The statistics data.
@@ -520,23 +532,19 @@ class Imagify_Abstract_Attachment {
 	 * @param  string $size     The attachment size key.
 	 * @return bool|array False if the original size has an error or an array contains the data for other result.
 	 */
-	public function fill_data( $data, $response, $url, $size = 'full' ) {
-		return array();
-	}
+	abstract public function fill_data( $data, $response, $url, $size = 'full' );
 
 	/**
 	 * Optimize all sizes with Imagify.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @param  int   $optimization_level The optimization level (2=ultra, 1=aggressive, 0=normal).
 	 * @param  array $metadata           The attachment meta data.
 	 * @return array $optimized_data     The optimization data.
 	 */
-	public function optimize( $optimization_level = null, $metadata = array() ) {
-		return array();
-	}
+	abstract public function optimize( $optimization_level = null, $metadata = array() );
 
 	/**
 	 * Optimize missing sizes with Imagify.
@@ -548,24 +556,23 @@ class Imagify_Abstract_Attachment {
 	 * @param  int $optimization_level The optimization level (2=ultra, 1=aggressive, 0=normal).
 	 * @return array|object            An array of thumbnail data, size by size. A WP_Error object on failure.
 	 */
-	public function optimize_missing_thumbnails( $optimization_level = null ) {
-		return array();
-	}
+	abstract public function optimize_missing_thumbnails( $optimization_level = null );
 
 	/**
 	 * Process an attachment restoration from the backup file.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @access public
 	 *
 	 * @return void
 	 */
-	public function restore() {}
+	abstract public function restore();
 
 	/**
 	 * Resize an image if bigger than the maximum width defined in the settings.
 	 *
-	 * @since 1.5.7
+	 * @since  1.5.7
+	 * @access public
 	 * @author Remy Perona
 	 *
 	 * @param  string $attachment_path  Path to the image.
@@ -587,7 +594,7 @@ class Imagify_Abstract_Attachment {
 		$image_type = pathinfo( $attachment_path, PATHINFO_EXTENSION );
 
 		// Try to correct for auto-rotation if the info is available.
-		if ( function_exists( 'exif_read_data' ) && ( 'jpg' === $image_type || 'jpeg' === $image_type) ) {
+		if ( function_exists( 'exif_read_data' ) && ( 'jpg' === $image_type || 'jpe' === $image_type || 'jpeg' === $image_type ) ) {
 			$exif        = @exif_read_data( $attachment_path );
 			$orientation = is_array( $exif ) && array_key_exists( 'Orientation', $exif ) ? $exif['Orientation'] : 0;
 

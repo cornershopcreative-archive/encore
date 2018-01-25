@@ -3620,4 +3620,17 @@ input[type='search'] {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem; }
 
+/* Submit Button Gravity Forms
+-----------------------------*/
+body .gform_wrapper .gform_footer input[type=submit] { 
+ border-color: #00c7f5;
+ background-color: transparent;
+ color: #00c7f5;
+}
+ 
+body .gform_wrapper .gform_footer input:hover[type=submit] {
+ background-color: #00c7f5;
+ color: #fff;
+}
+
 /*# sourceMappingURL=maps/crate.css.map */

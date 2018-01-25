@@ -53,9 +53,7 @@ add_action( 'delete_attachment', '_imagify_delete_backup_file' );
  * @param int $post_id Attachment ID.
  */
 function _imagify_delete_backup_file( $post_id ) {
-	$class_name = get_imagify_attachment_class_name( 'wp', $post_id, 'delete_attachment' );
-	$attachment = new $class_name( $post_id );
-	$attachment->delete_backup();
+	get_imagify_attachment( 'wp', $post_id, 'delete_attachment' )->delete_backup();
 }
 
 add_action( 'shutdown', '_imagify_optimize_save_image_editor_file' );
@@ -78,7 +76,9 @@ function _imagify_optimize_save_image_editor_file() {
 
 	check_ajax_referer( 'image_editor-' . $attachment_id );
 
-	if ( ! get_post_meta( $attachment_id, '_imagify_data', true ) ) {
+	$attachment = get_imagify_attachment( 'wp', $attachment_id, 'save_image_editor_file' );
+
+	if ( ! $attachment->get_data() ) {
 		return;
 	}
 
