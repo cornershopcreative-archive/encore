@@ -107,3 +107,91 @@ $color: null !global;
 		}
 	}
 }
+
+// Add margins and/or padding to the current element and certain child elements (specified by
+// $child-selector) such that all matched child elements are spaced $gutters distance apart, and the
+// effective outer margins of the current element are $margins.
+//
+// $child-selector  - A selector string to specify child elements.
+// $margins         - A space-sparated list, like you'd use in a 'margin' or 'padding' declaration,
+//                    specifying the desired outer margins of the current element.
+// $gutters         - Another space-separated list specifying the desired 'gutters' between child
+//                    elements.
+// $at-root         - By default, the CSS rules for the child elements are added under the current
+//                    selector. Set this string to 'at-root' to add them at the root level instead.
+@mixin flex-gutter( $child-selector, $margins, $gutters, $at-root: 'nested' ) {
+
+	// Parse margin lists into maps.
+	$margin-map: get-margin-map( $margins );
+	$gutter-map: get-margin-map( $gutters );
+
+	$gutter-top: ( map-get( $gutter-map, 'top' ) / 2 );
+	$gutter-right: ( map-get( $gutter-map, 'right' ) / 2 );
+	$gutter-bottom: ( map-get( $gutter-map, 'bottom' ) / 2 );
+	$gutter-left: ( map-get( $gutter-map, 'left' ) / 2 );
+
+	// Set margins on this element.
+	margin: {
+		top: map-get( $margin-map, 'top' ) - $gutter-top;
+		right: map-get( $margin-map, 'right' ) - $gutter-right;
+		bottom: map-get( $margin-map, 'bottom' ) - $gutter-bottom;
+		left: map-get( $margin-map, 'left' ) - $gutter-left;
+	}
+
+	@if ( 'at-root' == $at-root ) {
+		@at-root #{$child-selector} {
+			margin: $gutter-top $gutter-right $gutter-bottom $gutter-left;
+		}
+	} @else {
+		#{$child-selector} {
+			margin: $gutter-top $gutter-right $gutter-bottom $gutter-left;
+		}
+	}
+}
+
+// Utility function for parsing a margin list of unknown length (e.g.: `1rem 0 2rem`, or `2rem 0`,
+// etc). into a map with top, right, bottom, and left keys.
+@function get-margin-map( $margins ) {
+
+	// Initialize local map variable.
+	$margin-map: (
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0,
+	);
+
+	@if ( 4 == length( $margins ) ) {
+		$margin-map: (
+			top:    nth( $margins, 1 ),
+			right:  nth( $margins, 2 ),
+			bottom: nth( $margins, 3 ),
+			left:   nth( $margins, 4 ),
+		);
+	} @elseif ( 3 == length( $margins ) ) {
+		$margin-map: (
+			top:    nth( $margins, 1 ),
+			right:  nth( $margins, 2 ),
+			bottom: nth( $margins, 3 ),
+			left:   nth( $margins, 2 ),
+		);
+	} @elseif ( 2 == length( $margins ) ) {
+		$margin-map: (
+			top:    nth( $margins, 1 ),
+			right:  nth( $margins, 2 ),
+			bottom: nth( $margins, 1 ),
+			left:   nth( $margins, 2 ),
+		);
+	} @elseif ( 1 == length( $margins ) ) {
+		$margin-map: (
+			top:    $margins,
+			right:  $margins,
+			bottom: $margins,
+			left:   $margins,
+		);
+	} @else {
+		@error 'get-margin-map(): $margins must be a list with 1-4 items.';
+	}
+
+	@return $margin-map;
+}

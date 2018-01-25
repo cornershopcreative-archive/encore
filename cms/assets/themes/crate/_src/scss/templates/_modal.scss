@@ -24,24 +24,6 @@
 			margin-bottom: 30px;
 		}
 	}
-	/* labels are visually hidden, thanks to placeholders */
-	label {
-		border: 0;
-		clip: rect(0 0 0 0);
-		height: 1px;
-		margin: -1px;
-		overflow: hidden;
-		padding: 0;
-		position: absolute;
-		width: 1px;
-	}
-	form {
-		max-width: 460px;
-		margin: 0 auto;
-		@include breakpoint( $tablet ) {
-			margin: 3rem auto 0;
-		}
-	}
 	footer {
 		display: none;
 
@@ -119,7 +101,6 @@
 	}
 }
 
-#signup-modal-thanks,
 #signup-modal-opportunity-thanks,
 #share-modal-thanks {
 
@@ -164,45 +145,13 @@
 	}
 }
 
-// Lightbox CTA with huge text + fancy layout.
-.cta-huge {
+.text-huge {
+	color: $deep-blue;
 	font-size: rem(28);
 	font-family: $serif;
-	text-align: center;
-	color: $deep-blue;
 
 	@include breakpoint( $tablet ) {
 		font-size: rem(45);
-	}
-
-	@include breakpoint( $medium ) {
-		text-align: right;
-		width: rem(800);
-
-		&.cta-has-background-image {
-			background: url('../images/cta-huge-bg-2.jpg') no-repeat center center transparent;
-			background-size: contain;
-		}
-	}
-
-	.logo {
-		width: rem(114);
-		margin: 0 auto;
-		color: $bright-blue;
-		fill: $deep-blue;
-
-		@include breakpoint( $medium ) {
-			float: left;
-		}
-	}
-
-	form {
-		max-width: 470px;
-
-		@include breakpoint( $medium ) {
-			margin-right: 0;
-			margin-left: auto;
-		}
 	}
 
 	p {
@@ -219,6 +168,21 @@
 	strong {
 		font-family: $sans;
 		text-transform: uppercase;
+	}
+}
+
+// Lightbox CTA with huge text + fancy layout.
+.cta-huge {
+
+	.logo {
+		width: rem(114);
+		margin: 0 auto;
+		color: $bright-blue;
+		fill: $deep-blue;
+
+		@include breakpoint( $medium ) {
+			float: left;
+		}
 	}
 
 	// Disclaimer text.
@@ -243,25 +207,6 @@
 
 		%text-input {
 			display: block;
-		}
-	}
-
-	%text-input {
-		font-size: rem(16);
-		font-family: $sans;
-		padding: 1em;
-		color: $black;
-
-		&::placeholder {
-			font-weight: bold;
-		}
-	}
-
-	.button-group {
-		// Push button over slightly so that it *looks* centered relative to
-		// left-aligned input fields.
-		@include breakpoint( $medium ) {
-			margin-left: rem(58);
 		}
 	}
 

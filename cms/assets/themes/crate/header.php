@@ -78,7 +78,7 @@
 
 			<aside class="site-header-secondary">
 				<div class="button-group button-group-expand nav-nag">
-					<a class="button button-solid button-bright-blue signup-modal-trigger" href="#" data-modal-tracking-context="navigation"><?php echo esc_html_e( 'Join Us', 'crate' ); ?></a>
+					<a class="button button-solid button-bright-blue signup-modal-trigger" href="#" data-modal="navigation"><?php echo esc_html_e( 'Join Us', 'crate' ); ?></a>
 				</div>
 			</aside>
 
