@@ -69,9 +69,10 @@ function _imagify_new_upgrade( $imagify_version, $current_version ) {
 	if ( version_compare( $current_version, '1.2' ) < 0 ) {
 		// Update all already optimized images status from 'error' to 'already_optimized'.
 		$query = new WP_Query( array(
+			'is_imagify'             => true,
 			'post_type'              => 'attachment',
 			'post_status'            => 'inherit',
-			'post_mime_type'         => 'image',
+			'post_mime_type'         => get_imagify_mime_type(),
 			'meta_key'               => '_imagify_status',
 			'meta_value'             => 'error',
 			'posts_per_page'         => -1,
@@ -82,11 +83,7 @@ function _imagify_new_upgrade( $imagify_version, $current_version ) {
 
 		if ( $query->posts ) {
 			foreach ( (array) $query->posts as $id ) {
-				$class_name        = get_imagify_attachment_class_name( 'wp', $id, 'imagify_upgrade' );
-				$attachment        = new $class_name( $id );
-				$attachment_error  = $attachment->get_optimized_error();
-				$attachment_error  = trim( $attachment_error );
-				$attachment_status = get_post_meta( $id, '_imagify_status', true );
+				$attachment_error = get_imagify_attachment( 'wp', $id, 'imagify_upgrade' )->get_optimized_error();
 
 				if ( false !== strpos( $attachment_error, 'This image is already compressed' ) ) {
 					update_post_meta( $id, '_imagify_status', 'already_optimized' );
@@ -95,8 +92,10 @@ function _imagify_new_upgrade( $imagify_version, $current_version ) {
 		}
 
 		// Auto-activate the Admin Bar option.
-		$options                   = get_site_option( IMAGIFY_SETTINGS_SLUG );
+		$options = get_site_option( IMAGIFY_SETTINGS_SLUG );
+		$options = is_array( $options ) ? $options : array();
 		$options['admin_bar_menu'] = 1;
+
 		update_site_option( IMAGIFY_SETTINGS_SLUG, $options );
 	}
 
@@ -104,9 +103,10 @@ function _imagify_new_upgrade( $imagify_version, $current_version ) {
 	if ( version_compare( $current_version, '1.3.2' ) < 0 ) {
 		// Update all already optimized images status from 'error' to 'already_optimized'.
 		$query = new WP_Query( array(
+			'is_imagify'             => true,
 			'post_type'              => 'attachment',
 			'post_status'            => 'inherit',
-			'post_mime_type'         => 'image',
+			'post_mime_type'         => get_imagify_mime_type(),
 			'meta_query'             => array(
 				'relation' => 'AND',
 				array(
@@ -126,9 +126,7 @@ function _imagify_new_upgrade( $imagify_version, $current_version ) {
 
 		if ( $query->posts ) {
 			foreach ( (array) $query->posts as $id ) {
-				$class_name       = get_imagify_attachment_class_name( 'wp', $id, 'imagify_upgrade' );
-				$attachment       = new $class_name( $id );
-				$attachment_stats = $attachment->get_stats_data();
+				$attachment_stats = get_imagify_attachment( 'wp', $id, 'imagify_upgrade' )->get_stats_data();
 
 				if ( isset( $attachment_stats['aggressive'] ) ) {
 					update_post_meta( $id, '_imagify_optimization_level', (int) $attachment_stats['aggressive'] );

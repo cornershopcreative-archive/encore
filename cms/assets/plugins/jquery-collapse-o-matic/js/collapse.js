@@ -1,5 +1,5 @@
 /*!
- * Collapse-O-Matic JavaSctipt v1.6.6
+ * Collapse-O-Matic JavaSctipt v1.6.10
  * http://plugins.twinpictures.de/plugins/collapse-o-matic/
  *
  * Copyright 2017, Twinpictures
@@ -149,6 +149,11 @@ function toggleState (obj, id, maptastic, trig_id) {
 			map = jQuery(".google-maps-builder")[index];
 			google.maps.event.trigger(map, 'resize');
 		});
+	}
+
+	//callback
+	if ( typeof colomat_callback != 'undefined' ) {
+		colomat_callback();
 	}
 }
 
@@ -322,8 +327,28 @@ function colomat_collapseall(loop_items){
 
 
 jQuery(document).ready(function() {
-	//console.log(colomatduration, colomatslideEffect);
-	collapse_init();
+	//console.log(colomatduration, colomatslideEffect, colomatpauseInit);
+	com_binding = 'click';
+	if(colomattouchstart){
+		com_binding = 'click touchstart';
+	}
+
+	if(colomatpauseInit){
+		init_pause = setTimeout(collapse_init, colomatpauseInit);
+	}
+	else{
+		collapse_init();
+	}
+
+	function is_valid_jquery_selector(sel) {
+		try {
+			jQuery(sel);
+			return true;
+		}
+		catch(ex) {
+			return false;
+		}
+	}
 
 	//jetpack infinite scroll catch-all
 	jQuery( document.body ).on( 'post-load', function () {
@@ -363,7 +388,7 @@ jQuery(document).ready(function() {
 	});
 
 	//the main collapse/expand function
-	jQuery(document).on('click', '.collapseomatic', function(event) {
+	jQuery(document).on(com_binding, '.collapseomatic', function(event) {
 		var offset_top;
 
 		//alert('phones ringin dude');
@@ -484,7 +509,7 @@ jQuery(document).ready(function() {
 	});
 
 
-	jQuery(document).on('click', '.expandall', function(event) {
+	jQuery(document).on(com_binding, '.expandall', function(event) {
 		if(jQuery(this).attr('rel') !== undefined){
 			var rel = jQuery(this).attr('rel');
 			var loop_items = jQuery('.collapseomatic:not(.colomat-close)[rel="' + rel +'"]');
@@ -500,7 +525,7 @@ jQuery(document).ready(function() {
 		colomat_expandall(loop_items);
 	});
 
-	jQuery(document).on('click', '.collapseall', function(event) {
+	jQuery(document).on(com_binding, '.collapseall', function(event) {
 		if(jQuery(this).attr('rel') !== undefined){
 			var rel = jQuery(this).attr('rel');
 			var loop_items = jQuery('.collapseomatic.colomat-close[rel="' + rel +'"]');
@@ -531,7 +556,7 @@ jQuery(document).ready(function() {
 		}
 
 		//if the element exists
-		if( jQuery('#' + anchor).length ){
+		if( is_valid_jquery_selector('#' + anchor) && jQuery('#' + anchor).length ){
 
 			//if the element isn't already expanded, expand it
 			if(!jQuery('#' + anchor).hasClass('colomat-close')){
@@ -555,7 +580,7 @@ jQuery(document).ready(function() {
 	}
 
 	//handle anchor links within the same page
-	jQuery(document).on('click', 'a.expandanchor', function(event) {
+	jQuery(document).on(com_binding, 'a.expandanchor', function(event) {
 		//event.preventDefault();
 		var fullurl = jQuery(this).attr('href');
 		// the URL contains an anchor but not a hash-bang
@@ -571,7 +596,7 @@ jQuery(document).ready(function() {
 				anchor = anchor_arr[0];
 			}
 
-			if( jQuery('#' + anchor).length ){
+			if( is_valid_jquery_selector('#' + anchor) && jQuery('#' + anchor).length ){
 				//expand any nested parents
 				jQuery('#' + anchor).parents('.collapseomatic_content').each(function(index) {
 					parent_arr = jQuery(this).attr('id').split('-');
@@ -589,7 +614,7 @@ jQuery(document).ready(function() {
 		}
 	});
 
-	jQuery(document).on('click', 'a.colomat-nolink', function(event) {
+	jQuery(document).on(com_binding, 'a.colomat-nolink', function(event) {
 		event.preventDefault();
 	});
 });

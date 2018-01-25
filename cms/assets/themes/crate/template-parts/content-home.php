@@ -41,9 +41,11 @@
 
 			<div class="hero-text prose prose-compact">
 				<?php echo get_field( 'subtitle' ); ?>
+				<?php /* 'Take The Pledge' button disabled -- uncomment this to bring it back. -KG
 				<div class="button-group">
 					<a class="button button-solid button-gold signup-modal-trigger" href="#" data-modal="hero"><?php echo esc_html_e( 'Take the Pledge', 'crate' ); ?></a>
 				</div>
+				*/ ?>
 			</div>
 
 		</div>

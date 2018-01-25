@@ -1,4 +1,4 @@
-# BEGIN WP Rocket v2.10.10
+# BEGIN WP Rocket v2.11.4
 # Use UTF-8 encoding for anything served text/plain or text/html
 AddDefaultCharset UTF-8
 # Force UTF-8 for a number of file formats
@@ -18,7 +18,7 @@ FileETag None
 <IfModule mod_alias.c>
 <FilesMatch "\.(html|htm|rtf|rtx|txt|xsd|xsl|xml)$">
 <IfModule mod_headers.c>
-Header set X-Powered-By "WP Rocket/2.10.10"
+Header set X-Powered-By "WP Rocket/2.11.4"
 Header unset Pragma
 Header append Cache-Control "public"
 Header unset Last-Modified
@@ -143,7 +143,7 @@ RewriteRule .* - [E=WPR_ENC:_gzip]
 RewriteCond %{REQUEST_METHOD} GET
 RewriteCond %{QUERY_STRING} =""
 RewriteCond %{HTTP:Cookie} !(wordpress_logged_in_|wp-postpass_|wptouch_switch_toggle|comment_author_|comment_author_email_) [NC]
-RewriteCond %{REQUEST_URI} !^(/gen2gen-reads-partners/|(.*)/feed/?|/wp-json/(.*))$ [NC]
+RewriteCond %{REQUEST_URI} !^(/gen2gen-reads-partners/|/volunteer-opportunities/|(.*)/feed/?|/wp-json/(.*))$ [NC]
 RewriteCond %{HTTP_USER_AGENT} !^(facebookexternalhit).* [NC]
 RewriteCond "%{DOCUMENT_ROOT}/cms/assets/cache/wp-rocket/%{HTTP_HOST}%{REQUEST_URI}/index%{ENV:WPR_SSL}.html%{ENV:WPR_ENC}" -f
 RewriteRule .* "/cms/assets/cache/wp-rocket/%{HTTP_HOST}%{REQUEST_URI}/index%{ENV:WPR_SSL}.html%{ENV:WPR_ENC}" [L]
@@ -220,14 +220,15 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 </IfModule>
+
 # END WordPress
 # Created by Redirection
-# Thu, 17 Nov 2016 20:45:21 +0000
-# Redirection 2.4.5 - http://urbangiraffe.com/plugins/redirection/
+# Wed, 24 Jan 2018 17:53:59 +0000
+# Redirection 2.10.1 - https://redirection.me
 <IfModule mod_rewrite.c>
-RewriteRule ^/boston/$ http://generationtogeneration.org/communities/boston/ [R=301,L]
-RewriteRule ^/la/$ http://generationtogeneration.org/communities/la/ [R=301,L]
-RewriteRule ^/san-jose/$ http://generationtogeneration.org/communities/san-jose/ [R=301,L]
-RewriteRule ^/seattle/$ http://generationtogeneration.org/communities/seattle/ [R=301,L]
+RewriteRule ^boston/$ /communities/boston/ [R=301,L]
+RewriteRule ^la/$ /communities/la/ [R=301,L]
+RewriteRule ^san-jose/$ /communities/san-jose/ [R=301,L]
+RewriteRule ^seattle/$ /communities/seattle/ [R=301,L]
 </IfModule>
 # End of Redirection

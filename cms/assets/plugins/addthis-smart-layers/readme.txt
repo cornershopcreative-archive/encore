@@ -2,8 +2,8 @@
 Contributors: abramsm, jgrodel, bradaddthis.com, addthis_paul, addthis_matt, ribin_addthis, addthis_elsa, addthisleland
 Tags: AddThis, bookmark, bookmarking, email sharing, mobile sharing, mobile sharing buttons, plugin, share, share buttons, share buttons plugin, sharing, sharing buttons, sharing sidebar, social buttons, social tools, widget, follow buttons, follow buttons plugin, shortcode, facebook, twitter, pinterest, linkedin, instagram, content recommendations, recommended content, related content, related posts
 Requires at least: 3.0
-Tested up to: 4.8.1
-Stable tag: 3.1.1
+Tested up to: 4.9
+Stable tag: 3.1.2
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -125,6 +125,10 @@ See our <a href="https://plugins.svn.wordpress.org/addthis-all/trunk/documentati
 
 
 == Changelog ==
+
+= 3.1.2 =
+* Updated error messaging that is no longer relevant regarding related post tools
+* Tested compatibility with Wordpress 4.9
 
 = 3.1.1 =
 * Fix for PHP notice from AddThisPlugin.php on line 610

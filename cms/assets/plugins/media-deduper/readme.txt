@@ -2,8 +2,8 @@
 Contributors: drywallbmb, kenjigarland
 Tags: media, attachments, admin, upload
 Requires at least: 4.3
-Tested up to: 4.8
-Stable tag: 1.4.1
+Tested up to: 4.9.1
+Stable tag: 1.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,7 +29,7 @@ If a post has a featured image that's a duplicate file, Smart Delete will re-ass
 
 Note that duplicate identification is based on the data of the files themselves, not any titles, captions or other metadata you may have provided in the WordPress admin.
 
-As of version 1.1.0, Media Deduper can differentiate between 1.) media items that are duplicates because the media files they link to have the same data and 2.) those that actually point to the same data file, which can happen with a plugin like WP Job Manager or Duplicate Post.
+Media Deduper can differentiate between 1.) media items that are duplicates because the media files they link to have the same data and 2.) those that actually point to the same data file, which can happen with a plugin like WP Job Manager or Duplicate Post.
 
 As with any plugin that can perform destructive operations on your database and/or files, using Media Deduper can result in permanent data loss if you're not careful. **Back up your data before you try out Media Deduper! Please! We really don’t want you to destroy your stuff!**
 
@@ -74,6 +74,12 @@ The git repository should be publicly available at https://bitbucket.org/corners
 
 
 == Changelog ==
+= 1.4.2 =
+* Media Deduper now fully supports the media trash feature (a.k.a. the MEDIA_TRASH constant; see [this post](https://philkurth.com.au/wordpress/enabling-wordpress-media-trash-feature/) for more information). As of Media Deduper 1.4.2, if the media trash feature is enabled:
+	* The Manage Duplicates screen will list (and allow the user to delete or Smart Delete) both trashed and non-trashed attachment posts. Previously, only non-trashed attachments were listed on this screen, which caused confusing behavior if, for instance, a site's media library contained two copies of an image, but one was in the Trash.
+	* If a user attempts to upload a media file that already exists in the media library, but the existing copy of the file is in the Trash, the user will *no longer* be prevented from uploading the new copy.
+* Bugfix: The "Attach" or "Detach" links in the list table on the Manage Duplicates screen are now working again, after they stopped working in a previous version of the plugin.
+
 = 1.4.1 =
 * Tweaks to messages about Pro: display on fewer pages, don't display to users who don't have permission to install new plugins, change wording slightly for clarity.
 

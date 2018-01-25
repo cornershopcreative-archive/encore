@@ -14,7 +14,7 @@ class Imagify_Admin_Ajax_Post {
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.0';
+	const VERSION = '1.0.1';
 
 	/**
 	 * Actions to be triggered on admin ajax and admin post.
@@ -138,8 +138,7 @@ class Imagify_Admin_Ajax_Post {
 		imagify_check_nonce( 'imagify-manual-upload-' . $attachment_id . '-' . $context );
 		imagify_check_user_capacity( 'manual-optimize', $attachment_id );
 
-		$class_name = get_imagify_attachment_class_name( $context, $attachment_id, 'imagify_manual_upload' );
-		$attachment = new $class_name( $attachment_id );
+		$attachment = get_imagify_attachment( $context, $attachment_id, 'imagify_manual_upload' );
 
 		// Optimize it!!!!!
 		$attachment->optimize();
@@ -168,8 +167,7 @@ class Imagify_Admin_Ajax_Post {
 		imagify_check_nonce( 'imagify-manual-override-upload-' . $attachment_id . '-' . $context );
 		imagify_check_user_capacity( 'manual-optimize', $attachment_id );
 
-		$class_name = get_imagify_attachment_class_name( $context, $attachment_id, 'imagify_manual_override_upload' );
-		$attachment = new $class_name( $attachment_id );
+		$attachment = get_imagify_attachment( $context, $attachment_id, 'imagify_manual_override_upload' );
 
 		// Restore the backup file.
 		$attachment->restore();
@@ -201,8 +199,7 @@ class Imagify_Admin_Ajax_Post {
 		imagify_check_nonce( 'imagify-optimize-missing-sizes-' . $attachment_id . '-' . $context );
 		imagify_check_user_capacity( 'manual-optimize', $attachment_id );
 
-		$class_name = get_imagify_attachment_class_name( $context, $attachment_id, 'imagify_optimize_missing_sizes' );
-		$attachment = new $class_name( $attachment_id );
+		$attachment = get_imagify_attachment( $context, $attachment_id, 'imagify_optimize_missing_sizes' );
 
 		// Optimize the missing thumbnails.
 		$attachment->optimize_missing_thumbnails();
@@ -231,8 +228,7 @@ class Imagify_Admin_Ajax_Post {
 		imagify_check_nonce( 'imagify-restore-upload-' . $attachment_id . '-' . $context );
 		imagify_check_user_capacity( 'manual-optimize', $attachment_id );
 
-		$class_name = get_imagify_attachment_class_name( $context, $attachment_id, 'imagify_restore_upload' );
-		$attachment = new $class_name( $attachment_id );
+		$attachment = get_imagify_attachment( $context, $attachment_id, 'imagify_restore_upload' );
 
 		// Restore the backup file.
 		$attachment->restore();
@@ -262,8 +258,7 @@ class Imagify_Admin_Ajax_Post {
 		imagify_check_nonce( 'imagify-bulk-upload', 'imagifybulkuploadnonce' );
 		imagify_check_user_capacity( 'bulk-optimize', $attachment_id );
 
-		$class_name         = get_imagify_attachment_class_name( $context, $attachment_id, 'imagify_bulk_upload' );
-		$attachment         = new $class_name( $attachment_id );
+		$attachment         = get_imagify_attachment( $context, $attachment_id, 'imagify_bulk_upload' );
 		$optimization_level = get_transient( 'imagify_bulk_optimization_level' );
 
 		// Restore it if the optimization level is updated.
@@ -322,8 +317,7 @@ class Imagify_Admin_Ajax_Post {
 		imagify_check_nonce( 'new_media-' . $attachment_id );
 		imagify_check_user_capacity( 'auto-optimize' );
 
-		$class_name = get_imagify_attachment_class_name( $context, $attachment_id, 'imagify_async_optimize_upload_new_media' );
-		$attachment = new $class_name( $attachment_id );
+		$attachment = get_imagify_attachment( $context, $attachment_id, 'imagify_async_optimize_upload_new_media' );
 
 		// Optimize it!!!!!
 		$attachment->optimize( null, $_POST['metadata'] );
@@ -346,13 +340,13 @@ class Imagify_Admin_Ajax_Post {
 		imagify_check_nonce( 'image_editor-' . $attachment_id );
 		imagify_check_user_capacity( 'edit_post', $attachment_id );
 
-		if ( ! get_post_meta( $attachment_id, '_imagify_data', true ) ) {
+		$attachment = get_imagify_attachment( 'wp', $attachment_id, 'wp_ajax_imagify_async_optimize_save_image_editor_file' );
+
+		if ( ! $attachment->get_data() ) {
 			return;
 		}
 
-		$optimization_level = (int) get_post_meta( $attachment_id, '_imagify_optimization_level', true );
-		$class_name         = get_imagify_attachment_class_name( 'wp', $attachment_id, 'wp_ajax_imagify_async_optimize_save_image_editor_file' );
-		$attachment         = new $class_name( $attachment_id );
+		$optimization_level = $attachment->get_optimization_level();
 		$metadata           = wp_get_attachment_metadata( $attachment_id );
 
 		// Remove old optimization data.
@@ -408,23 +402,12 @@ class Imagify_Admin_Ajax_Post {
 
 		// Get (ordered) IDs.
 		$optimization_level = (int) $_GET['optimization_level'];
-		$optimization_level = ( -1 !== $optimization_level ) ? $optimization_level : (int) get_imagify_option( 'optimization_level', 1 );
+		$optimization_level = -1 !== $optimization_level ? $optimization_level : (int) get_imagify_option( 'optimization_level', 1 );
 
-		/**
-		 * Filter the unoptimized attachments limit query.
-		 *
-		 * @since 1.4.4
-		 *
-		 * @param int The limit (-1 for unlimited).
-		 */
-		$unoptimized_attachment_limit = (int) apply_filters( 'imagify_unoptimized_attachment_limit', 10000 );
-		$unoptimized_attachment_limit = -1 === $unoptimized_attachment_limit ? PHP_INT_MAX : $unoptimized_attachment_limit;
+		Imagify_DB::unlimit_joins();
 
-		$mime_types = get_imagify_mime_type();
-		$mime_types = esc_sql( $mime_types );
-		$mime_types = "'" . implode( "','", $mime_types ) . "'";
-
-		$ids = $wpdb->get_col( $wpdb->prepare( // WPCS: unprepared SQL ok.
+		$mime_types = Imagify_DB::get_mime_types();
+		$ids        = $wpdb->get_col( $wpdb->prepare( // WPCS: unprepared SQL ok.
 			"SELECT $wpdb->posts.ID
 			FROM $wpdb->posts
 			LEFT JOIN $wpdb->postmeta
@@ -455,18 +438,18 @@ class Imagify_Admin_Ajax_Post {
 				$wpdb->posts.ID DESC
 			LIMIT 0, %d",
 			$optimization_level,
-			$unoptimized_attachment_limit
+			imagify_get_unoptimized_attachment_limit()
 		) );
 
 		$wpdb->flush();
-		unset( $unoptimized_attachment_limit, $mime_types );
+		unset( $mime_types );
 		$ids = array_filter( array_map( 'absint', $ids ) );
 
 		if ( ! $ids ) {
 			wp_send_json_error( array( 'message' => 'no-images' ) );
 		}
 
-		$results = imagify_get_wpdb_metas( array(
+		$results = Imagify_DB::get_metas( array(
 			// Get attachments filename.
 			'filenames'           => '_wp_attached_file',
 			// Get attachments data.
@@ -652,7 +635,7 @@ class Imagify_Admin_Ajax_Post {
 		$data = array(
 			'email'    => $_GET['email'],
 			'password' => wp_generate_password( 12, false ),
-			'lang'     => get_locale(),
+			'lang'     => imagify_get_locale(),
 		);
 
 		$response = add_imagify_user( $data );

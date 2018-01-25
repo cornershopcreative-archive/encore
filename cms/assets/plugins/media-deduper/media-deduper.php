@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Media Deduper
- * Version: 1.4.1
+ * Version: 1.4.2
  * Description: Save disk space and bring some order to the chaos of your media library by removing and preventing duplicate files.
  * Plugin URI: https://cornershopcreative.com/product/media-deduper/
  * Author: Cornershop Creative

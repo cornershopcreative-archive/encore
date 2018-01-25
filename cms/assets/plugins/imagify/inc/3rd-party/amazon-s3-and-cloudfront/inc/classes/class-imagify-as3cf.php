@@ -14,10 +14,10 @@ class Imagify_AS3CF {
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.0';
+	const VERSION = '1.0.1';
 
 	/**
-	 * Context used with get_imagify_attachment_class_name().
+	 * Context used with get_imagify_attachment().
 	 * It matches the class name Imagify_AS3CF_Attachment.
 	 *
 	 * @var string
@@ -217,7 +217,7 @@ class Imagify_AS3CF {
 		}
 
 		unset( $sql_ids );
-		$s3_data = imagify_query_results_combine( $ids, $s3_data, true );
+		$s3_data = Imagify_DB::combine_query_results( $ids, $s3_data, true );
 
 		// Retrieve the missing files from S3.
 		$ids = array_flip( $ids );
@@ -272,7 +272,7 @@ class Imagify_AS3CF {
 		}
 
 		if ( ! isset( $data ) ) {
-			$data = imagify_get_wpdb_metas( array(
+			$data = Imagify_DB::get_metas( array(
 				// Get the filesizes.
 				's3_filesize' => 'wpos3_filesize_total',
 			), $image_ids );
@@ -359,9 +359,13 @@ class Imagify_AS3CF {
 			}
 		}
 
-		if ( ! $is_new_upload && ! get_post_meta( $attachment_id, '_imagify_data', true ) ) {
-			// It's not a new upload and the attachment is not optimized yet.
-			return $metadata;
+		if ( ! $is_new_upload ) {
+			$attachment = get_imagify_attachment( self::CONTEXT, $attachment_id, 'as3cf_async_job' );
+
+			if ( ! $attachment->get_data() ) {
+				// It's not a new upload and the attachment is not optimized yet.
+				return $metadata;
+			}
 		}
 
 		$data = array();
@@ -409,8 +413,7 @@ class Imagify_AS3CF {
 		}
 
 		$optimization_level = null;
-		$class_name         = get_imagify_attachment_class_name( self::CONTEXT, $attachment_id, 'as3cf_optimize' );
-		$attachment         = new $class_name( $attachment_id );
+		$attachment         = get_imagify_attachment( self::CONTEXT, $attachment_id, 'as3cf_optimize' );
 
 		// Some specifics for the image editor.
 		if ( ! empty( $_POST['data']['do'] ) ) {

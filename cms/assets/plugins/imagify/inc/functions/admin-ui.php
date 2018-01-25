@@ -104,8 +104,8 @@ function get_imagify_attachment_optimization_text( $attachment, $context = 'wp' 
 			'context'       => $context,
 		);
 		$class   = $is_media_page ? '' : ' class="button-imagify-restore attachment-has-backup"';
-		$waiting = $is_media_page ? '' : ' data-waiting-label="' . esc_attr__( 'Optimizing...', 'imagify' ) . '"';
-		$output .= '<a id="imagify-restore-' . $attachment_id . '" href="' . get_imagify_admin_url( 'restore-upload', $args ) . '"' . $class . $waiting . '>';
+		$waiting = $is_media_page ? '' : ' data-waiting-label="' . esc_attr__( 'Restoring...', 'imagify' ) . '"';
+		$output .= '<a id="imagify-restore-' . $attachment_id . '" href="' . esc_url( get_imagify_admin_url( 'restore-upload', $args ) ) . '"' . $class . $waiting . '>';
 			$output .= '<span class="dashicons dashicons-image-rotate"></span>' . __( 'Restore Original', 'imagify' );
 		$output .= '</a>';
 
@@ -247,8 +247,8 @@ function get_imagify_attachment_optimize_missing_thumbnails_link( $attachment, $
 	 */
 	$display = apply_filters( 'imagify_display_missing_thumbnails_link', true, $attachment, $context );
 
-	// Stop the process if the filter is false or if the API key isn't valid.
-	if ( ! $display || ! imagify_valid_key() ) {
+	// Stop the process if the filter is false, or if the API key isn't valid, or if there is no backup file.
+	if ( ! $display || ! imagify_valid_key() || ! $attachment->has_backup() ) {
 		return '';
 	}
 
