@@ -65,6 +65,13 @@
 
 <?php get_template_part( 'template-parts/modal', 'generic' ); ?>
 <?php wp_footer(); ?>
-
+<!-- Crowdskout -->
+<script>
+  (function(s,k,o,u,t){
+    s.cs=s.cs||function(){cs.q.push(arguments);};
+    cs.q=cs.q||[];cs.apiUrl=t;s.sourceId=7546;s.clientId=1910;s.organizationId=1101624;
+    var a=k.getElementsByTagName(o)[0];var b=k.createElement(o);b.src=u+'/analytics.js';a.parentNode.insertBefore(b,a);
+  })(window,document,'script','//s.crowdskout.com','https://a.crowdskout.com');
+</script>
 </body>
 </html>
