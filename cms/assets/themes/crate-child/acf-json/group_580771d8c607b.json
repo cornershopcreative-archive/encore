@@ -64,6 +64,54 @@
                     "min": "",
                     "max": ""
                 },
+                "5aa831bd33477": {
+                    "key": "5aa831bd33477",
+                    "name": "wysiwyg-wide",
+                    "label": "Generic Wide WYSIWYG",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_5aa831bd33478",
+                            "label": "Section Name",
+                            "name": "section_name",
+                            "type": "text",
+                            "instructions": "Enter a name to distinguish this section from others on this page. The name will not be displayed on the site frontend, but it will be converted to lower case with hyphens instead of spaces and used as the ID for the section, so that a section named \"Our Partners\" could be linked to with an anchor link like \"#our-partners\".",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_5aa831bd33479",
+                            "label": "Content",
+                            "name": "content",
+                            "type": "wysiwyg",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "tabs": "all",
+                            "toolbar": "full",
+                            "media_upload": 1,
+                            "delay": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
                 "58174a0a89593": {
                     "key": "58174a0a89593",
                     "name": "image-grid",
@@ -911,7 +959,7 @@
                             "name": "image_caption",
                             "type": "text",
                             "instructions": "",
-                            "required": 1,
+                            "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
                                 "width": "",
@@ -2279,6 +2327,29 @@
                                     },
                                     "default_value": "",
                                     "placeholder": ""
+                                },
+                                {
+                                    "key": "field_5aac1cc253325",
+                                    "label": "Featured Content",
+                                    "name": "featured_content",
+                                    "type": "checkbox",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "choices": {
+                                        "1": "Make this content featured"
+                                    },
+                                    "allow_custom": 0,
+                                    "save_custom": 0,
+                                    "default_value": [],
+                                    "layout": "vertical",
+                                    "toggle": 0,
+                                    "return_format": "value"
                                 }
                             ]
                         }
@@ -4678,5 +4749,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1513977226
+    "modified": 1521231521
 }

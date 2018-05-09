@@ -4,7 +4,7 @@
  */
 ?>
 
-<div class="content-section section-grid"<?php crate_section_id_attr(); ?>>
+<div class="content-section section-circle-grid"<?php crate_section_id_attr(); ?>>
 	<div class="content-section-grid container">
 			<?php while ( have_rows( 'items' ) ) : the_row(); ?>
 				<div class="grid-item grid-item-3">

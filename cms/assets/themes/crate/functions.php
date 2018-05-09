@@ -101,3 +101,10 @@ add_filter( 'facetwp_is_main_query', 'my_facetwp_is_main_query', 10, 2 );
 add_filter( 'facetwp_proximity_store_distance', '__return_true' );
 define( 'GMAPS_API_KEY', 'AIzaSyCs_39jH3aZxdo0MZ5FANzQUfFJqCqGBI8' );
 
+add_filter( 'gform_enable_field_label_visibility_settings', '__return_true' );
+
+function print_menu_shortcode($atts, $content = null) { 
+extract(shortcode_atts(array( 'name' => null, ), $atts));
+return wp_nav_menu( array( 'menu' => $name, 'echo' => false ) ); 
+} 
+add_shortcode('menu', 'print_menu_shortcode');

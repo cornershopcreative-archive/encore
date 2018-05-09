@@ -13,7 +13,7 @@ add_action( 'ngg_after_new_images_added', '_imagify_ngg_optimize_attachment', IM
  */
 function _imagify_ngg_optimize_attachment( $gallery_id, $image_ids ) {
 
-	if ( ! imagify_valid_key() || ! get_imagify_option( 'auto_optimize' ) ) {
+	if ( ! Imagify_Requirements::is_api_key_valid() || ! get_imagify_option( 'auto_optimize' ) ) {
 		return;
 	}
 
@@ -78,7 +78,7 @@ function _imagify_ngg_media_library_imported_image_data( $image, $attachment ) {
 		'pid'                => $image->pid,
 		'optimization_level' => $attachment->get_optimization_level(),
 		'status'             => $attachment->get_status(),
-		'data'               => maybe_serialize( array(
+		'data'               => array(
 			'sizes' => array(
 				'full' => $full_size,
 			),
@@ -87,7 +87,7 @@ function _imagify_ngg_media_library_imported_image_data( $image, $attachment ) {
 				'optimized_size' => $full_size['optimized_size'],
 				'percent'        => $full_size['percent'],
 			),
-		) ),
+		),
 	) );
 
 	$imagify_image = new Imagify_NGG_Attachment( $image->pid );
@@ -99,7 +99,7 @@ function _imagify_ngg_media_library_imported_image_data( $image, $attachment ) {
 		$ngg_backup_path = $imagify_image->get_raw_backup_path();
 
 		imagify_get_filesystem()->copy( $attachment_backup_path, $ngg_backup_path, true );
-		imagify_chmod_file( $ngg_backup_path );
+		imagify_get_filesystem()->chmod_file( $ngg_backup_path );
 	}
 
 	// Optimize thumbnails.

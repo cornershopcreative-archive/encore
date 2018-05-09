@@ -2,8 +2,8 @@
 Contributors: wp_media, GregLone
 Tags: compress image, images, performance, optimization, photos, upload, resize, gif, png, jpg, reduce image size, retina
 Requires at least: 3.7.0
-Tested up to: 4.9.1
-Stable tag: 1.6.14.2
+Tested up to: 4.9.5
+Stable tag: 1.7.1.3
 
 Dramatically reduce image file sizes without losing quality, make your website load faster, boost your SEO and save money on your bandwidth.
 
@@ -107,7 +107,7 @@ Absolutely. Most of the time, Imagify will still be able to optimize your images
 
 Normal compression is a "lossless" optimization. This means there is no loss of image quality. Aggressive and Ultra compression are more powerful, so the picture quality will be somewhat reduced. The weight of the image will be much less.
 
-= Is the EXIF data of images removes? =
+= Is the EXIF data of images removed? =
 
 By default EXIF data is removed. It is however possible to keep it by enabling the option.
 
@@ -135,7 +135,35 @@ When the plugin is disabled, your existing images remain optimized. Backups of t
 
 3. Media Page
 
+4. Other Media Page
+
 == Changelog ==
+= 1.7.1.3 - 2018/04/12 =
+* Bug Fix: a fatal error with outdated versions of php.
+
+= 1.7.1.2 - 2018/04/12 =
+* Improvement: reset OPcache after Imagify being updated.
+* Bug Fix: a fatal error upon Imagify update.
+* Bug Fix: a case where the bulk optimizer wrongly says that all images are already optimized.
+
+= 1.7.1 - 2018/04/10 =
+* New: compatibility with Regenerate Thumbnails (v3) plugin.
+* Improvement: better performance of the bulk optimization on sites with huge media library. This is done by not updating the statistics display periodically, but only when the job is done.
+* Improvement: SiteGround cache testing is not blocked anymore.
+* Improvement: proxies are now handled.
+* Improvement: test for ImageMagick or GD availability.
+* Dev stuff: improved the way we use the filesystem. This should solve few edge cases.
+
+= 1.7 - 2018/03/13 =
+* New: you can now optimize the images from your themes and plugins, or from any other folder in your site!
+* Improvement: compatibility with old and new versions of WP Offload S3 plugins.
+* Improvement: don't start the bulk optimization process if cURL is not available.
+* Bug Fix: image dimensions not being stored sometimes after it is resized.
+* Bug Fix: the comparison tool could display multiple handles.
+* Bug Fix: issue with php 7.2.
+* Dev stuff: lots of internal changes, many things have been rewritten.
+* Dev stuff: the default options can now be filtered.
+
 = 1.6.14.2 - 2018/01/15 =
 * Improvement: force browsers not to use the old version of our script for the charts.
 

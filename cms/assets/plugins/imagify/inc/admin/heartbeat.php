@@ -14,30 +14,53 @@ add_filter( 'heartbeat_received', '_imagify_heartbeat_received', 10, 2 );
  * @return array
  */
 function _imagify_heartbeat_received( $response, $data ) {
-	if ( empty( $data['imagify_heartbeat'] ) || 'update_bulk_data' !== $data['imagify_heartbeat'] ) {
+	if ( empty( $data['imagify_ids']['update_bulk_data'] ) ) {
 		return $response;
 	}
 
-	$saving_data = imagify_count_saving_data();
-	$user        = new Imagify_User();
+	if ( empty( $data['imagify_types'] ) || ! is_array( $data['imagify_types'] ) ) {
+		return $response;
+	}
 
-	$response['imagify_bulk_data'] = array(
-		'already_optimized_attachments' => number_format_i18n( $saving_data['count'] ),
-		'optimized_attachments'         => imagify_count_optimized_attachments(),
-		'unoptimized_attachments'       => imagify_count_unoptimized_attachments(),
-		'errors_attachments'            => imagify_count_error_attachments(),
-		'optimized_attachments_percent' => imagify_percent_optimized_attachments(),
-		'optimized_percent'             => $saving_data['percent'],
-		'original_human'                => size_format( $saving_data['original_size'], 1 ),
-		'optimized_human'               => size_format( $saving_data['optimized_size'], 1 ),
-		'unconsumed_quota'              => $user->get_percent_unconsumed_quota(),
+	$folder_types = array_flip( array_filter( $data['imagify_types'] ) );
+
+	$response['imagify_bulk_data'] = imagify_get_bulk_stats( $folder_types, array(
+		'fullset' => true,
+	) );
+
+	return $response;
+}
+
+add_filter( 'heartbeat_received', 'imagify_heartbeat_requirements_received', 10, 2 );
+/**
+ * Prepare the data that goes back with the Heartbeat API.
+ *
+ * @since  1.7.1
+ * @author Grégory Viguier
+ *
+ * @param  array $response The Heartbeat response.
+ * @param  array $data     The $_POST data sent.
+ * @return array
+ */
+function imagify_heartbeat_requirements_received( $response, $data ) {
+	if ( empty( $data['imagify_ids']['update_bulk_requirements'] ) ) {
+		return $response;
+	}
+
+	$response['imagify_bulk_requirements'] = array(
+		'curl_missing'          => ! Imagify_Requirements::supports_curl(),
+		'editor_missing'        => ! Imagify_Requirements::supports_image_editor(),
+		'external_http_blocked' => Imagify_Requirements::is_imagify_blocked(),
+		'api_down'              => Imagify_Requirements::is_imagify_blocked() || ! Imagify_Requirements::is_api_up(),
+		'key_is_valid'          => ! Imagify_Requirements::is_imagify_blocked() && Imagify_Requirements::is_api_up() && Imagify_Requirements::is_api_key_valid(),
+		'is_over_quota'         => ! Imagify_Requirements::is_imagify_blocked() && Imagify_Requirements::is_api_up() && Imagify_Requirements::is_api_key_valid() && Imagify_Requirements::is_over_quota(),
 	);
 
 	return $response;
 }
 
 
-if ( 'upload.php' === $pagenow && isset( $_GET['page'] ) && 'imagify-bulk-optimization' === $_GET['page'] ) { // WPCS: CSRF ok.
+if ( 'upload.php' === $pagenow && ! empty( $_GET['page'] ) && Imagify_Views::get_instance()->get_bulk_page_slug() === $_GET['page'] ) { // WPCS: CSRF ok.
 	add_filter( 'heartbeat_settings', '_imagify_heartbeat_settings', IMAGIFY_INT_MAX );
 }
 /**

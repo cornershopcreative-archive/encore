@@ -3,11 +3,11 @@
 Plugin Name: SearchWP Shortcodes
 Plugin URI: https://searchwp.com/
 Description: Provides Shortcodes that generate both search forms and results pages for SearchWP search engines
-Version: 1.5.3
-Author: Jonathan Christopher
+Version: 1.5.4
+Author: SearchWP, LLC
 Author URI: https://searchwp.com/
 
-Copyright 2014-2016 Jonathan Christopher
+Copyright 2014-2018 Jonathan Christopher
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'SEARCHWP_SHORTCODES_VERSION' ) ) {
-	define( 'SEARCHWP_SHORTCODES_VERSION', '1.5.3' );
+	define( 'SEARCHWP_SHORTCODES_VERSION', '1.5.4' );
 }
 
 /**
@@ -180,10 +180,12 @@ class SearchWP_Shortcodes {
 			$supplementalSearchEngineName = sanitize_text_field( $engine );
 
 			// set up custom posts per page
-			function searchwp_shortcodes_posts_per_page() {
-				global $searchwp_shortcodes_posts_per_page;
+			if ( ! function_exists( 'searchwp_shortcodes_posts_per_page' ) ) {
+				function searchwp_shortcodes_posts_per_page() {
+					global $searchwp_shortcodes_posts_per_page;
 
-				return absint( $searchwp_shortcodes_posts_per_page );
+					return absint( $searchwp_shortcodes_posts_per_page );
+				}
 			}
 			add_filter( 'searchwp_posts_per_page', 'searchwp_shortcodes_posts_per_page' );
 

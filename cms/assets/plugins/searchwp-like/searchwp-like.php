@@ -2,12 +2,12 @@
 /*
 Plugin Name: SearchWP LIKE Terms
 Plugin URI: https://searchwp.com/
-Description: Add %LIKE% to search queries (more restrictive than Fuzzy Matches)
-Version: 2.4.4.1
-Author: Jonathan Christopher
+Description: Add partial matches to search queries
+Version: 2.4.6
+Author: SearchWP, LLC
 Author URI: https://searchwp.com/
 
-Copyright 2013-2016 Jonathan Christopher
+Copyright 2013-2018 Jonathan Christopher
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'SEARCHWP_LIKE_TERMS_VERSION' ) ) {
-	define( 'SEARCHWP_LIKE_TERMS_VERSION', '2.4.4.1' );
+	define( 'SEARCHWP_LIKE_TERMS_VERSION', '2.4.6' );
 }
 
 /**
@@ -134,11 +134,21 @@ class SearchWPLike {
 		$terms = array_filter( $terms, 'strlen' );
 		$terms = array_map( 'sanitize_text_field', $terms );
 
+		// dynamic minimum character length
+		$minCharLength = absint( apply_filters( 'searchwp_like_min_length', 4 ) ) - 1;
+
+		// Filter out $terms based on min length
+		foreach ( $terms as $key => $term ) {
+			if ( strlen( $term ) < $minCharLength ) {
+				unset ( $terms[ $key ] );
+			}
+		}
+
+		$terms = array_values( $terms );
+
 		$likeTerms = array();
 
 		if ( ! empty( $terms ) ) {
-			// dynamic minimum character length
-			$minCharLength = absint( apply_filters( 'searchwp_like_min_length', 4 ) ) - 1;
 
 			// by default we will compare to both the term and the stem, but give developers the option to prevent comparison to the stem
 			$term_or_stem = 'stem';
@@ -148,6 +158,20 @@ class SearchWPLike {
 
 			$sql = "SELECT {$term_or_stem} FROM {$prefix}swp_terms WHERE CHAR_LENGTH({$term_or_stem}) > {$minCharLength} AND (";
 
+			$wildcard_before = apply_filters( 'searchwp_like_wildcard_before', true );
+			if ( ! empty( $wildcard_before ) ) {
+				$wildcard_before = '%';
+			} else {
+				$wildcard_before = '';
+			}
+
+			$wildcard_after = apply_filters( 'searchwp_like_wildcard_after', true );
+			if ( ! empty( $wildcard_after ) ) {
+				$wildcard_after = '%';
+			} else {
+				$wildcard_after = '';
+			}
+
 			// need to query for LIKE matches in terms table and append them
 			$count = 0;
 			foreach ( $terms as $term ) {
@@ -155,9 +179,9 @@ class SearchWPLike {
 					$sql .= ' OR ';
 				}
 				if ( 'stem' == $term_or_stem ) {
-					$sql .= $wpdb->prepare( ' ( term LIKE %s OR stem LIKE %s ) ', '%' . $wpdb->esc_like( $term ) . '%', '%' . $wpdb->esc_like( $term ) . '%' );
+					$sql .= $wpdb->prepare( ' ( term LIKE %s OR stem LIKE %s ) ', $wildcard_before . $wpdb->esc_like( $term ) . $wildcard_after, $wildcard_before . $wpdb->esc_like( $term ) . $wildcard_after );
 				} else {
-					$sql .= $wpdb->prepare( ' ( term LIKE %s ) ', '%' . $wpdb->esc_like( $term ) . '%' );
+					$sql .= $wpdb->prepare( ' ( term LIKE %s ) ', $wildcard_before . $wpdb->esc_like( $term ) . $wildcard_after );
 				}
 				$count ++;
 			}
@@ -183,7 +207,7 @@ class SearchWPLike {
 			<tr class="plugin-update-tr searchwp">
 				<td colspan="3" class="plugin-update">
 					<div class="update-message">
-						<?php _e( 'SearchWP LIKE Terms requires SearchWP 2.0.3 or greater', 'searchwp' ); ?>
+						<?php esc_html_e( 'SearchWP LIKE Terms requires SearchWP 2.0.3 or greater', 'searchwp' ); ?>
 					</div>
 				</td>
 			</tr>

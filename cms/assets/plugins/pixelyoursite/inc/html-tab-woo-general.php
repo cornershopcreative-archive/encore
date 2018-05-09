@@ -184,15 +184,16 @@ if ( ! defined( 'ABSPATH' ) ) {
         <tr>
             <td colspan="2" class="narrow">
                 <input type="checkbox" name="pys[woo][on_add_to_cart_btn]" value="1" class="woo-option"
-				    <?php pys_checkbox_state( 'woo', 'on_add_to_cart_btn' ); ?> >
+	                <?php pys_checkbox_state( 'woo', 'on_add_to_cart_btn' ); ?>>
                 <strong>Enable AddToCart on add to cart button</strong>
             </td>
         </tr>
 
         <tr>
             <td colspan="2" class="narrow">
+
                 <input type="checkbox" name="pys[woo][on_add_to_cart_page]" value="1" class="woo-option"
-                    <?php pys_checkbox_state( 'woo', 'on_add_to_cart_page' ); ?> >
+                    <?php checked( pys_get_option( 'woo', 'on_add_to_cart_page' ) ); ?>>
                 <strong>Enable AddToCart on cart page</strong>
             </td>
         </tr>

@@ -186,6 +186,17 @@ ul {
   list-style: none; }
 
 /*
+* Timeline Express Settings
+*/
+.cd-timeline-item-title {
+   font-size: 15px !important;
+}
+
+.cd-timeline-content .the-excerpt {
+   font-size: 12px;
+}
+
+/*
 * Scut, a collection of Sass utilities
 * to ease and improve our implementations of common style-code patterns.
 * v1.4.0
@@ -2580,7 +2591,6 @@ textarea {
  */
 .section-circle-grid {
   position: relative;
-  z-index: -1;
   padding-top: 2.5rem;
   background-color: #0047c1;
   color: #fff;
@@ -3471,6 +3481,25 @@ textarea {
 .mtc-grid-item:hover {
   background: #3dbf9a; }
   .mtc-grid-item:hover span, .mtc-grid-item:hover h3, .mtc-grid-item:hover p {
+    color: #fff; }
+
+.mtc-grid-item-featured {
+  margin-right: 1.5%;
+  margin-bottom: 1.5%;
+  margin-left: 1.5%;
+  padding-top: 50px;
+  padding-right: 60px;
+  padding-bottom: 50px;
+  padding-left: 60px;
+  min-height: 230px;
+  border-top: 15px solid #ff8b18;
+  background: #fff;
+  box-shadow: 4px 6px 9px 0px rgba(0, 0, 0, 0.15);
+  text-align: center; }
+
+.mtc-grid-item-featured:hover {
+  background: #ff8b18; }
+  .mtc-grid-item-featured:hover span, .mtc-grid-item-featured:hover h3, .mtc-grid-item-featured:hover p {
     color: #fff; }
 
 .partner-title {

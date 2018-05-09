@@ -1,4 +1,4 @@
-# BEGIN WP Rocket v2.11.4
+# BEGIN WP Rocket v3.0.3
 # Use UTF-8 encoding for anything served text/plain or text/html
 AddDefaultCharset UTF-8
 # Force UTF-8 for a number of file formats
@@ -15,10 +15,28 @@ Header unset ETag
 # developer.yahoo.com/performance/rules.html#etags
 FileETag None
 
+# Send CORS headers if browsers request them; enabled by default for images.
+<IfModule mod_setenvif.c>
+<IfModule mod_headers.c>
+# mod_headers, y u no match by Content-Type?!
+<FilesMatch "\.(cur|gif|png|jpe?g|svgz?|ico|webp)$">
+SetEnvIf Origin ":" IS_CORS
+Header set Access-Control-Allow-Origin "*" env=IS_CORS
+</FilesMatch>
+</IfModule>
+</IfModule>
+
+# Allow access to web fonts from all domains.
+<FilesMatch "\.(eot|otf|tt[cf]|woff2?)$">
+<IfModule mod_headers.c>
+Header set Access-Control-Allow-Origin "*"
+</IfModule>
+</FilesMatch>
+
 <IfModule mod_alias.c>
 <FilesMatch "\.(html|htm|rtf|rtx|txt|xsd|xsl|xml)$">
 <IfModule mod_headers.c>
-Header set X-Powered-By "WP Rocket/2.11.4"
+Header set X-Powered-By "WP Rocket/3.0.3"
 Header unset Pragma
 Header append Cache-Control "public"
 Header unset Last-Modified
@@ -95,7 +113,7 @@ SetEnvIfNoCase ^(Accept-EncodXng|X-cept-Encoding|X{15}|~{15}|-{15})$ ^((gzip|def
 RequestHeader append Accept-Encoding "gzip,deflate" env=HAVE_Accept-Encoding
 # Don’t compress images and other uncompressible content
 SetEnvIfNoCase Request_URI \
-\.(?:gif|jpe?g|png|rar|zip|exe|flv|mov|wma|mp3|avi|swf|mp?g|mp4|webm|webp)$ no-gzip dont-vary
+\.(?:gif|jpe?g|png|rar|zip|exe|flv|mov|wma|mp3|avi|swf|mp?g|mp4|webm|webp|pdf)$ no-gzip dont-vary
 </IfModule>
 </IfModule>
 
@@ -123,32 +141,8 @@ Header append Vary: Accept-Encoding
 </IfModule>
 </IfModule>
 
-<IfModule mod_mime.c>
-AddType text/html .html_gzip
-AddEncoding gzip .html_gzip
-</IfModule>
-<IfModule mod_setenvif.c>
-SetEnvIfNoCase Request_URI \.html_gzip$ no-gzip
-</IfModule>
-
-<IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteBase /
-RewriteCond %{HTTPS} on [OR]
-RewriteCond %{SERVER_PORT} ^443$ [OR]
-RewriteCond %{HTTP:X-Forwarded-Proto} https
-RewriteRule .* - [E=WPR_SSL:-https]
-RewriteCond %{HTTP:Accept-Encoding} gzip
-RewriteRule .* - [E=WPR_ENC:_gzip]
-RewriteCond %{REQUEST_METHOD} GET
-RewriteCond %{QUERY_STRING} =""
-RewriteCond %{HTTP:Cookie} !(wordpress_logged_in_|wp-postpass_|wptouch_switch_toggle|comment_author_|comment_author_email_) [NC]
-RewriteCond %{REQUEST_URI} !^(/gen2gen-reads-partners/|/volunteer-opportunities/|(.*)/feed/?|/wp-json/(.*))$ [NC]
-RewriteCond %{HTTP_USER_AGENT} !^(facebookexternalhit).* [NC]
-RewriteCond "%{DOCUMENT_ROOT}/cms/assets/cache/wp-rocket/%{HTTP_HOST}%{REQUEST_URI}/index%{ENV:WPR_SSL}.html%{ENV:WPR_ENC}" -f
-RewriteRule .* "/cms/assets/cache/wp-rocket/%{HTTP_HOST}%{REQUEST_URI}/index%{ENV:WPR_SSL}.html%{ENV:WPR_ENC}" [L]
-</IfModule>
 # END WP Rocket
+
 
 # BEGIN performance tweaks (mostly for Dreamhost, but should work most places)
 # See http://wiki.dreamhost.com/Htaccess_tricks
@@ -220,11 +214,10 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 </IfModule>
-
 # END WordPress
 # Created by Redirection
-# Wed, 24 Jan 2018 17:53:59 +0000
-# Redirection 2.10.1 - https://redirection.me
+# Fri, 16 Mar 2018 20:42:03 +0000
+# Redirection 3.2 - https://redirection.me
 <IfModule mod_rewrite.c>
 RewriteRule ^boston/$ /communities/boston/ [R=301,L]
 RewriteRule ^la/$ /communities/la/ [R=301,L]

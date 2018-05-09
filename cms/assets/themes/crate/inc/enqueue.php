@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) { die( 'Direct access not allowed' ); }
 function crate_enqueue() {
 
   if ( ! is_admin() ) {
-		wp_enqueue_style( 'crate_style', get_template_directory_uri() . '/css/crate.css', array(), '4.4.21' );
+		wp_enqueue_style( 'crate_style', get_template_directory_uri() . '/css/crate.css', array(), '4.5.1' );
 		wp_enqueue_script( 'crate', get_template_directory_uri() . '/js/crate.js', array('jquery'), '4.4.21', true );
 
 		// put the AJAX endpoint URL into theme.ajaxurl

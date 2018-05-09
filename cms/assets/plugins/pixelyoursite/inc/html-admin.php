@@ -30,7 +30,7 @@ $std_events = get_option( 'pixel_your_site_std_events' );
 		
 		<div class="pys-content">
 			<form action="<?php echo admin_url('admin.php'); ?>?page=pixel-your-site" method="post">
-				<input type="hidden" name="active_tab" value="<?php echo $pys_active_tab; ?>">
+				<input type="hidden" name="active_tab" value="<?php esc_attr_e( $pys_active_tab ); ?>">
 
 				<?php wp_nonce_field( 'pys_update_options' ); ?>
 

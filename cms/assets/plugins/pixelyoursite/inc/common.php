@@ -455,105 +455,6 @@ if ( ! function_exists( 'pys_get_woo_cart_item_product_id' ) ) {
 
 }
 
-if ( ! function_exists( 'pys_insert_attribute' ) ) {
-
-	/**
-	 * Add attribute with value to a HTML tag.
-	 *
-	 * @param string $attr_name  Attribute name, eg. "class"
-	 * @param string $attr_value Attribute value
-	 * @param string $content    HTML content where attribute should be inserted
-	 * @param bool   $overwrite  Override existing value of attribute or append it
-	 * @param string $tag        Selector name, eg. "button". Default "a"
-	 *
-	 * @return string Modified HTML content
-	 */
-	function pys_insert_attribute( $attr_name, $attr_value, $content, $overwrite = false, $tag = 'a' ) {
-
-		## do not modify js attributes
-		if( $attr_name == 'on' ) {
-			return $content;
-		}
-
-		$attr_value = trim( $attr_value );
-
-		try {
-
-			$doc = new DOMDocument();
-
-			/**
-			 * Old libxml does not support options parameter.
-			 *
-			 * @since 3.2.0
-			 */
-			if ( defined( 'LIBXML_DOTTED_VERSION' ) && version_compare( LIBXML_DOTTED_VERSION, '2.6.0', '>=' ) &&
-				version_compare( phpversion(), '5.4.0', '>=' )
-			) {
-				@$doc->loadHTML( '<?xml encoding="UTF-8">' . $content, LIBXML_NOEMPTYTAG );
-			} else {
-				@$doc->loadHTML( '<?xml encoding="UTF-8">' . $content );
-			}
-
-			/**
-			 * Select top-level tag if it is not specified in args.
-			 *
-			 * @since: 5.0.6
-			 */
-			if ( $tag == 'any' ) {
-
-				/** @var DOMNodeList $node */
-				$node = $doc->getElementsByTagName( 'body' );
-
-				if ( $node->length == 0 ) {
-					throw new Exception( 'Empty or wrong tag passed to filter.' );
-				}
-
-				$node = $node->item( 0 )->childNodes->item( 0 );
-
-			} else {
-				$node = $doc->getElementsByTagName( $tag )->item( 0 );
-			}
-
-			if ( is_null( $node ) ) {
-				return $content;
-			}
-
-			/** @noinspection PhpUndefinedMethodInspection */
-			$attribute = $node->getAttribute( $attr_name );
-
-			// add attribute or override old one
-			if ( empty( $attribute ) || $overwrite ) {
-
-				/** @noinspection PhpUndefinedMethodInspection */
-				$node->setAttribute( $attr_name, $attr_value );
-
-				return str_replace( array( '<?xml encoding="UTF-8">', '<html>', '</html>', '<body>', '</body>' ), null, $doc->saveHTML() );
-
-			}
-
-			// append value to exist attribute
-			if ( $overwrite == false ) {
-
-				$value = $attribute . ' ' . $attr_value;
-				/** @noinspection PhpUndefinedMethodInspection */
-				$node->setAttribute( $attr_name, $value );
-
-				return str_replace( array( '<?xml encoding="UTF-8">', '<html>', '</html>', '<body>', '</body>' ), null, $doc->saveHTML() );
-
-			}
-
-		} catch ( Exception $e ) {
-
-			error_log( $e );
-
-		}
-
-		return $content;
-
-	}
-
-}
-
 if ( ! function_exists( 'pys_is_disabled_for_role' ) ) {
 
 	function pys_is_disabled_for_role() {
@@ -1286,73 +1187,11 @@ if( ! function_exists( 'pys_woocommerce_events' ) ) {
 
 		pys_get_woo_code();
 
-		// WooCommerce non-ajax AddToCart Event handler
-		if ( pys_get_option( 'woo', 'on_add_to_cart_btn' ) && isset( $_REQUEST['add-to-cart'] ) ) {
-            
-			if ( pys_get_option( 'woo', 'variation_id' ) != 'main' && isset( $_REQUEST['variation_id'] ) ) {
-				$product_id = $_REQUEST['variation_id'];
-			} else {
-                $product_id = isset( $_REQUEST['add-to-cart'] ) ? $_REQUEST['add-to-cart'] : null;
-            }
-
-			$params = pys_get_woo_ajax_addtocart_params( $product_id );
-
-			pys_add_event( 'AddToCart', $params );
-
+		// Woo AddToCart on Button
+		if ( pys_get_option( 'woo', 'on_add_to_cart_btn' ) ) {
+			add_action( 'woocommerce_after_shop_loop_item', 'pys_add_woo_loop_product_data' );
+			add_action( 'woocommerce_after_add_to_cart_button', 'pys_add_woo_single_product_data' );
 		}
-
-	}
-
-}
-
-if( ! function_exists( 'pys_output_woo_ajax_events_code' ) ) {
-
-	function pys_output_woo_ajax_events_code() {
-		global $pys_woo_ajax_events;
-
-		if( empty( $pys_woo_ajax_events ) ) {
-			return;
-		}
-
-		$events = array();
-
-		foreach ( $pys_woo_ajax_events as $id => $event ) {
-
-			$params = pys_clean_system_event_params( $event['params'] );
-
-			// sanitize params
-			$sanitized = array();
-			foreach ( $params as $name => $value ) {
-
-				// skip empty but not zero values
-				if ( empty( $value ) && ! is_numeric( $value ) ) {
-					continue;
-				}
-
-				$key               = esc_js( $name );
-				$sanitized[ $key ] = $value;
-
-			}
-
-			$name = $event['name'];
-
-			$events[ $id ] = array(
-				'type'   => pys_is_standard_event( $name ) ? 'track' : 'trackCustom',
-				'name'   => $name,
-				'params' => $sanitized
-			);
-
-		}
-
-		?>
-
-	<script type="text/javascript">
-	/* <![CDATA[ */
-	var pys_woo_ajax_events = <?php echo json_encode( $events ); ?>;
-	/* ]]> */
-	</script>
-
-		<?php
 
 	}
 
@@ -1531,4 +1370,23 @@ if( ! function_exists( 'pys_is_wc_version_gte' ) ) {
 		
 	}
 	
+}
+
+if ( ! function_exists( 'pys_woo_product_is_type' ) ) {
+
+	/**
+	 * @param \WC_Product|\WP_Post $product
+	 *
+	 * @return bool
+	 */
+	function pys_woo_product_is_type( $product, $type ) {
+
+		if ( pys_is_wc_version_gte( '2.7' ) ) {
+			return $type == $product->is_type( $type );
+		} else {
+			return $product->product_type == $type;
+		}
+
+	}
+
 }

@@ -3,11 +3,11 @@
 Plugin Name: SearchWP Term Synonyms
 Plugin URI: https://searchwp.com/
 Description: Manually define term synonyms for search queries
-Version: 2.4.11
+Version: 2.4.13
 Author: SearchWP, LLC
 Author URI: https://searchwp.com/
 
-Copyright 2013-2016 Jonathan Christopher
+Copyright 2013-2018 Jonathan Christopher
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'SEARCHWP_TERM_SYNONYMS_VERSION' ) ) {
-	define( 'SEARCHWP_TERM_SYNONYMS_VERSION', '2.4.11' );
+	define( 'SEARCHWP_TERM_SYNONYMS_VERSION', '2.4.13' );
 }
 
 /**
@@ -243,15 +243,27 @@ class SearchWPTermSynonyms {
 
 		$synonyms = get_option( $this->prefix . 'settings' );
 
+		if ( ! is_array( $synonyms ) ) {
+			return $term;
+		}
+
 		// convert everything to lowercase
 		if ( ! empty( $synonyms ) ) {
 			foreach ( $synonyms as $synonym_id => $synonym ) {
 				if ( ! empty( $synonyms[ $synonym_id ]['term'] ) ) {
-					$synonyms[ $synonym_id ]['term'] = strtolower( $synonyms[ $synonym_id ]['term'] );
+					if ( function_exists( 'mb_strtolower' ) ) {
+						$synonyms[ $synonym_id ]['term'] = mb_strtolower( $synonyms[ $synonym_id ]['term'] );
+					} else {
+						$synonyms[ $synonym_id ]['term'] = strtolower( $synonyms[ $synonym_id ]['term'] );
+					}
 				}
 
 				if ( is_array( $synonyms[ $synonym_id ]['synonyms'] ) && ! empty( $synonyms[ $synonym_id ]['synonyms'] ) ) {
-					array_map( 'strtolower', $synonyms[ $synonym_id ]['synonyms'] );
+					if ( function_exists( 'mb_strtolower' ) ) {
+						array_map( 'mb_strtolower', $synonyms[ $synonym_id ]['synonyms'] );
+					} else {
+						array_map( 'strtolower', $synonyms[ $synonym_id ]['synonyms'] );
+					}
 				}
 			}
 		}
@@ -310,7 +322,12 @@ class SearchWPTermSynonyms {
 
 		$term = array_values( array_unique( $term ) );
 		$term = array_map( 'sanitize_text_field', $term );
-		$term = array_map( 'strtolower', $term );
+
+		if ( function_exists( 'mb_strtolower' ) ) {
+			$term = array_map( 'mb_strtolower', $term );
+		} else {
+			$term = array_map( 'strtolower', $term );
+		}
 
 		return $term;
 	}

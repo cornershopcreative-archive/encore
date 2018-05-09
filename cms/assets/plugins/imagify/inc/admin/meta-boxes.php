@@ -16,7 +16,7 @@ function _imagify_attachment_submitbox_misc_actions() {
 
 	$attachment = get_imagify_attachment( 'wp', $post->ID, 'attachment_submitbox_misc_actions' );
 
-	if ( ! $attachment->is_mime_type_supported() ) {
+	if ( ! $attachment->is_extension_supported() ) {
 		return;
 	}
 
@@ -24,13 +24,13 @@ function _imagify_attachment_submitbox_misc_actions() {
 		return;
 	}
 
-	if ( ! imagify_valid_key() && ! $attachment->is_optimized() ) {
+	if ( ! Imagify_Requirements::is_api_key_valid() && ! $attachment->is_optimized() ) {
 
 		echo '<div class="misc-pub-section misc-pub-imagify"><h4>' . __( 'Imagify', 'imagify' ) . '</h4></div>';
 		echo '<div class="misc-pub-section misc-pub-imagify">';
 			echo __( 'Invalid API key', 'imagify' );
 			echo '<br/>';
-			echo '<a href="' . esc_url( get_imagify_admin_url( 'options-general' ) ) . '">' . __( 'Check your Settings', 'imagify' ) . '</a>';
+			echo '<a href="' . esc_url( get_imagify_admin_url() ) . '">' . __( 'Check your Settings', 'imagify' ) . '</a>';
 		echo '</div>';
 
 	} elseif ( $attachment->is_optimized() || $attachment->has_error() ) {
@@ -38,7 +38,7 @@ function _imagify_attachment_submitbox_misc_actions() {
 		echo '<div class="misc-pub-section misc-pub-imagify"><h4>' . __( 'Imagify', 'imagify' ) . '</h4></div>';
 		echo get_imagify_attachment_optimization_text( $attachment );
 
-	} elseif ( false !== get_transient( 'imagify-async-in-progress-' . $post->ID ) ) {
+	} elseif ( $attachment->is_running() ) {
 
 		echo '<div class="misc-pub-section misc-pub-imagify">';
 			echo '<div class="button">';
